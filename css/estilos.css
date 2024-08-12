@@ -128,20 +128,38 @@ header{
 }
 
 .review{
-    width: 400px;
+    width: 300px;
     padding: 0 0 20px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
     display: flex;
-    flex-flow: column;
-    align-items: center;
-    justify-content: space-between;
-    margin: 0;
+    flex-flow: row;
+    align-items: stretch;
+    justify-content: flex-start;
+    /* margin: 0; */
 }
 
 .user-avatar{
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     background-color: #cccccc;
+    float: left;
+    display: flex;
+    /* justify-content: flex-start; */
 }
+
+.star {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+
+.fa-star {
+    color: rgb(255, 240, 31);
+}
+
+.fa-star-o {
+    color: rgb(190, 190, 190);
+}
+
