@@ -86,7 +86,7 @@ header{
     width: 100%;
 }
 
-ju{
+.container h2{
     text-align: left;
     margin-bottom: 20px;
     font-size: 1.9rem;
@@ -119,4 +119,29 @@ ju{
     margin: 0;
     width: 80%;
     text-align: justify;
+}
+
+#reviews{
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.review{
+    width: 400px;
+    padding: 0 0 20px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0;
+}
+
+.user-avatar{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #cccccc;
 }
