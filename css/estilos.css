@@ -19,6 +19,7 @@ header{
     display: inline;
     font-size: 26px;
     text-transform: uppercase;
+    text-decoration: none;
 }
 
 #logo h1 a{
@@ -72,6 +73,10 @@ nav#navbar-top {
     color: black;
 }
 
+#navbar-top ul li a{
+    text-decoration: none;
+    color: black;
+}
 
 input[type="text"] {
     border: 1px solid #cccccc;
