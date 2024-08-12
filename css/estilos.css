@@ -40,16 +40,35 @@ header{
     width: 100%;
 }
 
+form#search-form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+nav#navbar-top {
+    display: flex;
+    align-items: center;
+}
+
 #navbar-top ul{
     display: flex;
     list-style: none;
     padding: 0;
     margin: 0;
+    /* width: 100%; */
+    flex-direction: row;
 }
 
 #navbar-top ul li{
     display: inline-flex;
     margin-right: 10px;
+    text-decoration: none;
+    color: black;
+}
+
+#navbar-top ul li a{
     text-decoration: none;
     color: black;
 }
