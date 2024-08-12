@@ -1,8 +1,9 @@
 /* CSS file for estilos.css */
 body{
-    margin: 0;
+    margin: 0 auto;
     padding: 0;
     font-family: Arial, sans-serif;
+    width: 1440px;
 }
 
 header{
@@ -10,17 +11,19 @@ header{
     justify-content: space-between;
     align-items: center;
     padding: 10px 0;
-    background-color: #333;
-    color: #fff;
+    color: black;
 }
 
 #logo h1{
-    color: #fff;
+    color: black;
     display: inline;
+    font-size: 26px;
+    text-transform: uppercase;
+    text-decoration: none;
 }
 
 #logo h1 a{
-    color: #fff;
+    color: black;
     text-decoration: none;
 }
 
@@ -28,7 +31,7 @@ header{
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: gray;
+    background-color: #cccccc;
     display: inline-block;
 }
 
@@ -48,7 +51,18 @@ header{
     display: inline-flex;
     margin-right: 10px;
     text-decoration: none;
-    color: #fff;
+    color: black;
+}
+
+#navbar-top ul li a{
+    text-decoration: none;
+    color: black;
+}
+
+input[type="text"] {
+    border: 1px solid #cccccc;
+    border-radius: 16px;
+    padding: 8px;
 }
 
 .container {
@@ -93,7 +107,7 @@ header{
 }
 
 .product{
-    width: 500px;
+    width: 340px;
     padding: 0 0 20px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
@@ -136,17 +150,15 @@ header{
     flex-flow: row;
     align-items: stretch;
     justify-content: flex-start;
-    /* margin: 0; */
 }
 
 .user-avatar{
-    width: 70px;
-    height: 70px;
+    width: 45px;
+    height: 40px;
     border-radius: 50%;
     background-color: #cccccc;
     float: left;
     display: flex;
-    /* justify-content: flex-start; */
 }
 
 .star {
@@ -161,5 +173,13 @@ header{
 
 .fa-star-o {
     color: rgb(190, 190, 190);
+}
+
+button {
+    background-color: #000;
+    border-radius: 6px;
+    color: white;
+    padding: 10px;
+    border: none;
 }
 
