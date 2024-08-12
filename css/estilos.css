@@ -19,7 +19,6 @@ header{
     display: inline;
     font-size: 26px;
     text-transform: uppercase;
-    text-decoration: none;
 }
 
 #logo h1 a{
@@ -40,11 +39,25 @@ header{
     width: 100%;
 }
 
+form#search-form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+nav#navbar-top {
+    display: flex;
+    align-items: center;
+}
+
 #navbar-top ul{
     display: flex;
     list-style: none;
     padding: 0;
     margin: 0;
+    /* width: 100%; */
+    flex-direction: row;
 }
 
 #navbar-top ul li{
@@ -58,6 +71,7 @@ header{
     text-decoration: none;
     color: black;
 }
+
 
 input[type="text"] {
     border: 1px solid #cccccc;
