@@ -4,31 +4,40 @@ body{
     padding: 0;
     font-family: Arial, sans-serif;
     width: 1440px;
+    border: 1px solid #cccccc;
 }
 
 header{
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 10px 0 0 0;
     color: black;
+    margin-bottom: -10px;
 }
 
 h2.center {
     text-align: center!important;
 }
 
+#logo {
+    margin-left: 10px;
+}
+
 #logo h1{
     color: black;
-    display: inline;
+    display: inline-block;
     font-size: 26px;
     text-transform: uppercase;
     text-decoration: none;
+    position: relative;
+    bottom: 0.5rem;
 }
 
-#logo h1 a{
+#logo a{
     color: black;
     text-decoration: none;
+    margin: 0 0 0 26px;
 }
 
 .circle {
@@ -37,6 +46,7 @@ h2.center {
     border-radius: 50%;
     background-color: #cccccc;
     display: inline-block;
+    margin-right: 10px;
 }
 
 #nav{
@@ -54,6 +64,9 @@ form#search-form {
 nav#navbar-top {
     display: flex;
     align-items: center;
+    position: relative;
+    bottom: 8px;
+    left: 300px;
 }
 
 #navbar-top ul{
@@ -69,6 +82,7 @@ nav#navbar-top {
     margin-right: 10px;
     text-decoration: none;
     color: black;
+    padding: 0 12px;
 }
 
 #navbar-top ul li a{
@@ -85,29 +99,34 @@ input[type="text"] {
     border: 1px solid #cccccc;
     border-radius: 16px;
     padding: 8px;
+    width: 200px;
+    position: relative;
+    left: 100px;
 }
 
 .container {
     width: 100%;
-    margin: 0 auto;
+    /* margin: 20px auto 0; */
 }
 
 #banner{
     background-size: cover;
     background-position: center;
     width: 100%;
-    height: 400px;
+    height: 370px;
     display: inline-block;
     color: #fff;
     text-align: center;
-    background-color: #ccc;
+    background-color: #4f4f4f;
 }
 
 #banner h2{
     display: flex;
     font-size: 2.6rem;
-    color: black;
+    color: white;
     justify-content: center;
+    text-align: center;
+    padding-top: 80px;
 }
 
 #banner p{
@@ -128,20 +147,25 @@ input[type="text"] {
     font-size: 1.9rem;
 }
 
+h2.header-left-sections {
+    margin-left: 100px;
+}
+
 .product{
-    width: 340px;
+    width: 380px;
     padding: 0 0 20px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
     display: flex;
     flex-flow: column;
-    align-items: center;
     justify-content: space-between;
-    margin: 0;
+    margin: 0px -55px;
 }
 
 .product h3 {
     font-size: 1.4rem;
+    padding: 0;
+    margin: 20px 10px -10px 18px;
 }
 
 .product-image{
@@ -152,9 +176,17 @@ input[type="text"] {
 
 .product p{
     font-size: 1rem;
-    margin: 0;
-    width: 80%;
-    text-align: justify;
+    margin-left: 18px;
+    font-weight: bold;
+}
+
+.product button{
+    font-size: 1rem;
+    width: 30%;
+    position: relative;
+    left: 15rem;
+    display: flex;
+    justify-content: space-evenly;
 }
 
 #reviews{
@@ -170,15 +202,17 @@ input[type="text"] {
     display: flex;
     flex-flow: row;
     margin: 20px 15px;
+    width: 285px;
 }
 
 .user-avatar{
-    width: 40px;
+    width: 44px;
     height: 40px;
     border-radius: 50%;
     background-color: #cccccc;
     float: left;
     display: flex;
+    margin: 10px;
 }
 
 .star {
@@ -205,19 +239,19 @@ button {
 
 #tips{
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     width: 100%;
 }
 
 .tip{
     width: 530px;
-    padding: 0 0 20px 0;
+    padding: 20px 34px;
     border: 1px solid #ccc;
     border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 0;
+    margin: 22px;
 }
 
 .img-tip {
@@ -242,4 +276,37 @@ footer ul li a{
     list-style: none;
     color: black;
     text-decoration: none;
+}
+
+#search-form ul li {
+    list-style: none;
+    text-decoration: none;
+}
+
+#login ul {
+    list-style: none;
+    position: relative;
+    right: 40px;
+    bottom: 8px;
+}
+
+#login ul li a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+#search-form {
+    position: relative;
+    bottom: 8px;
+}
+
+i.fas.fa-search {
+    position: relative;
+    z-index: 999;
+    left: 68px;
+}
+
+.header-left-sections{
+    text-align: left!important;
 }
