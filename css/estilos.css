@@ -126,7 +126,7 @@ input[type="text"] {
     color: white;
     justify-content: center;
     text-align: center;
-    padding-top: 80px;
+    padding-top: 30px;
 }
 
 #banner p{
@@ -143,12 +143,14 @@ input[type="text"] {
 
 .container h2{
     text-align: left;
-    margin-bottom: 20px;
+    margin: 4rem 0;
     font-size: 1.9rem;
 }
 
 h2.header-left-sections {
     margin-left: 100px;
+    margin-top: 4rem;
+    margin-bottom: 4rem;
 }
 
 .product{
@@ -235,6 +237,12 @@ button {
     color: white;
     padding: 10px;
     border: none;
+    font-size: 1rem;
+}
+
+button a {
+    color: white;
+    text-decoration: none;
 }
 
 #tips{
@@ -267,7 +275,7 @@ footer {
     display: flex;
     justify-content: space-between;
     margin-top: 90px;
-    border: 1px solid lightgray;    
+    border-top: 1px solid lightgray;
 }
 
 .subscribe {
@@ -307,6 +315,7 @@ footer ul li a{
 #search-form {
     position: relative;
     bottom: 8px;
+    z-index: -2;
 }
 
 i.fas.fa-search {
