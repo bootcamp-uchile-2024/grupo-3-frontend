@@ -1,13 +1,21 @@
 import React from 'react'
+import Header from '../components/Header'
+import Banner from '../components/Banner'
+import Products from '../components/Products'
+import Reviews from '../components/Reviews'
+import PlantCareTips from '../components/PlantCareTips'
+import Footer from '../components/Footer'
 
-export default function HomePage() {
+
+export default function MainLayout() {
   return (
-    <main>
-        <section>
-            <h1>Bienvenido</h1>
-            <p>Descripcion</p>
-            <a href="">aaa</a>
-        </section>
-    </main>
+    <>
+        <Header />
+        <Banner />
+        <Products />
+        <Reviews />
+        <PlantCareTips />
+        <Footer />
+    </>
   )
 }

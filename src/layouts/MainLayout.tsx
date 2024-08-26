@@ -1,18 +1,18 @@
 import React from 'react'
 import Header from '../components/Header'
-import Nav from '../components/Nav'
+import Banner from '../components/Banner'
+import Products from '../components/Products'
 import Reviews from '../components/Reviews'
 import PlantCareTips from '../components/PlantCareTips'
 import Footer from '../components/Footer'
-
-
 
 
 export default function MainLayout() {
   return (
     <>
         <Header />
-        <Nav />
+        <Banner />
+        <Products />
         <Reviews />
         <PlantCareTips />
         <Footer />
