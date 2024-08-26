@@ -1,0 +1,3 @@
+interface UpdateCarroCompraDTO {
+    productos: [string];
+}
