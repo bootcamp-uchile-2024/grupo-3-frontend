@@ -1,42 +1,329 @@
-#root {
-  max-width: 1280px;
+/* CSS file for estilos.css */
+#root{
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  width: 1440px;
+  border: 1px solid #cccccc;
+}
+
+header{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0 0 0;
+  color: black;
+  margin-bottom: -10px;
+}
+
+h2.center {
+  text-align: center!important;
+}
+
+#logo {
+  margin-left: 10px;
+}
+
+#logo h1{
+  color: black;
+  display: inline-block;
+  font-size: 26px;
+  text-transform: uppercase;
+  text-decoration: none;
+  position: relative;
+  bottom: 0.5rem;
+}
+
+#logo a{
+  color: black;
+  text-decoration: none;
+  margin: 0 0 0 26px;
+}
+
+.circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #cccccc;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+#nav{
+  display: flex;
+  width: 100%;
+}
+
+form#search-form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+nav#navbar-top {
+  display: flex;
+  align-items: center;
+  position: relative;
+  bottom: 8px;
+  left: 300px;
+}
+
+#navbar-top ul{
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-direction: row;
+}
+
+#navbar-top ul li{
+  display: inline-flex;
+  margin-right: 10px;
+  text-decoration: none;
+  color: black;
+  padding: 0 12px;
+}
+
+#navbar-top ul li a{
+  text-decoration: none;
+  color: black;
+}
+
+#navbar-top ul li a{
+  text-decoration: none;
+  color: black;
+}
+
+input[type="text"] {
+  border: 1px solid #cccccc;
+  border-radius: 16px;
+  padding: 8px;
+  width: 200px;
+  position: relative;
+  left: 100px;
+}
+
+.container {
+  width: 100%;
+  /* margin: 20px auto 0; */
+}
+
+#banner{
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 370px;
+  display: inline-block;
+  color: #fff;
   text-align: center;
+  background-color: #4f4f4f;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+#banner h2{
+  display: flex;
+  font-size: 2.6rem;
+  color: white;
+  justify-content: center;
+  text-align: center;
+  padding-top: 30px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#banner p{
+  display: block;
+  font-size: 1.2em;
+  color: black;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+#productos{
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
 }
 
-.card {
-  padding: 2em;
+.container h2{
+  text-align: left;
+  margin: 4rem 0;
+  font-size: 1.9rem;
 }
 
-.read-the-docs {
-  color: #888;
+h2.header-left-sections {
+  margin-left: 100px;
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
+
+.product{
+  width: 380px;
+  padding: 0 0 20px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: flex;
+  flex-flow: column;
+  justify-content: space-between;
+  margin: 0px -55px;
+}
+
+.product h3 {
+  font-size: 1.4rem;
+  padding: 0;
+  margin: 20px 10px -10px 18px;
+}
+
+.product-image{
+  width: 100%;
+  height: 320px;
+  background-color: #cccccc;
+}
+
+.product p{
+  font-size: 1rem;
+  margin-left: 18px;
+  font-weight: bold;
+}
+
+.product button{
+  font-size: 1rem;
+  width: 30%;
+  position: relative;
+  left: 15rem;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+#reviews{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.review{
+  padding: 0 0 20px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: flex;
+  flex-flow: row;
+  margin: 20px 15px;
+  width: 285px;
+}
+
+.user-avatar{
+  width: 44px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #cccccc;
+  float: left;
+  display: flex;
+  margin: 10px;
+}
+
+.star {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+}
+
+.fa-star {
+  color: rgb(255, 240, 31);
+}
+
+.fa-star-o {
+  color: rgb(190, 190, 190);
+}
+
+button {
+  background-color: #000;
+  border-radius: 6px;
+  color: white;
+  padding: 10px;
+  border: none;
+  font-size: 1rem;
+}
+
+button a {
+  color: white;
+  text-decoration: none;
+}
+
+#tips{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.tip{
+  width: 530px;
+  padding: 20px 34px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 22px;
+}
+
+.img-tip {
+  width: 100px;
+  height: 100px;
+  background-color: #cccccc;
+  display: flex;
+  flex-direction: column;
+  float: left;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 90px;
+  border-top: 1px solid lightgray;
+}
+
+.subscribe {
+  margin-right: 40px;
+
+}
+
+footer ul{
+  list-style: none;
+}
+
+footer ul li a{
+  list-style: none;
+  color: black;
+  text-decoration: none;
+}
+
+#search-form ul li {
+  list-style: none;
+  text-decoration: none;
+}
+
+#login ul {
+  list-style: none;
+  position: relative;
+  right: 40px;
+  bottom: 8px;
+}
+
+#login ul li a {
+  text-decoration: none;
+  
+  color: black;
+  font-weight: bold;
+}
+
+#search-form {
+  position: relative;
+  bottom: 8px;
+  z-index: -2;
+}
+
+i.fas.fa-search {
+  position: relative;
+  z-index: 999;
+  left: 68px;
+}
+
+.header-left-sections{
+  text-align: left!important;
 }
