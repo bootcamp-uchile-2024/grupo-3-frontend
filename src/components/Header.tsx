@@ -32,7 +32,7 @@ const Header: React.FC = () => {
             </ul>
         </div>
     </header>
-  )
+  );
 }
 
 export default Header;
