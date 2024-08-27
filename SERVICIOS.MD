@@ -306,3 +306,151 @@ interface ProductosDTO {
   cantidad: number;
 }
 ```
+## Modulo Usuarios
+
+## 1. Crear Usuario
+
+**Descripción**: Recibe datos para crear un nuevo usuario. <br>
+**Ruta**: `src/interfaces/CreateUsuarioDTO.ts` <br>
+**Url**: https://github.com/bootcamp-uchile-2024/grupo-3-frontend/tree/main/src/interfaces<br>
+
+### RequestDTO
+
+```typescript
+export interface CreateUsuarioDTO {
+    name: string;
+    password: string;
+    email: string;
+}
+```
+## 2. Obtener todos los usuarios
+
+**Descripción**: Devuelve todos los usuarios . <br>
+**Ruta**: `src/interfaces/GetUsersDTO.ts` <br>
+**Url**: https://github.com/bootcamp-uchile-2024/grupo-3-frontend/tree/main/src/interfaces<br>
+
+### RequestDTO
+
+```typescript
+export interface GetUsersDTO {
+    usuarios: CreateUsuarioDTO[];
+}
+```
+
+## 3. Obtener usuario por ID
+
+**Descripción**: Devuelve un usuario por su ID . <br>
+**Ruta**: `src/interfaces/GetUserID_DTO.ts` <br>
+**Url**: https://github.com/bootcamp-uchile-2024/grupo-3-frontend/tree/main/src/interfaces<br>
+
+### RequestDTO
+
+```typescript
+export interface GetUserID_DTO {
+    id: number;
+    name: string;
+    email: string;
+    carrito: string[];
+    productos: string[];
+    precioTotal: number;
+}
+```
+
+## 4. Modificar usuario
+
+**Descripción**: Modifica la información de un usuario . <br>
+**Ruta**: `src/interfaces/UpdateUsuarioDTO.ts` <br>
+**Url**: https://github.com/bootcamp-uchile-2024/grupo-3-frontend/tree/main/src/interfaces<br>
+
+### RequestDTO
+
+```typescript
+export interface UpdateUsuarioDTO {
+    name: string;
+    password: string;
+    email: string;   
+}
+```
+
+## 5. Eliminar usuario 
+
+**Descripción**: Elimina un usuario por ID . <br>
+**Ruta**: `src/interfaces/DeleteUserDTO.ts` <br>
+**Url**: https://github.com/bootcamp-uchile-2024/grupo-3-frontend/tree/main/src/interfaces<br>
+
+### RequestDTO
+
+```typescript
+export interface DeleteUserDTO {
+    id: number;
+}
+```
+
+## Modulo Carro de compra
+
+## 1. Crear Carro de compra
+
+**Descripción**: Recibe datos para crear un carro de compra. <br>
+**Ruta**: `src/interfaces/CreateCarroCompraDTO.ts` <br>
+**Url**: https://github.com/bootcamp-uchile-2024/grupo-3-frontend/tree/main/src/interfaces<br>
+
+### RequestDTO
+
+```typescript
+export interface CreateCarroCompraDTO {
+    id: number;
+    cantidad: number;
+    producto: Producto;
+}
+```
+## 2. Obtener todos los Carros de compra
+
+**Descripción**: Entrega todos los carros de compra. <br>
+**Ruta**: `src/interfaces/GetAllCarroDTO.ts` <br>
+**Url**: https://github.com/bootcamp-uchile-2024/grupo-3-frontend/tree/main/src/interfaces<br>
+
+### RequestDTO
+
+```typescript
+export interface GetAllCarroDTO {
+    carros: CreateCarroCompraDTO[];
+}
+```
+## 3. Obtener Carro de compra por ID
+
+**Descripción**: Entrega un carros de compra por ID. <br>
+**Ruta**: `src/interfaces/GetCarroID_DTO.ts` <br>
+**Url**: https://github.com/bootcamp-uchile-2024/grupo-3-frontend/tree/main/src/interfaces<br>
+
+### RequestDTO
+
+```typescript
+export interface GetCarroID_DTO {
+    carrito: CarroDTO;
+}
+```
+
+## 4. Eliminar Carro de compra 
+
+**Descripción**: Elimina un carro de compra. <br>
+**Ruta**: `src/interfaces/DeleteCarroDTO.ts` <br>
+**Url**: https://github.com/bootcamp-uchile-2024/grupo-3-frontend/tree/main/src/interfaces<br>
+
+### RequestDTO
+
+```typescript
+export interface DeleteCarroDTO {
+    id: number; 
+}
+```
+
+
+
+
+
+
+
+
+
+
+

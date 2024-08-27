@@ -1,4 +1,4 @@
-interface OutputUserDTO {
+export interface OutputUserDTO {
     name: string;
     email: string;
     carrito: [string];
@@ -8,3 +8,4 @@ interface OutputUserDTO {
     precioTotal: number;
     pedido: Pedido;
     }
+

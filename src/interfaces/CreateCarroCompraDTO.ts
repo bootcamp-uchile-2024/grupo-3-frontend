@@ -1,6 +1,6 @@
-import { Producto } from ''; // Falta la ruta del archivo Producto
+import { Producto } from ''; // Falta por definir la ruta del archivo Producto
 
-interface CreateCarroCompraDTO {
+export interface CreateCarroCompraDTO {
     id: number;
     cantidad: number;
     producto: Producto;
