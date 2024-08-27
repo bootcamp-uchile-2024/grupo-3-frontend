@@ -1,4 +1,4 @@
-//DTO para la salida de productos 
+// DTO para la salida de productos
 export interface ProductoSalidaDTO {
     id: number;
     nombre: string;
@@ -13,21 +13,21 @@ export interface ProductoSalidaDTO {
     tipoRiego: string; 
     petFriendly: boolean;
     color: string;
-  }
+}
 
-//DTO para la salida de un conjunto de productos 
-export interface ObtenerProductoDTO {
+// DTO para la salida de un conjunto de productos
+export interface ObtenerProductosResponseDTO {
     total: number;
     productos: ProductoSalidaDTO[];
 }
 
-//DTO para obtener producto por ID
-export interface ObtenerProductoIdDTO {
+// DTO para obtener producto por ID
+export interface ObtenerProductoIdResponseDTO {
     producto: ProductoSalidaDTO | null;
 }
 
-//DTO para obtener producto por filtros
-export interface ObtenerProductoFiltroDTO {
+// DTO para obtener productos por filtros
+export interface ObtenerProductosFiltroResponseDTO {
     total: number;
     productos: ProductoSalidaDTO[];
 }
