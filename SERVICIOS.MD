@@ -38,8 +38,7 @@ export interface ObtenerProductosResponseDTO {
 ```typescript
 interface ObtenerProductosFiltroRequestDTO {
   filtroNombre?: string;
-  filtroPrecioMin?: number;
-  filtroPrecioMax?: number;
+  filtroFamilia?: string;
   filtroFotoPeriodo?: string;
   filtroFotoRiego?: string;
   filtroPetFriendly?: boolean;
@@ -283,29 +282,6 @@ interface ProductosDTO {
 }
 ```
 
-## 4. Obtener los productos por tips.
-
-**Descripción**: Obtiene una lista con los productos de los tips. <br>
-**Ruta**: `src/interfaces/CatalogoRequestDTO.ts` <br>
-**Ruta**: `src/interfaces/CatalogoResponseDTO.ts` <br>
-**Url**: https://github.com/bootcamp-uchile-2024/grupo-3-frontend/tree/main/src/interfaces<br>
-
-### RequestDTO
-
-```typescript
-interface ObtenerProductosPorTipsRequestDTO {}
-```
-
-### ResponseDTO
-
-```typescript
-interface ProductosDTO {
-  id: number;
-  nombre: string;
-  precio: number;
-  cantidad: number;
-}
-```
 ## Modulo Usuarios
 
 ## 1. Crear Usuario

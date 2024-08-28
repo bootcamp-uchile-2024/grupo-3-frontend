@@ -8,7 +8,7 @@ export interface ProductoSalidaDTO {
     cantidad: number; 
     unidadesVendidas: number;
     puntuacion: number;
-    especie: string;
+    familia: string;
     fotoPeriodo: string;
     tipoRiego: string; 
     petFriendly: boolean;
