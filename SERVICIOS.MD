@@ -331,6 +331,8 @@ export interface CreateUsuarioDTO {
 ### RequestDTO
 
 ```typescript
+import { CreateUsuarioDTO } from './CreateUsuarioDTO'; 
+
 export interface GetUsersDTO {
     usuarios: CreateUsuarioDTO[];
 }
@@ -424,8 +426,10 @@ export interface GetAllCarroDTO {
 ### RequestDTO
 
 ```typescript
+import { UpdateCarroCompraDTO } from './UpdateCarroCompraDTO'; 
+
 export interface GetCarroID_DTO {
-    carrito: CarroDTO;
+    carrito: UpdateCarroCompraDTO;
 }
 ```
 
