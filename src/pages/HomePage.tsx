@@ -1,21 +1,8 @@
-import React from 'react'
-import Header from '../components/Header'
-import Banner from '../components/Banner'
-import Products from '../components/Products'
-import Reviews from '../components/Reviews'
-import PlantCareTips from '../components/PlantCareTips'
-import Footer from '../components/Footer'
+import React from 'react';
+import MainLayout from '../layouts/MainLayout';
 
-
-export default function MainLayout() {
+export default function HomePage() {
   return (
-    <>
-        <Header />
-        <Banner />
-        <Products />
-        <Reviews />
-        <PlantCareTips />
-        <Footer />
-    </>
-  )
+    <MainLayout />
+  );
 }

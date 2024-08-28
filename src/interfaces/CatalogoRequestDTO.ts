@@ -15,8 +15,3 @@ export interface ObtenerProductosMasVendidosRequestDTO {
 export interface ObtenerProductosRecomendadosRequestDTO {
      // Aquí podemos agregar propiedades.
 }
-
-// DTO para la solicitud de productos por tips
-export interface ObtenerProductosPorTipsRequestDTO {
-     // Aquí podemos agregar propiedades.
-}

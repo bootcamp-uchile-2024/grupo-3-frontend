@@ -6,8 +6,7 @@ export interface ObtenerProductoIdRequestDTO {
 // DTO para solicitar productos con filtros
 export interface ObtenerProductosFiltroRequestDTO {
     filtroNombre?: string;
-    filtroPrecioMin?: number;
-    filtroPrecioMax?: number;
+    filtroFamilia?: string;
     filtroFotoPeriodo?: string;
     filtroFotoRiego?: string;
     filtroPetFriendly?: boolean;
