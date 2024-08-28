@@ -1,6 +1,6 @@
 # Servicios
 
-## Modulo Busqueda de Productos
+## Módulo Búsqueda de Productos
 
 ## 1. Obtener Todos los Productos
 
@@ -282,6 +282,29 @@ interface ProductosDTO {
 }
 ```
 
+## 4. Obtener los productos por tips.
+
+**Descripción**: Obtiene una lista con los productos de los tips. <br>
+**Ruta**: `src/interfaces/CatalogoRequestDTO.ts` <br>
+**Ruta**: `src/interfaces/CatalogoResponseDTO.ts` <br>
+**Url**: https://github.com/bootcamp-uchile-2024/grupo-3-frontend/tree/main/src/interfaces<br>
+
+### RequestDTO
+
+```typescript
+interface ObtenerProductosPorTipsRequestDTO {}
+```
+
+### ResponseDTO
+
+```typescript
+interface ProductosDTO {
+  id: number;
+  nombre: string;
+  precio: number;
+  cantidad: number;
+}
+```
 ## Modulo Usuarios
 
 ## 1. Crear Usuario
@@ -362,7 +385,7 @@ export interface DeleteUserDTO {
 }
 ```
 
-## Modulo Carro de compra
+## Módulo Carro de compra
 
 ## 1. Crear Carro de compra
 
@@ -417,6 +440,22 @@ export interface GetCarroID_DTO {
 ```typescript
 export interface DeleteCarroDTO {
     id: number; 
+}
+```
+
+## 5. Actualizar Carro de compra
+
+**Descripción**: Actualización de un carrito de compras para agregar o quitar productos <br>
+**Ruta**: `src/interfaces/UpdateCarroCompraDTO.ts` <br>
+**Url**: https://github.com/bootcamp-uchile-2024/grupo-3-frontend/tree/main/src/interfaces<br>
+
+### RequestDTO
+
+```typescript
+export interface UpdateCarroCompraDTO {
+    id: number; 
+    agregarProductos?: string[]; 
+    quitarProductos?: string[]; 
 }
 ```
 
