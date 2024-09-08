@@ -6,10 +6,10 @@ const Header: React.FC = () => {
   return (
     <header>
         <div id="logo">
-            <a href="index.html">
-                <div className="circle"></div>
-                <h1>Cotiledón</h1>
-            </a>
+        <Link to="/">
+          <div className="circle"></div>
+          <h1>Cotiledón</h1>
+        </Link>
         </div>
         <Nav id="navbar-top" />
         <div id="search-form">
