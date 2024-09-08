@@ -12,7 +12,7 @@ interface NavProps {
             <li>
               <Link to="/">Inicio</Link>
             </li>
-            <li><Link to="/catalog">Catalogo</Link></li>
+            <li><Link to="/catalog">Catálogo</Link></li>
             <li><Link to="/about">Quienes somos</Link></li>
             <li><Link to="/contact">Contacto</Link></li>
         </ul>
