@@ -1,9 +1,12 @@
+
+
 import React from 'react';
-import MainLayout from '../layouts/MainLayout';
 
 export default function HomePage() {
   return (
-    <MainLayout />
+    <div>
+      <h1>Bienvenido a la Página de Inicio</h1>
+      {/* Otros elementos específicos de la página de inicio */}
+    </div>
   );
 }
-
