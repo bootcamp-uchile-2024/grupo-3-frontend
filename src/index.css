@@ -327,3 +327,102 @@ i.fas.fa-search {
 .header-left-sections{
   text-align: left!important;
 }
+
+
+/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
+/* Estilo general para el contenedor del catálogo */
+.catalog-container {
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+/* Título del catálogo */
+.catalog-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #333;
+  text-align: center;
+}
+
+/* Contenedor de la cuadrícula de productos */
+.products-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px; /* Espacio entre tarjetas */
+  justify-content: center;
+}
+
+/* Estilo para cada tarjeta de producto */
+.product-card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 300px; /* Ancho fijo para las tarjetas */
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  margin-bottom: 20px; /* Espacio debajo de cada tarjeta */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Distribuye el contenido verticalmente */
+}
+
+/* Efecto de hover para las tarjetas */
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo para la imagen del producto */
+.product-image {
+  width: 100%;
+  height: 200px; /* Altura fija para las imágenes */
+  object-fit: cover; /* Asegura que la imagen cubra el área sin distorsión */
+  border-bottom: 1px solid #ddd;
+  display: block; /* Asegura que la imagen sea un bloque y se ajuste al ancho del contenedor */
+}
+
+/* Estilo para el título del producto */
+.product-card h3 {
+  font-size: 1.5rem;
+  margin: 10px;
+  color: #333;
+}
+
+/* Estilo para los párrafos dentro de la tarjeta */
+.product-card p {
+  margin: 10px;
+  color: #666;
+}
+
+/* Estilo para el precio del producto */
+.product-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #e60023;
+}
+
+/* Estilo para la calificación del producto */
+.product-rating {
+  font-size: 1rem;
+  color: #ff9900;
+}
+
+/* Estilo para el botón de compra */
+.product-card button {
+  background-color: #353535;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin: 10px;
+  transition: background-color 0.3s;
+  align-self: center; /* Centra el botón horizontalmente */
+}
+
+/* Efecto de hover para el botón */
+.product-card button:hover {
+  background-color: #0056b3;
+}
