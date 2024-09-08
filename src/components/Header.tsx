@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import React from 'react';
+import Nav from './Nav';
 
 const Header: React.FC = () => {
   return (
@@ -10,18 +11,7 @@ const Header: React.FC = () => {
                 <h1>Cotiledón</h1>
             </a>
         </div>
- 
-        <nav id="navbar-top">
-        <ul>
-            <li>
-              <Link to="/">Inicio</Link>
-            </li>
-            <li><Link to="/catalog">Catalogo</Link></li>
-            <li><Link to="/about">Quienes somos</Link></li>
-            <li><Link to="/contact">Contacto</Link></li>
-        </ul>
-        </nav>
-
+        <Nav id="navbar-top" />
         <div id="search-form">
             <input
               type="text" 
