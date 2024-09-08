@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import React from 'react';
 
 const Header: React.FC = () => {
@@ -11,11 +12,14 @@ const Header: React.FC = () => {
         </div>
  
         <nav id="navbar-top">
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Plantas</a></li>
-                <li><a href="#">Tienda</a></li>
-            </ul>
+        <ul>
+            <li>
+              <Link to="/">Inicio</Link>
+            </li>
+            <li><Link to="/catalog">Catalogo</Link></li>
+            <li><Link to="/about">Quienes somos</Link></li>
+            <li><Link to="/contact">Contacto</Link></li>
+        </ul>
         </nav>
 
         <div id="search-form">
