@@ -1,9 +1,13 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-export default function Nav() {
-  return (
-    <nav>
+interface NavProps {
+  id?: string; // Prop opcional para el ID
+  }
+
+  const Nav: React.FC<NavProps> = ({ id }) => {
+    return (
+      <nav id={id}>
         <ul>
             <li>
               <Link to="/">Inicio</Link>
@@ -15,3 +19,5 @@ export default function Nav() {
     </nav>
   )
 }
+
+export default Nav;
