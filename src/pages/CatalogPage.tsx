@@ -38,13 +38,15 @@ const CatalogPage: React.FC = () => {
             <img src={product.image} alt={product.title} className="product-image" />
             <h3>{product.title}</h3>
             <p>{product.description}</p>
-            <p>Precio: ${product.price}</p>
-            <p>Rating: {product.rating.rate} ({product.rating.count} opiniones)</p>
+            <p className="product-price">Precio: ${product.price}</p>
+            <p className="product-rating">Rating: {product.rating.rate} ({product.rating.count} opiniones)</p>
+            <button>Comprar</button>
           </div>
         ))}
       </div>
     </div>
   );
+
 };
 
 export default CatalogPage;
