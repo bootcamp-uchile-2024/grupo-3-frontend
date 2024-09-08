@@ -46,6 +46,7 @@ const CatalogPage: React.FC = () => {
       </div>
     </div>
   );
-}  
+
+};
 
 export default CatalogPage;

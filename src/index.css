@@ -328,8 +328,8 @@ i.fas.fa-search {
   text-align: left!important;
 }
 
-
 /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
+
 /* Estilo general para el contenedor del catálogo */
 .catalog-container {
   padding: 20px;
@@ -425,4 +425,26 @@ i.fas.fa-search {
 /* Efecto de hover para el botón */
 .product-card button:hover {
   background-color: #0056b3;
+  
+.catalog-container {
+  padding: 20px;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+
+.product-image {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 10px;
 }
