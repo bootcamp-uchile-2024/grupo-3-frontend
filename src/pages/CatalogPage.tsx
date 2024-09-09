@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { IProduct } from '../interfaces/IProduct';
+import { Link } from 'react-router-dom';
 
 // Función para truncar el texto a un número fijo de palabras
 const truncateText = (text: string, maxWords: number) => {
@@ -52,7 +53,7 @@ const CatalogPage: React.FC = () => {
             <p className="product-rating">
               Rating: {product.rating.rate} ({product.rating.count} opiniones)
             </p>
-            <button>Ver Detalle</button>
+            <Link to={`/catalog/product/${product.id}`}><button type='button'>Ver detalle</button></Link>
           </div>
         ))}
       </div>

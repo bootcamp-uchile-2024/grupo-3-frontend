@@ -428,3 +428,72 @@ i.fas.fa-search {
   color: #ffffff; 
   cursor: pointer; 
 }
+
+/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
+
+/* Estilo para el contenedor principal del detalle del producto */
+.product-detail-container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 30px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+/* Estilo para el título del producto */
+.product-detail-container h1 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #333;
+  text-align: center;
+}
+
+/* Estilo para el contenedor que incluye la imagen y la información del producto */
+.product-detail-container2 {
+  display: flex;
+  font-size: 3rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 30px;
+}
+
+/* Estilo para la imagen del producto */
+.product-detail-container2 img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Estilo para la información del producto */
+.product-info {
+  flex: 1;
+}
+
+.product-info p {
+  margin: 10px 0;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.product-info p:first-of-type {
+  font-weight: bold;
+  font-size: large;
+}
+
+.product-info button {
+  background-color: #3b3b3b; 
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  transition: background-color 0.3s, color 0.3s; 
+}
+  
+/* Efecto de hover para el botón */
+.product-info button:hover {
+  background-color: #565656; 
+  color: #ffffff; 
+  cursor: pointer;
+}

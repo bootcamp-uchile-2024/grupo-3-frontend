@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
                     <input type="email" placeholder="Suscribirse" />
                     <button type="submit">Suscribirse</button>
                 </li>
-                <li className="e-mail"><a href="mailto:cotiledon@gmail.com">cotiledon@gmail.com</a></li>
+                <li className="e-mail"><a href="mailto:cotiledon@gmail.com">plantai@gmail.com</a></li>
             </ul>
         </div>
     </footer>
