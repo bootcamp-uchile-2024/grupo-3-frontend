@@ -435,7 +435,7 @@ i.fas.fa-search {
 .product-detail-container {
   max-width: 1200px;
   margin: 30px auto;
-  padding: 30px;
+  padding: 60px;
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #f9f9f9;
@@ -489,10 +489,34 @@ i.fas.fa-search {
   border-radius: 5px;
   font-size: 1.2rem;
   transition: background-color 0.3s, color 0.3s; 
+  width: 25em;
 }
   
 /* Efecto de hover para el botón */
 .product-info button:hover {
+  background-color: #565656; 
+  color: #ffffff; 
+  cursor: pointer;
+}
+
+/*Botón para volver a catálogo en detalle del producto*/
+
+.back-to-catalog-button {
+  position: absolute;
+  top: 130px;
+  padding-bottom: 10px;
+  background-color: #3b3b3b;
+  color: white;
+  padding: 10px 10px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background-color 0.3s, color 0.3s;
+  
+}
+
+.back-to-catalog-button:hover {
   background-color: #565656; 
   color: #ffffff; 
   cursor: pointer;

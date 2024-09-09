@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { IProduct } from '../interfaces/IProduct';
+import { Link, useParams } from 'react-router-dom';
+import { ProductosdeCatalogo } from '../interfaces/ProductosdeCatalogo';
 import Products from '../components/Products';
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<IProduct | null>(null);
+  const [product, setProduct] = useState<ProductosdeCatalogo | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // Estado para el loading
   const [error, setError] = useState<string | null>(null); // Estado para errores
 
@@ -14,7 +14,7 @@ export default function ProductDetailPage() {
       try {
         if (!id) return;
 
-        const response = await fetch(`https://fakestoreapi.com/products/${id}`);
+        const response = await fetch(`/api/productos/${id}`);
         if (!response.ok) {
           throw new Error('No pudimos obtener el producto');
         }
@@ -36,18 +36,26 @@ export default function ProductDetailPage() {
 
   return (
     <> <div className="product-detail-container">
+       <Link to="/catalog" className="back-to-catalog-button">Regresar a catálogo</Link>
+       <br />
       {product && (
         <div className="product-detail-container2">
           <img
-            src={`https://placehold.co/700?text=${encodeURIComponent(product.title)}&font=roboto`}
-            alt={product.title}
+            src={`https://placehold.co/700?text=${encodeURIComponent(product.nombre)}&font=roboto`}
+            alt={product.nombre}
           />
           <div className="product-info">
-            <h1>{product?.title}</h1>
-            <p>Precio: ${product.price}</p>
-            <p>Descripción del producto: {product.description}</p>
-            <p>Categoría del producto: {product.category}</p>
-            <p>Rating: {product.rating.rate} ({product.rating.count} opiniones)</p>
+            <h1>{product?.nombre}</h1>
+            <p>Precio: ${product.precio}</p>
+            <p>Descripción del producto: {product.descripcion}</p>
+            <p>Cantidad: {product.cantidad}</p>
+            <p>Unidades vendidas: {product.unidadesVendidas}</p>
+            <p>Puntuación: {product.puntuacion}</p>
+            <p>Familia: {product.familia}</p>
+            <p>Foto-periodo: {product.fotoperiodo}</p>
+            <p>Tipo de Riego: {product.tipoRiego}</p>
+            <p>Pet Friendly: {product.petFriendly? 'Si' : 'No'}</p>
+            <p>Color: {product.color}</p>
             <br />
             <button type="button">Comprar</button>
             <br />
