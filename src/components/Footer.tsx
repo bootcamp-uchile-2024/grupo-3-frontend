@@ -6,9 +6,9 @@ const Footer: React.FC = () => {
         <nav> 
             <div className="nav-bottom">
                 <ul>
-                    <li><a href="#">Acerca de nosotros</a></li>
+                    <li><a href="#">Acerca de Nosotros</a></li>
                     <li><a href="#">Contacto</a></li>
-                    <li><a href="#">Términos y condiciones</a></li>
+                    <li><a href="#">Términos y Condiciones</a></li>
                 </ul>
             </div>
         </nav>
