@@ -8,7 +8,7 @@ const Header: React.FC = () => {
         <div id="logo">
         <Link to="/">
           <div className="circle"></div>
-          <h1>Cotiledón</h1>
+          <h1>Plantai</h1>
         </Link>
         </div>
         <Nav id="navbar-top" />

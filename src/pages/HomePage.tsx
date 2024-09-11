@@ -8,8 +8,6 @@ export default function HomePage() {
   return (
     <div>
        <Banner />
-      <h2>Bienvenido a la Página de Inicio</h2>
-      {/* Otros elementos específicos de la página de inicio */}
       <Products />
       <PlantCareTips />
     </div>
