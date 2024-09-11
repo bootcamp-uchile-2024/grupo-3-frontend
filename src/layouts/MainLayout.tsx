@@ -2,7 +2,6 @@ import React from 'react'
 import Header from '../components/Header'
 import '../index.css'
 import { Outlet } from 'react-router-dom'
-import PlantCareTips from '../components/PlantCareTips'
 import Footer from '../components/Footer'
 
 export default function MainLayout() {
