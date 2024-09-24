@@ -12,7 +12,6 @@ import UserCreationForm from './pages/UserCreateForm';
 
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <>
