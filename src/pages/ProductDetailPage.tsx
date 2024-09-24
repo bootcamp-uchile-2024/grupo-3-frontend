@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ProductosdeCatalogo } from '../interfaces/ProductosdeCatalogo';
 import Products from '../components/Products';

@@ -6,6 +6,6 @@ export interface OutputUserDTO {
     idUsuario: number;
     productos: [string];
     precioTotal: number;
-    pedido: Pedido;
+    pedido: string;
     }
 

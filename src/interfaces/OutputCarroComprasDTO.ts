@@ -1,4 +1,4 @@
-interface OutputCarroComprasDTO {
+export interface OutputCarroComprasDTO {
     id: number;
     idUsuario: number;
     cantidad: number;
