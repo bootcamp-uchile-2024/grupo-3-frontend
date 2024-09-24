@@ -29,12 +29,12 @@
   }
   
   .user-creation-form input {
-    width: 100%; /* Mantenerlo al 100% */
+    width: 100%; 
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Asegura que el padding se incluya en el ancho total */
-    font-size: 1rem; /* Ajusta el tamaño de la fuente si es necesario */
+    box-sizing: border-box; 
+    font-size: 1rem; 
   }
   
   .user-creation-form button {

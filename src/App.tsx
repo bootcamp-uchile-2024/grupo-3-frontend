@@ -23,8 +23,8 @@ function App() {
             <Route path="catalog/product/:id" element={<ProductDetailPage/>} />
             <Route path="about" element={<AboutPage/>} />
             <Route path="contact" element={<ContactPage/>} />
-            <Route path="login" element={<LoginForm />} />  {/* Nueva ruta para login */}
-            <Route path="create-user" element={<UserCreationForm />} /> {/* Ruta para crear cuenta */}
+            <Route path="login" element={<LoginForm />} /> 
+            <Route path="create-user" element={<UserCreationForm />} /> 
           </Route>
         </Routes>
       </Router>

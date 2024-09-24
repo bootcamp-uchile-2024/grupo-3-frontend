@@ -15,7 +15,6 @@ const LoginForm: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí podrías manejar la lógica de autenticación
     console.log('Datos de inicio de sesión:', formData);
   };
 
