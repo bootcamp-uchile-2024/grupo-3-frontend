@@ -7,6 +7,8 @@ import CatalogPage from './pages/CatalogPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import LoginForm from './pages/LoginForm';
+import UserCreationForm from './pages/UserCreateForm';
 
 
 function App() {
@@ -22,6 +24,8 @@ function App() {
             <Route path="catalog/product/:id" element={<ProductDetailPage/>} />
             <Route path="about" element={<AboutPage/>} />
             <Route path="contact" element={<ContactPage/>} />
+            <Route path="login" element={<LoginForm />} />  {/* Nueva ruta para login */}
+            <Route path="create-user" element={<UserCreationForm />} /> {/* Ruta para crear cuenta */}
           </Route>
         </Routes>
       </Router>
