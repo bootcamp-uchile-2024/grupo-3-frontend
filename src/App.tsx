@@ -8,7 +8,6 @@ import CatalogPage from './pages/CatalogPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import ProductDetailPage from './pages/ProductDetailPage';
-import Sidebar from './components/Sidebar';
 
 
 function App() {
@@ -23,7 +22,6 @@ function App() {
             <Route path="catalog/product/:id" element={<ProductDetailPage/>} />
             <Route path="about" element={<AboutPage/>} />
             <Route path="contact" element={<ContactPage/>} />
-            <Route path="/dashboard" element={<Sidebar />} />
           </Route>
         </Routes>
       </Router>

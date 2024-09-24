@@ -22,7 +22,7 @@ const Header: React.FC = () => {
 
         <div id="login">
             <ul>
-                <li><a href="#">Login</a></li>
+            <li><Link to="/login">Login</Link></li>
             </ul>
         </div>
     </header>
