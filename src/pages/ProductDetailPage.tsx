@@ -36,7 +36,7 @@ export default function ProductDetailPage() {
 
   return (
     <> <div className="product-detail-container">
-       <Link to="/catalog" className="back-to-catalog-button">Regresar a catálogo</Link>
+       <Link to="/catalogo" className="back-to-catalog-button">Regresar a catálogo</Link>
        <br />
       {product && (
         <div className="product-detail-container2">
