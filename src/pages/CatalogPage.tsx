@@ -50,7 +50,7 @@ const CatalogPage: React.FC = () => {
             <h3>{product.nombre}</h3>
             <p>{truncateText(product.descripcion, 20)}</p> {/* Limitar a 20 palabras */}
             <p className="product-price">Precio: ${product.precio}</p>
-            <Link to={`/catalog/product/${product.id}`}><button type='button'>Ver detalle</button></Link>
+            <Link to={`/catalogo/producto/${product.id}`}><button type='button'>Ver detalle</button></Link>
           </div>
         ))}
       </div>

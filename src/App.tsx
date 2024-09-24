@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import './index.css'
+import './App.css'
 import MainLayout from './layouts/MainLayout'
 import HomePage from './pages/HomePage'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -18,8 +17,8 @@ function App() {
         <Routes>
           <Route path="/" element={<MainLayout /> } >
             <Route index element={<HomePage/>} />
-            <Route path="catalog" element={<CatalogPage/>} />
-            <Route path="catalog/product/:id" element={<ProductDetailPage/>} />
+            <Route path="catalogo" element={<CatalogPage/>} />
+            <Route path="catalogo/producto/:id" element={<ProductDetailPage/>} />
             <Route path="about" element={<AboutPage/>} />
             <Route path="contact" element={<ContactPage/>} />
           </Route>

@@ -1,4 +1,3 @@
-import React from 'react';
 import '../index.css'
 import Banner from '../components/Banner'
 import PlantCareTips from '../components/PlantCareTips';
