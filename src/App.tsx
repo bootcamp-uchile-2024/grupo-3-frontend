@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './App.css'
 import MainLayout from './layouts/MainLayout'
 import HomePage from './pages/HomePage'
@@ -7,6 +6,9 @@ import CatalogPage from './pages/CatalogPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import LoginForm from './pages/LoginForm';
+import UserCreationForm from './pages/UserCreateForm';
+import CrearProducto from './pages/CreateProductForm';
 
 
 function App() {
@@ -21,6 +23,9 @@ function App() {
             <Route path="catalogo/producto/:id" element={<ProductDetailPage/>} />
             <Route path="about" element={<AboutPage/>} />
             <Route path="contact" element={<ContactPage/>} />
+            <Route path="login" element={<LoginForm />} /> 
+            <Route path="create-user" element={<UserCreationForm />} /> 
+            <Route path="crearProducto" element={<CrearProducto/>}/>
           </Route>
         </Routes>
       </Router>

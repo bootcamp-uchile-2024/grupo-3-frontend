@@ -15,6 +15,7 @@ interface NavProps {
             <li><Link to="/catalogo">Catálogo</Link></li>
             <li><Link to="/about">Quienes somos</Link></li>
             <li><Link to="/contact">Contacto</Link></li>
+            <li><Link to="/crearProducto">Crear Producto</Link></li>
         </ul>
     </nav>
   )
