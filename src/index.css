@@ -95,7 +95,7 @@ nav#navbar-top {
   color: black;
 }
 
-input[type="text"] {
+.search-form-input {
   border: 1px solid #cccccc;
   border-radius: 16px;
   padding: 8px;

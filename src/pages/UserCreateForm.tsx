@@ -71,47 +71,51 @@ const UserCreationForm: React.FC = () => {
     <div className="user-creation-container">
       <form onSubmit={handleSubmit} className="user-creation-form">
         <h2>Crear Usuario</h2>
-        
+
         <div>
           <label htmlFor="username">Nombre de usuario:</label>
-          <input 
-            type="text" 
-            name="username" 
-            value={formData.username} 
-            onChange={handleInputChange} 
+          <input
+            className='user-creation-form-input'
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleInputChange}
           />
           {errors.username && <p className="error">{errors.username}</p>}
         </div>
-        
+
         <div>
           <label htmlFor="email">Correo electrónico:</label>
-          <input 
-            type="email" 
-            name="email" 
-            value={formData.email} 
-            onChange={handleInputChange} 
+          <input
+            className='user-creation-form-input'
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
           />
           {errors.email && <p className="error">{errors.email}</p>}
         </div>
-        
+
         <div>
           <label htmlFor="password">Contraseña:</label>
-          <input 
-            type="password" 
-            name="password" 
-            value={formData.password} 
-            onChange={handleInputChange} 
+          <input
+            className='user-creation-form-input'
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
           />
           {errors.password && <p className="error">{errors.password}</p>}
         </div>
 
         <div>
           <label htmlFor="confirmPassword">Confirmar contraseña:</label>
-          <input 
-            type="password" 
-            name="confirmPassword" 
-            value={formData.confirmPassword} 
-            onChange={handleInputChange} 
+          <input
+            className='user-creation-form-input'
+            type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleInputChange}
           />
           {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
         </div>
