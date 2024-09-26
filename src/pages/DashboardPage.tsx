@@ -1,23 +1,20 @@
-import '../index.css';
-import { Link } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import CrearProducto from './CreateProductForm';
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import CrearProducto from '../pages/CreateProductForm'; // Ajusta la ruta según sea necesario
+import Sidebar from '../components/Sidebar';
 
-
-export default function DashboardPage() {
+const DashboardPage: React.FC = () => {
   return (
-    <div>
-       <CrearProducto />
+    <div className="d-flex">
+      <Sidebar />
+      <div className="flex-grow-1 p-3">
+        <Routes>
+          <Route path="crearProducto" element={<CrearProducto />} />
+          {/* Otras rutas del dashboard pueden ir aquí */}
+        </Routes>
+      </div>
     </div>
   );
-}
+};
 
-
-
-
-
-
-
-
-
-
+export default DashboardPage;
