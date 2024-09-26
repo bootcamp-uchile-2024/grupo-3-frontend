@@ -38,7 +38,7 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
                 </li>
               )}
             </ul>
-            <div className="d-flex ms-auto"> {/* Alinea a la derecha */}
+            <div className="d-flex ms-auto">
               <form className="d-flex me-2" role="search">
                 <input 
                   className="form-control me-2" 
@@ -48,8 +48,13 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
                 />
                 <button className="btn btn-dark" type="submit">Buscar</button>
               </form>
+              {user ? (
+              <span className="navbar-text">Hola, {user.username}</span>
+              ) : (
               <Link className="btn btn-link" to="/login">Login</Link>
+              )}
             </div>
+
           </div>
         </div>
       </nav>
