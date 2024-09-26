@@ -85,7 +85,6 @@ const UserCreationForm: React.FC = () => {
       alert('¡Usuario creado exitosamente!');
       console.log('Usuario creado:', JSON.stringify(userData, null, 2));
 
-      // Limpiar los inputs del formulario
       setFormData({
         username: '',
         email: '',

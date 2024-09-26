@@ -1,12 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 interface HeaderProps {
   user: { username: string; role: string } | null;
+  onLogout: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ user }) => {
+const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
+  const navigate = useNavigate();
+
   return (
     <header>
       <nav className="navbar navbar-expand-lg bg-body-tertiary w-100">
@@ -49,12 +53,36 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
                 <button className="btn btn-dark" type="submit">Buscar</button>
               </form>
               {user ? (
-              <span className="navbar-text">Hola, {user.username}</span>
+                <div className="dropdown">
+                  <button 
+                    className="btn btn-link dropdown-toggle" 
+                    type="button" 
+                    id="userDropdown" 
+                    data-bs-toggle="dropdown" 
+                    aria-expanded="false">
+                    Hola, {user.username}
+                  </button>
+                  <ul className="dropdown-menu" aria-labelledby="userDropdown">
+                    <li><Link className="dropdown-item" to="/opcion1">Crear Producto</Link></li>
+                    <li><Link className="dropdown-item" to="/opcion2">Opción 2</Link></li>
+                    <li><Link className="dropdown-item" to="/opcion3">Opción 3</Link></li>
+                    <li>
+                      <Link 
+                        className="dropdown-item" 
+                        to="/" 
+                        onClick={() => {
+                          onLogout(); 
+                          navigate('/login');
+                        }}>
+                        Cerrar sesión
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
               ) : (
-              <Link className="btn btn-link" to="/login">Login</Link>
+                <Link className="btn btn-link" to="/login">Login</Link>
               )}
             </div>
-
           </div>
         </div>
       </nav>
@@ -63,3 +91,4 @@ const Header: React.FC<HeaderProps> = ({ user }) => {
 };
 
 export default Header;
+
