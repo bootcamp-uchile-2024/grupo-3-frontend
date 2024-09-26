@@ -95,9 +95,22 @@ const CrearProducto: React.FC = () => {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (validate()) {
-            console.log('Datos del formulario:', producto)
+            console.log('Datos del formulario:', producto);
+            alert ('Nuevo producto creado')
+            setProducto({
+                nombre: '',
+                precio: 0,
+                imagen: '',
+                descripcion: '',
+                cantidad: 0,
+                familia: '',
+                fotoperiodo: '',
+                tipoRiego: '',
+                petFriendly: false,
+                color: '',
+            });
         } else {
-            console.log('Error al completar el formulario');
+            alert('Error al completar el formulario');
         };
     };
 
@@ -114,7 +127,6 @@ const CrearProducto: React.FC = () => {
                             name="nombre"
                             value={producto.nombre}
                             onChange={handleChange}
-                            required
                         />
                         {errores.nombre && <p className='Create-product-container-inputs-error'>{errores.nombre}</p>}
                     </div>
@@ -127,8 +139,6 @@ const CrearProducto: React.FC = () => {
                             className='Create-product-container-inputs'
                             value={producto.precio}
                             onChange={handleChange}
-                            min={0}
-                            required
                         />
                         {errores.precio && <p className='Create-product-container-inputs-error'>{errores.precio}</p>}
                     </div>
@@ -141,7 +151,6 @@ const CrearProducto: React.FC = () => {
                             name="imagen"
                             value={producto.imagen}
                             onChange={handleChange}
-                            required
                         />
                         {errores.imagen && <p className='Create-product-container-inputs-error'>{errores.imagen}</p>}
                     </div>
@@ -155,7 +164,6 @@ const CrearProducto: React.FC = () => {
                             onChange={handleChange}
                             rows={5}
                             cols={40}
-                            required
                         />
                         {errores.descripcion && <p className='Create-product-container-inputs-error'>{errores.descripcion}</p>}
                     </div>
@@ -168,7 +176,6 @@ const CrearProducto: React.FC = () => {
                             className='Create-product-container-inputs'
                             onChange={handleChange}
                             value={producto.cantidad}
-                            required
                         />
                         {errores.cantidad && <p className='Create-product-container-inputs-error'>{errores.cantidad}</p>}
                     </div>
@@ -180,7 +187,6 @@ const CrearProducto: React.FC = () => {
                             className='Create-product-container-inputs'
                             onChange={handleChange}
                             value={producto.familia}
-                            required
                         >
                             <option value="">Selecciona una familia</option>
                             <option value="familia1">Familia1</option>
@@ -197,7 +203,6 @@ const CrearProducto: React.FC = () => {
                             className='Create-product-container-inputs'
                             onChange={handleChange}
                             value={producto.fotoperiodo}
-                            required
                         >
                             <option value="">Selecciona</option>
                             <option value="fotoperiodo1">Fotoperiodo1</option>
@@ -214,7 +219,6 @@ const CrearProducto: React.FC = () => {
                             className='Create-product-container-inputs'
                             onChange={handleChange}
                             value={producto.tipoRiego}
-                            required
                         >
                             <option value="">Selecciona</option>
                             <option value="tipoRiego1">tipoRiego1</option>
@@ -246,7 +250,6 @@ const CrearProducto: React.FC = () => {
                             className='Create-product-container-inputs'
                             onChange={handleChange}
                             value={producto.color}
-                            required
                         />
                         {errores.color && <p className='Create-product-container-inputs-error'>{errores.color}</p>}
                     </div>
