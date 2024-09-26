@@ -1,5 +1,5 @@
 import React from 'react';
-import '../dashboard.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 // Si tienes íconos SVG en archivos, puedes importarlos aquí, por ejemplo:
 // import { ReactComponent as BootstrapIcon } from './icons/bootstrap.svg';
 // import { ReactComponent as HomeIcon } from './icons/home.svg';
