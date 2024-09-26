@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import '../UserCreationForm.css'; // Asegúrate de tener este archivo CSS
+import '../UserCreationForm.css';
 
 const UserCreationForm: React.FC = () => {
   const [formData, setFormData] = useState({

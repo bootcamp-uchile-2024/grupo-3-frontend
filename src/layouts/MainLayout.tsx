@@ -1,16 +1,20 @@
-import Header from '../components/Header'
-import '../index.css'
-import { Outlet } from 'react-router-dom'
-import Footer from '../components/Footer'
+import Header from '../components/Header';
+import '../index.css';
+import { Outlet } from 'react-router-dom';
+import Footer from '../components/Footer';
 
-export default function MainLayout() {
+interface MainLayoutProps {
+  user: { username: string; role: string } | null;
+}
+
+export default function MainLayout({ user }: MainLayoutProps) {
   return (
     <>
-      <Header />
+      <Header user={user} />
       <main>
-            <Outlet />
+        <Outlet />
       </main>
       <Footer />
     </>
-  )
+  );
 }

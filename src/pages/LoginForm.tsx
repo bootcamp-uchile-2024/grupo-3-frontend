@@ -1,21 +1,60 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import '../LoginFormStyles.css';
 
-const LoginForm: React.FC = () => {
+interface LoginFormProps {
+  onLogin: (username: string, role: string) => void;
+}
+
+const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
+  const navigate = useNavigate();
+
+  // Lista de usuarios simulada -- Roles usuario y administrador
+  const users = [
+    { username: 'admin', password: 'admin123', role: 'admin' },
+    { username: 'user', password: 'user123', role: 'user' }
+  ];
+
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: ''
+  });
+
+  const [errors, setErrors] = useState({
+    usernameError: '',
+    passwordError: ''
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [`${name}Error`]: '' });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Datos de inicio de sesión:', formData);
+
+    // Buscar por nombre de usuario
+    const foundUser = users.find(user => user.username === formData.username);
+
+    // Validación
+    if (!foundUser) {
+      setErrors({ ...errors, usernameError: 'Nombre de usuario incorrecto' });
+      return;
+    }
+
+    // Validación de la contraseña
+    if (foundUser.password !== formData.password) {
+      setErrors({ ...errors, passwordError: 'Contraseña incorrecta' });
+      return;
+    }
+
+    // Alert
+    alert(`Iniciaste sesión como ${foundUser.role === 'admin' ? 'Admin' : 'User'}`);
+    onLogin(foundUser.username, foundUser.role);
+
+    // Redirigir
+    navigate('/');
   };
 
   return (
@@ -23,13 +62,14 @@ const LoginForm: React.FC = () => {
       <form onSubmit={handleSubmit} className="login-form">
         <h2>Iniciar Sesión</h2>
         <div>
-          <label htmlFor="email">Correo electrónico:</label>
+          <label htmlFor="username">Nombre de usuario:</label>
           <input 
-            type="email" 
-            name="email" 
-            value={formData.email} 
+            type="text" 
+            name="username" 
+            value={formData.username} 
             onChange={handleInputChange} 
           />
+          {errors.usernameError && <p style={{ color: 'red' }}>{errors.usernameError}</p>}
         </div>
         <div>
           <label htmlFor="password">Contraseña:</label>
@@ -39,17 +79,14 @@ const LoginForm: React.FC = () => {
             value={formData.password} 
             onChange={handleInputChange} 
           />
+          {errors.passwordError && <p style={{ color: 'red' }}>{errors.passwordError}</p>}
         </div>
         <button type="submit">Iniciar Sesión</button>
 
         <p>¿No tienes una cuenta? <Link to="/create-user">Crear una cuenta</Link></p>
-
       </form>
-
-      
     </div>
   );
 };
 
 export default LoginForm;
-
