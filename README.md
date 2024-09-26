@@ -1,4 +1,4 @@
-# PlantAI e-commerce B2C
+# PlantAI e-commerce
 
 # Arquitectura de datos Frontend
 
@@ -7,50 +7,63 @@
 - Vite
 - HTML 5
 - CSS 3
+- Bootstrap
 
-# Instalación y configuración
+# Instalación y Configuración
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 1. Clonar el repositorio
+- Abre una terminal en Visual Studio Code o tu editor de preferencia.
+- Clona el repositorio desde GitHub ejecutando el siguiente comando:
 
-## Expanding the ESLint configuration
+  ```bash
+  git clone https://github.com/bootcamp-uchile-2024/grupo-3-frontend.git
+- Verifica que todo se clonó correctamente, usando el comando:
+  ```bash
+  git status
+### 2. Navegar a la carpeta del proyecto
+- Verifica que te encuentras en la carpeta correcta. Si no es así, utiliza el comando:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+  ```bash
+  cd grupo-3-frontend
+### 3. Instalar las dependencias
+- En la terminal, instala las dependencias de Node.js utilizando:
 
-- Configure the top-level `parserOptions` property like this:
+  ```bash
+  npm install
+- Si al instalar genera un reporte de vulnerabilidades, intenta solucionarlo automáticamente ejecutando: 
+  ```bash
+  npm audit fix
+### 4. Instalar Bootstrap
+- Para incluir Bootstrap en el proyecto, ejecuta el siguiente comando en la terminal:
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ["./tsconfig.node.json", "./tsconfig.app.json"],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
+  ```bash
+  npm install bootstrap
+### 5. Traer los últimos cambios
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+- Para asegurarte de que estás trabajando con la versión más reciente, sigue estos pasos:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+#### 1. Verificar la rama actual
+- Asegúrate de estar en la rama correcta utilizando el siguiente comando:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules:
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+  ```bash
+  git branch
+- Esto mostrará una lista de las ramas existentes y marcará con un asterisco (*) la rama en la que estás actualmente.
+#### 2. Cambiar de rama (si es necesario)
+- Para cambiar de rama, usa el comando:
+  ```bash
+  git checkout nombre-de-la-rama
+#### 3. Traer los últimos cambios
+- Una vez que estés en la rama correcta, utiliza el siguiente comando para traer los últimos cambios del repositorio remoto:
+  ```bash
+  git pull origin nombre-de-la-rama
+### 6. Ejecutar el proyecto en desarrollo
+
+- Para visualizar el proyecto en modo desarrollo, utiliza:
+
+  ```bash
+  npm run dev
+### 7. Compilar el proyecto para producción
+- Para compilar el proyecto y preparar los archivos para producción, ejecuta:
+
+  ```bash
+  npm run build
