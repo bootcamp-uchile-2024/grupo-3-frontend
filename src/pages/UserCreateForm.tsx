@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import '../UserCreationForm.css';
 
+interface CreateUsuarioDTO {
+  name: string;
+  password: string;
+  email: string;
+}
+
 const UserCreationForm: React.FC = () => {
   const [formData, setFormData] = useState({
     username: '',
@@ -19,6 +25,13 @@ const UserCreationForm: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+
+    if (name === 'password' || name === 'confirmPassword') {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        confirmPassword: '', 
+      }));
+    }
   };
 
   const validate = () => {
@@ -63,7 +76,22 @@ const UserCreationForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      console.log('Datos del formulario:', formData);
+      const userData: CreateUsuarioDTO = {
+        name: formData.username,
+        email: formData.email,
+        password: formData.password,
+      };
+
+      alert('¡Usuario creado exitosamente!');
+      console.log('Usuario creado:', JSON.stringify(userData, null, 2));
+
+      // Limpiar los inputs del formulario
+      setFormData({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: ''
+      });
     }
   };
 
@@ -127,4 +155,3 @@ const UserCreationForm: React.FC = () => {
 };
 
 export default UserCreationForm;
-
