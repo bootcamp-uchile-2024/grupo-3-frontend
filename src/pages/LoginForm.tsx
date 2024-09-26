@@ -11,8 +11,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
   // Lista de usuarios simulada -- Roles usuario y administrador
   const users = [
-    { username: 'admin', password: 'admin123', role: 'admin' },
-    { username: 'user', password: 'user123', role: 'user' }
+    { username: 'administrador', password: 'administrador', role: 'admin' },
+    { username: 'usuario', password: 'usuario', role: 'user' }
   ];
 
   const [formData, setFormData] = useState({
