@@ -36,7 +36,7 @@
 - **Descripción**: Permite la creación de un nuevo usuario a través de un formulario que recopila los datos básicos necesarios. Se asegura de validar la información proporcionada y almacena los datos del usuario en la base de datos del sistema para futuras autenticaciones y uso dentro de la plataforma. <br>
 - **EndPoint consumido**: ninguno (por ahora) <br>
 - **Ruta local**: http://localhost:5173/create-user<br>
-- **Interface utilizada:** ninguna (por ahora)
+- **Interface utilizada:** CreateUsuarioDTO
 
 ## Lista de interfaces
 
@@ -85,11 +85,11 @@ interface CrearProductoData {
 }
 ```
 
-**Interface**: CreateUsuario
+**Interface**: CreateUsuarioDTO
 
 - **Descripción:** Permite la creación de cuentas de usuario.
 
-- **Ruta fichero DTO**: `src/interfaces/CreateUsuarioDTO.ts` <br>
+- **Ruta fichero DTO**: `src/interfaces/CreateUserDTO.ts` <br>
 
 ```typescript
 export interface CreateUsuarioDTO {
