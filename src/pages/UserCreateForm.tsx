@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import '../UserCreationForm.css';
 
-interface CreateUsuarioDTO {
+interface CreateUserDTO {
   name: string;
   password: string;
   email: string;
@@ -76,7 +76,7 @@ const UserCreationForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      const userData: CreateUsuarioDTO = {
+      const userData: CreateUserDTO = {
         name: formData.username,
         email: formData.email,
         password: formData.password,
