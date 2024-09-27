@@ -25,9 +25,10 @@ export const PrivateRoute = ({ children, roles }: PrivateRouteProps) => {
     if (auth && hasRole) {
         return <>{children}</>;
     }
+    localStorage.removeItem('user');
 
     // Si no está autenticado o no tiene el rol, muestra acceso denegado
     return (
-            <p>Acceso denegado</p>
+            <><p>Acceso denegado</p></>
     );
 }
