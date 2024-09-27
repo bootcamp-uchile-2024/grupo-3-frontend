@@ -72,6 +72,7 @@ const Nav: React.FC<NavProps> = ({ user, onLogout }) => {
                       className="dropdown-item" 
                       to="/" 
                       onClick={() => {
+                        alert('Has cerrado sesión.');
                         onLogout(); 
                         navigate('/login');
                       }}>

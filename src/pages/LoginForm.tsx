@@ -17,7 +17,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
   // Lista de usuarios simulada - Roles usuario y administrador
   const users = [
-    { username: 'administrador', password: 'administrador', roles: ['admin-1', 'user-1'] },
+    { username: 'administrador', password: 'administrador', 
+        roles: ['admin-1', 'user-1'] },
     { username: 'usuario', password: 'usuario', roles: ['user-1'] }
   ];
 
