@@ -64,7 +64,7 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
                       Hola, {user.username}
                     </button>
                     <ul className="dropdown-menu" aria-labelledby="userDropdown">
-                      <li><Link className="dropdown-item" to="/opcion1">Crear Producto</Link></li>
+                      <li><Link className="dropdown-item" to="/create-product">Crear Producto</Link></li> 
                       <li><Link className="dropdown-item" to="/opcion2">Opción 2</Link></li>
                       <li><Link className="dropdown-item" to="/opcion3">Opción 3</Link></li>
                       <li>
@@ -95,3 +95,4 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
 };
 
 export default Header;
+

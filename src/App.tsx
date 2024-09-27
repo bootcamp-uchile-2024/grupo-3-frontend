@@ -9,6 +9,7 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import LoginForm from './pages/LoginForm';
 import UserCreationForm from './pages/UserCreateForm';
 import DashboardPage from './pages/DashboardPage';
+import CrearProducto from './pages/CreateProductForm';
 import React, { useState } from 'react';
 
 function App() {
@@ -18,19 +19,24 @@ function App() {
     setUser({ username, role });
   };
 
+  const handleLogout = () => {
+    setUser(null); 
+  };
+
   return (
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<MainLayout user={user} />}>
+          <Route path="/" element={<MainLayout user={user} onLogout={handleLogout} />}>
             <Route index element={<HomePage />} />
             <Route path="catalogo" element={<CatalogPage />} />
             <Route path="catalogo/producto/:id" element={<ProductDetailPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="contact" element={<ContactPage />} />
-            <Route path="login" element={<LoginForm onLogin={handleLogin} />} /> 
+            <Route path="login" element={<LoginForm onLogin={handleLogin} />} />
             <Route path="dashboard" element={<DashboardPage />} />
-            <Route path="create-user" element={<UserCreationForm />} /> 
+            <Route path="create-user" element={<UserCreationForm />} />
+            <Route path="create-product" element={<CrearProducto />} />
           </Route>
         </Routes>
       </Router>
@@ -39,3 +45,4 @@ function App() {
 }
 
 export default App;
+
