@@ -7,15 +7,14 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 
 interface MainLayoutProps {
   user: { username: string; role: string } | null;
-  onLogout: () => void; // Añadimos onLogout como una prop obligatoria
+  onLogout: () => void; 
 }
 
 export default function MainLayout({ user, onLogout }: MainLayoutProps) {
   return (
     <>
-      <Header user={user} onLogout={onLogout} /> {/* Pasamos onLogout al Header */}
+      <Header user={user} onLogout={onLogout} /> 
       <main>
-        {/* Si el usuario es administrador, muestra el enlace a 'Crear Producto' */}
         {user && user.role === 'admin' && (
           <nav>
             <ul>
