@@ -18,7 +18,7 @@ const CatalogPage: React.FC = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('/api/catalogo');
+      const response = await fetch('https://clon-cotiledonbackend.onrender.com/catalogo');
       if (!response.ok) throw new Error('Error al cargar los productos');
       const data: ProductosdeCatalogo[] = await response.json();
       setProducts(data);
@@ -50,7 +50,7 @@ const CatalogPage: React.FC = () => {
             <h3>{product.nombre}</h3>
             <p>{truncateText(product.descripcion, 20)}</p> {/* Limitar a 20 palabras */}
             <p className="product-price">Precio: ${product.precio}</p>
-            <Link to={`/catalog/product/${product.id}`}><button type='button'>Ver detalle</button></Link>
+            <Link to={`/catalogo/producto/${product.id}`}><button type='button'>Ver detalle</button></Link>
           </div>
         ))}
       </div>

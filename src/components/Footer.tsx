@@ -21,9 +21,9 @@ const Footer: React.FC = () => {
         </div>
         <div className="nav-bottom">
             <ul>
-                <li className="subscribe">
-                    <input type="email" placeholder="Suscribirse" />
-                    <button type="submit">Suscribirse</button>
+                <li className="subscribe d-flex me-2">
+                    <input className="form-control me-2" type="email" placeholder="Suscribirse" />
+                    <button className="btn btn-dark" type="submit">Suscribirse</button>
                 </li>
                 <li className="e-mail"><a href="mailto:cotiledon@gmail.com">plantai@gmail.com</a></li>
             </ul>

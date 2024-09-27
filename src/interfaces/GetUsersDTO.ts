@@ -1,4 +1,4 @@
-import { CreateUsuarioDTO } from './CreateUsuarioDTO'; 
+import { CreateUsuarioDTO } from './CreateUserDTO'; 
 
 export interface GetUsersDTO {
     usuarios: CreateUsuarioDTO[];
