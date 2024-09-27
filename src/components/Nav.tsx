@@ -75,6 +75,7 @@ const Nav: React.FC<NavProps> = ({ user, onLogout }) => {
                         alert('Has cerrado sesión.');
                         onLogout(); 
                         navigate('/login');
+                        localStorage.removeItem('user')
                       }}>
                       Cerrar sesión
                     </Link>

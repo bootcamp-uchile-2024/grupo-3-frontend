@@ -6,11 +6,13 @@ interface LoginFormProps {
   onLogin: (username: string, role: string) => void;
 }
 
-interface ILogin {
+export interface ILogin {
   username: string;
   password: string;
   roles?: string[];
 }
+//Función para saber si está el user en local
+export const isAuth = () => localStorage.getItem('user') ? true : false;
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   const navigate = useNavigate();
@@ -58,7 +60,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     const datosUsuario = JSON.stringify(userResponse);
     localStorage.setItem('user', datosUsuario);
     return true;
-  };
+  } 
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
