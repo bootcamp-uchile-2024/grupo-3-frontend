@@ -19,18 +19,36 @@ const CrearProducto: React.FC = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
+        setProducto({...producto,[name]: value});
 
-        setProducto((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
-
-        // Limpiar error del campo modificado
+        // Aquí limpia el error del campo modificado
         setErrores((prev) => ({
             ...prev,
             [name]: '',
         }));
     };
+
+    //Funciones para transformar imagenes en strings
+
+    const handleFileUpload = async (event: React.ChangeEvent <HTMLInputElement>)=> {
+        const file = event.target.files![0];
+        const base64 = await convertirBase64(file);
+        setProducto({ ...producto, imagen: base64 });
+        setErrores((prev) => ({
+            ...prev,
+            imagen: '',
+        }));
+    };
+
+    const convertirBase64 = (file: File) => {
+        return new Promise <string>((resolve, reject)=> {
+            const fileReader = new FileReader();
+            fileReader.readAsDataURL(file);
+            fileReader.onload = () => resolve(fileReader.result as string);
+            fileReader.onerror = (error) => reject (error);
+        });
+    }
+    //Función para las validaciones del formulario 
 
     const validate = (): boolean => {
         const newErrors: { [key: string]: string } = {};
@@ -62,7 +80,7 @@ const CrearProducto: React.FC = () => {
             isValid = false;
         }
 
-        if (producto.cantidad <= 0) {
+        if (producto.cantidad <= 0 ) {
             newErrors.cantidad = 'La cantidad debe ser mayor que 0';
             isValid = false;
         }
@@ -96,7 +114,7 @@ const CrearProducto: React.FC = () => {
         e.preventDefault();
         if (validate()) {
             console.log('Datos del formulario:', producto);
-            alert ('Nuevo producto creado')
+            alert ('¡Felicidades! Nuevo producto creado')
             setProducto({
                 nombre: '',
                 precio: 0,
@@ -110,13 +128,13 @@ const CrearProducto: React.FC = () => {
                 color: '',
             });
         } else {
-            alert('Error al completar el formulario');
+            alert('Error al enviar el formulario, corrige los campos y vuelve a intentarlo');
         };
     };
 
     return (
         <div className="Create-product-container">
-            <form onSubmit={handleSubmit}>
+            <form>
                 <h2>Crear Producto </h2>
                 <div className='Create-product-container-divs'>
                     <div>
@@ -143,14 +161,14 @@ const CrearProducto: React.FC = () => {
                         {errores.precio && <p className='Create-product-container-inputs-error'>{errores.precio}</p>}
                     </div>
                     <div>
-                        <label htmlFor="imagen">Imagen (URL):</label>
+                        <label htmlFor="imagen">Imagen:</label>
                         <input
-                            type="url"
+                            type="file"
+                            accept="image/*"
                             id="imagen"
                             className='Create-product-container-inputs'
                             name="imagen"
-                            value={producto.imagen}
-                            onChange={handleChange}
+                            onChange={handleFileUpload}
                         />
                         {errores.imagen && <p className='Create-product-container-inputs-error'>{errores.imagen}</p>}
                     </div>
@@ -255,7 +273,7 @@ const CrearProducto: React.FC = () => {
                     </div>
                 </div>
                 <br />
-                <button type="submit" className='Create-product-containerbutton'>Crear producto</button>
+                <button type="submit" className='Create-product-containerbutton' onClick={handleSubmit}>Crear producto</button>
             </form>
         </div>
     );

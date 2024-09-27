@@ -74,7 +74,7 @@ interface ProductosdeCatalogo {
 interface CrearProductoData {
   nombre: string;
   precio: number;
-  imagen: string;
+  imagen?: string;
   descripcion: string;
   cantidad: number;
   familia: string;
@@ -82,6 +82,7 @@ interface CrearProductoData {
   tipoRiego: string;
   petFriendly: boolean;
   color: string;
+  id?: number;
 }
 ```
 

@@ -1,7 +1,7 @@
 export interface CrearProductoData {
     nombre: string;
     precio: number;
-    imagen: string;
+    imagen?: string;
     descripcion: string;
     cantidad: number;
     familia: string;
@@ -9,4 +9,5 @@ export interface CrearProductoData {
     tipoRiego: string;
     petFriendly: boolean;
     color: string;
+    id?: number;
 }
