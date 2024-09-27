@@ -53,32 +53,36 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
                 <button className="btn btn-dark" type="submit">Buscar</button>
               </form>
               {user ? (
-                <div className="dropdown">
-                  <button 
-                    className="btn btn-link dropdown-toggle" 
-                    type="button" 
-                    id="userDropdown" 
-                    data-bs-toggle="dropdown" 
-                    aria-expanded="false">
-                    Hola, {user.username}
-                  </button>
-                  <ul className="dropdown-menu" aria-labelledby="userDropdown">
-                    <li><Link className="dropdown-item" to="/opcion1">Crear Producto</Link></li>
-                    <li><Link className="dropdown-item" to="/opcion2">Opción 2</Link></li>
-                    <li><Link className="dropdown-item" to="/opcion3">Opción 3</Link></li>
-                    <li>
-                      <Link 
-                        className="dropdown-item" 
-                        to="/" 
-                        onClick={() => {
-                          onLogout(); 
-                          navigate('/login');
-                        }}>
-                        Cerrar sesión
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
+                user.role === 'admin' ? (
+                  <div className="dropdown">
+                    <button 
+                      className="btn btn-link dropdown-toggle" 
+                      type="button" 
+                      id="userDropdown" 
+                      data-bs-toggle="dropdown" 
+                      aria-expanded="false">
+                      Hola, {user.username}
+                    </button>
+                    <ul className="dropdown-menu" aria-labelledby="userDropdown">
+                      <li><Link className="dropdown-item" to="/opcion1">Crear Producto</Link></li>
+                      <li><Link className="dropdown-item" to="/opcion2">Opción 2</Link></li>
+                      <li><Link className="dropdown-item" to="/opcion3">Opción 3</Link></li>
+                      <li>
+                        <Link 
+                          className="dropdown-item" 
+                          to="/" 
+                          onClick={() => {
+                            onLogout(); 
+                            navigate('/login');
+                          }}>
+                          Cerrar sesión
+                        </Link>
+                      </li>
+                    </ul>
+                  </div>
+                ) : (
+                  <span className="navbar-text">Hola, {user.username}</span>
+                )
               ) : (
                 <Link className="btn btn-link" to="/login">Login</Link>
               )}
@@ -91,4 +95,3 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
 };
 
 export default Header;
-
