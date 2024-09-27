@@ -1,17 +1,17 @@
-import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 interface NavProps {
   id?: string; // Prop opcional para el ID
   user: { username: string; role: string } | null; // Prop opcional para el usuario
   onLogout: () => void; // Prop para la función de cierre de sesión
-  }
+}
 
-  const Nav: React.FC<NavProps> = ({ user, onLogout }) => {
-    const navigate = useNavigate();
-    return (
-      <nav className="navbar navbar-expand-lg bg-body-tertiary w-100">
+const Nav: React.FC<NavProps> = ({ user, onLogout }) => {
+  const navigate = useNavigate();
+  
+  return (
+    <nav className="navbar navbar-expand-lg bg-body-tertiary w-100">
       <div className="container-fluid">
         <Link to="/" className="navbar-brand d-flex align-items-center">
           <div className="circle me-2"></div>
@@ -51,35 +51,35 @@ interface NavProps {
               <button className="btn btn-dark" type="submit">Buscar</button>
             </form>
             {user ? (
-              user.role === 'admin' ? (
-                <div className="dropdown">
-                  <button 
-                    className="btn btn-link dropdown-toggle" 
-                    type="button" 
-                    id="userDropdown" 
-                    data-bs-toggle="dropdown" 
-                    aria-expanded="false">
-                    Hola, {user.username}
-                  </button>
-                  <ul className="dropdown-menu" aria-labelledby="userDropdown">
-                    <li><Link className="dropdown-item" to="/create-product">Crear Producto</Link></li>
-                    <li><Link className="dropdown-item" to="/create-user">Crear Usuario</Link></li> 
-                    <li>
-                      <Link 
-                        className="dropdown-item" 
-                        to="/" 
-                        onClick={() => {
-                          onLogout(); 
-                          navigate('/login');
-                        }}>
-                        Cerrar sesión
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              ) : (
-                <span className="navbar-text">Hola, {user.username}</span>
-              )
+              <div className="dropdown">
+                <button 
+                  className="btn btn-link dropdown-toggle" 
+                  type="button" 
+                  id="userDropdown" 
+                  data-bs-toggle="dropdown" 
+                  aria-expanded="false">
+                  Hola, {user.username}
+                </button>
+                <ul className="dropdown-menu" aria-labelledby="userDropdown">
+                  {user.role === 'admin' && (
+                    <>
+                      <li><Link className="dropdown-item" to="/create-product">Crear Producto</Link></li>
+                      <li><Link className="dropdown-item" to="/create-user">Crear Usuario</Link></li>
+                    </>
+                  )}
+                  <li>
+                    <Link 
+                      className="dropdown-item" 
+                      to="/" 
+                      onClick={() => {
+                        onLogout(); 
+                        navigate('/login');
+                      }}>
+                      Cerrar sesión
+                    </Link>
+                  </li>
+                </ul>
+              </div>
             ) : (
               <Link className="btn btn-link" to="/login">Login</Link>
             )}
@@ -87,7 +87,7 @@ interface NavProps {
         </div>
       </div>
     </nav>
-  )
+  );
 }
 
 export default Nav;

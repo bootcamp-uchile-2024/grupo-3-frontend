@@ -49,6 +49,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
             return;
         }
 
+        // Guardar usuario en localStorage
+        const userResponse = { username: foundUser.username, role: foundUser.role };
+        localStorage.setItem('user', JSON.stringify(userResponse));
+
         // Alert
         alert(`Iniciaste sesión como ${foundUser.role === 'admin' ? 'Admin' : 'User'}`);
         onLogin(foundUser.username, foundUser.role);
