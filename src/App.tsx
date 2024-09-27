@@ -10,7 +10,7 @@ import LoginForm from './pages/LoginForm';
 import UserCreationForm from './pages/UserCreateForm';
 import DashboardPage from './pages/DashboardPage';
 import CrearProducto from './pages/CreateProductForm';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 function App() {
   const [user, setUser] = useState<{ username: string; role: string } | null>(null);
