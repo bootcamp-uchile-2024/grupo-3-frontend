@@ -8,7 +8,7 @@ import ContactPage from './pages/ContactPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import LoginForm from './pages/LoginForm';
 import UserCreationForm from './pages/UserCreateForm';
-import DashboardPage from './pages/DashboardPage';
+/* import DashboardPage from './pages/DashboardPage'; */
 import CrearProducto from './pages/CreateProductForm';
 import { useState } from 'react';
 
@@ -34,7 +34,7 @@ function App() {
             <Route path="about" element={<AboutPage />} />
             <Route path="contact" element={<ContactPage />} />
             <Route path="login" element={<LoginForm onLogin={handleLogin} />} />
-            <Route path="dashboard" element={<DashboardPage />} />
+            {/* <Route path="dashboard" element={<DashboardPage />} /> */}
             <Route path="create-user" element={<UserCreationForm />} />
             <Route path="create-product" element={<CrearProducto />} />
           </Route>

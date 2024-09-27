@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import '../UserCreationForm.css';
 
 interface CreateUserDTO {
@@ -95,7 +96,7 @@ const UserCreationForm: React.FC = () => {
   };
 
   return (
-    <div className="user-creation-container">
+    <div className="user-creation-container relative-top">
       <form onSubmit={handleSubmit} className="user-creation-form">
         <h2>Crear Usuario</h2>
 
@@ -147,7 +148,7 @@ const UserCreationForm: React.FC = () => {
           {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
         </div>
 
-        <button type="submit">Crear Usuario</button>
+        <button className="btn btn-primary w-100" type="submit">Crear Usuario</button>
       </form>
     </div>
   );
