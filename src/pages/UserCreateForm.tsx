@@ -26,7 +26,13 @@ const UserCreationForm: React.FC = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-
+  
+    // Limpiar el mensaje de error del campo modificado
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: '', 
+    }));
+  
     if (name === 'password' || name === 'confirmPassword') {
       setErrors((prevErrors) => ({
         ...prevErrors,
