@@ -3,6 +3,7 @@
 ## Servicio Catálogo
 
 - **Descripción**: Muestra la oferta visible para los usuarios. <br>
+- **Método HTTP:** GET
 - **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/catalogo <br>
 - **Ruta local**: http://localhost:5173/catalog <br>
 - **Interface utilizada:** ProductosdeCatalogo
@@ -10,7 +11,7 @@
 ## Detalles de Producto<br>
 
 - **Descripción**: Proporciona los detalles específicos de un producto individual en el catálogo.<br>
-
+- **Método HTTP:** GET
 - **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/productos/{id} <br>
 - **Ruta local**: http://localhost:5173/catalog/product/{id} <br>
 - **Interface utilizada:** ProductosdeCatalogo
@@ -18,23 +19,24 @@
 ## Creación de Producto
 
 - **Descripción**: Facilita la creación de nuevos productos a través de un formulario que recolecta información clave, como nombre, precio, descripción, entre otros. El servicio valida los datos proporcionados y almacena el producto en la base de datos para su inclusión en el catálogo de la plataforma.
-
-- **EndPoint consumido**: ninguno (por ahora)<br>
-- **Ruta local**: http://localhost:5173/crearProducto <br>
+- **Método HTTP:** POST
+- **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/productos<br>
+- **Ruta local**: http://localhost:5173/create-product <br>
 - **Interface utilizada:** CrearProductoData
 
 ## Servicio Autentificación
 
 - **Descripción**: Permite la autenticación tanto de usuario como de administrador a través de un formulario. Verifica las credenciales proporcionadas, validando el acceso a la plataforma y garantizando que solo usuarios autorizados puedan acceder a sus funcionalidades correspondientes.
   <br>
-- **EndPoint consumido**: ninguno (por ahora) <br>
+ - **Método HTTP:** POST
+- **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/auth/login <br>
 - **Ruta local**: http://localhost:5173/login <br>
-- **Interface utilizada:** ninguna (por ahora)
 
 ## Creación de Usuario
 
 - **Descripción**: Permite la creación de un nuevo usuario a través de un formulario que recopila los datos básicos necesarios. Se asegura de validar la información proporcionada y almacena los datos del usuario en la base de datos del sistema para futuras autenticaciones y uso dentro de la plataforma. <br>
-- **EndPoint consumido**: ninguno (por ahora) <br>
+- **Método HTTP:** POST
+- **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/usuarios <br>
 - **Ruta local**: http://localhost:5173/create-user<br>
 - **Interface utilizada:** CreateUsuarioDTO
 
