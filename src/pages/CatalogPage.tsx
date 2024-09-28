@@ -38,7 +38,7 @@ const CatalogPage: React.FC = () => {
 
   return (
     <div className="catalog-container">
-      <h1>Catálogo de Productos</h1>
+      {/* <h1>Catálogo de Productos</h1> */}
       <div className="products-grid">
         {products.map((product) => (
           <div key={product.id} className="product-card">

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ProductosdeCatalogo } from '../interfaces/ProductosdeCatalogo';
-import Products from '../components/Products';
+import Products from '../components/CardProducts';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -14,7 +15,7 @@ export default function ProductDetailPage() {
       try {
         if (!id) return;
 
-        const response = await fetch(`/api/productos/${id}`);
+        const response = await fetch(`https://clon-cotiledonbackend.onrender.com/productos/${id}`);
         if (!response.ok) {
           throw new Error('No pudimos obtener el producto');
         }
@@ -57,9 +58,9 @@ export default function ProductDetailPage() {
             <p>Pet Friendly: {product.petFriendly? 'Si' : 'No'}</p>
             <p>Color: {product.color}</p>
             <br />
-            <button type="button">Comprar</button>
+            <button className="btn btn-dark w-100" type="button">Comprar</button>
             <br />
-            <button type="button">Agregar al Carro</button>
+            <button className="btn btn-success w-100" type="button">Agregar al Carro</button>
           </div>
         </div>
       )}

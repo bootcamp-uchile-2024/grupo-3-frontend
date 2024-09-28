@@ -1,13 +1,13 @@
 import '../index.css'
 import Banner from '../components/Banner'
 import PlantCareTips from '../components/PlantCareTips';
-import Products from '../components/Products';
+import CardProducts from '../components/CardProducts';
 
 export default function HomePage() {
   return (
     <div>
        <Banner />
-      <Products />
+      <CardProducts />
       <PlantCareTips />
     </div>
   );

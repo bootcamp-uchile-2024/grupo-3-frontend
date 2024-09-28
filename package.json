@@ -13,6 +13,7 @@
     "@popperjs/core": "^2.11.8",
     "@types/react-router-dom": "^5.3.3",
     "bootstrap": "^5.3.3",
+    "file-type-checker": "^1.1.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.1"
