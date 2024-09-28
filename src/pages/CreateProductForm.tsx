@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CrearProductoData } from '../interfaces/CrearProductoData';
+import fileTypeChecker from 'file-type-checker';
 
 const CrearProducto: React.FC = () => {
     const [producto, setProducto] = useState<CrearProductoData>({
@@ -29,16 +30,47 @@ const CrearProducto: React.FC = () => {
     };
 
     //Funciones para transformar imagenes en strings
+    const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            const file = event.target.files![0];
 
-    const handleFileUpload = async (event: React.ChangeEvent <HTMLInputElement>)=> {
-        const file = event.target.files![0];
-        const base64 = await convertirBase64(file);
-        setProducto({ ...producto, imagen: base64 });
-        setErrores((prev) => ({
-            ...prev,
-            imagen: '',
-        }));
-    };
+            //validacion tamaño
+            if (!validarTamanoFichero(file)) {
+                alert("El archivo es muy grande");
+                event.target.value = '';
+                return;
+            }
+
+            //validacion tipo
+            if (!await validarTipoFichero(file)) {
+                alert("El archivo no es una imagen");
+                event.target.value = '';
+                return;
+            }
+
+            const base64 = await convertirBase64(file);
+            setProducto({ ...producto, imagen: base64 });
+        } catch (err) {
+            console.error("Error: ", err);
+            event.target.value = '';
+        }
+    }
+
+    const validarTamanoFichero = (file: File) => {
+        const limitSize = 1024 * 1024 * 2; // 2MB
+        const fileSize = file.size;
+        return fileSize <= limitSize;
+    }
+
+    const validarTipoFichero = (file: File) => {
+        return new Promise<boolean>((resolve, reject) => {
+            const fileReader = new FileReader();
+            const types = ["jpeg", "png", "gif"];
+            fileReader.readAsArrayBuffer(file);
+            fileReader.onload = () => resolve(fileTypeChecker.validateFileType(fileReader.result as ArrayBuffer, types));
+            fileReader.onerror = (error) => reject(error);
+        });
+    }
 
     const convertirBase64 = (file: File) => {
         return new Promise <string>((resolve, reject)=> {
