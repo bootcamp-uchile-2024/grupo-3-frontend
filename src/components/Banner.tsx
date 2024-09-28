@@ -5,7 +5,7 @@ const Banner: React.FC = () => {
     <div className="container">
       <section id="banner">
         <h2>Traemos la naturaleza a la <br/> puerta de tu casa</h2>
-        <button>
+        <button className="btn btn-dark">
           <a href="#">Comprar ahora</a>
         </button>
       </section>
