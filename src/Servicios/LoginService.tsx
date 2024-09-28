@@ -2,7 +2,7 @@ import { ILogin } from "../pages/LoginForm";
 
 export function login(user: ILogin): boolean {
 
-    if (user.user === 'admin' && user.password === 'admin') {
+    if (user.username === 'admin' && user.password === 'admin') {
 
         const userResponse: ILogin = {
             ...user,

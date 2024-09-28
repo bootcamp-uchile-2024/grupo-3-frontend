@@ -55,6 +55,12 @@
   npm install bootstrap @popperjs/core
   ```
 
+- Para incluir type checker, ejecuta:
+
+  ```bash
+  npm install file-type-checker 
+  ```
+
 ### 5. Traer los últimos cambios
 
 - Para asegurarte de que estás trabajando con la versión más reciente, sigue estos pasos:
