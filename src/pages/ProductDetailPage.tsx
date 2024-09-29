@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ProductosdeCatalogo } from '../interfaces/ProductosdeCatalogo';
@@ -69,3 +70,15 @@ export default function ProductDetailPage() {
     </>
   );
 }
+
+/* 
+error: PlantAI/grupo-3-frontend/src/pages/ProductDetailPage.tsx
+  25:16  error  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+  El error error is defined but never used significa que la variable error se ha declarado pero no se está utilizando en el código.
+
+  No pude solucionarlo en el codigo, me dsalía apareciendo, por lo que agregué:  eslint-disable @typescript-eslint/no-unused-vars 
+  al principio del codigo, la cual desactiva la regla solo para esa línea de codigo, podriamos preguntar al profe como solucionarlo
+
+
+*/

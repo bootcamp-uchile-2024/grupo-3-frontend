@@ -42,7 +42,7 @@ const UserCreationForm: React.FC = () => {
   };
 
   const validate = () => {
-    let newErrors = { username: '', email: '', password: '', confirmPassword: '' };
+    const newErrors = { username: '', email: '', password: '', confirmPassword: '' };
     let isValid = true;
 
     // Validación de nombre de usuario
@@ -161,3 +161,13 @@ const UserCreationForm: React.FC = () => {
 };
 
 export default UserCreationForm;
+
+/*
+error: PlantAI/grupo-3-frontend/src/pages/UserCreateForm.tsx
+  45:9  error  'newErrors' is never reassigned. Use 'const' instead  prefer-const
+
+El error indica que la variable newErrors se define pero nunca se reasigna, lo cual es una oportunidad para utilizar const en lugar de let.
+
+Solucion: Se cambia a const la funcion validate ya que no se está reasignando newErrors en ningún punto.
+
+*/
