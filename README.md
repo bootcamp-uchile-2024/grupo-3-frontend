@@ -8,6 +8,7 @@
 - HTML 5
 - CSS 3
 - Bootstrap
+- Redux Toolkit
 
 # Instalación y Configuración
 
@@ -46,7 +47,7 @@
   npm audit fix
   ```
 
-### 4. Instalar Bootstrap
+### 4. Instalar Bootstrap, Type checker y Redux toolkit
 
 - Para incluir Bootstrap en el proyecto, ejecuta el siguiente comando en la terminal:
 
@@ -60,7 +61,11 @@
   ```bash
   npm install file-type-checker 
   ```
+- Para instalar Redux toolkit, ejecuta:
 
+  ```bash
+  npm install @reduxjs/toolkit
+  ```
 ### 5. Traer los últimos cambios
 
 - Para asegurarte de que estás trabajando con la versión más reciente, sigue estos pasos:
@@ -96,8 +101,15 @@
   ```bash
   npm run dev
   ```
+### 8. Revisar el código del proyecto
 
-### 7. Compilar el proyecto para producción
+- Para revisar el proyecto en busca de errores, ejecuta: 
+
+  ```bash
+  npm run lint
+  ```
+
+### 8. Compilar el proyecto para producción
 
 - Para compilar el proyecto y preparar los archivos para producción, ejecuta:
 
