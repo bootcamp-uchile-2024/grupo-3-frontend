@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { isAuth } from '../utils/isAuth';
 import '../LoginFormStyles.css';
 
 interface LoginFormProps {
@@ -11,34 +13,32 @@ export interface ILogin {
   password: string;
   roles?: string[];
 }
-//Función para saber si está el user en local
-export const isAuth = () => localStorage.getItem('user') ? true : false;
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   const navigate = useNavigate();
-
-  // Lista de usuarios simulada - Roles usuario y administrador
   const users = [
     { username: 'administrador', password: 'administrador', roles: ['admin-1'] },
     { username: 'usuario', password: 'usuario', roles: ['user-1'] }
   ];
 
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState<ILogin>({ username: '', password: '' });
+  
+  const [errors, setErrors] = useState<{ usernameError: string; passwordError: string }>({ usernameError: '', passwordError: '' });
 
-  const [errors, setErrors] = useState({
-    usernameError: '',
-    passwordError: ''
-  });
+  useEffect(() => {
+    if (isAuth()) {
+      navigate('/'); 
+    }
+  }, [navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [`${name}Error`]: '' });
+    
+    setFormData(prev => ({ ...prev, [name]: value })); 
+    setErrors(prev => ({ ...prev, [`${name}Error`]: '' })); 
   };
 
+  // Función para autenticar al usuario
   const login = (user: ILogin): boolean => {
     const foundUser = users.find(u => u.username === user.username);
 
@@ -52,26 +52,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
       return false;
     }
 
-    const userResponse: ILogin = {
-      ...user,
-      roles: foundUser.roles
-    };
+    const userResponse: ILogin = { ...user, roles: foundUser.roles };
+    localStorage.setItem('user', JSON.stringify(userResponse)); 
+    return true; 
+  };
 
-    const datosUsuario = JSON.stringify(userResponse);
-    localStorage.setItem('user', datosUsuario);
-    return true;
-  } 
-
+  // Maneja el envío del formulario
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const user = { username: formData.username, password: formData.password };
+    const user: ILogin = { username: formData.username, password: formData.password }; // Crea un objeto de usuario
 
-    if (login(user)) {
-      const userStored = JSON.parse(localStorage.getItem('user') || '{}');
+    if (login(user)) { 
+      const userStored = JSON.parse(localStorage.getItem('user') || '{}'); 
       alert(`Iniciaste sesión como ${userStored.roles.includes('admin-1') ? 'Admin' : 'User'}`);
-      onLogin(userStored.username, userStored.roles.includes('admin-1') ? 'admin' : 'user');
-      navigate('/');
+      onLogin(userStored.username, userStored.roles.includes('admin-1') ? 'admin' : 'user'); 
+      navigate('/'); 
     }
   };
 
@@ -79,11 +75,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     <main className="form-signin col-md-3 col-xs-3 col-lg-3 m-auto relative-top">
       <form onSubmit={handleSubmit}>
         <h1 className="h3 mb-3 fw-normal">Iniciar Sesión</h1>
-
         <div className="form-floating">
           <input
             type="text"
-            className={`form-control ${errors.usernameError ? 'is-invalid' : ''}`}
+            className={`form-control ${errors.usernameError ? 'is-invalid' : ''}`} 
             id="floatingInput"
             placeholder="Nombre de usuario"
             name="username"
@@ -110,9 +105,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
         <div className="form-check text-start my-3">
           <input className="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault" />
-          <label className="form-check-label" htmlFor="flexCheckDefault">
-            Recordarme
-          </label>
+          <label className="form-check-label" htmlFor="flexCheckDefault">Recordarme</label>
         </div>
 
         <button className="btn btn-primary w-100 py-2" type="submit">Iniciar Sesión</button>

@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../UserCreationForm.css';
+import {
+  validateUsername,
+  validateEmail,
+  validatePassword,
+  validateConfirmPassword,
+} from '../utils/validators'; 
 
 interface CreateUserDTO {
   name: string;
@@ -13,71 +19,43 @@ const UserCreationForm: React.FC = () => {
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
 
   const [errors, setErrors] = useState({
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-  
-    // Limpiar el mensaje de error del campo modificado
+
     setErrors((prevErrors) => ({
       ...prevErrors,
-      [name]: '', 
+      [name]: ''
     }));
-  
+
     if (name === 'password' || name === 'confirmPassword') {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        confirmPassword: '', 
+        confirmPassword: '',
       }));
     }
   };
 
   const validate = () => {
-    const newErrors = { username: '', email: '', password: '', confirmPassword: '' };
-    let isValid = true;
+    const newErrors = {
+      username: validateUsername(formData.username),
+      email: validateEmail(formData.email),
+      password: validatePassword(formData.password),
+      confirmPassword: validateConfirmPassword(formData.password, formData.confirmPassword),
+    };
 
-    // Validación de nombre de usuario
-    if (!formData.username) {
-      newErrors.username = 'El nombre de usuario es requerido';
-      isValid = false;
-    }
-
-    // Validación de email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!formData.email) {
-      newErrors.email = 'El correo es requerido';
-      isValid = false;
-    } else if (!emailRegex.test(formData.email)) {
-      newErrors.email = 'El correo no es válido';
-      isValid = false;
-    }
-
-    // Validación de contraseña
-    if (!formData.password) {
-      newErrors.password = 'La contraseña es requerida';
-      isValid = false;
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
-      isValid = false;
-    }
-
-    // Confirmación de contraseña
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Las contraseñas no coinciden';
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
+    setErrors(newErrors); 
+    return Object.values(newErrors).every((error) => !error);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -92,11 +70,19 @@ const UserCreationForm: React.FC = () => {
       alert('¡Usuario creado exitosamente!');
       console.log('Usuario creado:', JSON.stringify(userData, null, 2));
 
+      // Reiniciar los campos del formulario
       setFormData({
         username: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+      });
+      // Limpiar errores al enviar exitosamente
+      setErrors({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
       });
     }
   };
