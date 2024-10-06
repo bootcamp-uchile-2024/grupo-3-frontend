@@ -1,16 +1,6 @@
 import { ReactNode } from "react";
-import { isAuth } from "../pages/LoginForm"; 
-import { ILogin } from "../pages/LoginForm"; 
-
-// Función que comprueba si el usuario tiene el rol requerido
-export const userHasRole = (roles: string[]): boolean => {
-    const user = localStorage.getItem('user');
-    if (user) {
-        const userResponse: ILogin = JSON.parse(user);
-        return roles.some(role => userResponse.roles?.includes(role));
-    }
-    return false;
-}
+import { isAuth } from "../Servicios/LoginService"; 
+import { userHasRole } from "../Servicios/LoginService";
 
 interface PrivateRouteProps {
     children: ReactNode;
