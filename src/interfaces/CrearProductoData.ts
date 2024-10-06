@@ -1,4 +1,4 @@
-export interface CrearProductoData {
+export interface crearProductoData {
     nombre: string;
     precio: number;
     imagen?: string;

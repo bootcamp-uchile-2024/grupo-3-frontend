@@ -8,16 +8,14 @@ interface PrivateRouteProps {
 }
 
 export const PrivateRoute = ({ children, roles }: PrivateRouteProps) => {
-    const auth = isAuth(); // Verifica si el usuario está autenticado
-    const hasRole = userHasRole(roles); // Verifica si tiene el rol adecuado
+    const auth = isAuth(); 
+    const hasRole = userHasRole(roles); 
 
-    // Si está autenticado y tiene el rol, muestra los hijos (children)
     if (auth && hasRole) {
         return <>{children}</>;
     }
     localStorage.removeItem('user');
 
-    // Si no está autenticado o no tiene el rol, muestra acceso denegado
     return (
             <><p>Acceso denegado</p></>
     );
