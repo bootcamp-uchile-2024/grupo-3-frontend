@@ -2,12 +2,12 @@ import { ReactNode } from "react";
 import { isAuth } from "../Servicios/LoginService"; 
 import { userHasRole } from "../Servicios/LoginService";
 
-interface PrivateRouteProps {
+interface privateRouteProps {
     children: ReactNode;
     roles: string[];
 }
 
-export const PrivateRoute = ({ children, roles }: PrivateRouteProps) => {
+export const PrivateRoute = ({ children, roles }: privateRouteProps) => {
     const auth = isAuth(); 
     const hasRole = userHasRole(roles); 
 

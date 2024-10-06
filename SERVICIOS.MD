@@ -6,23 +6,23 @@
 - **Método HTTP:** GET
 - **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/catalogo <br>
 - **Ruta local**: http://localhost:5173/catalog <br>
-- **Interface utilizada:** ProductosdeCatalogo
+- **Interface utilizada:** productosDeCatalogo
 
 ## Detalles de Producto<br>
 
 - **Descripción**: Proporciona los detalles específicos de un producto individual en el catálogo.<br>
 - **Método HTTP:** GET
 - **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/productos/{id} <br>
-- **Ruta local**: http://localhost:5173/catalog/product/{id} <br>
-- **Interface utilizada:** ProductosdeCatalogo
+- **Ruta local**: http://localhost:5173/catalog/producto/{id} <br>
+- **Interface utilizada:** productosDeCatalogo
 
 ## Creación de Producto
 
 - **Descripción**: Facilita la creación de nuevos productos a través de un formulario que recolecta información clave, como nombre, precio, descripción, entre otros. El servicio valida los datos proporcionados y almacena el producto en la base de datos para su inclusión en el catálogo de la plataforma.
 - **Método HTTP:** POST
 - **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/productos<br>
-- **Ruta local**: http://localhost:5173/create-product <br>
-- **Interface utilizada:** CrearProductoData
+- **Ruta local**: http://localhost:5173/crear-producto <br>
+- **Interface utilizada:** crearProductoData
 
 ## Servicio Autentificación
 
@@ -37,19 +37,19 @@
 - **Descripción**: Permite la creación de un nuevo usuario a través de un formulario que recopila los datos básicos necesarios. Se asegura de validar la información proporcionada y almacena los datos del usuario en la base de datos del sistema para futuras autenticaciones y uso dentro de la plataforma. <br>
 - **Método HTTP:** POST
 - **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/usuarios <br>
-- **Ruta local**: http://localhost:5173/create-user<br>
-- **Interface utilizada:** CreateUsuarioDTO
+- **Ruta local**: http://localhost:5173/crear-usuario<br>
+- **Interface utilizada:** createUsuarioDTO
 
 ## Lista de interfaces
 
-**Interface**: ProductosdeCatalogo
+**Interface**: productosDeCatalogo
 
 - **Descripción:** Define la estructura de los productos que se muestran en el catálogo, proporcionando los atributos clave que representan cada producto.
 
 - **Ruta fichero DTO**: `src/interfaces/ProductosdeCatalogo.ts` <br>
 
 ```typescript
-interface ProductosdeCatalogo {
+interface productosDeCatalogo {
   nombre: string;
   precio: number;
   imagen: string;
@@ -73,7 +73,7 @@ interface ProductosdeCatalogo {
 - **Ruta fichero DTO**: `src/interfaces/CrearProductoData.ts` <br>
 
 ```typescript
-interface CrearProductoData {
+interface crearProductoData {
   nombre: string;
   precio: number;
   imagen?: string;
@@ -95,7 +95,7 @@ interface CrearProductoData {
 - **Ruta fichero DTO**: `src/interfaces/CreateUserDTO.ts` <br>
 
 ```typescript
-export interface CreateUsuarioDTO {
+export interface createUsuarioDTO {
   name: string;
   password: string;
   email: string;

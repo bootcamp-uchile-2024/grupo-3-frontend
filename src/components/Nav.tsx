@@ -64,7 +64,7 @@ const Nav: React.FC<NavProps> = ({ user, onLogout }) => {
                   {user.role === 'admin' && (
                     <>
                       <li><Link className="dropdown-item" to="/crear-producto">Crear Producto</Link></li>
-                      <li><Link className="dropdown-item" to="/create-user">Crear Usuario</Link></li>
+                      <li><Link className="dropdown-item" to="/crear-usuario">Crear Usuario</Link></li>
                     </>
                   )}
                   <li>

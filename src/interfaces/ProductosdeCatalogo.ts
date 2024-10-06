@@ -1,4 +1,4 @@
-export interface ProductosdeCatalogo {
+export interface productosDeCatalogo {
   nombre: string;
   precio: number;
   imagen: string;

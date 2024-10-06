@@ -7,12 +7,7 @@ import {
   validatePassword,
   validateConfirmPassword,
 } from '../utils/validators'; 
-
-interface CreateUserDTO {
-  name: string;
-  password: string;
-  email: string;
-}
+import { createUserDTO } from '../interfaces/CreateUserDTO';
 
 const UserCreationForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -61,7 +56,7 @@ const UserCreationForm: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      const userData: CreateUserDTO = {
+      const userData: createUserDTO = {
         name: formData.username,
         email: formData.email,
         password: formData.password,
