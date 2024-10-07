@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ProductosdeCatalogo } from '../interfaces/ProductosdeCatalogo';
+import { productsCatalog } from '../interfaces/ProductsCatalog';
 import Products from '../components/CardProducts';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const [product, setProduct] = useState<ProductosdeCatalogo | null>(null);
+  const [product, setProduct] = useState< productsCatalog | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // Estado para el loading
   const [error, setError] = useState<string | null>(null); // Estado para errores
 

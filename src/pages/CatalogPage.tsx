@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { productosDeCatalogo } from '../interfaces/ProductosdeCatalogo';
+import { productsCatalog } from '../interfaces/ProductsCatalog';
 import { Link } from 'react-router-dom';
 import { truncateText } from '../utils/truncateText';
 
 const CatalogPage: React.FC = () => {
   const [state, setState] = useState({
     loading: true,
-    products: [] as productosDeCatalogo[],
+    products: [] as productsCatalog[],
     error: null as string | null,
   });
 
@@ -15,7 +15,7 @@ const CatalogPage: React.FC = () => {
       const response = await fetch('https://clon-cotiledonbackend.onrender.com/catalogo');
       if (!response.ok) throw new Error('Error al cargar los productos');
 
-      const data: productosDeCatalogo[] = await response.json();
+      const data: productsCatalog[] = await response.json();
       setState({ loading: false, products: data, error: null });
     } catch (error: unknown) {
       setState({

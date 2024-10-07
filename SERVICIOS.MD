@@ -42,14 +42,14 @@
 
 ## Lista de interfaces
 
-**Interface**: productosDeCatalogo
+**Interface**: productsCatalog
 
 - **Descripción:** Define la estructura de los productos que se muestran en el catálogo, proporcionando los atributos clave que representan cada producto.
 
-- **Ruta fichero DTO**: `src/interfaces/ProductosdeCatalogo.ts` <br>
+- **Ruta fichero DTO**: `src/interfaces/ProductsCatalog.ts` <br>
 
 ```typescript
-interface productosDeCatalogo {
+interface productsCatalog {
   nombre: string;
   precio: number;
   imagen: string;
@@ -66,14 +66,14 @@ interface productosDeCatalogo {
 }
 ```
 
-**Interface**: CrearProductoData
+**Interface**: CreateProductData
 
 - **Descripción:** Define la estructura del nuevo producto que se va a crear para luego mostrarse en el catálogo, proporcionando los atributos clave que representan cada producto.
 
-- **Ruta fichero DTO**: `src/interfaces/CrearProductoData.ts` <br>
+- **Ruta fichero DTO**: `src/interfaces/CreateProductData.ts` <br>
 
 ```typescript
-interface crearProductoData {
+interface createProductData {
   nombre: string;
   precio: number;
   imagen?: string;

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { crearProductoData } from '../interfaces/CrearProductoData';
+import { createProductData } from '../interfaces/CreateProductData.ts';
 import fileTypeChecker from 'file-type-checker';
 
-const CrearProducto: React.FC = () => {
-    const [producto, setProducto] = useState<crearProductoData>({
+const CreateProduct: React.FC = () => {
+    const [producto, setProducto] = useState<createProductData>({
         nombre: '',
         precio: 0,
         imagen: '',
@@ -311,4 +311,4 @@ const CrearProducto: React.FC = () => {
     );
 };
 
-export default CrearProducto;
+export default CreateProduct;

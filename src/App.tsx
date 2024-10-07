@@ -9,7 +9,7 @@ import ProductDetailPage from './pages/ProductDetailPage';
 import LoginForm from './pages/LoginForm';
 import UserCreationForm from './pages/UserCreateForm';
 /* import DashboardPage from './pages/DashboardPage'; */
-import CrearProducto from './pages/CreateProductForm';
+import CreateProduct from './pages/CreateProductForm';
 import { useState } from 'react';
 import { PrivateRoute } from './protected/PrivateRoute';
 
@@ -37,7 +37,7 @@ function App() {
             <Route path="login" element={<LoginForm onLogin={handleLogin} />} />
             {/* <Route path="dashboard" element={<DashboardPage />} /> */}
             <Route path="crear-usuario" element={<UserCreationForm />} />
-            <Route path="crear-producto" element={<PrivateRoute roles={["admin-1"]}><CrearProducto /></PrivateRoute>} />
+            <Route path="crear-producto" element={<PrivateRoute roles={["admin-1"]}><CreateProduct /></PrivateRoute>} />
           </Route>
         </Routes>
       </Router>
