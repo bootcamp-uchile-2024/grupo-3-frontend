@@ -84,6 +84,7 @@ const Nav: React.FC<NavProps> = ({ user, onLogout }) => {
               </div>
             ) : (
               <Link className="btn btn-link" to="/login">Login</Link>
+              
             )}
           </div>
         </div>

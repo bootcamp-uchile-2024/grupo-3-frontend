@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import '../UserCreationForm.css';
+import '../styles/UserCreationForm.css';
 import {
   validateUsername,
   validateEmail,

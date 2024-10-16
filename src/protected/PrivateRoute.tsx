@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { isAuth } from "../Servicios/LoginService"; 
-import { userHasRole } from "../Servicios/LoginService";
+import { isAuth } from "../services/LoginService"; 
+import { userHasRole } from "../services/LoginService";
 
 interface privateRouteProps {
     children: ReactNode;
