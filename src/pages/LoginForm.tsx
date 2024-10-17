@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { isAuth } from '../utils/isAuth';
@@ -26,18 +25,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
   useEffect(() => {
     if (isAuth()) {
-      navigate('/'); 
+      alert('Usuario ya autenticado, redirigiendo al inicio.');
+      navigate('/');
     }
   }, [navigate]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    
-    setFormData(prev => ({ ...prev, [name]: value })); 
-    setErrors(prev => ({ ...prev, [`${name}Error`]: '' })); 
+
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setErrors(prev => ({ ...prev, [`${name}Error`]: '' }));
   };
 
-  // Función para autenticar al usuario
   const login = (user: ILogin): boolean => {
     const foundUser = users.find(u => u.username === user.username);
 
@@ -56,17 +55,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     return true; 
   };
 
-  // Maneja el envío del formulario
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const user: ILogin = { username: formData.username, password: formData.password };
 
     if (login(user)) { 
-      const userStored = JSON.parse(localStorage.getItem('user') || '{}'); 
+      const userStored = JSON.parse(localStorage.getItem('user') || '{}');
       alert(`Iniciaste sesión como ${userStored.roles.includes('admin-1') ? 'Admin' : 'User'}`);
-      onLogin(userStored.username, userStored.roles.includes('admin-1') ? 'admin' : 'user'); 
-      navigate('/'); 
+      onLogin(userStored.username, userStored.roles.includes('admin-1') ? 'admin' : 'user');
+      navigate('/'); // Redirige al usuario a la página principal
     }
   };
 
@@ -118,4 +116,5 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 };
 
 export default LoginForm;
+
 
