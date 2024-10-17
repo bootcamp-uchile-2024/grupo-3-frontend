@@ -22,7 +22,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   ];
 
   const [formData, setFormData] = useState<ILogin>({ username: '', password: '' });
-  
   const [errors, setErrors] = useState<{ usernameError: string; passwordError: string }>({ usernameError: '', passwordError: '' });
 
   useEffect(() => {
@@ -61,7 +60,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const user: ILogin = { username: formData.username, password: formData.password }; // Crea un objeto de usuario
+    const user: ILogin = { username: formData.username, password: formData.password };
 
     if (login(user)) { 
       const userStored = JSON.parse(localStorage.getItem('user') || '{}'); 
