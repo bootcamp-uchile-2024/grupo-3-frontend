@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import Header from '../components/Header';
-import '../index.css';
+import '../styles/index.css';
 import { Outlet } from 'react-router-dom';
 import Footer from '../components/Footer';
 import 'bootstrap/dist/css/bootstrap.min.css';

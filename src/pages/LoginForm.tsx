@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { isAuth } from '../utils/isAuth';
-import '../LoginFormStyles.css';
+import '../styles/LoginFormStyles.css';
 
 interface LoginFormProps {
   onLogin: (username: string, role: string) => void;
