@@ -8,22 +8,21 @@ import ContactPage from './pages/ContactPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import LoginForm from './pages/LoginForm';
 import UserCreationForm from './pages/UserCreateForm';
-import CreateProduct from './pages/CreateProductForm';
+/* import DashboardPage from './pages/DashboardPage'; */
+import CrearProducto from './pages/CreateProductForm';
 import { useState } from 'react';
 import { PrivateRoute } from './protected/PrivateRoute';
+import CartPage from './pages/CartPage';
 
 function App() {
-  // Definición del estado user
   const [user, setUser] = useState<{ username: string; role: string } | null>(null);
 
-  // Función para manejar el inicio de sesión
   const handleLogin = (username: string, role: string) => {
     setUser({ username, role });
   };
 
-  // Función para manejar el cierre de sesión
   const handleLogout = () => {
-    setUser(null);
+    setUser(null); 
   };
 
   return (
@@ -36,9 +35,11 @@ function App() {
             <Route path="catalogo/producto/:id" element={<ProductDetailPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="contact" element={<ContactPage />} />
-            <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
-            <Route path="crear-usuario" element={<UserCreationForm />} />
-            <Route path="crear-producto" element={<PrivateRoute roles={["admin-1"]}><CreateProduct /></PrivateRoute>} />
+            <Route path="login" element={<LoginForm onLogin={handleLogin} />} />
+            {/* <Route path="dashboard" element={<DashboardPage />} /> */}
+            <Route path="create-user" element={<UserCreationForm />} />
+            <Route path="create-product" element={<PrivateRoute roles={["admin-1"]}><CrearProducto /></PrivateRoute>} />
+            <Route path="cart" element={<CartPage />} />
           </Route>
         </Routes>
       </Router>
