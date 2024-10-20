@@ -22,10 +22,10 @@ interface CartState {
           
           if (existingItem) {
             // Si el producto ya está en el carrito, incrementamos su cantidad
-            existingItem.cantidad += 1;
+            existingItem.cantidad += action.payload.cantidad;
           } else {
             // Si el producto no está en el carrito, lo agregamos con cantidad inicial de 1
-            state.items.push({ ...action.payload, cantidad: 1 });
+            state.items.push({ ...action.payload});
           }
         },
     
@@ -40,8 +40,19 @@ interface CartState {
           // Establecemos el array de items como vacío, eliminando todos los productos
           state.items = [];
         },
+
+        updateQuantity: (state, action) => {
+          const { id, cantidad } = action.payload;
+          const item = state.items.find(item => item.id === id);
+          if (item) {
+            item.cantidad += cantidad;
+            if (item.cantidad < 1) {
+              item.cantidad = 1;
+            }
+          }
+        },
       },
     });
   
-  export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+  export const { addToCart, removeFromCart, clearCart, updateQuantity } = cartSlice.actions;
   export default cartSlice.reducer;

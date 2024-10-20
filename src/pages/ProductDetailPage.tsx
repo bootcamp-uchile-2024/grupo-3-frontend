@@ -1,15 +1,20 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { productsCatalog } from '../interfaces/ProductsCatalog';
 import Products from '../components/CardProducts';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../states/cartSlice';
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState< productsCatalog | null>(null);
   const [loading, setLoading] = useState<boolean>(true); // Estado para el loading
   const [error, setError] = useState<string | null>(null); // Estado para errores
+  const [quantity, setQuantity] = useState<number>(1);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getProduct = async () => {
@@ -36,6 +41,30 @@ export default function ProductDetailPage() {
   if (loading) return <div>Cargando producto...</div>; // Mostrar loading
   if (error) return <div>{error}</div>; // Mostrar error si ocurre
 
+  const handleAddToCart = (product: productsCatalog) => {
+    dispatch(addToCart({ 
+      id: product.id, 
+      nombre: product.nombre, 
+      precio: product.precio, 
+      cantidad: quantity
+    }));
+  };
+
+  const incrementQuantity = () => {
+    setQuantity(prevQuantity => prevQuantity + 1);
+  };
+
+  const decrementQuantity = () => {
+    if (quantity > 1) {
+      setQuantity(prevQuantity => prevQuantity - 1);
+    }
+  };
+
+  const handleBuyNow = () => {
+    handleAddToCart(product!); 
+    navigate('/cart'); 
+  };
+
   return (
     <> <div className="product-detail-container">
        <Link to="/catalogo" className="back-to-catalog-button">Regresar a catálogo</Link>
@@ -59,26 +88,19 @@ export default function ProductDetailPage() {
             <p>Pet Friendly: {product.petFriendly? 'Si' : 'No'}</p>
             <p>Color: {product.color}</p>
             <br />
-            <button className="btn btn-dark w-100" type="button">Comprar</button>
+            <div className="quantity-controls">
+            <button className="btn btn-secondary" onClick={decrementQuantity}>-</button>
+                <span>{quantity}</span>
+                <button className="btn btn-secondary" onClick={incrementQuantity}>+</button>
+            </div>
+            <button className="btn btn-dark w-100" type="button" onClick={handleBuyNow}>Comprar</button>
             <br />
-            <button className="btn btn-success w-100" type="button">Agregar al Carro</button>
+            <button className="btn btn-success w-100" type="button" onClick={() => handleAddToCart(product)}>Agregar {quantity} {product.nombre} al Carro</button>
           </div>
         </div>
-      )}
+      )} 
     </div>
     <Products/>
     </>
   );
 }
-
-/* 
-error: PlantAI/grupo-3-frontend/src/pages/ProductDetailPage.tsx
-  25:16  error  'error' is defined but never used  @typescript-eslint/no-unused-vars
-
-  El error error is defined but never used significa que la variable error se ha declarado pero no se está utilizando en el código.
-
-  No pude solucionarlo en el codigo, me dsalía apareciendo, por lo que agregué:  eslint-disable @typescript-eslint/no-unused-vars 
-  al principio del codigo, la cual desactiva la regla solo para esa línea de codigo, podriamos preguntar al profe como solucionarlo
-
-
-*/
