@@ -4,6 +4,7 @@ import { clearCart, removeFromCart, updateQuantity } from '../states/cartSlice';
 import { RootState } from '../states/store';
 import { CartItem } from '../interfaces/CartItem';
 
+
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.items as CartItem[]);
