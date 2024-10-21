@@ -10,6 +10,17 @@ const CartPage: React.FC = () => {
 
   // Estado para controlar la visibilidad del modal
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [coupon, setCoupon] = useState<string>('');
+  const [discount, setDiscount] = useState<number>(0);
+
+  const handleApplyCoupon = () => {
+    if (coupon === 'bootcamp2024') {
+      setDiscount(0.1); // 10% de descuento
+    } else {
+      alert('Cupón inválido');
+      setDiscount(0);
+    }
+  };
 
   const handleRemoveFromCart = (productId: number) => {
     dispatch(removeFromCart(productId));
@@ -55,11 +66,13 @@ const CartPage: React.FC = () => {
     return acc + item.precio * item.cantidad;
   }, 0);
 
+  const discountedTotal = total * (1 - discount);
+
   const formattedTotal = new Intl.NumberFormat('es-CL', {
     style: 'decimal',
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
-  }).format(total);
+  }).format(discountedTotal);
 
   return (
     <div className="cart-container">
@@ -110,6 +123,36 @@ const CartPage: React.FC = () => {
             textAlign: 'center'
           }}>
             <h2>Resumen del Pedido</h2>
+            <span style={{ marginRight: '5px' }}>Aplicar cupón de descuento?</span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '10px' }}>
+              
+            {/* SVG imagen cupón */}
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M15 5l0 2"></path>
+                <path d="M15 11l0 2"></path>
+                <path d="M15 17l0 2"></path>
+                <path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-3a2 2 0 0 0 0 -4v-3a2 2 0 0 1 2 -2"></path>
+              </svg>
+
+              <input
+                type="text"
+                value={coupon}
+                onChange={(e) => setCoupon(e.target.value)}
+                placeholder="Ingresa tu cupón"
+                style={{ padding: '5px', marginRight: '5px' }}
+              />
+              
+              <button onClick={handleApplyCoupon} style={{ marginLeft: '5px' }}>Aplicar</button>
+            </div>
             <ul>
               {groupedItems.map((item: CartItem) => (
                 <li key={item.id}>
@@ -122,7 +165,6 @@ const CartPage: React.FC = () => {
             <h3>Total: ${formattedTotal}</h3>
             <button onClick={handleCloseModal}>Cancelar</button>
             <button onClick={handleFinalizePurchase}>Finalizar Compra</button>
-            
           </div>
         </div>
       )}
@@ -131,4 +173,7 @@ const CartPage: React.FC = () => {
 };
 
 export default CartPage;
+
+
+
 
