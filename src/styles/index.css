@@ -16,42 +16,6 @@ header{
   margin-bottom: -10px;
 }
 
-h2.center {
-  text-align: center !important;
-  margin-top: 6rem;
-  margin-bottom: 2rem;
-  font-weight: bold;
-}
-
-#logo {
-  margin-left: 10px;
-}
-
-#logo h1{
-  color: black;
-  display: inline-block;
-  font-size: 26px;
-  text-transform: uppercase;
-  text-decoration: none;
-  position: relative;
-  bottom: 0rem;
-}
-
-#logo a{
-  color: black;
-  text-decoration: none;
-  margin: 0 0 0 26px;
-}
-
-.circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #cccccc;
-  display: inline-block;
-  margin-right: 10px;
-}
-
 #nav{
   display: flex;
   width: 100%;
@@ -142,18 +106,6 @@ nav#navbar-top {
   display: flex;
   justify-content: space-evenly;
   width: 100%;
-}
-
-.container h2{
-  text-align: left;
-  margin: 4rem 0;
-  font-size: 1.9rem;
-}
-
-h2.header-left-sections {
-  margin-left: 100px;
-  margin-top: 4rem;
-  margin-bottom: 4rem;
 }
 
 .product{
@@ -363,25 +315,6 @@ i.fas.fa-search {
   font-size: 1.2rem;
   margin: 10px;
   color: #333;
-}
-
-/* Estilo para los párrafos dentro de la tarjeta */
-.product-card p {
-  margin: 10px;
-  color: #666;
-}
-
-/* Estilo para el precio del producto */
-.product-price {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #e60023;
-}
-
-/* Estilo para la calificación del producto */
-.product-rating {
-  font-size: 1rem;
-  color: #ff9900;
 }
 
 /* Estilo para el botón de compra */

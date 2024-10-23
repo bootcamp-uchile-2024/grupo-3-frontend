@@ -60,7 +60,7 @@ const CatalogPage: React.FC = () => {
               className="product-image"
             />
             <h3>{product.nombre}</h3>
-            <p className="product-price">Precio: ${product.precio}</p>
+            <p className="product-price justify-align-center">Precio: ${product.precio}</p>
             <div className="quantity-controls">
               <button onClick={() => handleQuantityChange(product.id, false)}>-</button>
               <span>{quantities[product.id] || 1}</span>

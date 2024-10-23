@@ -87,7 +87,7 @@ const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
             )}
             { }
             <Link to="/cart" className="btn btn-link me-3 position-relative">
-              <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-garden-cart" width="24" height="24" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#000" fill="none" strokeLinecap="round" strokeLinejoin="round">
+              <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-garden-cart" width="34" height="34" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#000" fill="none" strokeLinecap="round" strokeLinejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M17.5 17.5m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0" />
                 <path d="M6 8v11a1 1 0 0 0 1.806 .591l3.694 -5.091v.055" />
@@ -97,7 +97,7 @@ const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
                 <span className="cart-count position-absolute top-0 translate-middle badge rounded-pill bg-danger">
                   {cartItemCount}
                 </span>
-              )}
+              )}Carro de compra
             </Link>
           </div>
         </div>

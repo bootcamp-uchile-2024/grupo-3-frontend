@@ -7,10 +7,6 @@
   border: 1px solid #cccccc;
 }
 
-p{
-  text-align: left!important;
-}
-
 header{
   display: flex;
   justify-content: space-between;
@@ -22,8 +18,8 @@ header{
 
 h2.center {
   text-align: center !important;
-  margin-top: 6rem;
-  margin-bottom: 2rem;
+  margin-top: 3rem;
+  margin-bottom: 3rem;
   font-weight: bold;
 }
 
@@ -141,7 +137,7 @@ nav#navbar-top {
 
 .container h2{
   text-align: left;
-  margin: 4rem 0;
+  margin: 2rem 0;
   font-size: 1.9rem;
 }
 
@@ -237,8 +233,9 @@ button a {
 footer {
   display: flex;
   justify-content: space-between;
-  padding-top:30px;
+  padding-top: 20px;
   border-top: 1px solid lightgray;
+  margin-top: 30px;
 }
 
 .subscribe {
@@ -349,25 +346,6 @@ i.fas.fa-search {
   font-size: 1.2rem;
   margin: 10px;
   color: #333;
-}
-
-/* Estilo para los párrafos dentro de la tarjeta */
-.product-card p {
-  margin: 10px;
-  color: #666;
-}
-
-/* Estilo para el precio del producto */
-.product-price {
-  font-size: 1.2rem;
-  font-weight: bold;
-  color: #e60023;
-}
-
-/* Estilo para la calificación del producto */
-.product-rating {
-  font-size: 1rem;
-  color: #ff9900;
 }
 
 /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
