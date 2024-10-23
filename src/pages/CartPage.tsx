@@ -9,8 +9,11 @@ const CartPage: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.items as CartItem[]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false);
   const [coupon, setCoupon] = useState<string>('');
   const [discount, setDiscount] = useState<number>(0);
+  const [purchaseTotal, setPurchaseTotal] = useState<number | null>(null);
+  const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
 
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {
@@ -43,12 +46,14 @@ const CartPage: React.FC = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setIsPurchaseCompleted(false); // Resetear la vista de compra finalizada
   };
 
   const handleFinalizePurchase = () => {
-    alert('Compra finalizada');
-    handleClearCart();
-    handleCloseModal();
+    setPurchaseTotal(discountedTotal); // Guardar el total antes de vaciar el carrito
+    setPurchasedItems(groupedItems); // Guardar los productos comprados antes de vaciar el carrito
+    setIsPurchaseCompleted(true); // Cambiar a vista de compra finalizada
+    handleClearCart(); // Vaciar el carrito
   };
 
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
@@ -108,34 +113,67 @@ const CartPage: React.FC = () => {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Resumen del Pedido</h5>
+                <h5 className="modal-title">
+                  {isPurchaseCompleted ? 'Tu compra ha sido finalizada con éxito' : 'Resumen del Pedido'}
+                </h5>
                 <button type="button" className="btn-close" onClick={handleCloseModal}></button>
               </div>
               <div className="modal-body">
-                <span>Aplicar cupón de descuento?</span>
-                <div className="input-group mb-3">
-                  <input
-                    type="text"
-                    value={coupon}
-                    onChange={(e) => setCoupon(e.target.value)}
-                    placeholder="Ingresa tu cupón"
-                    className="form-control"
-                  />
-                  <button className="btn btn-secondary" onClick={handleApplyCoupon}>Aplicar</button>
-                </div>
-                <ul className="list-group">
-                  {groupedItems.map((item: CartItem) => (
-                    <li key={item.id} className="list-group-item d-flex justify-content-between">
-                      <span>{item.nombre}</span>
-                      <span> x {item.cantidad} - ${item.precio * item.cantidad}</span>
-                    </li>
-                  ))}
-                </ul>
-                <h3 className="mt-3">Total: ${formattedTotal}</h3>
+                {isPurchaseCompleted ? (
+                  <>
+                    <p>¡Gracias por tu compra!</p>
+                    
+                    <h6>Detalles del pedido:</h6>
+                    <ul className="list-group">
+                      {purchasedItems.map((item: CartItem) => (
+                        <li key={item.id} className="list-group-item d-flex justify-content-between">
+                          <span>{item.nombre}</span>
+                          <span>x {item.cantidad} - ${item.precio * item.cantidad}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p>El total de tu compra fue de: <h3>${new Intl.NumberFormat('es-CL', {
+                      style: 'decimal',
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 2,
+                    }).format(purchaseTotal || 0)}</h3></p>
+
+            
+                  </>
+                ) : (
+                  <>
+                    <span>Aplicar cupón de descuento?</span>
+                    <div className="input-group mb-3">
+                      <input
+                        type="text"
+                        value={coupon}
+                        onChange={(e) => setCoupon(e.target.value)}
+                        placeholder="Ingresa tu cupón"
+                        className="form-control"
+                      />
+                      <button className="btn btn-secondary" onClick={handleApplyCoupon}>Aplicar</button>
+                    </div>
+                    <ul className="list-group">
+                      {groupedItems.map((item: CartItem) => (
+                        <li key={item.id} className="list-group-item d-flex justify-content-between">
+                          <span>{item.nombre}</span>
+                          <span> x {item.cantidad} - ${item.precio * item.cantidad}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <h3 className="mt-3">Total: ${formattedTotal}</h3>
+                  </>
+                )}
               </div>
               <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={handleCloseModal}>Cancelar</button>
-                <button className="btn btn-primary" onClick={handleFinalizePurchase}>Finalizar Compra</button>
+                {isPurchaseCompleted ? (
+                  <button className="btn btn-primary" onClick={handleCloseModal}>Cerrar</button>
+                ) : (
+                  <>
+                    <button className="btn btn-secondary" onClick={handleCloseModal}>Cancelar</button>
+                    <button className="btn btn-primary" onClick={handleFinalizePurchase}>Finalizar Compra</button>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -146,3 +184,5 @@ const CartPage: React.FC = () => {
 };
 
 export default CartPage;
+
+
