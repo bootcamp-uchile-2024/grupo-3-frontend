@@ -1,6 +1,6 @@
 import '../styles/index.css'
 import Banner from '../components/Banner'
-import PlantCareTips from '../components/PlantCareTips';
+import FeaturedColumns from '../components/FeaturedColumns';
 import CardProducts from '../components/CardProducts';
 
 export default function HomePage() {
@@ -8,7 +8,7 @@ export default function HomePage() {
     <div>
        <Banner />
       <CardProducts />
-      <PlantCareTips />
+      <FeaturedColumns />
     </div>
   );
 }

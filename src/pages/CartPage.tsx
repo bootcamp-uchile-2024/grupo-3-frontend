@@ -75,7 +75,7 @@ const CartPage: React.FC = () => {
 
   return (
     <div className="container mt-4">
-      <h1>Carrito de Compras</h1>
+      <h4>Carrito de Compras</h4>
       {groupedItems.length === 0 ? (
         <p>El carrito está vacío.</p>
       ) : (

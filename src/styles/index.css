@@ -185,15 +185,6 @@ h2.header-left-sections {
   font-weight: bold;
 }
 
-.product button{
-  font-size: 1rem;
-  width: 30%;
-  position: relative;
-  left: 15rem;
-  display: flex;
-  justify-content: space-evenly;
-}
-
 #reviews{
   display: flex;
   justify-content: center;
@@ -274,26 +265,9 @@ button a {
   float: left;
 }
 
-footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 90px;
-  border-top: 1px solid lightgray;
-}
-
 .subscribe {
   margin-right: 40px;
 
-}
-
-footer ul{
-  list-style: none;
-}
-
-footer ul li a{
-  list-style: none;
-  color: black;
-  text-decoration: none;
 }
 
 #search-form ul li {
@@ -358,8 +332,8 @@ i.fas.fa-search {
 /* Estilo para cada tarjeta de producto */
 .product-card {
   background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   width: 300px;
   text-align: center;
@@ -432,56 +406,6 @@ i.fas.fa-search {
 }
 
 /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
-
-/* Estilo para el contenedor principal del detalle del producto */
-.product-detail-container {
-  max-width: 1200px;
-  margin: 30px auto;
-  padding: 60px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-}
-
-/* Estilo para el título del producto */
-.product-detail-container h1 {
-  font-size: 2rem;
-  margin-bottom: 30px;
-  color: #333;
-  text-align: center;
-}
-
-/* Estilo para el contenedor que incluye la imagen y la información del producto */
-.product-detail-container2 {
-  display: flex;
-  font-size: 3rem;
-  flex-direction: row;
-  align-items: center;
-  gap: 30px;
-}
-
-/* Estilo para la imagen del producto */
-.product-detail-container2 img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-
-/* Estilo para la información del producto */
-.product-info {
-  flex: 1;
-}
-
-.product-info p {
-  margin: 10px 0;
-  font-size: 1.1rem;
-  color: #555;
-}
-
-.product-info p:first-of-type {
-  font-weight: bold;
-  font-size: large;
-}
 
 /*Botón para volver a catálogo en detalle del producto*/
 

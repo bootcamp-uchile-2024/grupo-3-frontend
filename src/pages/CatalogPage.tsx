@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { productsCatalog } from '../interfaces/ProductsCatalog';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { addToCart } from '../states/cartSlice'; 
+import { addToCart } from '../states/cartSlice';
 
 
 const CatalogPage: React.FC = () => {
@@ -67,7 +67,7 @@ const CatalogPage: React.FC = () => {
               <button onClick={() => handleQuantityChange(product.id, true)}>+</button>
             </div>
             <button type='button' onClick={() => handleAddToCart(product)}>Añadir al carrito</button>
-            <Link to={`/catalogo/producto/${product.id}`}><button type='button'>Ver detalle</button></Link>
+            <Link to={`/catalogo/producto/${product.id}`}>Ver detalle</Link>
           </div>
         ))}
       </div>

@@ -7,6 +7,10 @@
   border: 1px solid #cccccc;
 }
 
+p{
+  text-align: left!important;
+}
+
 header{
   display: flex;
   justify-content: space-between;
@@ -41,15 +45,6 @@ h2.center {
   color: black;
   text-decoration: none;
   margin: 0 0 0 26px;
-}
-
-.circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #cccccc;
-  display: inline-block;
-  margin-right: 10px;
 }
 
 #nav{
@@ -185,41 +180,6 @@ h2.header-left-sections {
   font-weight: bold;
 }
 
-.product button{
-  font-size: 1rem;
-  width: 30%;
-  position: relative;
-  left: 15rem;
-  display: flex;
-  justify-content: space-evenly;
-}
-
-#reviews{
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.review{
-  padding: 0 0 20px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  display: flex;
-  flex-flow: row;
-  margin: 20px 15px;
-  width: 285px;
-}
-
-.user-avatar{
-  width: 44px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #cccccc;
-  float: left;
-  display: flex;
-  margin: 10px;
-}
-
 .star {
   width: 20px;
   height: 20px;
@@ -277,7 +237,7 @@ button a {
 footer {
   display: flex;
   justify-content: space-between;
-  margin-top: 90px;
+  padding-top:30px;
   border-top: 1px solid lightgray;
 }
 
@@ -329,4 +289,243 @@ i.fas.fa-search {
 
 .header-left-sections{
   text-align: left!important;
+}
+
+/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
+
+/* Estilo general para el contenedor del catálogo */
+
+.catalog-container {
+  padding: 20px;
+}
+
+/* Estilo para el título del catálogo */
+.catalog-container h1 {
+  font-size: 2.5rem;
+  margin-bottom: 40px; /* Ajusta este valor para cambiar la distancia */
+  color: #333;
+  text-align: center;
+}
+
+/* Estilo para la cuadrícula de productos */
+.products-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px; /* Ajusta este valor para cambiar la distancia entre las tarjetas */
+  justify-content: center;
+}
+
+/* Estilo para cada tarjeta de producto */
+.product-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 300px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Efecto de hover para las tarjetas */
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilo para las imágenes de placeholder */
+.product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Estilo para el título dentro de la tarjeta */
+.product-card h3 {
+  font-size: 1.2rem;
+  margin: 10px;
+  color: #333;
+}
+
+/* Estilo para los párrafos dentro de la tarjeta */
+.product-card p {
+  margin: 10px;
+  color: #666;
+}
+
+/* Estilo para el precio del producto */
+.product-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #e60023;
+}
+
+/* Estilo para la calificación del producto */
+.product-rating {
+  font-size: 1rem;
+  color: #ff9900;
+}
+
+/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
+
+/* Estilo para el contenedor principal del detalle del producto */
+.product-detail-container {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 60px 30px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* Estilo para el título del producto */
+.product-detail-container h1 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #333;
+  text-align: center;
+}
+
+/* Estilo para el contenedor que incluye la imagen y la información del producto */
+.product-detail-container2 {
+  display: flex;
+  font-size: 1.3rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 30px;
+}
+
+/* Estilo para la imagen del producto */
+.product-detail-container2 img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Estilo para la información del producto */
+.product-info {
+  flex: 1;
+}
+
+.product-info p {
+  margin: 10px 0;
+  font-size: 1.1rem;
+  color: #555;
+}
+
+.product-info p:first-of-type {
+  font-weight: bold;
+  font-size: large;
+}
+
+/*Botón para volver a catálogo en detalle del producto*/
+
+.back-to-catalog-button {
+  position: absolute;
+  top: 130px;
+  padding-bottom: 10px;
+  background-color: #3b3b3b;
+  color: white;
+  padding: 10px 10px;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 15px;
+  transition: background-color 0.3s, color 0.3s;
+  
+}
+
+.back-to-catalog-button:hover {
+  background-color: #565656; 
+  color: #ffffff; 
+  cursor: pointer;
+}
+
+/*Estilos para la creación de producto*/
+
+.Create-product-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+}
+
+.Create-product-container-divs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.Create-product-container-divs div {
+  flex: 1 1 300px; 
+  display: flex;
+  flex-direction: column; 
+}
+.Create-product-container-divs label {
+  margin-bottom: 5px; 
+  font-weight: bold; 
+}
+.Create-product-container-inputs {
+    padding: 10px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+    font-size: 1rem; 
+    transition: border-color 0.3s; 
+}
+.Create-product-containerbutton {
+  background-color: black; 
+  color: white; 
+  padding: 10px 15px; 
+  border: none; 
+  border-radius: 4px; 
+  font-size: 16px;
+  cursor: pointer; 
+  width: 100%;
+  transition: background-color 0.3s; 
+}
+
+.Create-product-containerbutton:hover {
+  background-color: grey; 
+}
+
+.Create-product-container-inputs-error {
+  color: red;
+  font-size: 0.9em;
+}
+
+/* Estilos para el botón del carrito *********************************************************************************/
+.cart-button {
+  display: inline-flex; 
+  align-items: center; 
+  padding: 10px 20px; 
+  background-color: #007bff; 
+  color: white; 
+  text-decoration: none; 
+  border-radius: 5px; 
+  transition: background-color 0.3s; 
+}
+
+.cart-button:hover {
+  background-color: #014fa2; 
+
+}
+
+/* Estilos para el contador de productos en el carrito */
+.cart-count {
+  background-color: rgb(240, 28, 28); 
+  color: white; 
+  border-radius: 50%; 
+  padding: 5px 10px; 
+  margin-left: 5px; 
+  font-size: 14px; 
+  position: absolute; 
+}
+
+h1{
+  padding: 10px;
 }

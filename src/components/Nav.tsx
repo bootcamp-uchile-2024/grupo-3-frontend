@@ -86,7 +86,7 @@ const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
               <Link className="btn btn-link" to="/login">Login</Link>
             )}
             { }
-            <Link to="/cart" className="btn btn-link ms-3 position-relative">
+            <Link to="/cart" className="btn btn-link me-3 position-relative">
               <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-garden-cart" width="24" height="24" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#000" fill="none" strokeLinecap="round" strokeLinejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                 <path d="M17.5 17.5m-2.5 0a2.5 2.5 0 1 0 5 0a2.5 2.5 0 1 0 -5 0" />
