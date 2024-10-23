@@ -1,3 +1,5 @@
+# Servicios del proyecto E-commerce PlantAI
+
 # Servicios del Proyecto Ecommerce
 
 ## Descripción General
@@ -215,4 +217,97 @@ addToCart: (state, action) => {
     saveCartToLocalStorage(state.items); // Actualiza el localStorage
 },
 
+```
+
+## Servicio Catálogo
+
+- **Descripción**: Muestra la oferta visible para los usuarios. <br>
+- **Método HTTP:** GET
+- **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/catalogo <br>
+- **Ruta local**: http://localhost:5173/catalog <br>
+- **Interface utilizada:** productosDeCatalogo
+
+## Detalles de Producto<br>
+
+- **Descripción**: Proporciona los detalles específicos de un producto individual en el catálogo.<br>
+- **Método HTTP:** GET
+- **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/productos/{id} <br>
+- **Ruta local**: http://localhost:5173/catalog/producto/{id} <br>
+- **Interface utilizada:** productosDeCatalogo
+
+## Lista de interfaces
+
+**Interface**: productsCatalog
+
+- **Descripción:** Define la estructura de los productos que se muestran en el catálogo, proporcionando los atributos clave que representan cada producto.
+
+- **Ruta fichero DTO**: `src/interfaces/ProductsCatalog.ts` <br>
+
+```typescript
+interface productsCatalog {
+  nombre: string;
+  precio: number;
+  imagen: string;
+  descripcion: string;
+  cantidad: number;
+  unidadesVendidas: number;
+  puntuacion: number;
+  familia: string;
+  fotoperiodo: string;
+  tipoRiego: string;
+  petFriendly: boolean;
+  color: string;
+  id: number;
+}
+```
+
+**Interface**: CreateProductData
+
+- **Descripción:** Define la estructura del nuevo producto que se va a crear para luego mostrarse en el catálogo, proporcionando los atributos clave que representan cada producto.
+
+- **Ruta fichero DTO**: `src/interfaces/CreateProductData.ts` <br>
+
+```typescript
+interface createProductData {
+  nombre: string;
+  precio: number;
+  imagen?: string;
+  descripcion: string;
+  cantidad: number;
+  familia: string;
+  fotoperiodo: string;
+  tipoRiego: string;
+  petFriendly: boolean;
+  color: string;
+  id?: number;
+}
+```
+
+**Interface**: CreateUsuarioDTO
+
+- **Descripción:** Permite la creación de cuentas de usuario.
+
+- **Ruta fichero DTO**: `src/interfaces/CreateUserDTO.ts` <br>
+
+```typescript
+export interface createUsuarioDTO {
+  name: string;
+  password: string;
+  email: string;
+}
+```
+
+**Interface**: CartItem
+
+- **Descripción:** Permite agregar y agrupar los items al carrito de compra
+
+- **Ruta fichero DTO**: `src/interfaces/CartItem.ts` <br>
+
+```typescript
+export interface CartItem {
+  id: number;
+  nombre: string;
+  precio: number;
+  cantidad: number;
+}
 ```
