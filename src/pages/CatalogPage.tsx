@@ -42,7 +42,7 @@ const CatalogPage: React.FC = () => {
 
   const handleAddToCart = (product: productsCatalog) => {
     const quantity = quantities[product.id] || 1;
-    dispatch(addToCart({ id: product.id, nombre: product.nombre, precio: product.precio, cantidad: quantity })); // Agregar el producto al carrito
+    dispatch(addToCart({ id: product.id, nombre: product.nombre, precio: product.precio, cantidad: quantity })); 
   };
 
   if (loading) return <p>Cargando productos...</p>;
