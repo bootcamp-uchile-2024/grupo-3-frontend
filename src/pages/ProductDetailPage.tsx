@@ -42,12 +42,20 @@ export default function ProductDetailPage() {
   if (error) return <div>{error}</div>; // Mostrar error si ocurre
 
   const handleAddToCart = (product: productsCatalog) => {
-    dispatch(addToCart({
-      id: product.id,
+    dispatch(addToCart({ id: product.id, 
       nombre: product.nombre,
       precio: product.precio,
-      cantidad: quantity
-    }));
+      imagen:product.imagen,
+      descripcion:product.descripcion,
+      cantidad: quantity,
+      unidadesVendidas:product.unidadesVendidas,
+      puntuacion:product.puntuacion,
+      familia:product.familia,
+      fotoperiodo:product.fotoperiodo,
+      tipoRiego:product.tipoRiego,
+      petFriendly:product.petFriendly,
+      color:product.color
+    })); 
   };
 
   const incrementQuantity = () => {

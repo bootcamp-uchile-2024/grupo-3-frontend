@@ -1,21 +1,23 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CartItem } from '../interfaces/CartItem';
 
-interface CartState {
-  items: CartItem[];
+export interface CartState {
+  idUsuario: 1; 
+  productos:CartItem[];
 }
-
+// Cargar carrito desde el localStorage
 const loadCartFromLocalStorage = (): CartState => {
   try {
     const savedCart = localStorage.getItem('__redux__cart__');
     console.log('Cargando desde localStorage:', savedCart);
-    return savedCart ? JSON.parse(savedCart) : { items: [] };
+    return savedCart ? JSON.parse(savedCart) : { idUsuario: 1, productos: [] }; 
   } catch (error) {
     console.error('Error al cargar el carrito desde el Local Storage:', error);
-    return { items: [] };
+    return { idUsuario: 1, productos: [] }; 
   }
 };
 
+// Guardar carrito en el localStorage
 const saveCartToLocalStorage = (state: CartState) => {
   try {
     console.log('Guardando en localStorage:', state);
@@ -26,6 +28,7 @@ const saveCartToLocalStorage = (state: CartState) => {
   }
 };
 
+// Estado inicial
 const initialState: CartState = loadCartFromLocalStorage();
 
 const cartSlice = createSlice({
@@ -33,33 +36,33 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart(state, action: PayloadAction<CartItem>) {
-      const existingItem = state.items.find(item => item.id === action.payload.id);
+      const existingItem = state.productos.find(item => item.id === action.payload.id); // Cambiado de items a productos
 
       if (existingItem) {
         existingItem.cantidad += action.payload.cantidad;
       } else {
-        state.items.push({ ...action.payload });
+        state.productos.push({ ...action.payload }); // Cambiado de items a productos
       }
       saveCartToLocalStorage(state);
     },
 
     removeFromCart(state, action: PayloadAction<number>) {
-      state.items = state.items.filter(item => item.id !== action.payload);
+      state.productos = state.productos.filter(item => item.id !== action.payload); // Cambiado de items a productos
       saveCartToLocalStorage(state);
     },
 
     clearCart(state) {
-      state.items = [];
+      state.productos = []; // Cambiado de items a productos
       saveCartToLocalStorage(state);
     },
 
     updateQuantity: (state, action: PayloadAction<{ id: number; cantidad: number }>) => {
       const { id, cantidad } = action.payload;
-      const item = state.items.find(item => item.id === id);
+      const item = state.productos.find(item => item.id === id); // Cambiado de items a productos
       if (item) {
         item.cantidad += cantidad;
         if (item.cantidad < 1) {
-          item.cantidad = 1;
+          item.cantidad = 1; // Mantiene la cantidad mínima en 1
         }
       }
       saveCartToLocalStorage(state);
@@ -67,5 +70,6 @@ const cartSlice = createSlice({
   },
 });
 
+// Exportar acciones y reducer
 export const { addToCart, removeFromCart, clearCart, updateQuantity } = cartSlice.actions;
 export default cartSlice.reducer;

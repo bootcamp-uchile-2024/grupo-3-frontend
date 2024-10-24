@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearCart, removeFromCart, updateQuantity } from '../states/cartSlice';
 import { RootState } from '../states/store';
 import { CartItem } from '../interfaces/CartItem';
+import { finalizePurchaseRequest } from '../endpoints/purchase';
 
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
-  const cartItems = useSelector((state: RootState) => state.cart.items as CartItem[]);
+  const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false);
@@ -14,6 +15,23 @@ const CartPage: React.FC = () => {
   const [discount, setDiscount] = useState<number>(0);
   const [purchaseTotal, setPurchaseTotal] = useState<number | null>(null);
   const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(false); // Para manejar el estado de carga
+  const [, setError] = useState<string | null>(null); // Para manejar errores
+
+  // Cargar el carrito desde localStorage cuando el componente se monta
+  useEffect(() => {
+    const storedCart = localStorage.getItem('__redux__cart__');
+    console.log('Stored cart:', storedCart);
+    if (storedCart) {
+      const parsedCart = JSON.parse(storedCart);
+      // Asegúrate de que parsedCart tenga la estructura esperada
+      if (parsedCart && parsedCart.items) {
+        parsedCart.items.forEach((item: CartItem) => {
+          dispatch(updateQuantity({ id: item.id, cantidad: item.cantidad }));
+        });
+      }
+    }
+  }, [dispatch]);
 
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {
@@ -49,11 +67,27 @@ const CartPage: React.FC = () => {
     setIsPurchaseCompleted(false); // Resetear la vista de compra finalizada
   };
 
-  const handleFinalizePurchase = () => {
-    setPurchaseTotal(discountedTotal); // Guardar el total antes de vaciar el carrito
-    setPurchasedItems(groupedItems); // Guardar los productos comprados antes de vaciar el carrito
-    setIsPurchaseCompleted(true); // Cambiar a vista de compra finalizada
-    handleClearCart(); // Vaciar el carrito
+  const handleFinalizePurchase = async () => {
+    setLoading(true);
+    setError(null); // Reinicia el error antes de la solicitud
+
+    // Guardar los detalles de la compra antes de vaciar el carrito
+    setPurchasedItems(groupedItems); 
+    setPurchaseTotal(discountedTotal); 
+
+    try {
+      console.log(cartItems);
+      const response = await finalizePurchaseRequest(cartItems);
+      console.log(response);
+      console.log('Compra finalizada con éxito: HTTP statuscode ' + response.statusCode);
+      handleClearCart();
+      setIsPurchaseCompleted(true); // Cambiar a vista de compra finalizada
+    } catch (error) {
+      setError('Hubo un problema al finalizar la compra. Por favor, inténtalo de nuevo.');
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
@@ -122,7 +156,6 @@ const CartPage: React.FC = () => {
                 {isPurchaseCompleted ? (
                   <>
                     <p>¡Gracias por tu compra!</p>
-                    
                     <h6>Detalles del pedido:</h6>
                     <ul className="list-group">
                       {purchasedItems.map((item: CartItem) => (
@@ -137,8 +170,6 @@ const CartPage: React.FC = () => {
                       minimumFractionDigits: 0,
                       maximumFractionDigits: 2,
                     }).format(purchaseTotal || 0)}</h3></p>
-
-            
                   </>
                 ) : (
                   <>
@@ -171,7 +202,9 @@ const CartPage: React.FC = () => {
                 ) : (
                   <>
                     <button className="btn btn-secondary" onClick={handleCloseModal}>Cancelar</button>
-                    <button className="btn btn-primary" onClick={handleFinalizePurchase}>Finalizar Compra</button>
+                    <button className="btn btn-primary" onClick={handleFinalizePurchase} disabled={loading}>
+                      {loading ? 'Procesando...' : 'Finalizar Compra'}
+                    </button>
                   </>
                 )}
               </div>
@@ -184,5 +217,3 @@ const CartPage: React.FC = () => {
 };
 
 export default CartPage;
-
-

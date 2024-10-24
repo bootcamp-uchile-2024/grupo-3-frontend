@@ -40,9 +40,25 @@ const CatalogPage: React.FC = () => {
     }));
   };
 
+ 
+
+ 
   const handleAddToCart = (product: productsCatalog) => {
     const quantity = quantities[product.id] || 1;
-    dispatch(addToCart({ id: product.id, nombre: product.nombre, precio: product.precio, cantidad: quantity })); 
+    dispatch(addToCart({ id: product.id, 
+                        nombre: product.nombre,
+                        precio: product.precio,
+                        imagen:product.imagen,
+                        descripcion:product.descripcion,
+                        cantidad: quantity,
+                        unidadesVendidas:product.unidadesVendidas,
+                        puntuacion:product.puntuacion,
+                        familia:product.familia,
+                        fotoperiodo:product.fotoperiodo,
+                        tipoRiego:product.tipoRiego,
+                        petFriendly:product.petFriendly,
+                        color:product.color
+                      })); 
   };
 
   if (loading) return <p>Cargando productos...</p>;

@@ -9,7 +9,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
-  const cartItems = useSelector((state: RootState) => state.cart.items); // Obtener los productos del carrito
+  const cartItems = useSelector((state: RootState) => state.cart.productos); // Obtener los productos del carrito
 
 const getTotalItems = () => {
   return cartItems.reduce((total, item) => total + item.cantidad, 0); // Calcular el total de productos
