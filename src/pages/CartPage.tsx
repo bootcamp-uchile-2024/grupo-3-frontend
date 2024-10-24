@@ -15,16 +15,14 @@ const CartPage: React.FC = () => {
   const [discount, setDiscount] = useState<number>(0);
   const [purchaseTotal, setPurchaseTotal] = useState<number | null>(null);
   const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(false); // Para manejar el estado de carga
-  const [, setError] = useState<string | null>(null); // Para manejar errores
+  const [loading, setLoading] = useState<boolean>(false); 
+  const [, setError] = useState<string | null>(null); 
 
-  // Cargar el carrito desde localStorage cuando el componente se monta
   useEffect(() => {
     const storedCart = localStorage.getItem('__redux__cart__');
     console.log('Stored cart:', storedCart);
     if (storedCart) {
       const parsedCart = JSON.parse(storedCart);
-      // Asegúrate de que parsedCart tenga la estructura esperada
       if (parsedCart && parsedCart.items) {
         parsedCart.items.forEach((item: CartItem) => {
           dispatch(updateQuantity({ id: item.id, cantidad: item.cantidad }));
@@ -37,7 +35,7 @@ const CartPage: React.FC = () => {
     if (coupon === 'bootcamp2024') {
       setDiscount(0.1);
     } else {
-      alert('Cupón inválido');
+      alert('Cupón inválido.');
       setDiscount(0);
     }
   };
@@ -64,14 +62,13 @@ const CartPage: React.FC = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setIsPurchaseCompleted(false); // Resetear la vista de compra finalizada
+    setIsPurchaseCompleted(false);
   };
 
   const handleFinalizePurchase = async () => {
     setLoading(true);
-    setError(null); // Reinicia el error antes de la solicitud
+    setError(null); 
 
-    // Guardar los detalles de la compra antes de vaciar el carrito
     setPurchasedItems(groupedItems); 
     setPurchaseTotal(discountedTotal); 
 
@@ -81,9 +78,9 @@ const CartPage: React.FC = () => {
       console.log(response);
       console.log('Compra finalizada con éxito: HTTP statuscode ' + response.statusCode);
       handleClearCart();
-      setIsPurchaseCompleted(true); // Cambiar a vista de compra finalizada
+      setIsPurchaseCompleted(true);
     } catch (error) {
-      setError('Hubo un problema al finalizar la compra. Por favor, inténtalo de nuevo.');
+      setError('Hubo un problema al finalizar la compra. Por favor, inténtalo nuevamente.');
       console.error(error);
     } finally {
       setLoading(false);
@@ -141,7 +138,6 @@ const CartPage: React.FC = () => {
         </>
       )}
 
-      {/* Modal para el resumen del pedido */}
       {isModalOpen && (
         <div className="modal show" style={{ display: 'block' }} aria-modal="true">
           <div className="modal-dialog">

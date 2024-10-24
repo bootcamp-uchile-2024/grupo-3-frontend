@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import CrearProducto from '../pages/CreateProductForm'; // Ajusta la ruta según sea necesario
+import CrearProducto from '../pages/CreateProductForm';
 import Sidebar from '../components/Sidebar';
 
 const DashboardPage: React.FC = () => {

@@ -22,7 +22,6 @@ const CreateProduct: React.FC = () => {
         const { name, value } = e.target;
         setProducto({...producto,[name]: value});
 
-        // Aquí limpia el error del campo modificado
         setErrores((prev) => ({
             ...prev,
             [name]: '',

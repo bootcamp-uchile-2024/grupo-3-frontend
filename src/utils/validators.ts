@@ -1,5 +1,3 @@
-// validators.ts
-
 export const validateUsername = (username: string) => {
     if (!username) {
       return 'El nombre de usuario es requerido';

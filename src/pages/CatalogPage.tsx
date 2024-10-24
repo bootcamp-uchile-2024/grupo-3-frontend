@@ -10,7 +10,7 @@ const CatalogPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
-  const dispatch = useDispatch(); // Inicializar el dispatch
+  const dispatch = useDispatch();
 
   const fetchProducts = async () => {
     try {
@@ -22,7 +22,7 @@ const CatalogPage: React.FC = () => {
       if (error instanceof Error) {
         setError(error.message);
       } else {
-        setError('Ocurrió un error desconocido');
+        setError('Ha ocurrido un error desconocido');
       }
     } finally {
       setLoading(false);
@@ -36,7 +36,7 @@ const CatalogPage: React.FC = () => {
   const handleQuantityChange = (productId: number, increment: boolean) => {
     setQuantities(prevQuantities => ({
       ...prevQuantities,
-      [productId]: Math.max(1, (prevQuantities[productId] || 1) + (increment ? 1 : -1)), // Evita valores menores a 1
+      [productId]: Math.max(1, (prevQuantities[productId] || 1) + (increment ? 1 : -1)),
     }));
   };
 

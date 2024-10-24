@@ -10,8 +10,8 @@ import { addToCart } from '../states/cartSlice';
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<productsCatalog | null>(null);
-  const [loading, setLoading] = useState<boolean>(true); // Estado para el loading
-  const [error, setError] = useState<string | null>(null); // Estado para errores
+  const [loading, setLoading] = useState<boolean>(true); 
+  const [error, setError] = useState<string | null>(null); 
   const [quantity, setQuantity] = useState<number>(1);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -29,7 +29,7 @@ export default function ProductDetailPage() {
         const productJson = await response.json();
         setProduct(productJson);
       } catch (error) {
-        setError('Error al obtener el producto');
+        setError('Hubo un error al obtener el producto');
       } finally {
         setLoading(false); // Ya no está cargando
       }
@@ -38,8 +38,8 @@ export default function ProductDetailPage() {
     getProduct();
   }, [id]);
 
-  if (loading) return <div>Cargando producto...</div>; // Mostrar loading
-  if (error) return <div>{error}</div>; // Mostrar error si ocurre
+  if (loading) return <div>Cargando producto...</div>; 
+  if (error) return <div>{error}</div>; 
 
   const handleAddToCart = (product: productsCatalog) => {
     dispatch(addToCart({ id: product.id, 
