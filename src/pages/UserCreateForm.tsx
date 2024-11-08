@@ -24,6 +24,8 @@ const UserCreationForm: React.FC = () => {
     confirmPassword: '',
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -53,7 +55,7 @@ const UserCreationForm: React.FC = () => {
     return Object.values(newErrors).every((error) => !error);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
       const userData: createUserDTO = {
@@ -62,23 +64,52 @@ const UserCreationForm: React.FC = () => {
         password: formData.password,
       };
 
-      alert('¡Usuario creado exitosamente!');
-      console.log('Usuario creado:', JSON.stringify(userData, null, 2));
+      setIsSubmitting(true);
 
-      // Reiniciar los campos del formulario
-      setFormData({
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-      });
-      // Limpiar errores al enviar exitosamente
-      setErrors({
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-      });
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        alert('No estás autenticado. Inicia sesión primero.');
+        return;
+      }
+
+      try {
+        const response = await fetch('https://api', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`, 
+          },
+          body: JSON.stringify(userData),
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al crear el usuario');
+        }
+
+        const data = await response.json();
+        console.log('Usuario creado:', data);
+
+        alert('¡Usuario creado exitosamente!');
+        setFormData({
+          username: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+        });
+
+        setErrors({
+          username: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+        });
+      } catch (error) {
+        console.error('Error al crear el usuario:', error);
+        alert('Error al crear el usuario. Intente nuevamente.');
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -135,20 +166,12 @@ const UserCreationForm: React.FC = () => {
           {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
         </div>
 
-        <button className="btn btn-primary w-100" type="submit">Crear Usuario</button>
+        <button className="btn btn-primary w-100" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Creando...' : 'Crear Usuario'}
+        </button>
       </form>
     </div>
   );
 };
 
 export default UserCreationForm;
-
-/*
-error: PlantAI/grupo-3-frontend/src/pages/UserCreateForm.tsx
-  45:9  error  'newErrors' is never reassigned. Use 'const' instead  prefer-const
-
-El error indica que la variable newErrors se define pero nunca se reasigna, lo cual es una oportunidad para utilizar const en lugar de let.
-
-Solucion: Se cambia a const la funcion validate ya que no se está reasignando newErrors en ningún punto.
-
-*/

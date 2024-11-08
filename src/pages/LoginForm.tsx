@@ -15,13 +15,9 @@ export interface ILogin {
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   const navigate = useNavigate();
-  const users = [
-    { username: 'administrador', password: 'administrador', roles: ['admin-1'] },
-    { username: 'usuario', password: 'usuario', roles: ['user-1'] }
-  ];
-
   const [formData, setFormData] = useState<ILogin>({ username: '', password: '' });
   const [errors, setErrors] = useState<{ usernameError: string; passwordError: string }>({ usernameError: '', passwordError: '' });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (isAuth()) {
@@ -37,34 +33,41 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     setErrors(prev => ({ ...prev, [`${name}Error`]: '' }));
   };
 
-  const login = (user: ILogin): boolean => {
-    const foundUser = users.find(u => u.username === user.username);
-
-    if (!foundUser) {
-      setErrors(prev => ({ ...prev, usernameError: 'Nombre de usuario incorrecto' }));
-      return false;
-    }
-
-    if (foundUser.password !== user.password) {
-      setErrors(prev => ({ ...prev, passwordError: 'Contraseña incorrecta' }));
-      return false;
-    }
-
-    const userResponse: ILogin = { ...user, roles: foundUser.roles };
-    localStorage.setItem('user', JSON.stringify(userResponse)); 
-    return true; 
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     const user: ILogin = { username: formData.username, password: formData.password };
+    
+    try {
+      const response = await fetch('https://api', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      });
 
-    if (login(user)) { 
-      const userStored = JSON.parse(localStorage.getItem('user') || '{}');
-      alert(`Iniciaste sesión como ${userStored.roles.includes('admin-1') ? 'Admin' : 'User'}`);
-      onLogin(userStored.username, userStored.roles.includes('admin-1') ? 'admin' : 'user');
-      navigate('/'); // Redirige al usuario a la página principal
+      if (!response.ok) {
+        throw new Error('Credenciales incorrectas o error en el servidor');
+      }
+
+      const data = await response.json();
+      
+      localStorage.setItem('authToken', data.token);  
+      localStorage.setItem('user', JSON.stringify(data.user)); 
+
+      onLogin(data.user.username, data.user.roles.includes('admin-1') ? 'admin' : 'user');
+
+      alert(`Iniciaste sesión como ${data.user.roles.includes('admin-1') ? 'Admin' : 'User'}`);
+      navigate('/');
+    } catch (error) {
+      setErrors({
+        usernameError: '',
+        passwordError: 'Error al iniciar sesión. Verifica tus credenciales.',
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,10 +75,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     <main className="form-signin col-md-3 col-xs-3 col-lg-3 m-auto relative-top">
       <form onSubmit={handleSubmit}>
         <h1 className="h3 mb-3 fw-normal">Iniciar Sesión</h1>
+
         <div className="form-floating">
           <input
             type="text"
-            className={`form-control ${errors.usernameError ? 'is-invalid' : ''}`} 
+            className={`form-control ${errors.usernameError ? 'is-invalid' : ''}`}
             id="floatingInput"
             placeholder="Nombre de usuario"
             name="username"
@@ -105,7 +109,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
           <label className="form-check-label" htmlFor="flexCheckDefault">Recordarme</label>
         </div>
 
-        <button className="btn btn-primary w-100 py-2" type="submit">Iniciar Sesión</button>
+        <button className="btn btn-primary w-100 py-2" type="submit" disabled={loading}>
+          {loading ? 'Cargando...' : 'Iniciar Sesión'}
+        </button>
 
         <p className="mt-3">
           ¿No tienes una cuenta? <Link to="/create-user">Crear una cuenta</Link>
@@ -116,5 +122,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 };
 
 export default LoginForm;
+
 
 
