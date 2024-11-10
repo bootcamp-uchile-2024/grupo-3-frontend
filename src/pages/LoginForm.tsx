@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { isAuth } from '../utils/isAuth';
-import '../styles/LoginFormStyles.css';
+
 
 interface LoginFormProps {
   onLogin: (username: string, role: string) => void;
@@ -13,61 +12,65 @@ export interface ILogin {
   roles?: string[];
 }
 
+export const isAuth = () => localStorage.getItem('user') ? true : false;
+
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<ILogin>({ username: '', password: '' });
-  const [errors, setErrors] = useState<{ usernameError: string; passwordError: string }>({ usernameError: '', passwordError: '' });
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (isAuth()) {
-      alert('Usuario ya autenticado, redirigiendo al inicio.');
-      navigate('/');
-    }
-  }, [navigate]);
+  const users = [
+    { username: 'administrador', password: 'administrador', roles: ['admin-1'] },
+    { username: 'usuario', password: 'usuario', roles: ['user-1'] }
+  ];
+
+  const [formData, setFormData] = useState({
+    username: '',
+    password: ''
+  });
+
+  const [errors, setErrors] = useState({
+    usernameError: '',
+    passwordError: ''
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
-    setFormData(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [`${name}Error`]: '' }));
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [`${name}Error`]: '' });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const login = (user: ILogin): boolean => {
+    const foundUser = users.find(u => u.username === user.username);
+
+    if (!foundUser) {
+      setErrors(prev => ({ ...prev, usernameError: 'Nombre de usuario incorrecto' }));
+      return false;
+    }
+
+    if (foundUser.password !== user.password) {
+      setErrors(prev => ({ ...prev, passwordError: 'Contraseña incorrecta' }));
+      return false;
+    }
+
+    const userResponse: ILogin = {
+      ...user,
+      roles: foundUser.roles
+    };
+
+    const datosUsuario = JSON.stringify(userResponse);
+    localStorage.setItem('user', datosUsuario);
+    return true;
+  } 
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
 
-    const user: ILogin = { username: formData.username, password: formData.password };
-    
-    try {
-      const response = await fetch('https://api', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
-      });
+    const user = { username: formData.username, password: formData.password };
 
-      if (!response.ok) {
-        throw new Error('Credenciales incorrectas o error en el servidor');
-      }
-
-      const data = await response.json();
-      
-      localStorage.setItem('authToken', data.token);  
-      localStorage.setItem('user', JSON.stringify(data.user)); 
-
-      onLogin(data.user.username, data.user.roles.includes('admin-1') ? 'admin' : 'user');
-
-      alert(`Iniciaste sesión como ${data.user.roles.includes('admin-1') ? 'Admin' : 'User'}`);
+    if (login(user)) {
+      const userStored = JSON.parse(localStorage.getItem('user') || '{}');
+      alert(`Iniciaste sesión como ${userStored.roles.includes('admin-1') ? 'Admin' : 'User'}`);
+      onLogin(userStored.username, userStored.roles.includes('admin-1') ? 'admin' : 'user');
       navigate('/');
-    } catch (error) {
-      setErrors({
-        usernameError: '',
-        passwordError: 'Error al iniciar sesión. Verifica tus credenciales.',
-      });
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -106,12 +109,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
         <div className="form-check text-start my-3">
           <input className="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault" />
-          <label className="form-check-label" htmlFor="flexCheckDefault">Recordarme</label>
+          <label className="form-check-label" htmlFor="flexCheckDefault">
+            Recordarme
+          </label>
         </div>
 
-        <button className="btn btn-primary w-100 py-2" type="submit" disabled={loading}>
-          {loading ? 'Cargando...' : 'Iniciar Sesión'}
-        </button>
+        <button className="btn btn-primary w-100 py-2" type="submit">Iniciar Sesión</button>
 
         <p className="mt-3">
           ¿No tienes una cuenta? <Link to="/create-user">Crear una cuenta</Link>
@@ -122,6 +125,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 };
 
 export default LoginForm;
+
 
 
 
