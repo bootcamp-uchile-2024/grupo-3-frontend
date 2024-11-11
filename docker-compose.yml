@@ -1,0 +1,21 @@
+services:
+  cotiledon-prod:
+    image: nicolasf1/cotiledonapp:1.0.1
+    environment:
+      - AMBIENTE=production
+      - DB_HOST=database-prod
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=clave123
+      - DB_DATABASE=plantai_db
+    ports:
+      - '8081:8080' 
+
+  frontend-prod:
+    image: estefaniaperez/plantaiapp:1.0.1
+    depends_on:
+      - cotiledon-prod
+    environment:
+      - VITE_URL_ENDPOINT_BACKEND=http://cotiledon-prod:8080 
+    ports:
+      - '8082:8080' 
