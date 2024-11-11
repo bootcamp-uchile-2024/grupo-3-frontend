@@ -37,8 +37,8 @@ function App() {
             <Route path="contact" element={<ContactPage />} />
             <Route path="login" element={<LoginForm onLogin={handleLogin} />} />
             {/* <Route path="dashboard" element={<DashboardPage />} /> */}
-            <Route path="create-user" element={<UserCreationForm />} />
-            <Route path="create-product" element={<PrivateRoute roles={["admin-1"]}><CrearProducto /></PrivateRoute>} />
+            <Route path="crear-usuario" element={<UserCreationForm />} />
+            <Route path="crear-usuario" element={<PrivateRoute roles={["admin-1"]}><CrearProducto /></PrivateRoute>} />
             <Route path="cart" element={<CartPage />} />
           </Route>
         </Routes>

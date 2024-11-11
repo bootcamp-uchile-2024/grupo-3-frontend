@@ -66,28 +66,23 @@ const UserCreationForm: React.FC = () => {
 
       setIsSubmitting(true);
 
-      const token = localStorage.getItem('token');
-
-      if (!token) {
-        alert('No estás autenticado. Inicia sesión primero.');
-        return;
-      }
-
       try {
-        const response = await fetch('https://api', {
+        const response = await fetch('http://localhost:8080/usuarios', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`, 
           },
           body: JSON.stringify(userData),
         });
+
+        const responseText = await response.text();
+        console.log('Response text:', responseText);
 
         if (!response.ok) {
           throw new Error('Error al crear el usuario');
         }
 
-        const data = await response.json();
+        const data = responseText ? JSON.parse(responseText) : { id: 1, name: formData.username, email: formData.email };
         console.log('Usuario creado:', data);
 
         alert('¡Usuario creado exitosamente!');
@@ -175,3 +170,5 @@ const UserCreationForm: React.FC = () => {
 };
 
 export default UserCreationForm;
+
+
