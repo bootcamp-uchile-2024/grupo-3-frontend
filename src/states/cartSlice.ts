@@ -10,12 +10,22 @@ const loadCartFromLocalStorage = (): CartState => {
   try {
     const savedCart = localStorage.getItem('__redux__cart__');
     console.log('Cargando desde el localStorage:', savedCart);
-    return savedCart ? JSON.parse(savedCart) : { idUsuario: 1, productos: [] }; 
+    if (!savedCart) {
+      return { idUsuario: 1, productos: [] };
+    }
+
+    const parsedCart = JSON.parse(savedCart);
+    if (parsedCart && typeof parsedCart === 'object' && 'idUsuario' in parsedCart && 'productos' in parsedCart) {
+      return parsedCart;
+    }
+
+    return { idUsuario: 1, productos: [] };
   } catch (error) {
     console.error('Error al cargar el carrito desde el Local Storage:', error);
-    return { idUsuario: 1, productos: [] }; 
+    return { idUsuario: 1, productos: [] };
   }
 };
+
 
 
 const saveCartToLocalStorage = (state: CartState) => {

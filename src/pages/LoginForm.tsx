@@ -117,7 +117,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
         <button className="btn btn-primary w-100 py-2" type="submit">Iniciar Sesión</button>
 
         <p className="mt-3">
-          ¿No tienes una cuenta? <Link to="/create-user">Crear una cuenta</Link>
+          ¿No tienes una cuenta? <Link to="/crear-usuario">Crear una cuenta</Link>
         </p>
       </form>
     </main>

@@ -6,10 +6,14 @@ import {
   validateEmail,
   validatePassword,
   validateConfirmPassword,
-} from '../utils/validators'; 
+} from '../utils/validators';
 import { createUserDTO } from '../interfaces/CreateUserDTO';
 
-const UserCreationForm: React.FC = () => {
+type UserCreationFormProps = {
+  onUserCreated?: () => void;
+};
+
+const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) => {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -32,7 +36,7 @@ const UserCreationForm: React.FC = () => {
 
     setErrors((prevErrors) => ({
       ...prevErrors,
-      [name]: ''
+      [name]: '',
     }));
 
     if (name === 'password' || name === 'confirmPassword') {
@@ -51,7 +55,7 @@ const UserCreationForm: React.FC = () => {
       confirmPassword: validateConfirmPassword(formData.password, formData.confirmPassword),
     };
 
-    setErrors(newErrors); 
+    setErrors(newErrors);
     return Object.values(newErrors).every((error) => !error);
   };
 
@@ -75,17 +79,15 @@ const UserCreationForm: React.FC = () => {
           body: JSON.stringify(userData),
         });
 
-        const responseText = await response.text();
-        console.log('Response text:', responseText);
-
         if (!response.ok) {
           throw new Error('Error al crear el usuario');
         }
 
-        const data = responseText ? JSON.parse(responseText) : { id: 1, name: formData.username, email: formData.email };
+        const data = await response.json();
         console.log('Usuario creado:', data);
 
         alert('¡Usuario creado exitosamente!');
+
         setFormData({
           username: '',
           email: '',
@@ -99,6 +101,8 @@ const UserCreationForm: React.FC = () => {
           password: '',
           confirmPassword: '',
         });
+
+        if (onUserCreated) onUserCreated();
       } catch (error) {
         console.error('Error al crear el usuario:', error);
         alert('Error al crear el usuario. Intente nuevamente.');
@@ -116,7 +120,7 @@ const UserCreationForm: React.FC = () => {
         <div>
           <label htmlFor="username">Nombre de usuario:</label>
           <input
-            className='user-creation-form-input'
+            className="user-creation-form-input"
             type="text"
             name="username"
             value={formData.username}
@@ -128,7 +132,7 @@ const UserCreationForm: React.FC = () => {
         <div>
           <label htmlFor="email">Correo electrónico:</label>
           <input
-            className='user-creation-form-input'
+            className="user-creation-form-input"
             type="email"
             name="email"
             value={formData.email}
@@ -140,7 +144,7 @@ const UserCreationForm: React.FC = () => {
         <div>
           <label htmlFor="password">Contraseña:</label>
           <input
-            className='user-creation-form-input'
+            className="user-creation-form-input"
             type="password"
             name="password"
             value={formData.password}
@@ -152,7 +156,7 @@ const UserCreationForm: React.FC = () => {
         <div>
           <label htmlFor="confirmPassword">Confirmar contraseña:</label>
           <input
-            className='user-creation-form-input'
+            className="user-creation-form-input"
             type="password"
             name="confirmPassword"
             value={formData.confirmPassword}
@@ -170,5 +174,3 @@ const UserCreationForm: React.FC = () => {
 };
 
 export default UserCreationForm;
-
-

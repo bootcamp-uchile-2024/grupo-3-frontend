@@ -13,6 +13,7 @@ import CrearProducto from './pages/CreateProductForm';
 import { useState } from 'react';
 import { PrivateRoute } from './protected/PrivateRoute';
 import CartPage from './pages/CartPage';
+import UserManagement from './pages/UserManagement';
 
 function App() {
   const [user, setUser] = useState<{ username: string; role: string } | null>(null);
@@ -40,6 +41,8 @@ function App() {
             <Route path="crear-usuario" element={<UserCreationForm />} />
             <Route path="crear-usuario" element={<PrivateRoute roles={["admin-1"]}><CrearProducto /></PrivateRoute>} />
             <Route path="cart" element={<CartPage />} />
+            <Route path="/user-management" element={<UserManagement />} />
+
           </Route>
         </Routes>
       </Router>
