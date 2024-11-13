@@ -92,7 +92,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) =>
         rut: formData.rut,
         fechaNacimiento: formData.fechaNacimiento,
         contrasena: formData.contrasena,
-        confirmPassword: formData.confirmPassword, // Asegúrate de que 'confirmPassword' esté incluido en createUserDTO
+        confirmPassword: formData.confirmPassword,
         tipoUsuarioId: formData.tipoUsuarioId,
       };
 
@@ -156,9 +156,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) =>
   return (
     <div className="user-creation-container relative-top">
       <form onSubmit={handleSubmit} className="user-creation-form">
-        <h2>Crear Usuario</h2>
-
-        {/** Inputs del formulario con manejo de errores */}
+        <h2>Crear Usuario--</h2>
         <div>
           <label>Nombre de usuario:</label>
           <input
