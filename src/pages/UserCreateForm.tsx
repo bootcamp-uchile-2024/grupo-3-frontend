@@ -1,48 +1,35 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/UserCreationForm.css';
-import {
-  validateUsername,
-  validateEmail,
-  validatePassword,
-  validateConfirmPassword,
-} from '../utils/validators';
-import { createUserDTO } from '../interfaces/CreateUserDTO';
+import { validateEmail, validatePassword } from '../utils/validators';
+
+// Definir los tipos correctamente para los datos del usuario
+interface CreateUserDTO {
+  name: string;
+  password: string;
+  email: string;
+}
 
 type UserCreationFormProps = {
   onUserCreated?: () => void;
 };
 
 const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) => {
-  const [formData, setFormData] = useState({
-    nombreUsuario: '',
-    nombre: '',
-    apellido: '',
+  const [formData, setFormData] = useState<CreateUserDTO>({
+    name: '',
     email: '',
-    telefono: '',
-    genero: '',
-    rut: '',
-    fechaNacimiento: '',
-    contrasena: '',
-    confirmPassword: '',
-    tipoUsuarioId: 3,
+    password: '',
   });
 
   const [errors, setErrors] = useState({
-    nombreUsuario: '',
-    nombre: '',
-    apellido: '',
+    name: '',
     email: '',
-    telefono: '',
-    genero: '',
-    rut: '',
-    fechaNacimiento: '',
-    contrasena: '',
-    confirmPassword: '',
+    password: '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Función para manejar los cambios en los campos de entrada
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -52,59 +39,43 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) =>
       ...prevErrors,
       [name]: '',
     }));
-
-    if (name === 'contrasena' || name === 'confirmPassword') {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        confirmPassword: '',
-      }));
-    }
   };
 
+  // Función de validación
   const validate = () => {
     const newErrors = {
-      nombreUsuario: validateUsername(formData.nombreUsuario),
-      nombre: formData.nombre ? '' : 'El nombre es obligatorio',
-      apellido: formData.apellido ? '' : 'El apellido es obligatorio',
+      name: formData.name ? '' : 'El nombre es obligatorio',
       email: validateEmail(formData.email),
-      telefono: formData.telefono ? '' : 'El teléfono es obligatorio',
-      genero: formData.genero ? '' : 'El género es obligatorio',
-      rut: formData.rut ? '' : 'El RUT es obligatorio',
-      fechaNacimiento: formData.fechaNacimiento ? '' : 'La fecha de nacimiento es obligatoria',
-      contrasena: validatePassword(formData.contrasena),
-      confirmPassword: validateConfirmPassword(formData.contrasena, formData.confirmPassword),
+      password: validatePassword(formData.password),
     };
 
     setErrors(newErrors);
     return Object.values(newErrors).every((error) => !error);
   };
 
+  // Función de envío del formulario
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
-      const userData: createUserDTO = {
-        nombreUsuario: formData.nombreUsuario,
-        nombre: formData.nombre,
-        apellido: formData.apellido,
+      const userData: CreateUserDTO = {
+        name: formData.name,
+        password: formData.password,
         email: formData.email,
-        telefono: formData.telefono,
-        genero: formData.genero,
-        rut: formData.rut,
-        fechaNacimiento: formData.fechaNacimiento,
-        contrasena: formData.contrasena,
-        confirmPassword: formData.confirmPassword,
-        tipoUsuarioId: formData.tipoUsuarioId,
       };
+
+      // Verifica el objeto antes de enviarlo
+      console.log('Datos a enviar:', userData);
 
       setIsSubmitting(true);
 
       try {
+        // Cambia la URL por la que corresponde al backend
         const response = await fetch('http://localhost:8080/usuarios', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(userData),
+          body: JSON.stringify(userData), // El cuerpo del request es un JSON con los datos del usuario
         });
 
         if (!response.ok) {
@@ -116,33 +87,20 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) =>
 
         alert('¡Usuario creado exitosamente!');
 
+        // Resetear el formulario
         setFormData({
-          nombreUsuario: '',
-          nombre: '',
-          apellido: '',
+          name: '',
           email: '',
-          telefono: '',
-          genero: '',
-          rut: '',
-          fechaNacimiento: '',
-          contrasena: '',
-          confirmPassword: '',
-          tipoUsuarioId: 3,
+          password: '',
         });
 
         setErrors({
-          nombreUsuario: '',
-          nombre: '',
-          apellido: '',
+          name: '',
           email: '',
-          telefono: '',
-          genero: '',
-          rut: '',
-          fechaNacimiento: '',
-          contrasena: '',
-          confirmPassword: '',
+          password: '',
         });
 
+        // Llamar al callback de éxito
         if (onUserCreated) onUserCreated();
       } catch (error) {
         console.error('Error al crear el usuario:', error);
@@ -156,70 +114,38 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) =>
   return (
     <div className="user-creation-container relative-top">
       <form onSubmit={handleSubmit} className="user-creation-form">
-        <h2>Crear Usuario--</h2>
-        <div>
-          <label>Nombre de usuario:</label>
-          <input
-            type="text"
-            name="nombreUsuario"
-            value={formData.nombreUsuario}
-            onChange={handleInputChange}
-          />
-          {errors.nombreUsuario && <p className="text-danger">{errors.nombreUsuario}</p>}
-        </div>
-
+        <h2>Crear Usuario</h2>
         <div>
           <label>Nombre:</label>
-          <input type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} />
-          {errors.nombre && <p className="text-danger">{errors.nombre}</p>}
-        </div>
-
-        <div>
-          <label>Apellido:</label>
-          <input type="text" name="apellido" value={formData.apellido} onChange={handleInputChange} />
-          {errors.apellido && <p className="text-danger">{errors.apellido}</p>}
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+          />
+          {errors.name && <p className="text-danger">{errors.name}</p>}
         </div>
 
         <div>
           <label>Correo electrónico:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleInputChange} />
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+          />
           {errors.email && <p className="text-danger">{errors.email}</p>}
         </div>
 
         <div>
-          <label>Teléfono:</label>
-          <input type="text" name="telefono" value={formData.telefono} onChange={handleInputChange} />
-          {errors.telefono && <p className="text-danger">{errors.telefono}</p>}
-        </div>
-
-        <div>
-          <label>Género:</label>
-          <input type="text" name="genero" value={formData.genero} onChange={handleInputChange} />
-          {errors.genero && <p className="text-danger">{errors.genero}</p>}
-        </div>
-
-        <div>
-          <label>RUT:</label>
-          <input type="text" name="rut" value={formData.rut} onChange={handleInputChange} />
-          {errors.rut && <p className="text-danger">{errors.rut}</p>}
-        </div>
-
-        <div>
-          <label>Fecha de Nacimiento:</label>
-          <input type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleInputChange} />
-          {errors.fechaNacimiento && <p className="text-danger">{errors.fechaNacimiento}</p>}
-        </div>
-
-        <div>
           <label>Contraseña:</label>
-          <input type="password" name="contrasena" value={formData.contrasena} onChange={handleInputChange} />
-          {errors.contrasena && <p className="text-danger">{errors.contrasena}</p>}
-        </div>
-
-        <div>
-          <label>Confirmar Contraseña:</label>
-          <input type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} />
-          {errors.confirmPassword && <p className="text-danger">{errors.confirmPassword}</p>}
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+          />
+          {errors.password && <p className="text-danger">{errors.password}</p>}
         </div>
 
         <button className="btn btn-primary w-100" type="submit" disabled={isSubmitting}>
@@ -231,4 +157,6 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) =>
 };
 
 export default UserCreationForm;
+
+
 
