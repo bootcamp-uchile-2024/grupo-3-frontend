@@ -4,6 +4,14 @@ import UserCreateForm from './UserCreateForm';
 const UserManagement = () => {
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (user && user.roles && user.roles.includes('admin-1')) {
+      setIsAdmin(true);
+    }
+  }, []);
 
   const fetchUsers = async () => {
     try {
@@ -44,7 +52,7 @@ const UserManagement = () => {
       <h2 className="text-center mb-4">Gestión de Usuarios</h2>
 
       <div className="mb-4">
-        <UserCreateForm onUserCreated={fetchUsers} />
+        <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />
       </div>
 
       {loading ? (
@@ -65,26 +73,25 @@ const UserManagement = () => {
             </tr>
           </thead>
           <tbody>
-          {users.map((user) => {
-  console.log(user);
-  return (
-    <tr key={user.id}>
-      <td>{user.id}</td>
-      <td>{user.name}</td>
-      <td>{user.username}</td>
-      <td>{user.email}</td>
-      <td>
-        <button
-          className="btn btn-danger btn-sm"
-          onClick={() => deleteUser(user.id)}
-        >
-          Eliminar
-        </button>
-      </td>
-    </tr>
-  );
-})}
-
+            {users.map((user) => {
+              console.log(user);
+              return (
+                <tr key={user.id}>
+                  <td>{user.id}</td>
+                  <td>{user.name}</td>
+                  <td>{user.username}</td>
+                  <td>{user.email}</td>
+                  <td>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => deleteUser(user.id)}
+                    >
+                      Eliminar
+                    </button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}

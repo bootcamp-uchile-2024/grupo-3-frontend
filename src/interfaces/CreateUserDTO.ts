@@ -1,7 +1,14 @@
-export interface createUserDTO {
-    name: string;
+export interface CreateUserDTO {
+    nombre: string;
+    apellido: string;
+    nombreUsuario: string;
     email: string;
-    password: string;
+    contrasena: string;
+    telefono?: string;  
+    genero?: string;  
+    rut: string;
+    fechaNacimiento: string;
+    tipoUsuarioId: number;
   }
   
   
