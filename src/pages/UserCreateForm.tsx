@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/UserCreationForm.css';
 import { validateEmail, validatePassword } from '../utils/validators';
 
-// Definir los tipos correctamente para los datos del usuario
 interface CreateUserDTO {
   name: string;
   password: string;
@@ -29,19 +28,16 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) =>
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Función para manejar los cambios en los campos de entrada
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
 
-    // Limpiar el error del campo cuando el usuario lo modifica
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: '',
     }));
   };
 
-  // Función de validación
   const validate = () => {
     const newErrors = {
       name: formData.name ? '' : 'El nombre es obligatorio',
@@ -53,7 +49,6 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) =>
     return Object.values(newErrors).every((error) => !error);
   };
 
-  // Función de envío del formulario
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
@@ -63,19 +58,17 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) =>
         email: formData.email,
       };
 
-      // Verifica el objeto antes de enviarlo
       console.log('Datos a enviar:', userData);
 
       setIsSubmitting(true);
 
       try {
-        // Cambia la URL por la que corresponde al backend
         const response = await fetch('http://localhost:8080/usuarios', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(userData), // El cuerpo del request es un JSON con los datos del usuario
+          body: JSON.stringify(userData),
         });
 
         if (!response.ok) {
@@ -87,7 +80,6 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) =>
 
         alert('¡Usuario creado exitosamente!');
 
-        // Resetear el formulario
         setFormData({
           name: '',
           email: '',
@@ -100,7 +92,6 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) =>
           password: '',
         });
 
-        // Llamar al callback de éxito
         if (onUserCreated) onUserCreated();
       } catch (error) {
         console.error('Error al crear el usuario:', error);
@@ -157,6 +148,5 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated }) =>
 };
 
 export default UserCreationForm;
-
 
 

@@ -1,7 +1,7 @@
 ARG IMAGEN
 ARG ENDPOINT
 
-FROM node:22-alpine3.19 AS build
+FROM node:18-alpine AS build
 
 # Establece el directorio de trabajo
 WORKDIR /app
