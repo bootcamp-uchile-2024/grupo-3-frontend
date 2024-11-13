@@ -14,7 +14,7 @@ const CatalogPage: React.FC = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('https://clon-cotiledonbackend.onrender.com/catalogo');
+      const response = await fetch('http://localhost:8080/catalogo');
       if (!response.ok) throw new Error('Error al cargar los productos');
       const data: productsCatalog[] = await response.json();
       setProducts(data);

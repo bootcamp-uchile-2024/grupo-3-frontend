@@ -1,27 +1,22 @@
-# Etapa 1: Construcción de la aplicación
-FROM node:18 AS build
+ARG IMAGEN
+ARG ENDPOINT
 
-ARG VITE_URL_ENDPOINT_BACKEND
-ENV VITE_URL_ENDPOINT_BACKEND=$VITE_URL_ENDPOINT_BACKEND
+FROM node:22-alpine3.19 AS build
 
-WORKDIR /usr/src/app
+# Establece el directorio de trabajo
+WORKDIR /app
 
-# Instalamos dependencias
 COPY package*.json ./
 RUN npm install
 
-# Copiamos el resto de los archivos y construimos la aplicación
 COPY . .
-RUN npm run build  # Este comando generará la carpeta "build"
+RUN npm run build
 
-# Etapa 2: Configuración de Nginx para servir la aplicación
+# Usa una imagen de Nginx para servir los archivos estáticos
 FROM nginx:alpine
 
-# Copiamos los archivos generados por la etapa de construcción a la carpeta de Nginx
-COPY --from=build /usr/src/app/build /usr/share/nginx/html
+# Copia los archivos generados por Vite a la carpeta de Nginx
+COPY --from=build /app/dist /usr/share/nginx/html
 
-# Exponemos el puerto 80 para Nginx
+# Expone el puerto 80 para el servidor Nginx
 EXPOSE 80
-
-# Comando de inicio de Nginx
-CMD ["nginx", "-g", "daemon off;"]
