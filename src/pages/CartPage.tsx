@@ -1,33 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { clearCart, removeFromCart, updateQuantity } from '../states/cartSlice';
+import { clearCart, removeFromCart, updateQuantity, addToCart } from '../states/cartSlice';
 import { RootState } from '../states/store';
 import { CartItem } from '../interfaces/CartItem';
-import { finalizePurchaseRequest } from '../endpoints/purchase';
 
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
-
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false);
   const [coupon, setCoupon] = useState<string>('');
   const [discount, setDiscount] = useState<number>(0);
   const [purchaseTotal, setPurchaseTotal] = useState<number | null>(null);
   const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(false); 
-  const [, setError] = useState<string | null>(null); 
+  const [loading, setLoading] = useState<boolean>(false);
+  const [, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const storedCart = localStorage.getItem('__redux__cart__');
-    console.log('Stored cart:', storedCart);
     if (storedCart) {
       const parsedCart = JSON.parse(storedCart);
-      if (parsedCart && parsedCart.items) {
-        parsedCart.items.forEach((item: CartItem) => {
-          dispatch(updateQuantity({ id: item.id, cantidad: item.cantidad }));
-        });
-      }
+      parsedCart.items.forEach((item: CartItem) => {
+        dispatch(updateQuantity({ id: item.id, cantidad: item.cantidad }));
+      });
     }
   }, [dispatch]);
 
@@ -40,16 +36,38 @@ const CartPage: React.FC = () => {
     }
   };
 
-  const handleRemoveFromCart = (productId: number) => {
-    dispatch(removeFromCart(productId));
+  const handleUpdateQuantity = async (productId: number, newQuantity: number) => {
+    try {
+      const response = await fetch(`http://localhost:8080/carro-compras/${productId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ cantidad: newQuantity })
+      });
+      if (response.ok) {
+        dispatch(updateQuantity({ id: productId, cantidad: newQuantity }));
+      } else {
+        console.error("Error al actualizar la cantidad del producto.");
+      }
+    } catch (error) {
+      console.error("Error en la petición de actualizar cantidad:", error);
+    }
   };
 
-  const handleIncrement = (productId: number) => {
-    dispatch(updateQuantity({ id: productId, cantidad: 1 }));
-  };
-
-  const handleDecrement = (productId: number) => {
-    dispatch(updateQuantity({ id: productId, cantidad: -1 }));
+  const handleRemoveFromCart = async (productId: number) => {
+    try {
+      const response = await fetch(`http://localhost:8080/carro-compras/${productId}`, {
+        method: 'DELETE'
+      });
+      if (response.ok) {
+        dispatch(removeFromCart(productId));
+      } else {
+        console.error("Error al eliminar el producto del carrito.");
+      }
+    } catch (error) {
+      console.error("Error en la petición de eliminar producto:", error);
+    }
   };
 
   const handleClearCart = () => {
@@ -63,28 +81,6 @@ const CartPage: React.FC = () => {
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setIsPurchaseCompleted(false);
-  };
-
-  const handleFinalizePurchase = async () => {
-    setLoading(true);
-    setError(null); 
-
-    setPurchasedItems(groupedItems); 
-    setPurchaseTotal(discountedTotal); 
-
-    try {
-      console.log(cartItems);
-      const response = await finalizePurchaseRequest(cartItems);
-      console.log(response);
-      console.log('Compra finalizada con éxito: HTTP statuscode ' + response.statusCode);
-      handleClearCart();
-      setIsPurchaseCompleted(true);
-    } catch (error) {
-      setError('Hubo un problema al finalizar la compra. Por favor, inténtalo nuevamente.');
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
   };
 
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
@@ -124,9 +120,9 @@ const CartPage: React.FC = () => {
                   <small className="text-body-secondary">Precio: ${item.precio}</small>
                 </div>
                 <div>
-                  <button className="btn btn-outline-secondary btn-sm" onClick={() => handleDecrement(item.id)} disabled={item.cantidad === 1}>-</button>
+                  <button className="btn btn-outline-secondary btn-sm" onClick={() => handleUpdateQuantity(item.id, item.cantidad - 1)} disabled={item.cantidad === 1}>-</button>
                   <span className="mx-2">{item.cantidad}</span>
-                  <button className="btn btn-outline-secondary btn-sm" onClick={() => handleIncrement(item.id)}>+</button>
+                  <button className="btn btn-outline-secondary btn-sm" onClick={() => handleUpdateQuantity(item.id, item.cantidad + 1)}>+</button>
                   <button className="btn btn-danger btn-sm ms-2" onClick={() => handleRemoveFromCart(item.id)}>Eliminar</button>
                 </div>
               </li>
@@ -143,66 +139,34 @@ const CartPage: React.FC = () => {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">
-                  {isPurchaseCompleted ? 'Tu compra ha sido finalizada con éxito' : 'Resumen del Pedido'}
-                </h5>
+                <h5 className="modal-title">Resumen del Pedido</h5>
                 <button type="button" className="btn-close" onClick={handleCloseModal}></button>
               </div>
               <div className="modal-body">
-                {isPurchaseCompleted ? (
-                  <>
-                    <p>¡Gracias por tu compra!</p>
-                    <h6>Detalles del pedido:</h6>
-                    <ul className="list-group">
-                      {purchasedItems.map((item: CartItem) => (
-                        <li key={item.id} className="list-group-item d-flex justify-content-between">
-                          <span>{item.nombre}</span>
-                          <span>x {item.cantidad} - ${item.precio * item.cantidad}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <p>El total de tu compra fue de: <h3>${new Intl.NumberFormat('es-CL', {
-                      style: 'decimal',
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 2,
-                    }).format(purchaseTotal || 0)}</h3></p>
-                  </>
-                ) : (
-                  <>
-                    <span>Aplicar cupón de descuento?</span>
-                    <div className="input-group mb-3">
-                      <input
-                        type="text"
-                        value={coupon}
-                        onChange={(e) => setCoupon(e.target.value)}
-                        placeholder="Ingresa tu cupón"
-                        className="form-control"
-                      />
-                      <button className="btn btn-secondary" onClick={handleApplyCoupon}>Aplicar</button>
-                    </div>
-                    <ul className="list-group">
-                      {groupedItems.map((item: CartItem) => (
-                        <li key={item.id} className="list-group-item d-flex justify-content-between">
-                          <span>{item.nombre}</span>
-                          <span> x {item.cantidad} - ${item.precio * item.cantidad}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <h3 className="mt-3">Total: ${formattedTotal}</h3>
-                  </>
-                )}
+                <span>Aplicar cupón de descuento?</span>
+                <div className="input-group mb-3">
+                  <input
+                    type="text"
+                    value={coupon}
+                    onChange={(e) => setCoupon(e.target.value)}
+                    placeholder="Ingresa tu cupón"
+                    className="form-control"
+                  />
+                  <button className="btn btn-secondary" onClick={handleApplyCoupon}>Aplicar</button>
+                </div>
+                <ul className="list-group">
+                  {groupedItems.map((item: CartItem) => (
+                    <li key={item.id} className="list-group-item d-flex justify-content-between">
+                      <span>{item.nombre}</span>
+                      <span> x {item.cantidad} - ${item.precio * item.cantidad}</span>
+                    </li>
+                  ))}
+                </ul>
+                <h3 className="mt-3">Total: ${formattedTotal}</h3>
               </div>
               <div className="modal-footer">
-                {isPurchaseCompleted ? (
-                  <button className="btn btn-primary" onClick={handleCloseModal}>Cerrar</button>
-                ) : (
-                  <>
-                    <button className="btn btn-secondary" onClick={handleCloseModal}>Cancelar</button>
-                    <button className="btn btn-primary" onClick={handleFinalizePurchase} disabled={loading}>
-                      {loading ? 'Procesando...' : 'Finalizar Compra'}
-                    </button>
-                  </>
-                )}
+                <button className="btn btn-secondary" onClick={handleCloseModal}>Cancelar</button>
+                <button className="btn btn-primary">Finalizar Compra</button>
               </div>
             </div>
           </div>
@@ -213,11 +177,3 @@ const CartPage: React.FC = () => {
 };
 
 export default CartPage;
-
-
-
-
-
-
-
-
