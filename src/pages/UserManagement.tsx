@@ -65,22 +65,26 @@ const UserManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.name}</td>
-                <td>{user.username}</td>
-                <td>{user.email}</td>
-                <td>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => deleteUser(user.id)}
-                  >
-                    Eliminar
-                  </button>
-                </td>
-              </tr>
-            ))}
+          {users.map((user) => {
+  console.log(user);
+  return (
+    <tr key={user.id}>
+      <td>{user.id}</td>
+      <td>{user.name}</td>
+      <td>{user.username}</td>
+      <td>{user.email}</td>
+      <td>
+        <button
+          className="btn btn-danger btn-sm"
+          onClick={() => deleteUser(user.id)}
+        >
+          Eliminar
+        </button>
+      </td>
+    </tr>
+  );
+})}
+
           </tbody>
         </table>
       )}

@@ -15,7 +15,13 @@ services:
     volumes:
       - ./sql:/flyway/sql
     command: -url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE} -user=${DB_USERNAME} -password=${DB_PASSWORD} -connectRetries=60 migrate
-
+    environment:
+      - AMBIENTE=production
+      - DB_HOST=database-prod
+      - DB_PORT=3306
+      - DB_USERNAME=root
+      - DB_PASSWORD=clave123
+      - DB_DATABASE=plantai_db
   cotiledon-prod:
     image: nicolasf1/cotiledonapp:1.0.2
     depends_on:
