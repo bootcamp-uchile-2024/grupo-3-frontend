@@ -39,7 +39,7 @@ function App() {
             <Route path="login" element={<LoginForm onLogin={handleLogin} />} />
             {/* <Route path="dashboard" element={<DashboardPage />} /> */}
             <Route path="crear-usuario" element={<UserCreationForm />} />
-            <Route path="crear-usuario" element={<PrivateRoute roles={["admin-1"]}><CrearProducto /></PrivateRoute>} />
+            <Route path="crear-producto" element={<PrivateRoute roles={["admin-1"]}><CrearProducto /></PrivateRoute>} />
             <Route path="cart" element={<CartPage />} />
             <Route path="/user-management" element={<UserManagement />} />
 

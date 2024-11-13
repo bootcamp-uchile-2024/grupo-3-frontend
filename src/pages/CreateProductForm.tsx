@@ -20,7 +20,7 @@ const CreateProduct: React.FC = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setProducto({...producto,[name]: value});
+        setProducto({ ...producto, [name]: name === 'petFriendly' ? value === 'true' : value });
 
         setErrores((prev) => ({
             ...prev,
@@ -28,59 +28,54 @@ const CreateProduct: React.FC = () => {
         }));
     };
 
-    //Funciones para transformar imagenes en strings
+    // Función para manejar la carga de archivos y validaciones
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        try {
-            const file = event.target.files![0];
+        const file = event.target.files?.[0];
+        if (!file) return;
 
-            //validacion tamaño
-            if (!validarTamanoFichero(file)) {
-                alert("El archivo es muy grande");
-                event.target.value = '';
-                return;
-            }
-
-            //validacion tipo
-            if (!await validarTipoFichero(file)) {
-                alert("El archivo no es una imagen");
-                event.target.value = '';
-                return;
-            }
-
-            const base64 = await convertirBase64(file);
-            setProducto({ ...producto, imagen: base64 });
-        } catch (err) {
-            console.error("Error: ", err);
+        // Validación de tamaño
+        if (!validarTamanoFichero(file)) {
+            alert("El archivo es muy grande");
             event.target.value = '';
+            return;
         }
-    }
+
+        // Validación de tipo
+        if (!(await validarTipoFichero(file))) {
+            alert("El archivo no es una imagen");
+            event.target.value = '';
+            return;
+        }
+
+        const base64 = await convertirBase64(file);
+        setProducto({ ...producto, imagen: base64 });
+    };
 
     const validarTamanoFichero = (file: File) => {
         const limitSize = 1024 * 1024 * 2; // 2MB
-        const fileSize = file.size;
-        return fileSize <= limitSize;
-    }
+        return file.size <= limitSize;
+    };
 
-    const validarTipoFichero = (file: File) => {
+    const validarTipoFichero = async (file: File) => {
+        const types = ["jpeg", "png", "gif"];
+        const fileReader = new FileReader();
+        fileReader.readAsArrayBuffer(file);
         return new Promise<boolean>((resolve, reject) => {
-            const fileReader = new FileReader();
-            const types = ["jpeg", "png", "gif"];
-            fileReader.readAsArrayBuffer(file);
             fileReader.onload = () => resolve(fileTypeChecker.validateFileType(fileReader.result as ArrayBuffer, types));
             fileReader.onerror = (error) => reject(error);
         });
-    }
+    };
 
-    const convertirBase64 = (file: File) => {
-        return new Promise <string>((resolve, reject)=> {
+    const convertirBase64 = (file: File): Promise<string> => {
+        return new Promise<string>((resolve, reject) => {
             const fileReader = new FileReader();
             fileReader.readAsDataURL(file);
             fileReader.onload = () => resolve(fileReader.result as string);
-            fileReader.onerror = (error) => reject (error);
+            fileReader.onerror = (error) => reject(error);
         });
-    }
-    //Función para las validaciones del formulario 
+    };
 
+    // Función para las validaciones del formulario
     const validate = (): boolean => {
         const newErrors: { [key: string]: string } = {};
         let isValid = true;
@@ -111,7 +106,7 @@ const CreateProduct: React.FC = () => {
             isValid = false;
         }
 
-        if (producto.cantidad <= 0 ) {
+        if (producto.cantidad <= 0) {
             newErrors.cantidad = 'La cantidad debe ser mayor que 0';
             isValid = false;
         }
@@ -138,29 +133,36 @@ const CreateProduct: React.FC = () => {
 
         setErrores(newErrors);
         return isValid;
-
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (validate()) {
-            console.log('Datos del formulario:', producto);
-            alert ('¡Felicidades! Nuevo producto creado')
-            setProducto({
-                nombre: '',
-                precio: 0,
-                imagen: '',
-                descripcion: '',
-                cantidad: 0,
-                familia: '',
-                fotoperiodo: '',
-                tipoRiego: '',
-                petFriendly: false,
-                color: '',
-            });
+            try {
+                await fetch('http://localhost:8080/productos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(producto),
+                });
+                alert('¡Felicidades! Nuevo producto creado');
+                setProducto({
+                    nombre: '',
+                    precio: 0,
+                    imagen: '',
+                    descripcion: '',
+                    cantidad: 0,
+                    familia: '',
+                    fotoperiodo: '',
+                    tipoRiego: '',
+                    petFriendly: false,
+                    color: '',
+                });
+            } catch (error) {
+                console.error("Error al crear el producto: ", error);
+            }
         } else {
             alert('Error al enviar el formulario, corrige los campos y vuelve a intentarlo');
-        };
+        }
     };
 
     return (

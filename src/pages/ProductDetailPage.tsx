@@ -31,7 +31,7 @@ export default function ProductDetailPage() {
       } catch (error) {
         setError('Hubo un error al obtener el producto');
       } finally {
-        setLoading(false); // Ya no está cargando
+        setLoading(false);
       }
     };
 
