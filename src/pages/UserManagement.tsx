@@ -1,17 +1,10 @@
 import { useEffect, useState } from 'react';
 import UserCreateForm from './UserCreateForm';
 
-interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-}
-
 const UserManagement = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false); 
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -57,7 +50,6 @@ const UserManagement = () => {
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-4">Gestión de Usuarios</h2>
-
       <div className="mb-4">
         <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />
       </div>
@@ -75,7 +67,13 @@ const UserManagement = () => {
               <th scope="col">ID</th>
               <th scope="col">Nombre</th>
               <th scope="col">Username</th>
+              <th scope="col">Nombre Usuario</th>
               <th scope="col">Correo</th>
+              <th scope="col">Teléfono</th>
+              <th scope="col">Género</th>
+              <th scope="col">Rut</th>
+              <th scope="col">Fecha Nacimiento</th>
+              <th scope="col">Id usuario</th>
               <th scope="col">Acciones</th>
             </tr>
           </thead>
@@ -85,9 +83,15 @@ const UserManagement = () => {
               return (
                 <tr key={user.id}>
                   <td>{user.id}</td>
-                  <td>{user.name}</td>
-                  <td>{user.username}</td>
+                  <td>{user.nombre}</td>
+                  <td>{user.apellido}</td>
+                  <td>{user.nombreUsuario}</td>
                   <td>{user.email}</td>
+                  <td>{user.telefono}</td>
+                  <td>{user.genero}</td>
+                  <td>{user.rut}</td>
+                  <td>{user.fechaNacimiento}</td>
+                  <td>{user.tipoUsuarioId}</td>
                   <td>
                     <button
                       className="btn btn-danger btn-sm"
