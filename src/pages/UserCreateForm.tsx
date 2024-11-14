@@ -32,7 +32,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
     genero: '',
     rut: '',
     fechaNacimiento: '',
-    tipoUsuarioId: isAdmin ? 1 : 4,
+    tipoUsuarioId: isAdmin ? 1 : 3, // Valor inicial basado en el rol
   });
 
   const [errors, setErrors] = useState({
@@ -72,7 +72,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
       rut: formData.rut ? '' : 'El RUT es obligatorio',
       fechaNacimiento: formData.fechaNacimiento ? '' : 'La fecha de nacimiento es obligatoria',
       tipoUsuarioId:
-        isAdmin || formData.tipoUsuarioId === 4
+        isAdmin || formData.tipoUsuarioId === 3
           ? ''
           : 'El tipo de usuario debe estar entre 1 y 4',
     };
@@ -87,7 +87,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
     if (validate()) {
       const userData: CreateUserDTO = {
         ...formData,
-        tipoUsuarioId: isAdmin ? formData.tipoUsuarioId : 4,
+        tipoUsuarioId: isAdmin ? formData.tipoUsuarioId : 3,
       };
 
       console.log('Datos enviados al backend:', userData);
@@ -118,7 +118,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
           genero: '',
           rut: '',
           fechaNacimiento: '',
-          tipoUsuarioId: isAdmin ? 1 : 4,
+          tipoUsuarioId: isAdmin ? 1 : 3,
           contrasena: '',
         });
 
@@ -194,19 +194,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
           {errors.fechaNacimiento && <p className="text-danger">{errors.fechaNacimiento}</p>}
         </div>
 
-        <div>
-          <label>Tipo de usuario (ID):</label>
-          <input
-            type="number"
-            name="tipoUsuarioId"
-            value={formData.tipoUsuarioId}
-            onChange={handleInputChange}
-            disabled={!isAdmin}
-            min={1}
-            max={4}
-          />
-          {errors.tipoUsuarioId && <p className="text-danger">{errors.tipoUsuarioId}</p>}
-        </div>
+        
 
         <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Creando usuario...' : 'Crear Usuario'}

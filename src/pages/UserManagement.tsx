@@ -11,15 +11,16 @@ interface User {
   genero: string;
   rut: string;
   fechaNacimiento: string;
-  tipoUsuarioId: number;
+  tipoUsuarioId: number | string;
+  tipoUsuario: string;
 }
 
 const UserManagement = () => {
-  const [users, setUsers] = useState<User[]>([]); // users state with User type
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [editingUser, setEditingUser] = useState<User | null>(null); // editingUser state with User type
-  const [error, setError] = useState<string>(''); // error state as string
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -34,7 +35,7 @@ const UserManagement = () => {
       if (!response.ok) {
         throw new Error('Error al obtener los usuarios');
       }
-      const data: User[] = await response.json(); // Explicitly define the type of response data
+      const data: User[] = await response.json();
       setUsers(data);
     } catch (error) {
       console.error('Error:', error);
@@ -42,6 +43,7 @@ const UserManagement = () => {
       setLoading(false);
     }
   };
+
 
   const deleteUser = async (userId: number) => {
     try {
@@ -58,11 +60,17 @@ const UserManagement = () => {
     }
   };
 
+  // Actualizar usuario
   const handleUpdateUser = async (user: User) => {
-    if (user.tipoUsuarioId < 1 || user.tipoUsuarioId > 4) {
+    const tipoUsuarioId = parseInt(user.tipoUsuarioId.toString(), 10);
+
+    // Validación de tipoUsuarioId
+    if (isNaN(tipoUsuarioId) || tipoUsuarioId < 1 || tipoUsuarioId > 4) {
       setError('El ID de tipo de usuario debe estar entre 1 y 4.');
       return;
     }
+
+    console.log('Validación correcta, enviando datos:', user);
 
     try {
       const response = await fetch(`http://localhost:8080/usuarios/${user.id}`, {
@@ -70,7 +78,7 @@ const UserManagement = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify({ ...user, tipoUsuarioId }),
       });
 
       if (!response.ok) {
@@ -79,24 +87,19 @@ const UserManagement = () => {
 
       console.log('Usuario actualizado');
       setEditingUser(null);
-      fetchUsers(); 
-      setError(''); 
+      fetchUsers();
+      setError('');
     } catch (error) {
       console.error('Error al actualizar el usuario:', error);
     }
   };
 
+  // Manejo de edición de usuario
   const handleEditClick = (user: User) => {
     setEditingUser(user);
   };
 
-  const userTypes: { [key: number]: string } = {
-    1: 'Admin',
-    2: 'User',
-    3: 'Guest',
-    4: 'SuperAdmin',
-  };
-
+  // Cargar usuarios al inicio
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -127,7 +130,6 @@ const UserManagement = () => {
               <th scope="col">Género</th>
               <th scope="col">Rut</th>
               <th scope="col">Fecha Nacimiento</th>
-         
               <th scope="col">Tipo de Usuario</th>
               <th scope="col">Acciones</th>
             </tr>
@@ -144,8 +146,8 @@ const UserManagement = () => {
                   <td>{user.telefono}</td>
                   <td>{user.genero}</td>
                   <td>{user.rut}</td>
-                  <td>{user.fechaNacimiento}</td>
-                  <td>{userTypes[user.tipoUsuarioId]}</td>
+                  <td>{new Date(user.fechaNacimiento).toLocaleDateString('es-ES')}</td>
+                  <td>{user.tipoUsuario}</td>
                   <td>
                     {isAdmin && (
                       <button
@@ -192,11 +194,11 @@ const UserManagement = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="username">Apellido</label>
+              <label htmlFor="apellido">Apellido</label>
               <input
                 type="text"
                 className="form-control"
-                id="username"
+                id="apellido"
                 value={editingUser.apellido}
                 onChange={(e) =>
                   setEditingUser({ ...editingUser, apellido: e.target.value })
@@ -270,17 +272,14 @@ const UserManagement = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="fechaNacimiento">Fecha Nacimiento</label>
+              <label htmlFor="fechaNacimiento">Fecha de Nacimiento</label>
               <input
                 type="date"
                 className="form-control"
                 id="fechaNacimiento"
                 value={editingUser.fechaNacimiento}
                 onChange={(e) =>
-                  setEditingUser({
-                    ...editingUser,
-                    fechaNacimiento: e.target.value,
-                  })
+                  setEditingUser({ ...editingUser, fechaNacimiento: e.target.value })
                 }
               />
             </div>
@@ -288,28 +287,23 @@ const UserManagement = () => {
             <div className="form-group">
               <label htmlFor="tipoUsuarioId">Tipo de Usuario</label>
               <select
-                className="form-control"
                 id="tipoUsuarioId"
+                className="form-control"
                 value={editingUser.tipoUsuarioId}
                 onChange={(e) =>
-                  setEditingUser({
-                    ...editingUser,
-                    tipoUsuarioId: Number(e.target.value),
-                  })
+                  setEditingUser({ ...editingUser, tipoUsuarioId: e.target.value })
                 }
               >
-                <option value="1">Admin</option>
-                <option value="2">User</option>
-                <option value="3">Guest</option>
-                <option value="4">SuperAdmin</option>
+                <option value="1">SuperAdmin</option>
+                <option value="2">Admin</option>
+                <option value="3">Cliente</option>
+                <option value="4">Visitante</option>
               </select>
             </div>
 
-            {error && <div className="alert alert-danger mt-2">{error}</div>}
+            {error && <p className="text-danger">{error}</p>}
 
-            <button type="submit" className="btn btn-primary mt-3">
-              Actualizar
-            </button>
+            <button type="submit" className="btn btn-primary">Actualizar</button>
           </form>
         </div>
       )}
@@ -318,7 +312,3 @@ const UserManagement = () => {
 };
 
 export default UserManagement;
-
-
-
-
