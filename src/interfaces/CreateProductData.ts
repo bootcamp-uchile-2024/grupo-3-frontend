@@ -1,13 +1,28 @@
+export interface Categoria {
+  id: number;
+  nombre: string;
+}
+
+export interface Planta {
+  id: number;
+  nombre: string;
+}
+
 export interface createProductData {
-    nombre: string;
-    precio: number;
-    imagen?: string;
-    descripcion: string;
-    cantidad: number;
-    familia: string;
-    fotoperiodo: string;
-    tipoRiego: string;
-    petFriendly: boolean;
-    color: string;
-    id?: number;
+  id?: number;
+  SKU?: string;
+  nombre: string;
+  idCategoria?: number;
+  precio: number;
+  descripcion: string;
+  imagen: string;
+  cantidad: number;
+  unidadesVendidas?: number;
+  puntuacion?: number;
+  ancho: number;
+  alto: number;
+  largo: number;
+  peso: number;
+  categoria?: Categoria;  
+  planta?: Planta;        
 }

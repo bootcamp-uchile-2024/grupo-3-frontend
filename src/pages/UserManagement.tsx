@@ -1,12 +1,25 @@
 import { useEffect, useState } from 'react';
 import UserCreateForm from './UserCreateForm';
 
+interface User {
+  id: number;
+  nombre: string;
+  apellido: string;
+  nombreUsuario: string;
+  email: string;
+  telefono: string;
+  genero: string;
+  rut: string;
+  fechaNacimiento: string;
+  tipoUsuarioId: number;
+}
+
 const UserManagement = () => {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]); // users state with User type
   const [loading, setLoading] = useState<boolean>(true);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
-  const [editingUser, setEditingUser] = useState<any | null>(null);
-  const [error, setError] = useState<string>(''); 
+  const [editingUser, setEditingUser] = useState<User | null>(null); // editingUser state with User type
+  const [error, setError] = useState<string>(''); // error state as string
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -21,7 +34,7 @@ const UserManagement = () => {
       if (!response.ok) {
         throw new Error('Error al obtener los usuarios');
       }
-      const data = await response.json();
+      const data: User[] = await response.json(); // Explicitly define the type of response data
       setUsers(data);
     } catch (error) {
       console.error('Error:', error);
@@ -45,7 +58,7 @@ const UserManagement = () => {
     }
   };
 
-  const handleUpdateUser = async (user: any) => {
+  const handleUpdateUser = async (user: User) => {
     if (user.tipoUsuarioId < 1 || user.tipoUsuarioId > 4) {
       setError('El ID de tipo de usuario debe estar entre 1 y 4.');
       return;
@@ -66,14 +79,14 @@ const UserManagement = () => {
 
       console.log('Usuario actualizado');
       setEditingUser(null);
-      fetchUsers(); 
-      setError(''); 
+      fetchUsers();
+      setError('');
     } catch (error) {
       console.error('Error al actualizar el usuario:', error);
     }
   };
 
-  const handleEditClick = (user: any) => {
+  const handleEditClick = (user: User) => {
     setEditingUser(user);
   };
 
@@ -129,7 +142,7 @@ const UserManagement = () => {
                     {isAdmin && (
                       <button
                         className="btn btn-warning btn-sm"
-                        onClick={() => handleEditClick(user)} 
+                        onClick={() => handleEditClick(user)}
                       >
                         Editar
                       </button>
@@ -256,17 +269,18 @@ const UserManagement = () => {
                 id="tipoUsuarioId"
                 value={editingUser.tipoUsuarioId}
                 onChange={(e) =>
-                  setEditingUser({ ...editingUser, tipoUsuarioId: parseInt(e.target.value) })
+                  setEditingUser({
+                    ...editingUser,
+                    tipoUsuarioId: Number(e.target.value),
+                  })
                 }
-                min={1}
-                max={4}
               />
             </div>
 
-            {error && <div className="alert alert-danger mt-2">{error}</div>}
+            {error && <p className="text-danger">{error}</p>}
 
             <button type="submit" className="btn btn-primary mt-3">
-              Actualizar
+              Guardar cambios
             </button>
           </form>
         </div>
@@ -276,7 +290,3 @@ const UserManagement = () => {
 };
 
 export default UserManagement;
-
-
-
-

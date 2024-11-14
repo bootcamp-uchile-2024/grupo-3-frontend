@@ -10,33 +10,24 @@ const CatalogPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
-  const [userRole, setUserRole] = useState<string []| null>(null);
+  const [userRole, setUserRole] = useState<string[] | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1); 
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [pageSize, ] = useState(12);
   const dispatch = useDispatch();
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (user && user.roles) {
+    if (user && Array.isArray(user.roles)) {
       setUserRole(user.roles);
     }
+    fetchProducts(); 
+  }, [currentPage, pageSize]); // Dependencias correctamente ajustadas
 
-    fetchProducts();
-  }, []);
-
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (user && user.roles) {
-      setUserRole(user.roles);
-    }
-
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async (page: number) => {
+  const fetchProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8080/catalogo?page=${page}&pageSize=20`, {
+      const response = await fetch(`http://localhost:8080/catalogo?page=${currentPage}&pageSize=${pageSize}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -45,9 +36,16 @@ const CatalogPage: React.FC = () => {
       });
 
       if (!response.ok) throw new Error('Error al cargar los productos');
+
       const data = await response.json();
-      setProducts(data.products || []); 
-      setTotalPages(data.totalPages || 1); 
+      console.log ('Respuesta de la API catalogo:', data);
+
+      if (Array.isArray(data.data)) {
+        setProducts(data.data);
+        setTotalPages(Math.ceil(data.totalItems / pageSize));
+      } else {
+        throw new Error('Datos de productos no válidos');
+      }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Ha ocurrido un error desconocido');
     } finally {
@@ -63,15 +61,11 @@ const CatalogPage: React.FC = () => {
       if (!response.ok) {
         throw new Error('Error al eliminar el producto');
       }
-      console.log('Producto eliminado');
-      fetchProducts();
+      fetchProducts(); // Recarga los productos después de eliminar uno
     } catch (error) {
       console.error('Error al eliminar el producto:', error);
     }
   };
-  useEffect(() => {
-    fetchProducts(currentPage);
-  }, [currentPage]);
 
   const handleQuantityChange = (productId: number, increment: boolean) => {
     setQuantities(prevQuantities => ({
@@ -91,18 +85,12 @@ const CatalogPage: React.FC = () => {
       cantidad: quantity,
       unidadesVendidas: product.unidadesVendidas,
       puntuacion: product.puntuacion,
-      familia: product.familia || '', 
-      fotoperiodo: product.fotoperiodo || '',
-      tipoRiego: product.tipoRiego || '',
-      petFriendly: product.petFriendly || false,
-      color: product.color || '',
       ancho: product.ancho,
       alto: product.alto,
       largo: product.largo,
       peso: product.peso,
     }));
   };
-  
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -114,7 +102,6 @@ const CatalogPage: React.FC = () => {
   return (
     <div className="catalog-container">
       <div className="products-grid">
-        {/* Solo intenta renderizar si 'products' es un array válido */}
         {Array.isArray(products) && products.length > 0 ? (
           products.map((product) => (
             <div key={product.id} className="product-card">
@@ -133,14 +120,15 @@ const CatalogPage: React.FC = () => {
               <button onClick={() => handleAddToCart(product)}>Añadir al carrito</button>
               <Link to={`/catalogo/producto/${product.id}`}>Ver detalle</Link>
               {userRole && userRole.includes('admin-1') && (
-              <button type='button' onClick={() => deleteProduct(product.id)}>Eliminar</button>
-            )}
-          </div>
+                <button type='button' onClick={() => deleteProduct(product.id)}>Eliminar</button>
+              )}
+            </div>
           ))
         ) : (
           <p>No se encontraron productos.</p>
         )}
       </div>
+
       <Pagination>
         {[...Array(totalPages)].map((_, index) => (
           <Pagination.Item
@@ -157,4 +145,3 @@ const CatalogPage: React.FC = () => {
 };
 
 export default CatalogPage;
-

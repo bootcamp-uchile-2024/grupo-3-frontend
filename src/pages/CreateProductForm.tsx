@@ -6,21 +6,22 @@ const CreateProduct: React.FC = () => {
     const [producto, setProducto] = useState<createProductData>({
         nombre: '',
         precio: 0,
-        imagen: '',
         descripcion: '',
+        imagen: '',
         cantidad: 0,
-        familia: '',
-        fotoperiodo: '',
-        tipoRiego: '',
-        petFriendly: false,
-        color: '',
+        ancho: 0,
+        alto: 0,
+        largo: 0,
+        peso: 0,
+        idCategoria: 0,
+        planta: {id:0, nombre:''},  // Inicializando correctamente como un array vacío
     });
 
     const [errores, setErrores] = useState<{ [key: string]: string }>({});
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setProducto({ ...producto, [name]: name === 'petFriendly' ? value === 'true' : value });
+        setProducto({ ...producto, [name]: value });
 
         setErrores((prev) => ({
             ...prev,
@@ -76,7 +77,7 @@ const CreateProduct: React.FC = () => {
     };
 
     // Función para las validaciones del formulario
-    const validate = (): boolean => {
+    const validate = () => {
         const newErrors: { [key: string]: string } = {};
         let isValid = true;
 
@@ -111,28 +112,18 @@ const CreateProduct: React.FC = () => {
             isValid = false;
         }
 
-        if (!producto.familia) {
-            newErrors.familia = 'La familia es requerida';
+        if (!producto.ancho || !producto.alto || !producto.largo) {
+            newErrors.dimensiones = 'Complete las dimensiones';
             isValid = false;
         }
 
-        if (!producto.fotoperiodo) {
-            newErrors.fotoperiodo = 'El fotoperiodo es requerido';
-            isValid = false;
-        }
-
-        if (!producto.tipoRiego) {
-            newErrors.tipoRiego = 'El tipo de riego es requerido';
-            isValid = false;
-        }
-
-        if (!producto.color) {
-            newErrors.color = 'El color es requerido';
+        if (!producto.peso) {
+            newErrors.peso = 'Complete el peso';
             isValid = false;
         }
 
         setErrores(newErrors);
-        return isValid;
+        return producto;
     };
 
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -148,14 +139,15 @@ const CreateProduct: React.FC = () => {
                 setProducto({
                     nombre: '',
                     precio: 0,
-                    imagen: '',
                     descripcion: '',
+                    imagen: '',
                     cantidad: 0,
-                    familia: '',
-                    fotoperiodo: '',
-                    tipoRiego: '',
-                    petFriendly: false,
-                    color: '',
+                    ancho: 0,
+                    alto: 0,
+                    largo: 0,
+                    peso: 0,
+                    idCategoria: 0,
+                    planta: {id:0, nombre:''}
                 });
             } catch (error) {
                 console.error("Error al crear el producto: ", error);
@@ -231,82 +223,51 @@ const CreateProduct: React.FC = () => {
                         {errores.cantidad && <p className='Create-product-container-inputs-error'>{errores.cantidad}</p>}
                     </div>
                     <div>
-                        <label htmlFor="familia">Familia:</label>
-                        <select
-                            name="familia"
-                            id="familia"
-                            className='Create-product-container-inputs'
-                            onChange={handleChange}
-                            value={producto.familia}
-                        >
-                            <option value="">Selecciona una familia</option>
-                            <option value="familia1">Familia1</option>
-                            <option value="familia2">Familia2</option>
-                            <option value="familia3">Familia3</option>
-                        </select>
-                        {errores.familia && <p className='Create-product-container-inputs-error'>{errores.familia}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="fotoperiodo">Foto periódo:</label>
-                        <select
-                            name="fotoperiodo"
-                            id="fotoperiodo"
-                            className='Create-product-container-inputs'
-                            onChange={handleChange}
-                            value={producto.fotoperiodo}
-                        >
-                            <option value="">Selecciona</option>
-                            <option value="fotoperiodo1">Fotoperiodo1</option>
-                            <option value="fotoperiodo2">Fotoperiodo2</option>
-                            <option value="fotoperiodo3">Fotoperiodo3</option>
-                        </select>
-                        {errores.fotoperiodo && <p className='Create-product-container-inputs-error'>{errores.fotoperiodo}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="tipoRiego">Tipo de riego:</label>
-                        <select
-                            name="tipoRiego"
-                            id="tipoRiego"
-                            className='Create-product-container-inputs'
-                            onChange={handleChange}
-                            value={producto.tipoRiego}
-                        >
-                            <option value="">Selecciona</option>
-                            <option value="tipoRiego1">tipoRiego1</option>
-                            <option value="tipoRiego2">tipoRiego2</option>
-                            <option value="tipoRiego3">tipoRiego3</option>
-                        </select>
-                        {errores.tipoRiego && <p className='Create-product-container-inputs-error'>{errores.tipoRiego}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="petFriendly">¿El producto es pet friendly?</label>
-                        <select
-                            name="petFriendly"
-                            id="petFriendly"
-                            className='Create-product-container-inputs'
-                            onChange={handleChange}
-                            value={producto.petFriendly ? 'true' : 'false'}
-                        >
-                            <option value="true">Si</option>
-                            <option value="false">No</option>
-                        </select>
-                        {errores.petFriendly && <p className='Create-product-container-inputs-error'>{errores.petFriendly}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="color">Color del producto: </label>
+                        <label htmlFor="Ancho">Ancho:</label>
                         <input
-                            type="color"
-                            name="color"
-                            id="color"
+                            type="number"
+                            name="ancho"
+                            id="ancho"
                             className='Create-product-container-inputs'
                             onChange={handleChange}
-                            value={producto.color}
+                            value={producto.ancho}
                         />
-                        {errores.color && <p className='Create-product-container-inputs-error'>{errores.color}</p>}
+                        <label htmlFor="alto">Alto:</label>
+                        <input
+                            type="number"
+                            name="alto"
+                            id="alto"
+                            className='Create-product-container-inputs'
+                            onChange={handleChange}
+                            value={producto.alto}
+                        />
+                        <label htmlFor="largo">Largo:</label>
+                        <input
+                            type="number"
+                            name="largo"
+                            id="largo"
+                            className='Create-product-container-inputs'
+                            onChange={handleChange}
+                            value={producto.largo}
+                        />
+                        {errores.dimensiones && <p className='Create-product-container-inputs-error'>{errores.dimensiones}</p>}
+                    </div>
+                    <div>
+                        <label htmlFor="peso">Peso:</label>
+                        <input
+                            type="number"
+                            name="peso"
+                            id="peso"
+                            className='Create-product-container-inputs'
+                            onChange={handleChange}
+                            value={producto.peso}
+                        />
+                        {errores.peso && <p className='Create-product-container-inputs-error'>{errores.peso}</p>}
                     </div>
                 </div>
-                <br />
-                <button type="submit" className='Create-product-containerbutton' onClick={handleSubmit}>Crear producto</button>
+                <button type="button" onClick={handleSubmit} className='Create-product-container-button'>
+                    Crear Producto
+                </button>
             </form>
         </div>
     );

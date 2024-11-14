@@ -30,7 +30,7 @@ services:
     ports:
       - "8080:8080"
   frontend-prod:
-    image: estefaniaperez/plantaiapp:1.0.1
+    image: karlalacuna/plantaifront2:latest
     depends_on:
       - cotiledon-prod
     environment:

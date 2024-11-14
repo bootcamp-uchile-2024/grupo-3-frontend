@@ -41,7 +41,7 @@ export default function ProductDetailPage() {
   if (error) return <div>{error}</div>; 
 
   const handleAddToCart = (product: productsCatalog) => {
-    dispatch(addToCart({ id: product.id, 
+    dispatch(addToCart({ id: product.id,
       nombre: product.nombre,
       precio: product.precio,
       imagen:product.imagen,
@@ -49,11 +49,10 @@ export default function ProductDetailPage() {
       cantidad: quantity,
       unidadesVendidas:product.unidadesVendidas,
       puntuacion:product.puntuacion,
-      familia:product.familia,
-      fotoperiodo:product.fotoperiodo,
-      tipoRiego:product.tipoRiego,
-      petFriendly:product.petFriendly,
-      color:product.color
+      ancho: product.ancho,
+      alto: product.alto,
+      largo: product.largo,
+      peso: product.peso
     })); 
   };
 
@@ -90,11 +89,10 @@ export default function ProductDetailPage() {
               <p>Cantidad: {product.cantidad}</p>
               <p>Unidades vendidas: {product.unidadesVendidas}</p>
               <p>Puntuación: {product.puntuacion}</p>
-              <p>Familia: {product.familia}</p>
-              <p>Foto-período: {product.fotoperiodo}</p>
-              <p>Tipo de Riego: {product.tipoRiego}</p>
-              <p>Pet Friendly: {product.petFriendly ? 'Sí' : 'No'}</p>
-              <p>Color: {product.color}</p>
+              <p>Ancho: {product.ancho}</p>
+              <p>Alto: {product.alto}</p>
+              <p>Largo: {product.largo}</p>
+              <p>Peso: {product.peso}</p>
               <br />
               <div className="quantity-controls ms-5">
                 <button className="btn btn-secondary me-2" onClick={decrementQuantity}>-</button>

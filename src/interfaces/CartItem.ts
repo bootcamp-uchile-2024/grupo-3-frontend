@@ -4,10 +4,10 @@ export interface CartItem {
   precio: number;
   imagen: string;
   descripcion: string;
-  cantidad: number; 
+  cantidad: number;
   unidadesVendidas: number;
   puntuacion: number;
-  familia?: string; 
+  familia?: string;
   fotoperiodo?: string;
   tipoRiego?: string;
   petFriendly?: boolean;
@@ -16,5 +16,5 @@ export interface CartItem {
   alto: number;
   largo: number;
   peso: number;
-  }
+}
   
