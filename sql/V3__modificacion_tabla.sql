@@ -1,1 +1,0 @@
-ALTER TABLE usuarios ADD fecha_eliminacion Date;

@@ -2,30 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearCart, removeFromCart, updateQuantity } from '../states/cartSlice';
 import { RootState } from '../states/store';
-import { CartItem } from '../interfaces/CartItem';
-import { finalizePurchaseRequest } from '../endpoints/purchase';
+import { CartItem } from "../interfaces/CartItem";
 
-// Componente principal del Carrito de Compras
 const CartPage: React.FC = () => {
-  // Usamos el hook useDispatch para despachar acciones a Redux
+ 
   const dispatch = useDispatch();
-
-  // Seleccionamos los productos en el carrito del estado de Redux
   const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
 
   // Estados locales para controlar el comportamiento de la UI
-  const [isModalOpen, setIsModalOpen] = useState(false); // Controla si el modal está abierto
-  const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false); // Indica si la compra fue completada
-  const [coupon, setCoupon] = useState<string>(''); // Guarda el valor del cupón ingresado
-  const [discount, setDiscount] = useState<number>(0); // Guarda el descuento aplicado
-  const [purchaseTotal, setPurchaseTotal] = useState<number | null>(null); // Guarda el total de la compra
-  const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]); // Guarda los productos comprados
-  const [loading, setLoading] = useState<boolean>(false); // Controla el estado de carga al finalizar la compra
-  const [, setError] = useState<string | null>(null); // Para manejar errores, aunque no se utiliza aquí
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false); 
+  const [coupon, setCoupon] = useState<string>(''); 
+  const [discount, setDiscount] = useState<number>(0); 
+  const [purchaseTotal, setPurchaseTotal] = useState<number | null>(null); 
+  const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]); 
+  const [loading, setLoading] = useState<boolean>(false); 
+  const [, setError] = useState<string | null>(null); 
 
-  // useEffect se ejecuta cuando el componente se monta
   useEffect(() => {
-    // Carga los productos desde el localStorage y los despacha para actualizar el carrito en el estado global
     const storedCart = localStorage.getItem('__redux__cart__');
     console.log('Stored cart:', storedCart);
     if (storedCart) {
@@ -36,49 +30,34 @@ const CartPage: React.FC = () => {
         });
       }
     }
-  }, [dispatch]); // La dependencia [dispatch] asegura que solo se ejecute una vez al montar el componente
+  }, [dispatch]);
 
   // Función para aplicar un cupón de descuento
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {
-      setDiscount(0.1); // Aplica un 10% de descuento si el cupón es válido
+      setDiscount(0.1); 
     } else {
       alert('Cupón inválido.');
-      setDiscount(0); // Si el cupón es incorrecto, no aplica descuento
+      setDiscount(0); 
     }
-  };
-
-  // Función para eliminar un producto del carrito
-  const handleRemoveFromCart = (productId: number) => {
-    dispatch(removeFromCart(productId)); // Despacha la acción para eliminar el producto
-  };
-
-  // Función para incrementar la cantidad de un producto
-  const handleIncrement = (productId: number) => {
-    dispatch(updateQuantity({ id: productId, cantidad: 1 })); // Despacha la acción para incrementar la cantidad
-  };
-
-  // Función para decrementar la cantidad de un producto
-  const handleDecrement = (productId: number) => {
-    dispatch(updateQuantity({ id: productId, cantidad: -1 })); // Despacha la acción para decrementar la cantidad
-  };
-
-  // Función para vaciar el carrito
-  const handleClearCart = () => {
-    dispatch(clearCart()); // Despacha la acción para limpiar el carrito
   };
 
   // Función para crear un carrito de compras en el backend
   const handleCreateCart = async () => {
+    const idUsuario = idUsuario(); // Obtener el ID de usuario de forma dinámica
+    if (!idUsuario) {
+      alert('Error: No se encontró el ID de usuario');
+      return;
+    }
+    
     try {
-      const userId = 1; // Esto debe ser dinámico, dependiendo del usuario logueado
-      const response = await fetch(`http://localhost:8080/carro-compras/${userId}`, {
+      const response = await fetch(`http://localhost:8080/carro-compras/${idUsuario}`, {
         method: 'POST',
         headers: {
           'Accept': '*/*',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ items: cartItems }), // Envia los items del carrito al backend
+        body: JSON.stringify({ items: cartItems }),
       });
 
       if (response.ok) {
@@ -92,11 +71,45 @@ const CartPage: React.FC = () => {
     }
   };
 
+  // Función para modificar el carrito en el backend
+  const handleUpdateCart = async (updatedItems: CartItem[]) => {
+    const idUsuario = idUsuario();
+    if (!idUsuario) {
+      alert('Error: No se encontró el ID de usuario');
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/carro-compras/${idUsuario}`, {
+        method: 'PUT',
+        headers: {
+          'Accept': '*/*',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ items: updatedItems }),
+      });
+
+      if (response.ok) {
+        alert('Carrito de compras actualizado correctamente');
+      } else {
+        alert('Hubo un problema al actualizar el carrito de compras');
+      }
+    } catch (error) {
+      console.error('Error al actualizar el carrito:', error);
+      alert('Error al actualizar el carrito de compras');
+    }
+  };
+
   // Función para eliminar el carrito en el backend
   const handleDeleteCart = async () => {
+    const idUsuario = idUsuario();
+    if (!idUsuario) {
+      alert('Error: No se encontró el ID de usuario');
+      return;
+    }
+
     try {
-      const user_Id = 2; // ID estático, debería ser dinámico
-      const response = await fetch(`http://localhost:8080/carro-compras/${user_Id}`, {
+      const response = await fetch(`http://localhost:8080/carro-compras/${idUsuario}`, {
         method: 'DELETE',
         headers: {
           'Accept': '*/*',
@@ -104,7 +117,7 @@ const CartPage: React.FC = () => {
       });
 
       if (response.ok) {
-        handleClearCart(); // Limpia el carrito si la eliminación fue exitosa
+        handleClearCart();
         alert('Carro de compras eliminado correctamente');
       } else {
         alert('Hubo un problema al eliminar el carrito de compras');
@@ -115,35 +128,59 @@ const CartPage: React.FC = () => {
     }
   };
 
+  // Función para eliminar un producto del carrito
+  const handleRemoveFromCart = async (productId: number) => {
+    dispatch(removeFromCart(productId)); 
+    await handleUpdateCart(cartItems); 
+  };
+
+  // Función para incrementar la cantidad de un producto
+  const handleIncrement = async (productId: number) => {
+    dispatch(updateQuantity({ id: productId, cantidad: 1 })); 
+    await handleUpdateCart(cartItems); 
+  };
+
+  // Función para decrementar la cantidad de un producto
+  const handleDecrement = async (productId: number) => {
+    dispatch(updateQuantity({ id: productId, cantidad: -1 })); 
+    await handleUpdateCart(cartItems); 
+  };
+
+  // Función para vaciar el carrito
+  const handleClearCart = () => {
+    dispatch(clearCart()); 
+  };
+
+ 
   // Función para abrir el modal de pago
   const handleOpenModal = () => {
-    setIsModalOpen(true); // Cambia el estado para mostrar el modal
+    setIsModalOpen(true); 
   };
 
   // Función para cerrar el modal de pago
   const handleCloseModal = () => {
-    setIsModalOpen(false); // Cambia el estado para cerrar el modal
-    setIsPurchaseCompleted(false); // Reinicia el estado de compra completada
+    setIsModalOpen(false); 
+    setIsPurchaseCompleted(false); 
   };
 
   // Función para finalizar la compra
   const handleFinalizePurchase = async () => {
-    setLoading(true); // Activa el estado de carga
-    setError(null); // Limpia cualquier error previo
+    setLoading(true); 
+    setError(null); 
 
-    setPurchasedItems(groupedItems); // Guarda los productos que se han comprado
-    setPurchaseTotal(discountedTotal); // Guarda el total con descuento
+    setPurchasedItems(groupedItems); 
+    setPurchaseTotal(discountedTotal); 
 
     try {
-      const response = await finalizePurchaseRequest(cartItems); // Realiza la solicitud para finalizar la compra
+      const response = await finalizePurchaseRequest(cartItems); 
       console.log('Compra finalizada con éxito: HTTP statuscode ' + response.statusCode);
-      handleClearCart(); // Limpia el carrito después de la compra
-      setIsPurchaseCompleted(true); // Cambia el estado de compra completada
+      handleClearCart();
+      setIsPurchaseCompleted(true);
     } catch (error) {
-      setError('Hubo un problema al finalizar la compra. Por favor, inténtalo nuevamente.'); // Manejo de errores
+      setError('Hubo un problema al finalizar la compra. Por favor, inténtalo nuevamente.'); 
       console.error(error);
     } finally {
-      setLoading(false); // Desactiva el estado de carga
+      setLoading(false); 
     }
   };
 
@@ -151,16 +188,16 @@ const CartPage: React.FC = () => {
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
     const existingItem = acc.find((i: CartItem) => i.id === item.id);
     if (existingItem) {
-      existingItem.cantidad += item.cantidad; // Si el producto ya existe, solo aumenta la cantidad
+      existingItem.cantidad += item.cantidad; 
     } else {
-      acc.push({ ...item }); // Si el producto no existe, lo agrega al acumulador
+      acc.push({ ...item }); 
     }
     return acc;
   }, []);
 
   // Calcula el total del carrito antes del descuento
   const total = groupedItems.reduce((acc: number, item: CartItem) => {
-    return acc + item.precio * item.cantidad; // Suma el precio de cada producto multiplicado por su cantidad
+    return acc + item.precio * item.cantidad; 
   }, 0);
 
   // Aplica el descuento al total
@@ -201,70 +238,33 @@ const CartPage: React.FC = () => {
           <button className="btn btn-primary ms-2" onClick={handleOpenModal}>Pagar</button>
           <button className="btn btn-danger ms-2" onClick={handleDeleteCart}>Eliminar Carro de Compras</button>
           <button className="btn btn-success ms-2" onClick={handleCreateCart}>Crear Carrito</button>
-        </>
-      )}
-
-      {isModalOpen && (
-        <div className="modal show" style={{ display: 'block' }} aria-modal="true">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">
-                  {isPurchaseCompleted ? 'Tu compra ha sido finalizada con éxito' : 'Resumen del Pedido'}
-                </h5>
-                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
-              </div>
-              <div className="modal-body">
-                {isPurchaseCompleted ? (
-                  <>
-                    <p>¡Gracias por tu compra!</p>
-                    <h6>Detalles del pedido:</h6>
-                    <ul className="list-group">
-                      {purchasedItems.map((item: CartItem) => (
-                        <li key={item.id} className="list-group-item d-flex justify-content-between">
-                          <span>{item.nombre}</span>
-                          <span>x {item.cantidad} - ${item.precio * item.cantidad}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <p>El total de tu compra fue de: <h3>${new Intl.NumberFormat('es-CL', {
-                      style: 'decimal',
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 2,
-                    }).format(purchaseTotal || 0)}</h3></p>
-                  </>
-                ) : (
-                  <>
-                    <span>Aplicar cupón de descuento?</span>
-                    <div className="input-group mb-3">
-                      <input
-                        type="text"
-                        value={coupon}
-                        onChange={(e) => setCoupon(e.target.value)}
-                        placeholder="Ingresa tu cupón"
-                        className="form-control"
-                      />
-                      <button className="btn btn-outline-secondary" onClick={handleApplyCoupon}>
-                        Aplicar
-                      </button>
-                    </div>
-                    <p>Total a pagar: <strong>${formattedTotal}</strong></p>
-                  </>
-                )}
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>
-                  Cerrar
-                </button>
-                {!isPurchaseCompleted && (
-                  <button type="button" className="btn btn-primary" onClick={handleFinalizePurchase} disabled={loading}>
-                    {loading ? 'Procesando...' : 'Finalizar Compra'}
-                  </button>
-                )}
+          {isModalOpen && (
+            <div className="modal show d-block" tabIndex={-1}>
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title">Pagar</h5>
+                    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                  </div>
+                  <div className="modal-body">
+                    <p>Total a pagar: ${formattedTotal}</p>
+                    <input
+                      type="text"
+                      value={coupon}
+                      onChange={(e) => setCoupon(e.target.value)}
+                      placeholder="Ingresa tu cupón"
+                    />
+                    <button className="btn btn-info ms-2" onClick={handleApplyCoupon}>Aplicar Cupón</button>
+                    <button className="btn btn-primary ms-2" onClick={handleFinalizePurchase}>Finalizar Compra</button>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cerrar</button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
+          )}
+        </>
       )}
     </div>
   );
