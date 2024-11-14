@@ -9,9 +9,8 @@ const CartPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
 
-  // Estados locales para controlar el comportamiento de la UI
-  const [isModalOpen, setIsModalOpen] = useState(false); 
-  const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false); 
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false); 
+  const [isPurchaseCompleted, setIsPurchaseCompleted] = useState<boolean>(false); 
   const [coupon, setCoupon] = useState<string>(''); 
   const [discount, setDiscount] = useState<number>(0); 
   const [purchaseTotal, setPurchaseTotal] = useState<number | null>(null); 
@@ -32,7 +31,11 @@ const CartPage: React.FC = () => {
     }
   }, [dispatch]);
 
-  // Función para aplicar un cupón de descuento
+  const idUsuario = (): number | null => {
+    const userId = 1; 
+    return userId;
+  };
+
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {
       setDiscount(0.1); 
@@ -42,16 +45,15 @@ const CartPage: React.FC = () => {
     }
   };
 
-  // Función para crear un carrito de compras en el backend
   const handleCreateCart = async () => {
-    const idUsuario = idUsuario(); // Obtener el ID de usuario de forma dinámica
-    if (!idUsuario) {
+    const userId = idUsuario(); 
+    if (!userId) {
       alert('Error: No se encontró el ID de usuario');
       return;
     }
     
     try {
-      const response = await fetch(`http://localhost:8080/carro-compras/${idUsuario}`, {
+      const response = await fetch(`http://localhost:8080/carro-compras/${userId}`, {
         method: 'POST',
         headers: {
           'Accept': '*/*',
@@ -73,14 +75,14 @@ const CartPage: React.FC = () => {
 
   // Función para modificar el carrito en el backend
   const handleUpdateCart = async (updatedItems: CartItem[]) => {
-    const idUsuario = idUsuario();
-    if (!idUsuario) {
+    const userId = idUsuario();
+    if (!userId) {
       alert('Error: No se encontró el ID de usuario');
       return;
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/carro-compras/${idUsuario}`, {
+      const response = await fetch(`http://localhost:8080/carro-compras/${userId}`, {
         method: 'PUT',
         headers: {
           'Accept': '*/*',
@@ -102,14 +104,14 @@ const CartPage: React.FC = () => {
 
   // Función para eliminar el carrito en el backend
   const handleDeleteCart = async () => {
-    const idUsuario = idUsuario();
-    if (!idUsuario) {
+    const userId = idUsuario();
+    if (!userId) {
       alert('Error: No se encontró el ID de usuario');
       return;
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/carro-compras/${idUsuario}`, {
+      const response = await fetch(`http://localhost:8080/carro-compras/${userId}`, {
         method: 'DELETE',
         headers: {
           'Accept': '*/*',
@@ -228,46 +230,58 @@ const CartPage: React.FC = () => {
                   <button className="btn btn-outline-secondary btn-sm" onClick={() => handleDecrement(item.id)} disabled={item.cantidad === 1}>-</button>
                   <span className="mx-2">{item.cantidad}</span>
                   <button className="btn btn-outline-secondary btn-sm" onClick={() => handleIncrement(item.id)}>+</button>
-                  <button className="btn btn-danger btn-sm ms-2" onClick={() => handleRemoveFromCart(item.id)}>Eliminar</button>
+                  <button className="btn btn-outline-danger btn-sm ms-2" onClick={() => handleRemoveFromCart(item.id)}>Eliminar</button>
                 </div>
               </li>
             ))}
           </ul>
-          <h2>Total: ${formattedTotal}</h2>
-          <button className="btn btn-danger" onClick={handleClearCart}>Vaciar Carrito</button>
-          <button className="btn btn-primary ms-2" onClick={handleOpenModal}>Pagar</button>
-          <button className="btn btn-danger ms-2" onClick={handleDeleteCart}>Eliminar Carro de Compras</button>
-          <button className="btn btn-success ms-2" onClick={handleCreateCart}>Crear Carrito</button>
-          {isModalOpen && (
-            <div className="modal show d-block" tabIndex={-1}>
-              <div className="modal-dialog">
-                <div className="modal-content">
-                  <div className="modal-header">
-                    <h5 className="modal-title">Pagar</h5>
-                    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
-                  </div>
-                  <div className="modal-body">
-                    <p>Total a pagar: ${formattedTotal}</p>
-                    <input
-                      type="text"
-                      value={coupon}
-                      onChange={(e) => setCoupon(e.target.value)}
-                      placeholder="Ingresa tu cupón"
-                    />
-                    <button className="btn btn-info ms-2" onClick={handleApplyCoupon}>Aplicar Cupón</button>
-                    <button className="btn btn-primary ms-2" onClick={handleFinalizePurchase}>Finalizar Compra</button>
-                  </div>
-                  <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Cerrar</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          <div className="d-flex justify-content-between">
+            <h5>Total: ${formattedTotal}</h5>
+            <button className="btn btn-primary" onClick={handleOpenModal}>Realizar Pago</button>
+          </div>
         </>
       )}
+
+      {/* Modal */}
+      <div className={`modal ${isModalOpen ? 'show' : ''}`} style={{ display: isModalOpen ? 'block' : 'none' }}>
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Finalizar Compra</h5>
+              <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+            </div>
+            <div className="modal-body">
+              <div>
+                <label htmlFor="coupon">Código de cupón</label>
+                <input
+                  type="text"
+                  id="coupon"
+                  value={coupon}
+                  onChange={(e) => setCoupon(e.target.value)}
+                  className="form-control"
+                />
+              </div>
+              <div className="mt-3">
+                <button className="btn btn-secondary" onClick={handleApplyCoupon}>Aplicar cupón</button>
+              </div>
+              <div className="mt-3">
+                <h6>Total: ${formattedTotal}</h6>
+                <h6>Descuento: {discount * 100}%</h6>
+              </div>
+              {isPurchaseCompleted && <div className="alert alert-success">¡Compra finalizada exitosamente!</div>}
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={handleCloseModal}>Cerrar</button>
+              <button className="btn btn-primary" onClick={handleFinalizePurchase} disabled={loading}>
+                {loading ? 'Procesando...' : 'Finalizar compra'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
 export default CartPage;
+
