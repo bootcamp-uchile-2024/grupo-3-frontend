@@ -57,7 +57,6 @@ const UserManagement = () => {
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-4">Gestión de Usuarios</h2>
-
       <div className="mb-4">
         <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />
       </div>
@@ -76,18 +75,25 @@ const UserManagement = () => {
               <th scope="col">Nombre</th>
               <th scope="col">Username</th>
               <th scope="col">Correo</th>
+              <th scope="col">Teléfono</th>
+              <th scope="col">RUT</th>
+              <th scope="col">Género</th>
+              <th scope="col">Fecha de Nacimiento</th>
               <th scope="col">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {users.map((user) => {
-              console.log(user);
               return (
                 <tr key={user.id}>
                   <td>{user.id}</td>
                   <td>{user.name}</td>
                   <td>{user.username}</td>
                   <td>{user.email}</td>
+                  <td>{user.phone}</td>
+                  <td>{user.rut}</td>
+                  <td>{user.gender}</td>
+                  <td>{user.birthDate}</td>
                   <td>
                     <button
                       className="btn btn-danger btn-sm"
@@ -107,3 +113,4 @@ const UserManagement = () => {
 };
 
 export default UserManagement;
+
