@@ -32,7 +32,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
     genero: '',
     rut: '',
     fechaNacimiento: '',
-    tipoUsuarioId: isAdmin ? 1 : 3, // Valor inicial basado en el rol
+    tipoUsuarioId: isAdmin ? 1 : 3,
   });
 
   const [errors, setErrors] = useState({

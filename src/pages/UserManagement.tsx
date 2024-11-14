@@ -51,7 +51,7 @@ const UserManagement = () => {
         method: 'DELETE',
       });
       if (!response.ok) {
-        throw new Error('Error al eliminar el usuario');
+        throw new Error('Error al eliminar el usuario-');
       }
       console.log('Usuario eliminado');
       fetchUsers();
@@ -60,11 +60,9 @@ const UserManagement = () => {
     }
   };
 
-  // Actualizar usuario
   const handleUpdateUser = async (user: User) => {
     const tipoUsuarioId = parseInt(user.tipoUsuarioId.toString(), 10);
 
-    // Validación de tipoUsuarioId
     if (isNaN(tipoUsuarioId) || tipoUsuarioId < 1 || tipoUsuarioId > 4) {
       setError('El ID de tipo de usuario debe estar entre 1 y 4.');
       return;
@@ -94,12 +92,10 @@ const UserManagement = () => {
     }
   };
 
-  // Manejo de edición de usuario
   const handleEditClick = (user: User) => {
     setEditingUser(user);
   };
 
-  // Cargar usuarios al inicio
   useEffect(() => {
     fetchUsers();
   }, []);
