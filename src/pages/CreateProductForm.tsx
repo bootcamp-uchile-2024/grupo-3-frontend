@@ -123,7 +123,7 @@ const CreateProduct: React.FC = () => {
         }
 
         setErrores(newErrors);
-        return producto;
+        return isValid;
     };
 
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
