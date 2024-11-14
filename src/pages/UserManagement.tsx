@@ -96,6 +96,10 @@ const UserManagement = () => {
     setEditingUser(user);
   };
 
+  const handleCancelEdit = () => {
+    setEditingUser(null); 
+  };
+
   useEffect(() => {
     fetchUsers();
   }, []);
@@ -310,6 +314,15 @@ const UserManagement = () => {
             <button type="submit" className="btn btn-primary">
               Actualizar
             </button>
+
+            <button
+              type="button"
+              className="btn btn-secondary ml-2"
+              onClick={handleCancelEdit}
+            >
+              Cancelar
+            </button>
+
           </form>
         </div>
       )}
