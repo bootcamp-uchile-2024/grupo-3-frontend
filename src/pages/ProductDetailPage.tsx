@@ -21,11 +21,10 @@ export default function ProductDetailPage() {
       try {
         if (!id) return;
 
-        const response = await fetch(`https://clon-cotiledonbackend.onrender.com/productos/${id}`);
+        const response = await fetch(`http://localhost:8080/productos/${id}`);
         if (!response.ok) {
           throw new Error('No pudimos obtener el producto');
         }
-
         const productJson = await response.json();
         setProduct(productJson);
       } catch (error) {

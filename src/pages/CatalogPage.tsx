@@ -10,9 +10,28 @@ const CatalogPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
+  const [userRole, setUserRole] = useState<string []| null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1); 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (user && user.roles) {
+      setUserRole(user.roles);
+    }
+
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (user && user.roles) {
+      setUserRole(user.roles);
+    }
+
+    fetchProducts();
+  }, []);
 
   const fetchProducts = async (page: number) => {
     try {
@@ -36,6 +55,20 @@ const CatalogPage: React.FC = () => {
     }
   };
 
+  const deleteProduct = async (productId: number) => {
+    try {
+      const response = await fetch(`http://localhost:8080/producto/${productId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Error al eliminar el producto');
+      }
+      console.log('Producto eliminado');
+      fetchProducts();
+    } catch (error) {
+      console.error('Error al eliminar el producto:', error);
+    }
+  };
   useEffect(() => {
     fetchProducts(currentPage);
   }, [currentPage]);
@@ -99,7 +132,10 @@ const CatalogPage: React.FC = () => {
               </div>
               <button onClick={() => handleAddToCart(product)}>Añadir al carrito</button>
               <Link to={`/catalogo/producto/${product.id}`}>Ver detalle</Link>
-            </div>
+              {userRole && userRole.includes('admin-1') && (
+              <button type='button' onClick={() => deleteProduct(product.id)}>Eliminar</button>
+            )}
+          </div>
           ))
         ) : (
           <p>No se encontraron productos.</p>
