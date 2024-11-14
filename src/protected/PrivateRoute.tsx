@@ -1,22 +1,21 @@
 import { ReactNode } from "react";
-import { isAuth } from "../services/LoginService"; 
-import { userHasRole } from "../services/LoginService";
+import { isAuth, userHasRole } from "../services/LoginService";
+import { Navigate } from "react-router-dom";
 
-interface privateRouteProps {
+interface PrivateRouteProps {
     children: ReactNode;
     roles: string[];
 }
 
-export const PrivateRoute = ({ children, roles }: privateRouteProps) => {
+export const PrivateRoute = ({ children, roles }: PrivateRouteProps) => {
     const auth = isAuth(); 
     const hasRole = userHasRole(roles); 
 
-    if (auth && hasRole) {
-        return <>{children}</>;
+    if (!auth || !hasRole) {
+        localStorage.removeItem('user');
+        return <Navigate to="/login" replace />;
     }
-    localStorage.removeItem('user');
 
-    return (
-            <><p>Acceso denegado</p></>
-    );
-}
+    return <>{children}</>;
+};
+

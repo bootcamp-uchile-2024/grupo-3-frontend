@@ -103,10 +103,13 @@ const UserManagement = () => {
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-4">Gestión de Usuarios</h2>
-      <div className="mb-4">
-        <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />
-      </div>
-
+  
+      {isAdmin && (
+        <div className="mb-4">
+          <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />
+        </div>
+      )}
+  
       {loading ? (
         <div className="text-center">
           <div className="spinner-border text-light" role="status">
@@ -131,42 +134,41 @@ const UserManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => {
-              return (
-                <tr key={user.id}>
-                  <td>{user.id}</td>
-                  <td>{user.nombre}</td>
-                  <td>{user.apellido}</td>
-                  <td>{user.nombreUsuario}</td>
-                  <td>{user.email}</td>
-                  <td>{user.telefono}</td>
-                  <td>{user.genero}</td>
-                  <td>{user.rut}</td>
-                  <td>{new Date(user.fechaNacimiento).toLocaleDateString('es-ES')}</td>
-                  <td>{user.tipoUsuario}</td>
-                  <td>
-                    {isAdmin && (
-                      <button
-                        className="btn btn-warning btn-sm"
-                        onClick={() => handleEditClick(user)}
-                      >
-                        Editar
-                      </button>
-                    )}
+            {users.map((user) => (
+              <tr key={user.id}>
+                <td>{user.id}</td>
+                <td>{user.nombre}</td>
+                <td>{user.apellido}</td>
+                <td>{user.nombreUsuario}</td>
+                <td>{user.email}</td>
+                <td>{user.telefono}</td>
+                <td>{user.genero}</td>
+                <td>{user.rut}</td>
+                <td>{new Date(user.fechaNacimiento).toLocaleDateString('es-ES')}</td>
+                <td>{user.tipoUsuario}</td>
+                <td>
+      
+                  {isAdmin && (
                     <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => deleteUser(user.id)}
+                      className="btn btn-warning btn-sm"
+                      onClick={() => handleEditClick(user)}
                     >
-                      Eliminar
+                      Editar
                     </button>
-                  </td>
-                </tr>
-              );
-            })}
+                  )}
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => deleteUser(user.id)}
+                  >
+                    Eliminar
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       )}
-
+  
       {isAdmin && editingUser && (
         <div className="mt-4">
           <h3>Editar Usuario</h3>
@@ -188,7 +190,7 @@ const UserManagement = () => {
                 }
               />
             </div>
-
+  
             <div className="form-group">
               <label htmlFor="apellido">Apellido</label>
               <input
@@ -201,7 +203,7 @@ const UserManagement = () => {
                 }
               />
             </div>
-
+  
             <div className="form-group">
               <label htmlFor="nombreUsuario">Nombre Usuario</label>
               <input
@@ -214,7 +216,7 @@ const UserManagement = () => {
                 }
               />
             </div>
-
+  
             <div className="form-group">
               <label htmlFor="email">Correo</label>
               <input
@@ -227,7 +229,7 @@ const UserManagement = () => {
                 }
               />
             </div>
-
+  
             <div className="form-group">
               <label htmlFor="telefono">Teléfono</label>
               <input
@@ -240,7 +242,7 @@ const UserManagement = () => {
                 }
               />
             </div>
-
+  
             <div className="form-group">
               <label htmlFor="genero">Género</label>
               <input
@@ -253,7 +255,7 @@ const UserManagement = () => {
                 }
               />
             </div>
-
+  
             <div className="form-group">
               <label htmlFor="rut">Rut</label>
               <input
@@ -266,7 +268,7 @@ const UserManagement = () => {
                 }
               />
             </div>
-
+  
             <div className="form-group">
               <label htmlFor="fechaNacimiento">Fecha de Nacimiento</label>
               <input
@@ -275,11 +277,14 @@ const UserManagement = () => {
                 id="fechaNacimiento"
                 value={editingUser.fechaNacimiento}
                 onChange={(e) =>
-                  setEditingUser({ ...editingUser, fechaNacimiento: e.target.value })
+                  setEditingUser({
+                    ...editingUser,
+                    fechaNacimiento: e.target.value,
+                  })
                 }
               />
             </div>
-
+  
             <div className="form-group">
               <label htmlFor="tipoUsuarioId">Tipo de Usuario</label>
               <select
@@ -287,7 +292,10 @@ const UserManagement = () => {
                 className="form-control"
                 value={editingUser.tipoUsuarioId}
                 onChange={(e) =>
-                  setEditingUser({ ...editingUser, tipoUsuarioId: e.target.value })
+                  setEditingUser({
+                    ...editingUser,
+                    tipoUsuarioId: e.target.value,
+                  })
                 }
               >
                 <option value="1">SuperAdmin</option>
@@ -296,15 +304,17 @@ const UserManagement = () => {
                 <option value="4">Visitante</option>
               </select>
             </div>
-
+  
             {error && <p className="text-danger">{error}</p>}
-
-            <button type="submit" className="btn btn-primary">Actualizar</button>
+  
+            <button type="submit" className="btn btn-primary">
+              Actualizar
+            </button>
           </form>
         </div>
       )}
     </div>
   );
-};
+}  
 
 export default UserManagement;

@@ -41,7 +41,7 @@ function App() {
             <Route path="crear-usuario" element={<UserCreationForm isAdmin={false}/>} />
             <Route path="crear-producto" element={<PrivateRoute roles={["admin-1"]}><CrearProducto /></PrivateRoute>} />
             <Route path="cart" element={<CartPage />} />
-            <Route path="/user-management" element={<UserManagement />} />
+            <Route path="user-management" element={<PrivateRoute roles={['admin-1']}><UserManagement /></PrivateRoute>} />
 
           </Route>
         </Routes>
