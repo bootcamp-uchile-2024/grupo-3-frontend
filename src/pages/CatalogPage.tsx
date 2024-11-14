@@ -55,13 +55,14 @@ const CatalogPage: React.FC = () => {
 
   const deleteProduct = async (productId: number) => {
     try {
-      const response = await fetch(`http://localhost:8080/producto/${productId}`, {
+      const response = await fetch(`http://localhost:8080/productos/${productId}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
         throw new Error('Error al eliminar el producto');
       }
-      fetchProducts(); // Recarga los productos después de eliminar uno
+      alert(`Eliministe exitosamente el producto: ${productId}`);
+      fetchProducts(); 
     } catch (error) {
       console.error('Error al eliminar el producto:', error);
     }
@@ -120,7 +121,8 @@ const CatalogPage: React.FC = () => {
               <button onClick={() => handleAddToCart(product)}>Añadir al carrito</button>
               <Link to={`/catalogo/producto/${product.id}`}>Ver detalle</Link>
               {userRole && userRole.includes('admin-1') && (
-                <button type='button' onClick={() => deleteProduct(product.id)}>Eliminar</button>
+                <button type='button' onClick={() => deleteProduct(product.id)}>Eliminar</button>/*
+                <button type='button' onClick={() => editProduct(product.id)}>Editar</button>*/
               )}
             </div>
           ))

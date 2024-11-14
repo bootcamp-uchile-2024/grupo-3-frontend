@@ -1,47 +1,63 @@
 import React, { useState } from 'react';
 import { createProductData } from '../interfaces/CreateProductData.ts';
-import fileTypeChecker from 'file-type-checker';
+/*import fileTypeChecker from 'file-type-checker';*/
 
 const CreateProduct: React.FC = () => {
+
     const [producto, setProducto] = useState<createProductData>({
+        SKU: '',
         nombre: '',
+        idCategoria: 1,
         precio: 0,
         descripcion: '',
         imagen: '',
         cantidad: 0,
+        unidadesVendidas: 0,
+        puntuacion: 1,
         ancho: 0,
         alto: 0,
         largo: 0,
         peso: 0,
-        idCategoria: 0,
-        planta: {id:0, nombre:''},  // Inicializando correctamente como un array vacío
     });
 
     const [errores, setErrores] = useState<{ [key: string]: string }>({});
 
+    // Función para generar SKU
+    const generarSKU = (nombre: string, numero: number): string => {
+        const letrasSKU = nombre.slice(0, 3).toUpperCase();
+        const numeroSKU = String(numero).padStart(3, '0');
+        return `${letrasSKU}-${numeroSKU}`;
+    };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        setProducto({ ...producto, [name]: value });
-
+        
+        // Convertir el valor a número si el campo es numérico
+        const numericFields = ["precio", "cantidad", "ancho", "alto", "largo", "peso"];
+        const parsedValue = numericFields.includes(name) ? (parseFloat(value)) : value;
+    
+        setProducto((prevProducto) => ({
+            ...prevProducto,
+            [name]: parsedValue,
+        }));
+    
         setErrores((prev) => ({
             ...prev,
             [name]: '',
         }));
     };
+    /*
 
-    // Función para manejar la carga de archivos y validaciones
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
 
-        // Validación de tamaño
         if (!validarTamanoFichero(file)) {
             alert("El archivo es muy grande");
             event.target.value = '';
             return;
         }
 
-        // Validación de tipo
         if (!(await validarTipoFichero(file))) {
             alert("El archivo no es una imagen");
             event.target.value = '';
@@ -53,7 +69,7 @@ const CreateProduct: React.FC = () => {
     };
 
     const validarTamanoFichero = (file: File) => {
-        const limitSize = 1024 * 1024 * 2; // 2MB
+        const limitSize = 1024 * 1024 * 2;
         return file.size <= limitSize;
     };
 
@@ -74,10 +90,11 @@ const CreateProduct: React.FC = () => {
             fileReader.onload = () => resolve(fileReader.result as string);
             fileReader.onerror = (error) => reject(error);
         });
-    };
+    }; */
 
-    // Función para las validaciones del formulario
     const validate = () => {
+    
+        
         const newErrors: { [key: string]: string } = {};
         let isValid = true;
 
@@ -102,6 +119,7 @@ const CreateProduct: React.FC = () => {
         if (!producto.descripcion) {
             newErrors.descripcion = 'La descripción es requerida';
             isValid = false;
+
         } else if (producto.descripcion.length > 150) {
             newErrors.descripcion = 'La descripción no puede ser mayor a 150 caracteres';
             isValid = false;
@@ -113,7 +131,7 @@ const CreateProduct: React.FC = () => {
         }
 
         if (!producto.ancho || !producto.alto || !producto.largo) {
-            newErrors.dimensiones = 'Complete las dimensiones';
+            newErrors.dimensiones = 'Complete todas las dimensiones';
             isValid = false;
         }
 
@@ -125,30 +143,61 @@ const CreateProduct: React.FC = () => {
         setErrores(newErrors);
         return isValid;
     };
-
+    //Genera SKU y peticiona a endpoint de crear producto
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (validate()) {
             try {
-                await fetch('http://localhost:8080/productos', {
+                // Genera el SKU antes de enviar el producto
+                //
+                const numeroSecuencial = Date.now(); 
+                const SKU = generarSKU(producto.nombre, numeroSecuencial);
+                const productoData: createProductData = {
+                    SKU,  // El SKU generado
+                    nombre: producto.nombre,
+                    idCategoria: producto.idCategoria,  // Si está presente
+                    precio: producto.precio,
+                    descripcion: producto.descripcion,
+                    imagen: producto.imagen,  
+                    cantidad: producto.cantidad,
+                    unidadesVendidas: producto.unidadesVendidas,  // Si está presente
+                    puntuacion: producto.puntuacion,  // Si está presente
+                    ancho: producto.ancho,
+                    alto: producto.alto,
+                    largo: producto.largo,
+                    peso: producto.peso,
+                };
+                
+                setProducto({ ...producto, SKU });
+                console.log("Producto JSON para enviar:", JSON.stringify(productoData));
+
+                const response = await fetch('http://localhost:8080/productos', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(producto),
+                    body: JSON.stringify(productoData),
                 });
-                alert('¡Felicidades! Nuevo producto creado');
+                
+                if (!response.ok) throw new Error("Error en la solicitud");
+    
+                const data = await response.json();
+    
+                alert(`¡Felicidades! Nuevo producto creado con ID: ${data.id}`);
                 setProducto({
+                    SKU: '',
                     nombre: '',
+                    idCategoria: 1,
                     precio: 0,
                     descripcion: '',
                     imagen: '',
                     cantidad: 0,
+                    unidadesVendidas: 0,
+                    puntuacion: 1,
                     ancho: 0,
                     alto: 0,
                     largo: 0,
                     peso: 0,
-                    idCategoria: 0,
-                    planta: {id:0, nombre:''}
                 });
+                console.log ("Producto creado: ",productoData)
             } catch (error) {
                 console.error("Error al crear el producto: ", error);
             }
@@ -156,7 +205,7 @@ const CreateProduct: React.FC = () => {
             alert('Error al enviar el formulario, corrige los campos y vuelve a intentarlo');
         }
     };
-
+    
     return (
         <div className="Create-product-container">
             <form>
@@ -188,12 +237,14 @@ const CreateProduct: React.FC = () => {
                     <div>
                         <label htmlFor="imagen">Imagen:</label>
                         <input
-                            type="file"
-                            accept="image/*"
+                            type="text"
+                            accept="text"
                             id="imagen"
                             className='Create-product-container-inputs'
                             name="imagen"
-                            onChange={handleFileUpload}
+                            value={producto.imagen}
+                            onChange={handleChange}
+                           /* onChange={handleFileUpload}*/
                         />
                         {errores.imagen && <p className='Create-product-container-inputs-error'>{errores.imagen}</p>}
                     </div>
@@ -223,7 +274,7 @@ const CreateProduct: React.FC = () => {
                         {errores.cantidad && <p className='Create-product-container-inputs-error'>{errores.cantidad}</p>}
                     </div>
                     <div>
-                        <label htmlFor="Ancho">Ancho:</label>
+                        <label htmlFor="Ancho">Ancho en cm:</label>
                         <input
                             type="number"
                             name="ancho"
@@ -232,7 +283,7 @@ const CreateProduct: React.FC = () => {
                             onChange={handleChange}
                             value={producto.ancho}
                         />
-                        <label htmlFor="alto">Alto:</label>
+                        <label htmlFor="alto">Alto en cm:</label>
                         <input
                             type="number"
                             name="alto"
@@ -241,7 +292,7 @@ const CreateProduct: React.FC = () => {
                             onChange={handleChange}
                             value={producto.alto}
                         />
-                        <label htmlFor="largo">Largo:</label>
+                        <label htmlFor="largo">Largo en cm:</label>
                         <input
                             type="number"
                             name="largo"
@@ -253,7 +304,7 @@ const CreateProduct: React.FC = () => {
                         {errores.dimensiones && <p className='Create-product-container-inputs-error'>{errores.dimensiones}</p>}
                     </div>
                     <div>
-                        <label htmlFor="peso">Peso:</label>
+                        <label htmlFor="peso">Peso en Kg:</label>
                         <input
                             type="number"
                             name="peso"

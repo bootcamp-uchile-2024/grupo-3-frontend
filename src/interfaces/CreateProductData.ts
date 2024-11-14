@@ -1,13 +1,3 @@
-export interface Categoria {
-  id: number;
-  nombre: string;
-}
-
-export interface Planta {
-  id: number;
-  nombre: string;
-}
-
 export interface createProductData {
   id?: number;
   SKU?: string;
@@ -22,7 +12,5 @@ export interface createProductData {
   ancho: number;
   alto: number;
   largo: number;
-  peso: number;
-  categoria?: Categoria;  
-  planta?: Planta;        
+  peso: number;      
 }
