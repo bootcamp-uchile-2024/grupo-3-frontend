@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
-
 interface LoginFormProps {
   onLogin: (username: string, role: string) => void;
 }
@@ -11,8 +10,6 @@ export interface ILogin {
   password: string;
   roles?: string[];
 }
-
-export const isAuth = () => localStorage.getItem('user') ? true : false;
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   const navigate = useNavigate();

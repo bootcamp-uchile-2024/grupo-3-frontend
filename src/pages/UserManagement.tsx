@@ -1,8 +1,15 @@
 import { useEffect, useState } from 'react';
 import UserCreateForm from './UserCreateForm';
 
+interface User {
+  id: number;
+  name: string;
+  username: string;
+  email: string;
+}
+
 const UserManagement = () => {
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
 
