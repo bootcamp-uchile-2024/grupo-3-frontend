@@ -45,6 +45,8 @@ const CartPage: React.FC = () => {
     }
   };
 
+
+// Función para crear el carrito en el backend
   const handleCreateCart = async () => {
     const userId = idUsuario(); 
     if (!userId) {
@@ -53,7 +55,7 @@ const CartPage: React.FC = () => {
     }
     
     try {
-      const response = await fetch(`http://localhost:8080/carro-compras/${userId}`, {
+      const response = await fetch(`http://localhost:8080/carro-compras`, {
         method: 'POST',
         headers: {
           'Accept': '*/*',
@@ -82,8 +84,8 @@ const CartPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/carro-compras/${userId}`, {
-        method: 'PUT',
+      const response = await fetch(`http://localhost:8080/carro-compras`, {
+        method: 'PATCH',
         headers: {
           'Accept': '*/*',
           'Content-Type': 'application/json',
@@ -102,40 +104,40 @@ const CartPage: React.FC = () => {
     }
   };
 
-  // Función para eliminar el carrito en el backend
-  const handleDeleteCart = async () => {
-    const userId = idUsuario();
-    if (!userId) {
-      alert('Error: No se encontró el ID de usuario');
-      return;
+// Función para eliminar el carrito en el backend
+const handleDeleteCart = async () => {
+  const userId = idUsuario(); 
+  if (!userId) {
+    alert('Error: No se encontró el ID de usuario');
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:8080/carro-compras/${userId}`, {
+      method: 'DELETE',
+      headers: {
+        'Accept': '*/*',
+      },
+    });
+
+    if (response.ok) {
+      handleClearCart(); 
+      alert('Carro de compras eliminado correctamente');
+    } else {
+      alert('Hubo un problema al eliminar el carrito de compras');
     }
+  } catch (error) {
+    console.error('Error al borrar el carrito:', error);
+    alert('Error al borrar el carrito de compras');
+  }
+};
 
-    try {
-      const response = await fetch(`http://localhost:8080/carro-compras/${userId}`, {
-        method: 'DELETE',
-        headers: {
-          'Accept': '*/*',
-        },
-      });
-
-      if (response.ok) {
-        handleClearCart();
-        alert('Carro de compras eliminado correctamente');
-      } else {
-        alert('Hubo un problema al eliminar el carrito de compras');
-      }
-    } catch (error) {
-      console.error('Error al borrar el carrito:', error);
-      alert('Error al borrar el carrito de compras');
-    }
-  };
-
-  // Función para eliminar un producto del carrito
+/*   // Función para eliminar un producto del carrito
   const handleRemoveFromCart = async (productId: number) => {
     dispatch(removeFromCart(productId)); 
     await handleUpdateCart(cartItems); 
   };
-
+ */
   // Función para incrementar la cantidad de un producto
   const handleIncrement = async (productId: number) => {
     dispatch(updateQuantity({ id: productId, cantidad: 1 })); 
@@ -230,7 +232,8 @@ const CartPage: React.FC = () => {
                   <button className="btn btn-outline-secondary btn-sm" onClick={() => handleDecrement(item.id)} disabled={item.cantidad === 1}>-</button>
                   <span className="mx-2">{item.cantidad}</span>
                   <button className="btn btn-outline-secondary btn-sm" onClick={() => handleIncrement(item.id)}>+</button>
-                  <button className="btn btn-outline-danger btn-sm ms-2" onClick={() => handleRemoveFromCart(item.id)}>Eliminar</button>
+                  <button className="btn btn-outline-danger btn-sm ms-2" onClick={() => handleDeleteCart(idUsuario)}>Eliminar</button>
+                  <button className="btn btn-outline-danger btn-sm ms-2" onClick={() => handleCreateCart(idUsuario)}>Crear</button>
                 </div>
               </li>
             ))}
