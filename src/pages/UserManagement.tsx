@@ -67,7 +67,7 @@ const UserManagement = () => {
       console.log('Usuario actualizado');
       setEditingUser(null);
       fetchUsers(); 
-      setError(''); 
+      setError('');
     } catch (error) {
       console.error('Error al actualizar el usuario:', error);
     }
@@ -75,6 +75,13 @@ const UserManagement = () => {
 
   const handleEditClick = (user: any) => {
     setEditingUser(user);
+  };
+
+  const userTypes: { [key: number]: string } = {
+    1: 'Admin',
+    2: 'User',
+    3: 'Guest',
+    4: 'SuperAdmin',
   };
 
   useEffect(() => {
@@ -100,14 +107,15 @@ const UserManagement = () => {
             <tr>
               <th scope="col">ID</th>
               <th scope="col">Nombre</th>
-              <th scope="col">Username</th>
+              <th scope="col">Apellido</th>
               <th scope="col">Nombre Usuario</th>
               <th scope="col">Correo</th>
               <th scope="col">Teléfono</th>
               <th scope="col">Género</th>
               <th scope="col">Rut</th>
               <th scope="col">Fecha Nacimiento</th>
-              <th scope="col">Id usuario</th>
+         
+              <th scope="col">Tipo de Usuario</th>
               <th scope="col">Acciones</th>
             </tr>
           </thead>
@@ -124,7 +132,7 @@ const UserManagement = () => {
                   <td>{user.genero}</td>
                   <td>{user.rut}</td>
                   <td>{user.fechaNacimiento}</td>
-                  <td>{user.tipoUsuarioId}</td>
+                  <td>{userTypes[user.tipoUsuarioId]}</td>
                   <td>
                     {isAdmin && (
                       <button
@@ -171,14 +179,27 @@ const UserManagement = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="apellido">Apellido</label>
+              <label htmlFor="username">Apellido</label>
               <input
                 type="text"
                 className="form-control"
-                id="apellido"
+                id="username"
                 value={editingUser.apellido}
                 onChange={(e) =>
                   setEditingUser({ ...editingUser, apellido: e.target.value })
+                }
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="nombreUsuario">Nombre Usuario</label>
+              <input
+                type="text"
+                className="form-control"
+                id="nombreUsuario"
+                value={editingUser.nombreUsuario}
+                onChange={(e) =>
+                  setEditingUser({ ...editingUser, nombreUsuario: e.target.value })
                 }
               />
             </div>
@@ -236,37 +257,45 @@ const UserManagement = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="fechaNacimiento">Fecha de Nacimiento</label>
+              <label htmlFor="fechaNacimiento">Fecha Nacimiento</label>
               <input
                 type="date"
                 className="form-control"
                 id="fechaNacimiento"
                 value={editingUser.fechaNacimiento}
                 onChange={(e) =>
-                  setEditingUser({ ...editingUser, fechaNacimiento: e.target.value })
+                  setEditingUser({
+                    ...editingUser,
+                    fechaNacimiento: e.target.value,
+                  })
                 }
               />
             </div>
 
             <div className="form-group">
-              <label htmlFor="tipoUsuarioId">ID de Tipo de Usuario</label>
-              <input
-                type="number"
+              <label htmlFor="tipoUsuarioId">Tipo de Usuario</label>
+              <select
                 className="form-control"
                 id="tipoUsuarioId"
                 value={editingUser.tipoUsuarioId}
                 onChange={(e) =>
-                  setEditingUser({ ...editingUser, tipoUsuarioId: parseInt(e.target.value) })
+                  setEditingUser({
+                    ...editingUser,
+                    tipoUsuarioId: Number(e.target.value),
+                  })
                 }
-                min={1}
-                max={4}
-              />
+              >
+                <option value="1">Admin</option>
+                <option value="2">User</option>
+                <option value="3">Guest</option>
+                <option value="4">SuperAdmin</option>
+              </select>
             </div>
 
-            {error && <div className="alert alert-danger mt-2">{error}</div>}
+            {error && <div className="alert alert-danger">{error}</div>}
 
             <button type="submit" className="btn btn-primary mt-3">
-              Actualizar
+              Guardar Cambios
             </button>
           </form>
         </div>
@@ -276,6 +305,11 @@ const UserManagement = () => {
 };
 
 export default UserManagement;
+
+
+
+
+
 
 
 
