@@ -60,6 +60,11 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
     }));
   };
 
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({ ...prevState, [name]: Number(value) }));
+  };
+
   const validate = () => {
     const newErrors = {
       nombre: formData.nombre ? '' : 'El nombre es obligatorio',
@@ -194,7 +199,18 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
           {errors.fechaNacimiento && <p className="text-danger">{errors.fechaNacimiento}</p>}
         </div>
 
-        
+        {isAdmin && (
+          <div>
+            <label>Tipo de Usuario:</label>
+            <select name="tipoUsuarioId" value={formData.tipoUsuarioId} onChange={handleSelectChange}>
+              <option value={1}>SuperAdmin</option>
+              <option value={2}>Admin</option>
+              <option value={3}>Cliente</option>
+              <option value={4}>Visitante</option>
+            </select>
+            {errors.tipoUsuarioId && <p className="text-danger">{errors.tipoUsuarioId}</p>}
+          </div>
+        )}
 
         <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Creando usuario...' : 'Crear Usuario'}
