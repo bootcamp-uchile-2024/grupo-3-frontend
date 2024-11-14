@@ -1,0 +1,1 @@
+ALTER TABLE carros ADD fecha_eliminacion Date;
