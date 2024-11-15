@@ -30,7 +30,7 @@ services:
     ports:
       - "8080:8080"
   frontend-prod:
-    image: chirmus/plantaiapp-frontend:plantaifront3
+    image: plantaifinalvers:1
     depends_on:
       - cotiledon-prod
     environment:
