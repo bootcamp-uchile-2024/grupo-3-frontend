@@ -13,7 +13,7 @@ const CatalogPage: React.FC = () => {
   const [userRole, setUserRole] = useState<string[] | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [pageSize, ] = useState(12);
+  const [pageSize,] = useState(12);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const CatalogPage: React.FC = () => {
     if (user && Array.isArray(user.roles)) {
       setUserRole(user.roles);
     }
-    fetchProducts(); 
+    fetchProducts();
   }, [currentPage, pageSize]); // Dependencias correctamente ajustadas
 
   const fetchProducts = async () => {
@@ -38,7 +38,7 @@ const CatalogPage: React.FC = () => {
       if (!response.ok) throw new Error('Error al cargar los productos');
 
       const data = await response.json();
-      console.log ('Respuesta de la API catalogo:', data);
+      console.log('Respuesta de la API catalogo:', data);
 
       if (Array.isArray(data.data)) {
         setProducts(data.data);
@@ -54,17 +54,24 @@ const CatalogPage: React.FC = () => {
   };
 
   const deleteProduct = async (productId: number) => {
-    try {
-      const response = await fetch(`http://localhost:8080/productos/${productId}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) {
-        throw new Error('Error al eliminar el producto');
+
+    const confirmation = window.confirm(`¿Estás seguro de querer eliminar el producto ${productId}?`);
+
+    if (confirmation) {
+      try {
+        const response = await fetch(`http://localhost:8080/productos/${productId}`, {
+          method: 'DELETE',
+        });
+        if (!response.ok) {
+          throw new Error('Error al eliminar el producto');
+        }
+        alert(`Eliministe exitosamente el producto: ${productId}`);
+        fetchProducts();
+      } catch (error) {
+        console.error('Error al eliminar el producto:', error);
       }
-      alert(`Eliministe exitosamente el producto: ${productId}`);
-      fetchProducts(); 
-    } catch (error) {
-      console.error('Error al eliminar el producto:', error);
+    } else {
+      console.log("Eliminación cancelada");
     }
   };
 
@@ -121,8 +128,12 @@ const CatalogPage: React.FC = () => {
               <button onClick={() => handleAddToCart(product)}>Añadir al carrito</button>
               <Link to={`/catalogo/producto/${product.id}`}>Ver detalle</Link>
               {userRole && userRole.includes('admin-1') && (
-                <button type='button' onClick={() => deleteProduct(product.id)}>Eliminar</button>/*
-                <button type='button' onClick={() => editProduct(product.id)}>Editar</button>*/
+                <>
+                  <button type='button' onClick={() => deleteProduct(product.id)}>Eliminar</button>
+                  <Link to={`/editar-producto/${product.id}`}>
+                    <button type="button">Editar</button>
+                  </Link>
+                </>
               )}
             </div>
           ))
