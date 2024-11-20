@@ -22,6 +22,7 @@ const CatalogPage: React.FC = () => {
       setUserRole(user.roles);
     }
     fetchProducts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, pageSize]); // Dependencias correctamente ajustadas
 
   const fetchProducts = async () => {

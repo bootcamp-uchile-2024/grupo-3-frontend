@@ -47,7 +47,7 @@ const EditProductPage: React.FC = () => {
         if (!response.ok) throw new Error('Error al obtener los detalles del producto');
         const data = await response.json();
         setProduct(data);
-      } catch (error) {
+      } catch {
         setError('No se pudo cargar el producto');
       } finally {
         setLoading(false);
@@ -67,17 +67,16 @@ const EditProductPage: React.FC = () => {
         },
         body: JSON.stringify(product),
       });
-
+  
       if (!response.ok) {
         throw new Error('Error al actualizar el producto');
-        console.log (product)
       }
       alert('Producto actualizado exitosamente');
       navigate(`/catalogo/producto/${id}`);
-    } catch (error) {
+    } catch {
       setError('Hubo un error al actualizar el producto');
     }
-  };
+  };  
 
   if (loading) return <p>Cargando producto...</p>;
   if (error) return <p>{error}</p>;
