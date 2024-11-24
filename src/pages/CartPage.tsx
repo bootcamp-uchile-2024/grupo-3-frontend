@@ -22,7 +22,7 @@ const CartPage: React.FC = () => {
   const fetchActiveCart = async () => {
     try {
       console.log(`Verificando carrito activo para el usuario ${userId}`);
-      const response = await fetch(`http://localhost:8080/carro-compras/activo/${userId}`, {
+      const response = await fetch(`http://localhost:8080/carro-compras/user/${userId}`, {
         method: 'GET',
         headers: { Accept: 'application/json' },
       });
@@ -34,11 +34,53 @@ const CartPage: React.FC = () => {
       } else if (response.status === 404) {
         console.log('No hay carrito activo para este usuario.');
         setCartId(null);
+      } else if (response.status === 400) {
+        console.error('Error 400: Solicitud mal formada al verificar carrito activo.');
+        alert('Hubo un problema al verificar el carrito activo. Contacta soporte.');
+        return;
       } else {
-        throw new Error(`Error HTTP: ${response.status}`);
+        throw new Error(`Error HTTP al verificar el carrito: ${response.status}`);
       }
     } catch (error: any) {
       console.error('Error al verificar el carrito activo:', error.message);
+      alert('Hubo un problema inesperado. Inténtalo más tarde.');
+    }
+  };
+
+  const deleteActiveCarts = async () => {
+    try {
+      console.log(`Buscando y eliminando carritos conflictivos para el usuario ${userId}`);
+      const response = await fetch(`http://localhost:8080/carro-compras/user/${userId}`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (response.ok) {
+        const cart = await response.json();
+
+        if (!cart || cart.fecha_cierre) {
+          console.log('No hay carritos conflictivos para eliminar.');
+          return;
+        }
+
+        console.log(`Eliminando carrito conflictivo con ID ${cart.id}`);
+        const deleteResponse = await fetch(`http://localhost:8080/carro-compras/${cart.id}`, {
+          method: 'DELETE',
+        });
+
+        if (!deleteResponse.ok) {
+          throw new Error(`Error al eliminar carrito conflictivo con ID ${cart.id}: ${deleteResponse.status}`);
+        }
+
+        console.log(`Carrito conflictivo con ID ${cart.id} eliminado.`);
+      } else if (response.status === 404) {
+        console.log('No se encontró carrito activo para el usuario. No hay conflictos.');
+      } else {
+        throw new Error(`Error al obtener carrito conflictivo: ${response.status}`);
+      }
+    } catch (error: any) {
+      console.error('Error al manejar carritos conflictivos:', error.message);
+      alert('Hubo un problema al eliminar carritos conflictivos. Contacta soporte.');
     }
   };
 
@@ -52,15 +94,30 @@ const CartPage: React.FC = () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+        console.error('Error al crear el carrito:', errorData);
+
+        if (errorData.message.includes('más de un carro activo')) {
+          console.warn('Conflicto detectado: más de un carrito activo.');
+          await deleteActiveCarts();
+          console.log('Reintentando creación después de resolver conflictos...');
+          return await createCart();
+        }
+
+        if (response.status === 400) {
+          console.error('El servidor rechazó la creación del carrito (400).');
+          alert('No se pudo crear el carrito debido a un error en el servidor. Contacta soporte.');
+          return;
+        }
+
+        throw new Error(errorData.message || `Error HTTP al crear carrito: ${response.status}`);
       }
 
       const data = await response.json();
       setCartId(data.id);
       console.log('Carrito creado con éxito:', data);
     } catch (error: any) {
-      console.error('Error al crear el carrito:', error.message);
-      alert(`Error al crear el carrito: ${error.message}`);
+      console.error('Error crítico al intentar crear un carrito:', error.message);
+      alert('Hubo un problema al crear el carrito. Inténtalo nuevamente más tarde.');
     }
   };
 
@@ -99,15 +156,16 @@ const CartPage: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchActiveCart();
-  }, []);
+    const initializeCart = async () => {
+      await fetchActiveCart();
+      if (!cartId) {
+        console.log('No hay carrito activo. Creando uno nuevo...');
+        await createCart();
+      }
+    };
 
-  useEffect(() => {
-    if (cartItems.length > 0 && cartId === null) {
-      console.log('No hay carrito activo. Creando uno nuevo.');
-      createCart();
-    }
-  }, [cartItems, cartId]);
+    initializeCart();
+  }, []);
 
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {
@@ -188,6 +246,7 @@ const CartPage: React.FC = () => {
         setIsPurchaseCompleted(true);
       } else {
         console.error('Error al finalizar la compra:', response.statusCode);
+        alert(`Error al finalizar la compra: Código ${response.statusCode}`);
       }
     } catch (e) {
       console.error('Error al finalizar la compra:', e);
@@ -335,5 +394,6 @@ const CartPage: React.FC = () => {
 };
 
 export default CartPage;
+
 
 
