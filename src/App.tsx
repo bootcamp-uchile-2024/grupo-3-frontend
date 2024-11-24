@@ -15,6 +15,7 @@ import { PrivateRoute } from './protected/PrivateRoute';
 import CartPage from './pages/CartPage';
 import UserManagement from './pages/UserManagement';
 import EditProductPage from './pages/EditProductPage';
+import AdminCartPage from './pages/AdminCartPage';
 
 function App() {
   const [user, setUser] = useState<{ username: string; role: string } | null>(null);
@@ -45,6 +46,8 @@ function App() {
             <Route path="cart" element={<CartPage />} />
             <Route path="user-management" element={<PrivateRoute roles={['admin-1']}><UserManagement /></PrivateRoute>} />
 
+            {/* Nueva ruta para AdminCartPage */}
+            <Route path="admin-carts" element={<PrivateRoute roles={['admin-1']}><AdminCartPage /></PrivateRoute>} />
           </Route>
         </Routes>
       </Router>
@@ -53,6 +56,7 @@ function App() {
 }
 
 export default App;
+
 
 
 

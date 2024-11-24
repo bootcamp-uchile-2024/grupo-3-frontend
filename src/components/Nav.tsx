@@ -65,6 +65,7 @@ const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
                     <>
                       <li><Link className="dropdown-item" to="/crear-producto">Crear Producto</Link></li>
                       <li><Link className="dropdown-item" to="/user-management">Gestión de Usuarios</Link></li>
+                      <li><Link className="dropdown-item" to="/admin-carts">Gestión de Carritos</Link></li> {/* NUEVO */}
                     </>
                   )}
                   <li>
@@ -75,7 +76,7 @@ const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
                         alert('Has cerrado sesión.');
                         onLogout();
                         navigate('/login');
-                        localStorage.removeItem('user')
+                        localStorage.removeItem('user');
                       }}>
                       Cerrar sesión
                     </Link>
@@ -85,7 +86,6 @@ const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
             ) : (
               <Link className="btn btn-link" to="/login">Login</Link>
             )}
-            { }
             <Link to="/cart" className="btn btn-link me-3 position-relative">
               <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-garden-cart" width="34" height="34" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#000" fill="none" strokeLinecap="round" strokeLinejoin="round">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -97,7 +97,8 @@ const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
                 <span className="cart-count position-absolute top-0 translate-middle badge rounded-pill bg-danger">
                   {cartItemCount}
                 </span>
-              )}Carro de compra
+              )}
+              Carro de compra
             </Link>
           </div>
         </div>
@@ -107,3 +108,4 @@ const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
 }
 
 export default Nav;
+
