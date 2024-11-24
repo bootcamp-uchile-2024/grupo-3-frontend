@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { Form, Button, Card, Container } from 'react-bootstrap';
 
 interface LoginFormProps {
   onLogin: (username: string, role: string) => void;
@@ -72,53 +73,127 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   };
 
   return (
-    <main className="form-signin col-md-3 col-xs-3 col-lg-3 m-auto relative-top">
-      <form onSubmit={handleSubmit}>
-        <h1 className="h3 mb-3 fw-normal">Iniciar Sesión</h1>
+    <Container
+    className="d-flex justify-content-center align-items-center"
+    style={{
+      height: '100vh', 
+    }}
+  >
+    <Card
+      className="shadow-sm"
+      style={{
+        width: '707px',
+        height: '465px',
+        padding: '59px 123px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '24px',
+        flexShrink: 0,
+        borderRadius: '8px',
+        border: '1px solid #C7CCC7',
+        backgroundColor: '#FFF',
+      }}
+    >
+      <Card.Body className="d-flex flex-column align-items-center p-0">
+        <h2 className="text-center mb-4" style={{ color: '#264653', fontWeight: 'bold' }}>
+          Inicia sesión para comprar
+        </h2>
+        <Form
+          onSubmit={handleSubmit}
+          style={{
+            width: '100%',
+          }}
+        >
+          <Form.Group className="mb-3" controlId="username">
+            <Form.Label style={{ fontWeight: '500' }}>Correo electrónico</Form.Label>
+            <Form.Control
+              type="text"
+              name="username"
+              placeholder="Ingresa Tu Correo Electrónico"
+              value={formData.username}
+              onChange={handleInputChange}
+              isInvalid={!!errors.usernameError}
+              style={{
+                borderRadius: '8px',
+                height: '48px',
+              }}
+            />
+            <Form.Control.Feedback type="invalid">{errors.usernameError}</Form.Control.Feedback>
+          </Form.Group>
 
-        <div className="form-floating">
-          <input
-            type="text"
-            className={`form-control ${errors.usernameError ? 'is-invalid' : ''}`}
-            id="floatingInput"
-            placeholder="Nombre de usuario"
-            name="username"
-            value={formData.username}
-            onChange={handleInputChange}
-          />
-          <label htmlFor="floatingInput">Nombre de usuario</label>
-          {errors.usernameError && <div className="invalid-feedback">{errors.usernameError}</div>}
-        </div>
+          <Form.Group className="mb-3" controlId="password">
+            <Form.Label style={{ fontWeight: '500' }}>Contraseña</Form.Label>
+            <Form.Control
+              type="password"
+              name="password"
+              placeholder="Ingresa Tu Contraseña"
+              value={formData.password}
+              onChange={handleInputChange}
+              isInvalid={!!errors.passwordError}
+              style={{
+                borderRadius: '8px',
+                height: '48px',
+              }}
+            />
+            <Form.Control.Feedback type="invalid">{errors.passwordError}</Form.Control.Feedback>
+          </Form.Group>
 
-        <div className="form-floating">
-          <input
-            type="password"
-            className={`form-control ${errors.passwordError ? 'is-invalid' : ''}`}
-            id="floatingPassword"
-            placeholder="Contraseña"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-          />
-          <label htmlFor="floatingPassword">Contraseña</label>
-          {errors.passwordError && <div className="invalid-feedback">{errors.passwordError}</div>}
-        </div>
+          <div className="text-center mb-3">
+            <Link to="/recuperar-contraseña" className="text-muted" style={{ fontSize: '0.9rem' }}>
+              ¿Olvidaste Tu Contraseña?
+            </Link>
+          </div>
 
-        <div className="form-check text-start my-3">
-          <input className="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault" />
-          <label className="form-check-label" htmlFor="flexCheckDefault">
-            Recordarme
-          </label>
-        </div>
+          <div className="d-flex flex-column gap-2">
+            <Button
+              variant="dark"
+              type="submit"
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: '8px',
+                width: '153px', 
+                height: '48px', 
+                padding: '8px 16px', 
+                borderRadius: '8px', 
+                backgroundColor: '#1A4756', 
+                border: 'none', 
+                color: '#FFFFFF', 
+                fontWeight: 'bold', 
+                fontSize: '1rem', 
+                boxSizing: 'border-box', 
+              }}
+            >
+              Ingresar
+            </Button>
 
-        <button className="btn btn-primary w-100 py-2" type="submit">Iniciar Sesión</button>
-
-        <p className="mt-3">
-          ¿No tienes una cuenta? <Link to="/crear-usuario">Crear una cuenta</Link>
-        </p>
-      </form>
-    </main>
-  );
+            <Link to="/crear-usuario">
+              <Button
+                variant="outline-dark"
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '8px',
+                  width: '153px', 
+                  height: '48px', 
+                  padding: '8px 16px', 
+                  borderRadius: '8px', 
+                  fontWeight: 'bold', 
+                  fontSize: '1rem',
+                }}
+              >
+                Crear una cuenta
+              </Button>
+            </Link>
+          </div>
+        </Form>
+      </Card.Body>
+    </Card>
+  </Container>
+);
 };
 
 export default LoginForm;
