@@ -1,42 +1,31 @@
 import React from "react";
+import { Button, Row, Col, Container } from "react-bootstrap";
 
 const CardProducts: React.FC = () => {
     return (
-        <div className="container">
-            <h2 className="center">Plantas para llevar a tu hogar</h2>
-            <section id="productos">
-                <div className="product d-flex flex-column align-items-center">
-                    <div className="product-image"></div>
-                    <h3 className="text-center">Ficus</h3>
-                    <p>$20.000</p>
-                    <div className="d-flex justify-content-center">
-                        <button className="btn btn-dark">
-                            <a href="#" className="text-white">Comprar</a>
-                        </button>
-                    </div>
-                </div>
-                <div className="product d-flex flex-column align-items-center">
-                    <div className="product-image"></div>
-                    <h3 className="text-center">Ficus</h3>
-                    <p>$20.000</p>
-                    <div className="d-flex justify-content-center">
-                        <button className="btn btn-dark">
-                            <a href="#" className="text-white">Comprar</a>
-                        </button>
-                    </div>
-                </div>
-                <div className="product d-flex flex-column align-items-center">
-                    <div className="product-image"></div>
-                    <h3 className="text-center">Ficus</h3>
-                    <p>$20.000</p>
-                    <div className="d-flex justify-content-center">
-                        <button className="btn btn-dark">
-                            <a href="#" className="text-white">Comprar</a>
-                        </button>
-                    </div>
-                </div>
-            </section>
-        </div>
+        <Container className="my-4">
+        <Row className="mb-3">
+          <Col>
+            <Button className="btn-primary small">Primary Small</Button>
+            <Button variant="btn-secondary" className="btn-primary medium">Primary Medium</Button>
+            <Button variant="btn-orange" className="btn-primary large" disabled>
+              Primary Large Disabled
+            </Button>
+          </Col>
+        </Row>
+        <Row className="mb-3">
+          <Col>
+            <Button variant="secondary" className="btn-secondary">Secondary</Button>{' '}
+            <Button variant="outline-primary" className="btn-tertiary">Tertiary</Button>
+          </Col>
+        </Row>
+        <Row className="mb-3">
+          <Col>
+            <Button variant="warning" className="btn-orange">Orange Button</Button>{' '}
+            <Button variant="dark" className="btn-gray">Gray Button</Button>
+          </Col>
+        </Row>
+      </Container>
     );
 };
 

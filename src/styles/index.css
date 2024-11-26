@@ -1,8 +1,13 @@
 /* CSS file for estilos.css */
+
+@import url('./variables.css');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Quicksand:wght@400;500;700&display=swap');
+
+
 #root{
   margin: 0 auto;
   padding: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Quicksand', sans-serif;
   width: 1440px;
   border: 1px solid #cccccc;
 }
@@ -14,6 +19,8 @@ header{
   padding: 10px 0 0 0;
   color: black;
   margin-bottom: -10px;
+  background-color: var(--main-bg-color);
+  height: 62px;
 }
 
 #nav{
@@ -253,10 +260,6 @@ i.fas.fa-search {
   left: 68px;
 }
 
-.header-left-sections{
-  text-align: left!important;
-}
-
 /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
 
 /* Estilo general para el contenedor del catálogo */
@@ -453,13 +456,12 @@ h1{
 
 footer {
   position: relative;
-  background: linear-gradient(to right, rgba(26, 71, 86, 1) 0%, rgba(26, 71, 86, 0) 100%), #1A4756; /* Gradiente del color base */
-  color: white; /* Color del texto */
-  overflow: hidden; /* Asegura que no desborde */
-  padding: 40px; /* Espaciado interno */
+  background: linear-gradient(to right, rgba(26, 71, 86, 1) 0%, rgba(26, 71, 86, 0) 100%), #1A4756;
+  color: white; 
+  overflow: hidden; 
+  padding: 40px; 
   width: 1440px;
   height: 367px;
-  flex-shrink: 0;
 }
 
 footer::before {
@@ -469,19 +471,17 @@ footer::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='124' height='122' viewBox='0 0 124 122' fill='none'%3E%3Cpath d='M92.5007 31.7738C114.498 53.2698 128.83 83.4402 106.832 104.936C84.8344 126.432 52.361 113.976 30.3634 92.4797C8.36576 70.9836 -3.08138 6.87519 1.70072 2.20214C6.48281 -2.47091 70.5031 10.2924 92.5007 31.7738Z' stroke='%231A4756' stroke-miterlimit='10'/%3E%3Cpath d='M60.6406 91.1216H84.902C89.8983 91.1216 94.6963 93.0766 98.2697 96.5686V96.5686L106.833 104.936C108.252 106.645 123.002 121 123.002 121' stroke='%231A4756' stroke-miterlimit='10'/%3E%3C/svg%3E");
-  background-size: 124px 122px; /* Ajusta el tamaño del patrón */
-  background-repeat: repeat; /* Repite el patrón */
-  background-position: center; /* Centra el patrón */
-  opacity: 1; /* Ajusta la opacidad si es necesario */
-  z-index: 1; /* Envía el patrón al fondo */
+  background-image: url("/src/assets/pattern_footer.png");
+  background-repeat: repeat;
+  background-position: center; 
+  opacity: 0.24; 
+  z-index: 1; 
 }
 
 footer > * {
   position: relative;
-  z-index: 2; /* Asegura que el contenido esté por encima del patrón */
+  z-index: 2; 
 }
-
 
 footer ul {
   list-style: none;
@@ -502,6 +502,155 @@ footer ul li a {
 footer ul li a:hover {
   color: #A8DADC; /* Efecto hover */
 }
+
+/* BUTTONS */
+
+/* Primary Button */
+button.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+button.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+button.btn-primary:active {
+  background-color: var(--primary-active);
+  border-color: var(--primary-active);
+}
+
+button.btn-primary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 148, 0.25); /* Adaptar al color del focus */
+  border-color: var(--primary-focus);
+}
+
+button.btn-primary:disabled, 
+button.btn-primary.disabled {
+  background-color: var(--primary-disabled-bg);
+  color: var(--primary-disabled-text);
+  border-color: var(--primary-disabled-bg);
+}
+
+/* Secondary Button */
+button.btn-secondary {
+  background-color: var(--secondary-color);
+  color: white;
+  border-color: var(--secondary-color);
+}
+
+button.btn-secondary:hover {
+  background-color: var(--secondary-hover);
+  border-color: var(--secondary-hover);
+}
+
+button.btn-secondary:active {
+  background-color: var(--secondary-active);
+  border-color: var(--secondary-active);
+}
+
+button.btn-secondary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(20, 108, 74, 0.25); /* Adaptar al color del focus */
+  border-color: var(--secondary-focus);
+}
+
+button.btn-secondary:disabled, 
+button.btn-secondary.disabled {
+  background-color: var(--primary-disabled-bg);
+  color: var(--primary-disabled-text);
+  border-color: var(--primary-disabled-bg);
+}
+
+/* Tertiary Button (Outline) */
+button.btn-outline-primary {
+  background-color: transparent;
+  color: var(--tertiary-color);
+  border-color: var(--tertiary-color);
+}
+
+button.btn-outline-primary:hover {
+  background-color: var(--tertiary-hover-bg);
+}
+
+button.btn-outline-primary:active {
+  background-color: var(--tertiary-active-bg);
+}
+
+button.btn-outline-primary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 148, 0.25); /* Adaptar al color del focus */
+  border-color: var(--primary-focus);
+}
+
+button.btn-outline-primary:disabled, 
+button.btn-outline-primary.disabled {
+  background-color: var(--tertiary-disabled-bg);
+  color: var(--primary-disabled-text);
+  border-color: var(--tertiary-disabled-border);
+}
+
+/* Orange Button */
+button.btn-orange {
+  background-color: var(--orange-color);
+  color: white;
+  border-color: var(--orange-color);
+}
+
+button.btn-orange:hover {
+  background-color: var(--orange-hover);
+  border-color: var(--orange-hover);
+}
+
+button.btn-orange:active {
+  background-color: var(--orange-active);
+  border-color: var(--orange-active);
+}
+
+button.btn-orange:focus {
+  box-shadow: 0 0 0 0.25rem rgba(227, 142, 36, 0.25); /* Adaptar al color del focus */
+  border-color: var(--orange-hover);
+}
+
+button.btn-orange:disabled, 
+button.btn-orange.disabled {
+  background-color: var(--primary-disabled-bg);
+  color: var(--primary-disabled-text);
+  border-color: var(--primary-disabled-bg);
+}
+
+/* Gray Button */
+button.btn-gray {
+  background-color: var(--gray-color);
+  color: white;
+  border-color: var(--gray-color);
+}
+
+button.btn-gray:hover {
+  background-color: var(--gray-hover);
+  border-color: var(--gray-hover);
+}
+
+button.btn-gray:active {
+  background-color: var(--gray-active);
+  border-color: var(--gray-active);
+}
+
+button.btn-gray:focus {
+  box-shadow: 0 0 0 0.25rem rgba(138, 153, 163, 0.25); /* Adaptar al color del focus */
+  border-color: var(--gray-hover);
+}
+
+button.btn-gray:disabled, 
+button.btn-gray.disabled {
+  background-color: var(--primary-disabled-bg);
+  color: var(--primary-disabled-text);
+  border-color: var(--primary-disabled-bg);
+}
+
+
+
+
 
 
 

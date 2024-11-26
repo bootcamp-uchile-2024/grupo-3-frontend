@@ -1,11 +1,4 @@
 /* CSS file for estilos.css */
-#root{
-  margin: 0 auto;
-  padding: 0;
-  font-family: Arial, sans-serif;
-  width: 1440px;
-  border: 1px solid #cccccc;
-}
 
 header{
   display: flex;
