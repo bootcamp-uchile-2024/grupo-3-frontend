@@ -16,6 +16,7 @@ import CartPage from './pages/CartPage';
 import UserManagement from './pages/UserManagement';
 import EditProductPage from './pages/EditProductPage';
 import AdminCartPage from './pages/AdminCartPage';
+import StyleGuide from './components/StyleGuide';
 
 function App() {
   const [user, setUser] = useState<{ username: string; role: string } | null>(null);
@@ -34,6 +35,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainLayout user={user} onLogout={handleLogout} />}>
             <Route index element={<HomePage />} />
+            <Route path="style-guide" element={<StyleGuide />} />
             <Route path="catalogo" element={<CatalogPage />} />
             <Route path="catalogo/producto/:id" element={<ProductDetailPage />} />
             <Route path="about" element={<AboutPage />} />

@@ -15,7 +15,7 @@ const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
     <nav className="navbar navbar-expand-lg w-100">
       <div className="container-fluid">
         <Link to="/" className="navbar-brand d-flex align-items-center">
-          <h1 className="mb-0">Plantai</h1>
+          
         </Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
@@ -24,6 +24,9 @@ const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
           <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
             <li className="nav-item">
               <Link className="nav-link active" aria-current="page" to="/">Home</Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/style-guide">Guía de estilos</Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/catalogo">Catálogo</Link>

@@ -23,6 +23,20 @@ header{
   height: 62px;
 }
 
+.navbar-brand {
+  background-image: url("/src/assets/LOGO_PLANTAI.png");
+  background-size: contain; 
+  background-repeat: no-repeat; 
+  background-position: center; 
+  display: block; 
+  width: 99px;
+  height: 100px;
+}
+
+nav.nav-link {
+  color: var(--bs-nav-link-color);
+}
+
 #nav{
   display: flex;
   width: 100%;
