@@ -507,3 +507,12 @@ i.fas.fa-search {
 h1{
   padding: 10px;
 }
+
+input::placeholder {
+  color: #555; /* Color del placeholder */
+  font-family: 'Quicksand', sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 22px;
+}
+
