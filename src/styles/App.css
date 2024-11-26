@@ -230,27 +230,9 @@ button a {
   float: left;
 }
 
-footer {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 20px;
-  border-top: 1px solid lightgray;
-  margin-top: 30px;
-}
-
 .subscribe {
   margin-right: 40px;
 
-}
-
-footer ul{
-  list-style: none;
-}
-
-footer ul li a{
-  list-style: none;
-  color: black;
-  text-decoration: none;
 }
 
 #search-form ul li {
@@ -507,3 +489,5 @@ i.fas.fa-search {
 h1{
   padding: 10px;
 }
+
+

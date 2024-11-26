@@ -449,3 +449,59 @@ h1{
   padding: 10px;
 }
 
+/* FOOTER */
+
+footer {
+  position: relative;
+  background: linear-gradient(to right, rgba(26, 71, 86, 1) 0%, rgba(26, 71, 86, 0) 100%), #1A4756; /* Gradiente del color base */
+  color: white; /* Color del texto */
+  overflow: hidden; /* Asegura que no desborde */
+  padding: 40px; /* Espaciado interno */
+  width: 1440px;
+  height: 367px;
+  flex-shrink: 0;
+}
+
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='124' height='122' viewBox='0 0 124 122' fill='none'%3E%3Cpath d='M92.5007 31.7738C114.498 53.2698 128.83 83.4402 106.832 104.936C84.8344 126.432 52.361 113.976 30.3634 92.4797C8.36576 70.9836 -3.08138 6.87519 1.70072 2.20214C6.48281 -2.47091 70.5031 10.2924 92.5007 31.7738Z' stroke='%231A4756' stroke-miterlimit='10'/%3E%3Cpath d='M60.6406 91.1216H84.902C89.8983 91.1216 94.6963 93.0766 98.2697 96.5686V96.5686L106.833 104.936C108.252 106.645 123.002 121 123.002 121' stroke='%231A4756' stroke-miterlimit='10'/%3E%3C/svg%3E");
+  background-size: 124px 122px; /* Ajusta el tamaño del patrón */
+  background-repeat: repeat; /* Repite el patrón */
+  background-position: center; /* Centra el patrón */
+  opacity: 1; /* Ajusta la opacidad si es necesario */
+  z-index: 1; /* Envía el patrón al fondo */
+}
+
+footer > * {
+  position: relative;
+  z-index: 2; /* Asegura que el contenido esté por encima del patrón */
+}
+
+
+footer ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+footer ul li {
+  margin-bottom: 10px;
+}
+
+footer ul li a {
+  color: white; /* Enlaces visibles sobre el fondo oscuro */
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer ul li a:hover {
+  color: #A8DADC; /* Efecto hover */
+}
+
+
+
