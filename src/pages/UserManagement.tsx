@@ -130,269 +130,282 @@ const UserManagement = () => {
         </Col>
         <Col md={10}>
           <h1 className="text-end">¡Buenos días Admin!</h1>
-
+  
           {error && <p className="text-danger">{error}</p>}
-
-          <Tabs defaultActiveKey="modificarUsuario" className="mb-3">
-            <Tab eventKey="crearUsuario" title="Crear Usuario">
-              {isAdmin && <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />}
-            </Tab>
-
-            <Tab eventKey="eliminarUsuario" title="Eliminar Usuario">
-              {loading ? (
-                <Spinner animation="border" variant="primary" />
-              ) : (
-                <>
-                  {selectedUser && (
-                    <CardUser
-                      selectedUser={{
-                        ...selectedUser,
-                        direccion: selectedUser.direccion || 'Sin dirección',
-                      }}
-                    />
-                  )}
-                  <UserTable
-                    users={users}
-                    currentUsers={currentUsers}
-                    selectedUser={selectedUser}
-                    setSelectedUser={setSelectedUser}
-                  />
-                  <Pagination className="justify-content-center mt-3">
-                    {Array.from(
-                      { length: Math.ceil(users.length / usersPerPage) },
-                      (_, index) => (
-                        <Pagination.Item
-                          key={index + 1}
-                          active={index + 1 === currentPage}
-                          onClick={() => paginate(index + 1)}
-                        >
-                          {index + 1}
-                        </Pagination.Item>
-                      )
+  
+          <div
+            style={{
+              width: '1096px',
+              height: '1161px',
+              flexShrink: 0,
+              borderRadius: '0px 0px 8px 8px',
+              background: '#F5F5F5',
+              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+              padding: '16px',
+              marginTop: '16px',
+            }}
+          >
+            <Tabs defaultActiveKey="modificarUsuario" className="mb-3">
+              <Tab eventKey="crearUsuario" title="Crear Usuario">
+                {isAdmin && <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />}
+              </Tab>
+  
+              <Tab eventKey="eliminarUsuario" title="Eliminar Usuario">
+                {loading ? (
+                  <Spinner animation="border" variant="primary" />
+                ) : (
+                  <>
+                    {selectedUser && (
+                      <CardUser
+                        selectedUser={{
+                          ...selectedUser,
+                          direccion: selectedUser.direccion || 'Sin dirección',
+                        }}
+                      />
                     )}
-                  </Pagination>
-                  {selectedUser && (
+                    <UserTable
+                      users={users}
+                      currentUsers={currentUsers}
+                      selectedUser={selectedUser}
+                      setSelectedUser={setSelectedUser}
+                    />
+                    <Pagination className="justify-content-center mt-3">
+                      {Array.from(
+                        { length: Math.ceil(users.length / usersPerPage) },
+                        (_, index) => (
+                          <Pagination.Item
+                            key={index + 1}
+                            active={index + 1 === currentPage}
+                            onClick={() => paginate(index + 1)}
+                          >
+                            {index + 1}
+                          </Pagination.Item>
+                        )
+                      )}
+                    </Pagination>
+                    {selectedUser && (
+                      <div className="d-flex justify-content-center mt-3 gap-2">
+                        <Button variant="secondary" onClick={handleCancelEdit}>
+                          Cancelar
+                        </Button>
+                        <Button variant="danger" onClick={() => deleteUser(selectedUser.id)}>
+                          Eliminar
+                        </Button>
+                      </div>
+                    )}
+                  </>
+                )}
+              </Tab>
+  
+              <Tab eventKey="modificarUsuario" title="Modificar Usuario">
+                {loading ? (
+                  <Spinner animation="border" variant="primary" />
+                ) : editingUser ? (
+                  <>
+                    {editingUser && <CardUser selectedUser={editingUser} />}
+                    <Form>
+                      <Row>
+                        <Col>
+                          <Form.Group>
+                            <Form.Label>Nombre</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={editingUser.nombre}
+                              onChange={(e) =>
+                                setEditingUser((prev) =>
+                                  prev ? { ...prev, nombre: e.target.value } : null
+                                )
+                              }
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col>
+                          <Form.Group>
+                            <Form.Label>Apellido</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={editingUser.apellido}
+                              onChange={(e) =>
+                                setEditingUser((prev) =>
+                                  prev ? { ...prev, apellido: e.target.value } : null
+                                )
+                              }
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Row className="mt-3">
+                        <Col>
+                          <Form.Group>
+                            <Form.Label>Correo Electrónico</Form.Label>
+                            <Form.Control
+                              type="email"
+                              value={editingUser.email}
+                              onChange={(e) =>
+                                setEditingUser((prev) =>
+                                  prev ? { ...prev, email: e.target.value } : null
+                                )
+                              }
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col>
+                          <Form.Group>
+                            <Form.Label>Teléfono</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={editingUser.telefono}
+                              onChange={(e) =>
+                                setEditingUser((prev) =>
+                                  prev ? { ...prev, telefono: e.target.value } : null
+                                )
+                              }
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Row className="mt-3">
+                        <Col>
+                          <Form.Group>
+                            <Form.Label>Nombre de Usuario</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={editingUser.nombreUsuario}
+                              onChange={(e) =>
+                                setEditingUser((prev) =>
+                                  prev ? { ...prev, nombreUsuario: e.target.value } : null
+                                )
+                              }
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col>
+                          <Form.Group>
+                            <Form.Label>Género</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={editingUser.genero}
+                              onChange={(e) =>
+                                setEditingUser((prev) =>
+                                  prev ? { ...prev, genero: e.target.value } : null
+                                )
+                              }
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Row className="mt-3">
+                        <Col>
+                          <Form.Group>
+                            <Form.Label>RUT</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={editingUser.rut}
+                              onChange={(e) =>
+                                setEditingUser((prev) =>
+                                  prev ? { ...prev, rut: e.target.value } : null
+                                )
+                              }
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col>
+                          <Form.Group>
+                            <Form.Label>Fecha de Nacimiento</Form.Label>
+                            <Form.Control
+                              type="date"
+                              value={editingUser.fechaNacimiento}
+                              onChange={(e) =>
+                                setEditingUser((prev) =>
+                                  prev ? { ...prev, fechaNacimiento: e.target.value } : null
+                                )
+                              }
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                      <Row className="mt-3">
+                        <Col>
+                          <Form.Group>
+                            <Form.Label>Dirección</Form.Label>
+                            <Form.Control
+                              type="text"
+                              value={editingUser.direccion || ''}
+                              onChange={(e) =>
+                                setEditingUser((prev) =>
+                                  prev ? { ...prev, direccion: e.target.value } : null
+                                )
+                              }
+                            />
+                          </Form.Group>
+                        </Col>
+                        <Col>
+                          <Form.Group>
+                            <Form.Label>Tipo de Usuario</Form.Label>
+                            <Form.Control
+                              type="number"
+                              value={editingUser.tipoUsuarioId}
+                              onChange={(e) =>
+                                setEditingUser((prev) =>
+                                  prev ? { ...prev, tipoUsuarioId: parseInt(e.target.value, 10) || 0 } : null
+                                )
+                              }
+                            />
+                          </Form.Group>
+                        </Col>
+                      </Row>
+                    </Form>
                     <div className="d-flex justify-content-center mt-3 gap-2">
                       <Button variant="secondary" onClick={handleCancelEdit}>
                         Cancelar
                       </Button>
-                      <Button variant="danger" onClick={() => deleteUser(selectedUser.id)}>
-                        Eliminar
+                      <Button variant="success" onClick={handleUpdateUser}>
+                        Guardar Cambios
                       </Button>
                     </div>
-                  )}
-                </>
-              )}
-            </Tab>
-
-            <Tab eventKey="modificarUsuario" title="Modificar Usuario">
-              {loading ? (
-                <Spinner animation="border" variant="primary" />
-              ) : editingUser ? (
-                <>
-                  {editingUser && <CardUser selectedUser={editingUser} />}
-                  <Form>
-                    <Row>
-                      <Col>
-                        <Form.Group>
-                          <Form.Label>Nombre</Form.Label>
-                          <Form.Control
-                            type="text"
-                            value={editingUser.nombre}
-                            onChange={(e) =>
-                              setEditingUser((prev) =>
-                                prev ? { ...prev, nombre: e.target.value } : null
-                              )
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col>
-                        <Form.Group>
-                          <Form.Label>Apellido</Form.Label>
-                          <Form.Control
-                            type="text"
-                            value={editingUser.apellido}
-                            onChange={(e) =>
-                              setEditingUser((prev) =>
-                                prev ? { ...prev, apellido: e.target.value } : null
-                              )
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    <Row className="mt-3">
-                      <Col>
-                        <Form.Group>
-                          <Form.Label>Correo Electrónico</Form.Label>
-                          <Form.Control
-                            type="email"
-                            value={editingUser.email}
-                            onChange={(e) =>
-                              setEditingUser((prev) =>
-                                prev ? { ...prev, email: e.target.value } : null
-                              )
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col>
-                        <Form.Group>
-                          <Form.Label>Teléfono</Form.Label>
-                          <Form.Control
-                            type="text"
-                            value={editingUser.telefono}
-                            onChange={(e) =>
-                              setEditingUser((prev) =>
-                                prev ? { ...prev, telefono: e.target.value } : null
-                              )
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    <Row className="mt-3">
-                      <Col>
-                        <Form.Group>
-                          <Form.Label>Nombre de Usuario</Form.Label>
-                          <Form.Control
-                            type="text"
-                            value={editingUser.nombreUsuario}
-                            onChange={(e) =>
-                              setEditingUser((prev) =>
-                                prev ? { ...prev, nombreUsuario: e.target.value } : null
-                              )
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col>
-                        <Form.Group>
-                          <Form.Label>Género</Form.Label>
-                          <Form.Control
-                            type="text"
-                            value={editingUser.genero}
-                            onChange={(e) =>
-                              setEditingUser((prev) =>
-                                prev ? { ...prev, genero: e.target.value } : null
-                              )
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    <Row className="mt-3">
-                      <Col>
-                        <Form.Group>
-                          <Form.Label>RUT</Form.Label>
-                          <Form.Control
-                            type="text"
-                            value={editingUser.rut}
-                            onChange={(e) =>
-                              setEditingUser((prev) =>
-                                prev ? { ...prev, rut: e.target.value } : null
-                              )
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col>
-                        <Form.Group>
-                          <Form.Label>Fecha de Nacimiento</Form.Label>
-                          <Form.Control
-                            type="date"
-                            value={editingUser.fechaNacimiento}
-                            onChange={(e) =>
-                              setEditingUser((prev) =>
-                                prev ? { ...prev, fechaNacimiento: e.target.value } : null
-                              )
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                    <Row className="mt-3">
-                      <Col>
-                        <Form.Group>
-                          <Form.Label>Dirección</Form.Label>
-                          <Form.Control
-                            type="text"
-                            value={editingUser.direccion || ''}
-                            onChange={(e) =>
-                              setEditingUser((prev) =>
-                                prev ? { ...prev, direccion: e.target.value } : null
-                              )
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-                      <Col>
-                        <Form.Group>
-                          <Form.Label>Tipo de Usuario</Form.Label>
-                          <Form.Control
-                            type="number"
-                            value={editingUser.tipoUsuarioId}
-                            onChange={(e) =>
-                              setEditingUser((prev) =>
-                                prev ? { ...prev, tipoUsuarioId: e.target.value } : null
-                              )
-                            }
-                          />
-                        </Form.Group>
-                      </Col>
-                    </Row>
-                  </Form>
-                  <div className="d-flex justify-content-center mt-3 gap-2">
-                    <Button variant="secondary" onClick={handleCancelEdit}>
-                      Cancelar
-                    </Button>
-                    <Button variant="success" onClick={handleUpdateUser}>
-                      Guardar Cambios
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  {selectedUser && <CardUser selectedUser={selectedUser} />}
-                  <UserTable
-                    users={users}
-                    currentUsers={currentUsers}
-                    selectedUser={selectedUser}
-                    setSelectedUser={setSelectedUser}
-                  />
-                  <Pagination className="justify-content-center mt-3">
-                    {Array.from(
-                      { length: Math.ceil(users.length / usersPerPage) },
-                      (_, index) => (
-                        <Pagination.Item
-                          key={index + 1}
-                          active={index + 1 === currentPage}
-                          onClick={() => paginate(index + 1)}
-                        >
-                          {index + 1}
-                        </Pagination.Item>
-                      )
-                    )}
-                  </Pagination>
-                  <div className="d-flex justify-content-center mt-3 gap-2">
-                    <Button
-                      variant="primary"
-                      onClick={handleModifyClick}
-                      disabled={!selectedUser}
-                    >
-                      Modificar
-                    </Button>
-                  </div>
-                </>
-              )}
-            </Tab>
-
-          </Tabs>
+                  </>
+                ) : (
+                  <>
+                    {selectedUser && <CardUser selectedUser={selectedUser} />}
+                    <UserTable
+                      users={users}
+                      currentUsers={currentUsers}
+                      selectedUser={selectedUser}
+                      setSelectedUser={setSelectedUser}
+                    />
+                    <Pagination className="justify-content-center mt-3">
+                      {Array.from(
+                        { length: Math.ceil(users.length / usersPerPage) },
+                        (_, index) => (
+                          <Pagination.Item
+                            key={index + 1}
+                            active={index + 1 === currentPage}
+                            onClick={() => paginate(index + 1)}
+                          >
+                            {index + 1}
+                          </Pagination.Item>
+                        )
+                      )}
+                    </Pagination>
+                    <div className="d-flex justify-content-center mt-3 gap-2">
+                      <Button
+                        variant="primary"
+                        onClick={handleModifyClick}
+                        disabled={!selectedUser}
+                      >
+                        Modificar
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </Tab>
+            </Tabs>
+          </div>
         </Col>
       </Row>
     </Container>
   );
+  
 };
 
 export default UserManagement;

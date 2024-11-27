@@ -12,42 +12,62 @@ interface UserTableProps {
 }
 
 const UserTable: React.FC<UserTableProps> = ({
-  users,
   currentUsers,
   selectedUser,
   setSelectedUser,
   onUserAction,
   onEditAction,
 }) => {
-  const totalUsers = users.length;
-  const usersWithAddress = users.filter((user) => user.direccion).length;
-
   return (
-    <div>
-      {/* Resumen de usuarios */}
-      <div className="mb-3">
-        <p className="text-muted">
-          Total de usuarios: <strong>{totalUsers}</strong>
-        </p>
-        <p className="text-muted">
-          Usuarios con dirección registrada: <strong>{usersWithAddress}</strong>
-        </p>
-      </div>
-
-      {/* Tabla de usuarios */}
-      <Table striped bordered hover responsive>
+    <div
+      style={{
+        display: 'flex',
+        width: '1072px',
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+      }}
+    >
+      <Table
+        responsive
+        hover
+        style={{
+          borderCollapse: 'collapse',
+          tableLayout: 'fixed',
+          width: '100%', 
+          marginTop: '76px', 
+        }}
+      >
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Nombre Usuario</th>
-            <th>Email</th>
-            <th>Rut</th>
-            <th>Fecha Nacimiento</th>
-            <th>Teléfono</th>
-            <th>Género</th>
-            <th>Dirección</th>
+            {[
+              { header: 'ID', width: '5%' },
+              { header: 'Nombre', width: '15%' },
+              { header: 'Apellido', width: '15%' },
+              { header: 'Nombre Usuario', width: '15%' },
+              { header: 'Email', width: '20%' },
+              { header: 'Rut', width: '10%' },
+              { header: 'Fecha Nacimiento', width: '10%' },
+              { header: 'Teléfono', width: '10%' },
+              { header: 'Género', width: '10%' },
+              { header: 'Dirección', width: '20%' },
+            ].map((col, index) => (
+              <th
+                key={index}
+                style={{
+                  fontFamily: 'Quicksand',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  lineHeight: '13px',
+                  color: '#000',
+                  textAlign: 'center',
+                  borderBottom: '1px solid #BBB',
+                  background: '#DCE2D3',
+                  width: col.width, 
+                }}
+              >
+                {col.header}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -57,19 +77,36 @@ const UserTable: React.FC<UserTableProps> = ({
               onClick={() => setSelectedUser(user)}
               style={{
                 cursor: 'pointer',
-                backgroundColor: selectedUser?.id === user.id ? '#d3dbd5' : '',
+                backgroundColor: selectedUser?.id === user.id ? '#6F8F75' : 'transparent',
+                transition: 'background-color 0.3s ease',
               }}
             >
-              <td>{user.id}</td>
-              <td>{user.nombre}</td>
-              <td>{user.apellido}</td>
-              <td>{user.nombreUsuario}</td>
-              <td>{user.email}</td>
-              <td>{user.rut}</td>
-              <td>{new Date(user.fechaNacimiento).toLocaleDateString('es-ES')}</td>
-              <td>{user.telefono}</td>
-              <td>{user.genero}</td>
-              <td>{user.direccion || 'No especificada'}</td>
+              {[
+                user.id,
+                user.nombre,
+                user.apellido,
+                user.nombreUsuario,
+                user.email,
+                user.rut,
+                new Date(user.fechaNacimiento).toLocaleDateString('es-ES'),
+                user.telefono,
+                user.genero,
+                user.direccion || 'No especificada',
+              ].map((value, index) => (
+                <td
+                  key={index}
+                  style={{
+                    borderTop: '1px solid #BBB',
+                    textAlign: 'center', 
+                    padding: '8px', 
+                    overflow: 'hidden', 
+                    textOverflow: 'ellipsis', 
+                    whiteSpace: 'nowrap', 
+                  }}
+                >
+                  {value}
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
@@ -86,7 +123,6 @@ const UserTable: React.FC<UserTableProps> = ({
               Eliminar
             </Button>
           )}
-          
         </div>
       )}
     </div>
@@ -94,3 +130,4 @@ const UserTable: React.FC<UserTableProps> = ({
 };
 
 export default UserTable;
+
