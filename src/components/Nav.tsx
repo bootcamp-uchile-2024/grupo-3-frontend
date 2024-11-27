@@ -15,7 +15,6 @@ const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
     <nav className="navbar navbar-expand-lg w-100">
       <div className="container-fluid">
         <Link to="/" className="navbar-brand d-flex align-items-center">
-          
         </Link>
         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
           <span className="navbar-toggler-icon"></span>
@@ -90,7 +89,7 @@ const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
               <Link className="btn btn-link" to="/login">Login</Link>
             )}
             <Link to="/cart" className="btn btn-link me-3 position-relative">
-            <span className="material-symbols-outlined">favorite</span>
+            <span className="material-symbols-outlined icon-white">garden_cart</span>
               {cartItemCount > 0 && (
                 <span className="cart-count position-absolute top-0 translate-middle badge rounded-pill bg-danger">
                   {cartItemCount}

@@ -33,8 +33,8 @@ header{
   height: 100px;
 }
 
-nav.nav-link {
-  color: var(--bs-nav-link-color);
+nav.navbar-nav, .nav-link, nav.navbar-nav a, nav.navbar-nav a:active, nav.navbar-nav a:visited, nav.navbar-nav a:hover, nav.navbar-nav a:focus, nav.navbar-nav a:link {
+  color: white!important;
 }
 
 #nav{
@@ -97,32 +97,6 @@ nav#navbar-top {
   /* margin: 20px auto 0; */
 }
 
-#banner{
-  background-size: cover;
-  background-position: center;
-  width: 100%;
-  height: 370px;
-  display: inline-block;
-  color: #fff;
-  text-align: center;
-  background-color: #4f4f4f;
-}
-
-#banner h2{
-  display: flex;
-  font-size: 2.6rem;
-  color: white;
-  justify-content: center;
-  text-align: center;
-  padding-top: 30px;
-}
-
-#banner p{
-  display: block;
-  font-size: 1.2em;
-  color: black;
-}
-
 #productos{
   display: flex;
   justify-content: space-evenly;
@@ -182,20 +156,6 @@ nav#navbar-top {
   float: left;
   display: flex;
   margin: 10px;
-}
-
-.star {
-  width: 20px;
-  height: 20px;
-  display: inline-block;
-}
-
-.fa-star {
-  color: rgb(255, 240, 31);
-}
-
-.fa-star-o {
-  color: rgb(190, 190, 190);
 }
 
 button {
@@ -661,6 +621,46 @@ button.btn-gray.disabled {
   color: var(--primary-disabled-text);
   border-color: var(--primary-disabled-bg);
 }
+
+.icon-white {
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings: 'FILL' 1; 
+  font-size: 30px; 
+  color: white; 
+}
+
+/* Banner Home */
+
+.home-banner,
+.additional-banner {
+  width: 100%; 
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Home Banner */
+.home-banner {
+  background-image: url('/src/assets/001_Plantai_Home_Featured.webp'); 
+  height: 614px; 
+  color: white; 
+}
+
+.home-banner-uno {
+  background-image: url('/src/assets/Plantai_banner_02.webp'); 
+  height: 240px; 
+}
+
+.home-banner-dos {
+  background-image: url('/src/assets/Plantai_banner_01.webp'); 
+  height: 240px; 
+}
+
+
+
 
 
 

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/UserCreationForm.css';
 import { validateEmail, validatePassword } from '../utils/validators';
-import { Form, Button, Card, Container } from 'react-bootstrap';
 
 interface CreateUserDTO {
   nombre: string;
@@ -59,6 +58,11 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
       ...prevErrors,
       [name]: '',
     }));
+  };
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({ ...prevState, [name]: Number(value) }));
   };
 
   const validate = () => {
@@ -137,178 +141,84 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
   };
 
   return (
-    <Container
-    className="d-flex flex-column justify-content-center align-items-center vh-100"
-    style={{ backgroundColor: '#f8f9fa' }}
-  >
-    <Card
-      className="shadow-sm"
-      style={{
-        width: '600px',
-        padding: '40px',
-        borderRadius: '8px',
-        border: '1px solid #C7CCC7',
-        backgroundColor: '#FFF',
-      }}
-    >
-      <Card.Body>
-        <h2
-          className="text-center mb-3"
-          style={{
-            color: '#264653',
-            fontWeight: 'bold',
-            fontSize: '1.8rem',
-          }}
-        >
-          ¿Eres nuevo en Plant AI?
-        </h2>
-        <p
-          className="text-center mb-4"
-          style={{
-            color: '#6C757D',
-            fontSize: '1.1rem',
-          }}
-        >
-          Regístrate y disfruta de nuestros productos y beneficios
-        </p>
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="nombre">
-            <Form.Control
-              type="text"
-              name="nombre"
-              placeholder="Nombre*"
-              value={formData.nombre}
-              onChange={handleInputChange}
-              isInvalid={!!errors.nombre}
-              style={{
-                borderRadius: '8px',
-                height: '48px',
-              }}
-            />
-            <Form.Control.Feedback type="invalid">{errors.nombre}</Form.Control.Feedback>
-          </Form.Group>
+    <div className="user-creation-container">
+      <form onSubmit={handleSubmit} className="user-creation-form">
+        <h2>Crear Usuario</h2>
 
-          <Form.Group className="mb-3" controlId="apellido">
-            <Form.Control
-              type="text"
-              name="apellido"
-              placeholder="Apellido*"
-              value={formData.apellido}
-              onChange={handleInputChange}
-              isInvalid={!!errors.apellido}
-              style={{
-                borderRadius: '8px',
-                height: '48px',
-              }}
-            />
-            <Form.Control.Feedback type="invalid">{errors.apellido}</Form.Control.Feedback>
-          </Form.Group>
+        <div>
+          <label>Nombre:</label>
+          <input type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} />
+          {errors.nombre && <p className="text-danger">{errors.nombre}</p>}
+        </div>
 
-          <Form.Group className="mb-3" controlId="rut">
-            <Form.Control
-              type="text"
-              name="rut"
-              placeholder="RUT*"
-              value={formData.rut}
-              onChange={handleInputChange}
-              isInvalid={!!errors.rut}
-              style={{
-                borderRadius: '8px',
-                height: '48px',
-              }}
-            />
-            <Form.Control.Feedback type="invalid">{errors.rut}</Form.Control.Feedback>
-          </Form.Group>
+        <div>
+          <label>Apellido:</label>
+          <input type="text" name="apellido" value={formData.apellido} onChange={handleInputChange} />
+          {errors.apellido && <p className="text-danger">{errors.apellido}</p>}
+        </div>
 
-          <Form.Group className="mb-3" controlId="telefono">
-            <Form.Control
-              type="text"
-              name="telefono"
-              placeholder="Número de teléfono*"
-              value={formData.telefono}
-              onChange={handleInputChange}
-              isInvalid={!!errors.telefono}
-              style={{
-                borderRadius: '8px',
-                height: '48px',
-              }}
-            />
-            <Form.Control.Feedback type="invalid">{errors.telefono}</Form.Control.Feedback>
-          </Form.Group>
+        <div>
+          <label>Nombre de usuario:</label>
+          <input type="text" name="nombreUsuario" value={formData.nombreUsuario} onChange={handleInputChange} />
+          {errors.nombreUsuario && <p className="text-danger">{errors.nombreUsuario}</p>}
+        </div>
 
-          <Form.Group className="mb-3" controlId="email">
-            <Form.Control
-              type="email"
-              name="email"
-              placeholder="Correo electrónico *"
-              value={formData.email}
-              onChange={handleInputChange}
-              isInvalid={!!errors.email}
-              style={{
-                borderRadius: '8px',
-                height: '48px',
-              }}
-            />
-            <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
-          </Form.Group>
+        <div>
+          <label>Correo electrónico:</label>
+          <input type="email" name="email" value={formData.email} onChange={handleInputChange} />
+          {errors.email && <p className="text-danger">{errors.email}</p>}
+        </div>
 
-          <Form.Group className="mb-3" controlId="contrasena">
-            <Form.Control
-              type="password"
-              name="contrasena"
-              placeholder="Contraseña*"
-              value={formData.contrasena}
-              onChange={handleInputChange}
-              isInvalid={!!errors.contrasena}
-              style={{
-                borderRadius: '8px',
-                height: '48px',
-              }}
-            />
-            <Form.Control.Feedback type="invalid">{errors.contrasena}</Form.Control.Feedback>
-          </Form.Group>
+        <div>
+          <label>Contraseña:</label>
+          <input type="password" name="contrasena" value={formData.contrasena} onChange={handleInputChange} />
+          {errors.contrasena && <p className="text-danger">{errors.contrasena}</p>}
+        </div>
 
-          <Form.Group className="mb-3" controlId="terms">
-            <Form.Check
-              type="checkbox"
-              label="Acepto Términos y Condiciones"
-              required
-              style={{
-                fontSize: '0.9rem',
-                color: '#264653',
-              }}
-            />
-          </Form.Group>
+        <div>
+          <label>Teléfono:</label>
+          <input type="text" name="telefono" value={formData.telefono} onChange={handleInputChange} />
+          {errors.telefono && <p className="text-danger">{errors.telefono}</p>}
+        </div>
 
-          <div className="d-flex justify-content-center">
-            <Button
-              variant="dark"
-              type="submit"
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: '153px',
-                height: '48px',
-                padding: '8px 16px',
-                borderRadius: '8px',
-                backgroundColor: '#1A4756',
-                border: 'none',
-                color: '#FFF',
-                fontWeight: 'bold',
-                fontSize: '1rem',
-              }}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Creando...' : 'Crear cuenta'}
-            </Button>
+        <div>
+          <label>Género:</label>
+          <input type="text" name="genero" value={formData.genero} onChange={handleInputChange} />
+          {errors.genero && <p className="text-danger">{errors.genero}</p>}
+        </div>
+
+        <div>
+          <label>RUT:</label>
+          <input type="text" name="rut" value={formData.rut} onChange={handleInputChange} />
+          {errors.rut && <p className="text-danger">{errors.rut}</p>}
+        </div>
+
+        <div>
+          <label>Fecha de Nacimiento:</label>
+          <input type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleInputChange} />
+          {errors.fechaNacimiento && <p className="text-danger">{errors.fechaNacimiento}</p>}
+        </div>
+
+        {isAdmin && (
+          <div>
+            <label>Tipo de Usuario:</label>
+            <select name="tipoUsuarioId" value={formData.tipoUsuarioId} onChange={handleSelectChange}>
+              <option value={1}>SuperAdmin</option>
+              <option value={2}>Admin</option>
+              <option value={3}>Cliente</option>
+              <option value={4}>Visitante</option>
+            </select>
+            {errors.tipoUsuarioId && <p className="text-danger">{errors.tipoUsuarioId}</p>}
           </div>
-        </Form>
-      </Card.Body>
-    </Card>
-  </Container>
-);
-  };
+        )}
+
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Creando usuario...' : 'Crear Usuario'}
+        </button>
+      </form>
+    </div>
+  );
+};
 
 export default UserCreationForm;
 

@@ -74,126 +74,256 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
   return (
     <Container
-    className="d-flex justify-content-center align-items-center"
-    style={{
-      height: '100vh', 
-    }}
-  >
-    <Card
-      className="shadow-sm"
+      className="d-flex justify-content-center align-items-center"
       style={{
-        width: '707px',
-        height: '465px',
-        padding: '59px 123px',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '24px',
-        flexShrink: 0,
-        borderRadius: '8px',
-        border: '1px solid #C7CCC7',
-        backgroundColor: '#FFF',
+        height: '100vh',
       }}
     >
-      <Card.Body className="d-flex flex-column align-items-center p-0">
-        <h2 className="text-center mb-4" style={{ color: '#264653', fontWeight: 'bold' }}>
-          Inicia sesión para comprar
-        </h2>
-        <Form
-          onSubmit={handleSubmit}
-          style={{
-            width: '100%',
-          }}
-        >
-          <Form.Group className="mb-3" controlId="username">
-            <Form.Label style={{ fontWeight: '500' }}>Correo electrónico</Form.Label>
-            <Form.Control
-              type="text"
-              name="username"
-              placeholder="Ingresa Tu Correo Electrónico"
-              value={formData.username}
-              onChange={handleInputChange}
-              isInvalid={!!errors.usernameError}
-              style={{
-                borderRadius: '8px',
-                height: '48px',
-              }}
-            />
-            <Form.Control.Feedback type="invalid">{errors.usernameError}</Form.Control.Feedback>
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="password">
-            <Form.Label style={{ fontWeight: '500' }}>Contraseña</Form.Label>
-            <Form.Control
-              type="password"
-              name="password"
-              placeholder="Ingresa Tu Contraseña"
-              value={formData.password}
-              onChange={handleInputChange}
-              isInvalid={!!errors.passwordError}
-              style={{
-                borderRadius: '8px',
-                height: '48px',
-              }}
-            />
-            <Form.Control.Feedback type="invalid">{errors.passwordError}</Form.Control.Feedback>
-          </Form.Group>
-
-          <div className="text-center mb-3">
-            <Link to="/recuperar-contraseña" className="text-muted" style={{ fontSize: '0.9rem' }}>
-              ¿Olvidaste Tu Contraseña?
-            </Link>
-          </div>
-
-          <div className="d-flex flex-column gap-2">
-            <Button
-              variant="dark"
-              type="submit"
+      <Card
+        className="shadow-sm"
+        style={{
+          width: '440px',
+          padding: '32px 32px 24px 32px',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '8px',
+          borderRadius: '8px',
+          border: '1px solid #C7CCC7',
+          backgroundColor: '#FFF',
+        }}
+      >
+        <Card.Body className="d-flex flex-column align-items-center p-0">
+          <h2
+            style={{
+              alignSelf: 'stretch',
+              textAlign: 'center',
+              color: '#1A4756',
+              fontFamily: 'Quicksand, sans-serif',
+              fontSize: '30px',
+              fontStyle: 'normal',
+              fontWeight: 500,
+              lineHeight: '52px',
+            }}
+          >
+            Iniciar sesión
+          </h2>
+          <Form
+            onSubmit={handleSubmit}
+            style={{
+              width: '100%',
+            }}
+          >
+            <Form.Group
+              className="mb-3"
+              controlId="username"
               style={{
                 display: 'flex',
-                justifyContent: 'center',
+                flexDirection: 'column',
                 alignItems: 'center',
+                width: '440px',
+                padding: '32px 32px 12px 32px',
                 gap: '8px',
-                width: '153px', 
-                height: '48px', 
-                padding: '8px 16px', 
-                borderRadius: '8px', 
-                backgroundColor: '#1A4756', 
-                border: 'none', 
-                color: '#FFFFFF', 
-                fontWeight: 'bold', 
-                fontSize: '1rem', 
-                boxSizing: 'border-box', 
               }}
             >
-              Ingresar
-            </Button>
-
-            <Link to="/crear-usuario">
-              <Button
-                variant="outline-dark"
+              <div
                 style={{
                   display: 'flex',
+                  height: '44px',
+                  flexDirection: 'column',
                   justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: '8px',
-                  width: '153px', 
-                  height: '48px', 
-                  padding: '8px 16px', 
-                  borderRadius: '8px', 
-                  fontWeight: 'bold', 
-                  fontSize: '1rem',
+                  flexShrink: 0,
+                  alignSelf: 'stretch',
                 }}
               >
-                Crear una cuenta
-              </Button>
-            </Link>
-          </div>
-        </Form>
-      </Card.Body>
-    </Card>
-  </Container>
-);
+                <Form.Label
+                  style={{
+                    fontFamily: 'Quicksand, sans-serif',
+                    fontSize: '18px',
+                    fontStyle: 'normal',
+                    fontWeight: 700,
+                    lineHeight: '22px',
+                    color: '#000',
+                  }}
+                >
+                  Correo Electrónico
+                </Form.Label>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  alignSelf: 'stretch',
+                }}
+              >
+                <Form.Control
+                  type="text"
+                  name="username"
+                  placeholder="Ingresa tu Correo Electrónico"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  isInvalid={!!errors.usernameError}
+                  style={{
+                    borderRadius: '8px',
+                    border: '1px solid #BBB',
+                    backgroundColor: '#FFF',
+                    padding: '10px',
+                    width: '100%',
+                  }}
+                />
+                <Form.Control.Feedback type="invalid">{errors.usernameError}</Form.Control.Feedback>
+              </div>
+            </Form.Group>
+  
+            <Form.Group
+              className="mb-3"
+              controlId="password"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                width: '440px',
+                padding: '0px 32px 24px 32px',
+                gap: '8px',
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  height: '44px',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  alignSelf: 'stretch',
+                }}
+              >
+                <Form.Label
+                  style={{
+                    fontFamily: 'Quicksand, sans-serif',
+                    fontSize: '18px',
+                    fontStyle: 'normal',
+                    fontWeight: 700,
+                    lineHeight: '22px',
+                    color: '#000',
+                  }}
+                >
+                  Contraseña
+                </Form.Label>
+              </div>
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  alignSelf: 'stretch',
+                }}
+              >
+                <Form.Control
+                  type="password"
+                  name="password"
+                  placeholder="Ingresa tu Contraseña"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  isInvalid={!!errors.passwordError}
+                  style={{
+                    borderRadius: '8px',
+                    border: '1px solid #BBB',
+                    backgroundColor: '#FFF',
+                    padding: '10px',
+                    width: '100%',
+                  }}
+                />
+                <Form.Control.Feedback type="invalid">{errors.passwordError}</Form.Control.Feedback>
+              </div>
+            </Form.Group>
+  
+     
+              <div
+                style={{
+                  display: 'flex',
+                  width: '230px',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '24px',
+                  margin: '0 auto',
+                }}
+              >
+                {/* Botón Ingresar */}
+                <Button
+                  variant="dark"
+                  type="submit"
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '8px',
+                    width: '100%',
+                    height: '48px',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    backgroundColor: '#1A4756',
+                    border: 'none',
+                    color: '#FFF', 
+                    fontFamily: 'Quicksand, sans-serif', 
+                    fontSize: '18px',
+                    fontWeight: 500, 
+                    lineHeight: '22px', 
+                    textAlign: 'center', 
+                  }}
+                >
+                  Ingresar
+                </Button>
+
+                <Link to="/crear-usuario" style={{ width: '100%', textDecoration: 'none' }}>
+                  <Button
+                    variant="outline-dark"
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      gap: '8px',
+                      width: '100%',
+                      height: '48px',
+                      padding: '8px 16px',
+                      borderRadius: '8px',
+                      fontFamily: 'Quicksand, sans-serif', 
+                      fontSize: '18px',
+                      fontWeight: 500, 
+                      lineHeight: '22px', 
+                      color: '#1A4756',
+                      textAlign: 'center', 
+                    }}
+                  >
+                    Registrarme
+                  </Button>
+                </Link>
+
+                <Link to="/recuperar-contraseña" style={{ textDecoration: 'none' }}>
+                <p
+                  style={{
+                    fontFamily: 'Quicksand, sans-serif', 
+                    fontSize: '18px', 
+                    fontWeight: 500, 
+                    lineHeight: '22px', 
+                    color: '#1A4756', 
+                    textAlign: 'center', 
+                    margin: '0', 
+                  }}
+                >
+                  ¿Olvidaste tu contraseña?
+                </p>
+              </Link>
+
+              </div>
+
+          </Form>
+        </Card.Body>
+      </Card>
+    </Container>
+  );
+  
 };
 
 export default LoginForm;
