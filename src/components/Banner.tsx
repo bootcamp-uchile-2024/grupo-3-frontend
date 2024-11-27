@@ -1,24 +1,16 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
 
 const Banner: React.FC = () => {
   return (
-
-     <>
-      {/* Home Banner */}
-      <div className="home-banner">
-        <Container className="banner-content text-center">
-        </Container>
-      </div>
-
-      {/* Banner 1 */}
-      <div className="additional-banner home-banner-uno"></div>
-
-      {/* Banner 2 */}
-      <div className="additional-banner home-banner-dos"></div>
-    </>
+    <div className="container">
+      <section id="banner">
+        <h2>Traemos la naturaleza a la <br/> puerta de tu casa</h2>
+        <button className="btn btn-dark">
+          <a href="#">Comprar ahora</a>
+        </button>
+      </section>
+    </div>
   );
 };
-
 
 export default Banner;

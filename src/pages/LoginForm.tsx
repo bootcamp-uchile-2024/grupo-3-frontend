@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Form, Button, Card, Container } from 'react-bootstrap';
 
 interface LoginFormProps {
   onLogin: (username: string, role: string) => void;
@@ -73,257 +72,53 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   };
 
   return (
-    <Container
-      className="d-flex justify-content-center align-items-center"
-      style={{
-        height: '100vh',
-      }}
-    >
-      <Card
-        className="shadow-sm"
-        style={{
-          width: '440px',
-          padding: '32px 32px 24px 32px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: '8px',
-          borderRadius: '8px',
-          border: '1px solid #C7CCC7',
-          backgroundColor: '#FFF',
-        }}
-      >
-        <Card.Body className="d-flex flex-column align-items-center p-0">
-          <h2
-            style={{
-              alignSelf: 'stretch',
-              textAlign: 'center',
-              color: '#1A4756',
-              fontFamily: 'Quicksand, sans-serif',
-              fontSize: '30px',
-              fontStyle: 'normal',
-              fontWeight: 500,
-              lineHeight: '52px',
-            }}
-          >
-            Iniciar sesión
-          </h2>
-          <Form
-            onSubmit={handleSubmit}
-            style={{
-              width: '100%',
-            }}
-          >
-            <Form.Group
-              className="mb-3"
-              controlId="username"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                width: '440px',
-                padding: '32px 32px 12px 32px',
-                gap: '8px',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  height: '44px',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  alignSelf: 'stretch',
-                }}
-              >
-                <Form.Label
-                  style={{
-                    fontFamily: 'Quicksand, sans-serif',
-                    fontSize: '18px',
-                    fontStyle: 'normal',
-                    fontWeight: 700,
-                    lineHeight: '22px',
-                    color: '#000',
-                  }}
-                >
-                  Correo Electrónico
-                </Form.Label>
-              </div>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  alignSelf: 'stretch',
-                }}
-              >
-                <Form.Control
-                  type="text"
-                  name="username"
-                  placeholder="Ingresa tu Correo Electrónico"
-                  value={formData.username}
-                  onChange={handleInputChange}
-                  isInvalid={!!errors.usernameError}
-                  style={{
-                    borderRadius: '8px',
-                    border: '1px solid #BBB',
-                    backgroundColor: '#FFF',
-                    padding: '10px',
-                    width: '100%',
-                  }}
-                />
-                <Form.Control.Feedback type="invalid">{errors.usernameError}</Form.Control.Feedback>
-              </div>
-            </Form.Group>
-  
-            <Form.Group
-              className="mb-3"
-              controlId="password"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                width: '440px',
-                padding: '0px 32px 24px 32px',
-                gap: '8px',
-              }}
-            >
-              <div
-                style={{
-                  display: 'flex',
-                  height: '44px',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  alignSelf: 'stretch',
-                }}
-              >
-                <Form.Label
-                  style={{
-                    fontFamily: 'Quicksand, sans-serif',
-                    fontSize: '18px',
-                    fontStyle: 'normal',
-                    fontWeight: 700,
-                    lineHeight: '22px',
-                    color: '#000',
-                  }}
-                >
-                  Contraseña
-                </Form.Label>
-              </div>
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  alignSelf: 'stretch',
-                }}
-              >
-                <Form.Control
-                  type="password"
-                  name="password"
-                  placeholder="Ingresa tu Contraseña"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  isInvalid={!!errors.passwordError}
-                  style={{
-                    borderRadius: '8px',
-                    border: '1px solid #BBB',
-                    backgroundColor: '#FFF',
-                    padding: '10px',
-                    width: '100%',
-                  }}
-                />
-                <Form.Control.Feedback type="invalid">{errors.passwordError}</Form.Control.Feedback>
-              </div>
-            </Form.Group>
-  
-     
-              <div
-                style={{
-                  display: 'flex',
-                  width: '230px',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: '24px',
-                  margin: '0 auto',
-                }}
-              >
-                {/* Botón Ingresar */}
-                <Button
-                  variant="dark"
-                  type="submit"
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: '8px',
-                    width: '100%',
-                    height: '48px',
-                    padding: '8px 16px',
-                    borderRadius: '8px',
-                    backgroundColor: '#1A4756',
-                    border: 'none',
-                    color: '#FFF', 
-                    fontFamily: 'Quicksand, sans-serif', 
-                    fontSize: '18px',
-                    fontWeight: 500, 
-                    lineHeight: '22px', 
-                    textAlign: 'center', 
-                  }}
-                >
-                  Ingresar
-                </Button>
+    <main className="form-signin col-md-3 col-xs-3 col-lg-3 m-auto relative-top">
+      <form onSubmit={handleSubmit}>
+        <h1 className="h3 mb-3 fw-normal">Iniciar Sesión</h1>
 
-                <Link to="/crear-usuario" style={{ width: '100%', textDecoration: 'none' }}>
-                  <Button
-                    variant="outline-dark"
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      gap: '8px',
-                      width: '100%',
-                      height: '48px',
-                      padding: '8px 16px',
-                      borderRadius: '8px',
-                      fontFamily: 'Quicksand, sans-serif', 
-                      fontSize: '18px',
-                      fontWeight: 500, 
-                      lineHeight: '22px', 
-                      color: '#1A4756',
-                      textAlign: 'center', 
-                    }}
-                  >
-                    Registrarme
-                  </Button>
-                </Link>
+        <div className="form-floating">
+          <input
+            type="text"
+            className={`form-control ${errors.usernameError ? 'is-invalid' : ''}`}
+            id="floatingInput"
+            placeholder="Nombre de usuario"
+            name="username"
+            value={formData.username}
+            onChange={handleInputChange}
+          />
+          <label htmlFor="floatingInput">Nombre de usuario</label>
+          {errors.usernameError && <div className="invalid-feedback">{errors.usernameError}</div>}
+        </div>
 
-                <Link to="/recuperar-contraseña" style={{ textDecoration: 'none' }}>
-                <p
-                  style={{
-                    fontFamily: 'Quicksand, sans-serif', 
-                    fontSize: '18px', 
-                    fontWeight: 500, 
-                    lineHeight: '22px', 
-                    color: '#1A4756', 
-                    textAlign: 'center', 
-                    margin: '0', 
-                  }}
-                >
-                  ¿Olvidaste tu contraseña?
-                </p>
-              </Link>
+        <div className="form-floating">
+          <input
+            type="password"
+            className={`form-control ${errors.passwordError ? 'is-invalid' : ''}`}
+            id="floatingPassword"
+            placeholder="Contraseña"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+          />
+          <label htmlFor="floatingPassword">Contraseña</label>
+          {errors.passwordError && <div className="invalid-feedback">{errors.passwordError}</div>}
+        </div>
 
-              </div>
+        <div className="form-check text-start my-3">
+          <input className="form-check-input" type="checkbox" value="remember-me" id="flexCheckDefault" />
+          <label className="form-check-label" htmlFor="flexCheckDefault">
+            Recordarme
+          </label>
+        </div>
 
-          </Form>
-        </Card.Body>
-      </Card>
-    </Container>
+        <button className="btn btn-primary w-100 py-2" type="submit">Iniciar Sesión</button>
+
+        <p className="mt-3">
+          ¿No tienes una cuenta? <Link to="/crear-usuario">Crear una cuenta</Link>
+        </p>
+      </form>
+    </main>
   );
-  
 };
 
 export default LoginForm;
