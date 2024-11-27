@@ -1,15 +1,9 @@
 import React from 'react';
 import { Card } from 'react-bootstrap';
+import { User } from '../types/types'; 
 
 interface CardUserProps {
-  selectedUser: {
-    nombre: string;
-    apellido: string;
-    telefono: string;
-    email: string;
-    direccion: string;
-    tipoUsuarioId: string;
-  };
+  selectedUser: User;
 }
 
 const CardUser: React.FC<CardUserProps> = ({ selectedUser }) => (
@@ -46,7 +40,7 @@ const CardUser: React.FC<CardUserProps> = ({ selectedUser }) => (
             <strong>Email:</strong> {selectedUser.email}
           </Card.Text>
           <Card.Text className="mb-0">
-            <strong>Dirección:</strong> {selectedUser.direccion}
+            <strong>Dirección:</strong> {selectedUser.direccion || 'No especificada'}
           </Card.Text>
           <Card.Text className="mb-0">
             <strong>ID Usuario:</strong> {selectedUser.tipoUsuarioId}
@@ -58,3 +52,5 @@ const CardUser: React.FC<CardUserProps> = ({ selectedUser }) => (
 );
 
 export default CardUser;
+
+

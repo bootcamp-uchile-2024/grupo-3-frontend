@@ -1,28 +1,15 @@
 import React from 'react';
 import { Table, Button } from 'react-bootstrap';
-
-interface User {
-  id: number;
-  nombre: string;
-  apellido: string;
-  nombreUsuario: string;
-  email: string;
-  telefono: string;
-  genero: string;
-  rut: string;
-  fechaNacimiento: string;
-  direccion?: string; // Opcional
-}
+import { User } from '../types/types';
 
 interface UserTableProps {
-    users: User[]; 
-    currentUsers: User[]; 
-    selectedUser: User | null; 
-    setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>; 
-    onUserAction?: (userId: number) => void; 
-    onEditAction?: (user: User) => void;
-  }
-  
+  users: User[];
+  currentUsers: User[];
+  selectedUser: User | null;
+  setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>;
+  onUserAction?: (userId: number) => void;
+  onEditAction?: (user: User) => void;
+}
 
 const UserTable: React.FC<UserTableProps> = ({
   users,
@@ -37,6 +24,7 @@ const UserTable: React.FC<UserTableProps> = ({
 
   return (
     <div>
+      {/* Resumen de usuarios */}
       <div className="mb-3">
         <p className="text-muted">
           Total de usuarios: <strong>{totalUsers}</strong>
@@ -46,6 +34,7 @@ const UserTable: React.FC<UserTableProps> = ({
         </p>
       </div>
 
+      {/* Tabla de usuarios */}
       <Table striped bordered hover responsive>
         <thead>
           <tr>
@@ -59,8 +48,6 @@ const UserTable: React.FC<UserTableProps> = ({
             <th>Teléfono</th>
             <th>Género</th>
             <th>Dirección</th>
-            {onUserAction && <th>Acción</th>}
-            {onEditAction && <th>Editar</th>}
           </tr>
         </thead>
         <tbody>
@@ -83,42 +70,27 @@ const UserTable: React.FC<UserTableProps> = ({
               <td>{user.telefono}</td>
               <td>{user.genero}</td>
               <td>{user.direccion || 'No especificada'}</td>
-              {onUserAction && (
-                <td>
-                  <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onUserAction(user.id);
-                    }}
-                  >
-                    Eliminar
-                  </Button>
-                </td>
-              )}
-              {onEditAction && (
-                <td>
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEditAction(user);
-                    }}
-                  >
-                    Editar
-                  </Button>
-                </td>
-              )}
             </tr>
           ))}
         </tbody>
       </Table>
+
+      {/* Botones de acción */}
+      {selectedUser && (onUserAction || onEditAction) && (
+        <div className="d-flex justify-content-center mt-3 gap-2">
+          {onUserAction && (
+            <Button
+              variant="danger"
+              onClick={() => onUserAction(selectedUser.id)}
+            >
+              Eliminar
+            </Button>
+          )}
+          
+        </div>
+      )}
     </div>
   );
 };
 
 export default UserTable;
-
-

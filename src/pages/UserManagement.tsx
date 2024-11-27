@@ -8,25 +8,12 @@ import {
   Row,
   Col,
   Pagination,
+  Form,
 } from 'react-bootstrap';
 import UserCreateForm from './UserCreateForm';
 import CardUser from '../components/CardUser';
 import UserTable from '../components/UserTable';
-
-interface User {
-  id: number;
-  nombre: string;
-  apellido: string;
-  nombreUsuario: string;
-  email: string;
-  telefono: string;
-  genero: string;
-  rut: string;
-  fechaNacimiento: string;
-  tipoUsuarioId: number | string;
-  tipoUsuario: string;
-  direccion?: string;
-}
+import { User } from '../types/types';
 
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -62,7 +49,6 @@ const UserManagement = () => {
       setLoading(false);
     }
   };
-  
 
   const deleteUser = async (userId: number) => {
     try {
@@ -80,21 +66,16 @@ const UserManagement = () => {
     }
   };
 
-  const handleUpdateUser = async (user: User) => {
-    const tipoUsuarioId = parseInt(user.tipoUsuarioId.toString(), 10);
-
-    if (isNaN(tipoUsuarioId) || tipoUsuarioId < 1 || tipoUsuarioId > 4) {
-      setError('El ID de tipo de usuario debe estar entre 1 y 4.');
-      return;
-    }
+  const handleUpdateUser = async () => {
+    if (!editingUser) return;
 
     try {
-      const response = await fetch(`http://localhost:8080/usuarios/${user.id}`, {
+      const response = await fetch(`http://localhost:8080/usuarios/${editingUser.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...user, tipoUsuarioId }),
+        body: JSON.stringify(editingUser),
       });
 
       if (!response.ok) {
@@ -102,8 +83,8 @@ const UserManagement = () => {
       }
 
       console.log('Usuario actualizado');
-      setEditingUser(null);
       fetchUsers();
+      setEditingUser(null);
       setError('');
     } catch (error) {
       console.error('Error al actualizar el usuario:', error);
@@ -111,8 +92,10 @@ const UserManagement = () => {
     }
   };
 
-  const handleEditClick = (user: User) => {
-    setEditingUser(user);
+  const handleModifyClick = () => {
+    if (selectedUser) {
+      setEditingUser({ ...selectedUser });
+    }
   };
 
   const handleCancelEdit = () => {
@@ -151,14 +134,10 @@ const UserManagement = () => {
           {error && <p className="text-danger">{error}</p>}
 
           <Tabs defaultActiveKey="modificarUsuario" className="mb-3">
-            {/* Pestaña Crear Usuario */}
             <Tab eventKey="crearUsuario" title="Crear Usuario">
-              {isAdmin && (
-                <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />
-              )}
+              {isAdmin && <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />}
             </Tab>
 
-            {/* Pestaña Eliminar Usuario */}
             <Tab eventKey="eliminarUsuario" title="Eliminar Usuario">
               {loading ? (
                 <Spinner animation="border" variant="primary" />
@@ -168,7 +147,7 @@ const UserManagement = () => {
                     <CardUser
                       selectedUser={{
                         ...selectedUser,
-                        direccion: selectedUser.direccion || 'Sin dirección', // Añadimos un valor por defecto
+                        direccion: selectedUser.direccion || 'Sin dirección',
                       }}
                     />
                   )}
@@ -206,10 +185,173 @@ const UserManagement = () => {
               )}
             </Tab>
 
-            {/* Pestaña Modificar Usuario */}
             <Tab eventKey="modificarUsuario" title="Modificar Usuario">
               {loading ? (
                 <Spinner animation="border" variant="primary" />
+              ) : editingUser ? (
+                <>
+                  {editingUser && <CardUser selectedUser={editingUser} />}
+                  <Form>
+                    <Row>
+                      <Col>
+                        <Form.Group>
+                          <Form.Label>Nombre</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={editingUser.nombre}
+                            onChange={(e) =>
+                              setEditingUser((prev) =>
+                                prev ? { ...prev, nombre: e.target.value } : null
+                              )
+                            }
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col>
+                        <Form.Group>
+                          <Form.Label>Apellido</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={editingUser.apellido}
+                            onChange={(e) =>
+                              setEditingUser((prev) =>
+                                prev ? { ...prev, apellido: e.target.value } : null
+                              )
+                            }
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                    <Row className="mt-3">
+                      <Col>
+                        <Form.Group>
+                          <Form.Label>Correo Electrónico</Form.Label>
+                          <Form.Control
+                            type="email"
+                            value={editingUser.email}
+                            onChange={(e) =>
+                              setEditingUser((prev) =>
+                                prev ? { ...prev, email: e.target.value } : null
+                              )
+                            }
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col>
+                        <Form.Group>
+                          <Form.Label>Teléfono</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={editingUser.telefono}
+                            onChange={(e) =>
+                              setEditingUser((prev) =>
+                                prev ? { ...prev, telefono: e.target.value } : null
+                              )
+                            }
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                    <Row className="mt-3">
+                      <Col>
+                        <Form.Group>
+                          <Form.Label>Nombre de Usuario</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={editingUser.nombreUsuario}
+                            onChange={(e) =>
+                              setEditingUser((prev) =>
+                                prev ? { ...prev, nombreUsuario: e.target.value } : null
+                              )
+                            }
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col>
+                        <Form.Group>
+                          <Form.Label>Género</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={editingUser.genero}
+                            onChange={(e) =>
+                              setEditingUser((prev) =>
+                                prev ? { ...prev, genero: e.target.value } : null
+                              )
+                            }
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                    <Row className="mt-3">
+                      <Col>
+                        <Form.Group>
+                          <Form.Label>RUT</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={editingUser.rut}
+                            onChange={(e) =>
+                              setEditingUser((prev) =>
+                                prev ? { ...prev, rut: e.target.value } : null
+                              )
+                            }
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col>
+                        <Form.Group>
+                          <Form.Label>Fecha de Nacimiento</Form.Label>
+                          <Form.Control
+                            type="date"
+                            value={editingUser.fechaNacimiento}
+                            onChange={(e) =>
+                              setEditingUser((prev) =>
+                                prev ? { ...prev, fechaNacimiento: e.target.value } : null
+                              )
+                            }
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                    <Row className="mt-3">
+                      <Col>
+                        <Form.Group>
+                          <Form.Label>Dirección</Form.Label>
+                          <Form.Control
+                            type="text"
+                            value={editingUser.direccion || ''}
+                            onChange={(e) =>
+                              setEditingUser((prev) =>
+                                prev ? { ...prev, direccion: e.target.value } : null
+                              )
+                            }
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col>
+                        <Form.Group>
+                          <Form.Label>Tipo de Usuario</Form.Label>
+                          <Form.Control
+                            type="number"
+                            value={editingUser.tipoUsuarioId}
+                            onChange={(e) =>
+                              setEditingUser((prev) =>
+                                prev ? { ...prev, tipoUsuarioId: e.target.value } : null
+                              )
+                            }
+                          />
+                        </Form.Group>
+                      </Col>
+                    </Row>
+                  </Form>
+                  <div className="d-flex justify-content-center mt-3 gap-2">
+                    <Button variant="secondary" onClick={handleCancelEdit}>
+                      Cancelar
+                    </Button>
+                    <Button variant="success" onClick={handleUpdateUser}>
+                      Guardar Cambios
+                    </Button>
+                  </div>
+                </>
               ) : (
                 <>
                   {selectedUser && <CardUser selectedUser={selectedUser} />}
@@ -233,19 +375,19 @@ const UserManagement = () => {
                       )
                     )}
                   </Pagination>
-                  {editingUser && (
-                    <div className="d-flex justify-content-center mt-3 gap-2">
-                      <Button variant="secondary" onClick={handleCancelEdit}>
-                        Cancelar
-                      </Button>
-                      <Button variant="primary" onClick={() => handleUpdateUser(editingUser)}>
-                        Modificar
-                      </Button>
-                    </div>
-                  )}
+                  <div className="d-flex justify-content-center mt-3 gap-2">
+                    <Button
+                      variant="primary"
+                      onClick={handleModifyClick}
+                      disabled={!selectedUser}
+                    >
+                      Modificar
+                    </Button>
+                  </div>
                 </>
               )}
             </Tab>
+
           </Tabs>
         </Col>
       </Row>
@@ -254,5 +396,13 @@ const UserManagement = () => {
 };
 
 export default UserManagement;
+
+
+
+
+
+
+
+
 
 
