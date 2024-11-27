@@ -1,33 +1,32 @@
-version: '3.8'
-
 services:
   database-prod:
-    image: mysql:8.0
+    image: 'mysql:${VERSION_MYSQL}'
     container_name: database-prod
     volumes:
-      - ~/db/data_prod:/var/lib/mysql
+      - ./db/data_prod:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=clave123
-      - MYSQL_DATABASE=plantai_db
-      - MYSQL_HOST=database-prod
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
     ports:
-      - '3312:3306' # Exponiendo el puerto 3306 al host
+      - '3312:${DB_PORT}'
+
+  flyway:
+    image: 'flyway/flyway:${VERSION_FLYWAY}'
+    volumes:
+      - ./sql:/flyway/sql
+    command: [ '-url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false', '-user=${DB_USERNAME}', '-password=${DB_PASSWORD}', '-connectRetries=60', 'migrate' ]
 
   cotiledon-prod:
-    image: nicolasf1/cotiledonapp:1.0.1
+    image: muinidoconeg/cotiledon-test:1.10.1
     depends_on:
       - database-prod
     environment:
-      - AMBIENTE=production
-      - DB_HOST=database-prod
-      - DB_PORT=3306
-      - DB_USERNAME=root
-      - DB_PASSWORD=clave123
-      - DB_DATABASE=plantai_db
+      - AMBIENTE=${AMBIENTE}
+      - PORT=${API_PORT}
     ports:
-      - '8080:8080'
+      - '8080:${API_PORT}'
   frontend-prod:
-    image: plantaifinalvers:1
+    image: chirmus/plantaiapp-frontend:plantaifront3
     depends_on:
       - cotiledon-prod
     ports:
