@@ -11,25 +11,161 @@ const CartPage: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false);
+  const [cartId, setCartId] = useState<number | null>(null);
   const [coupon, setCoupon] = useState<string>('');
   const [discount, setDiscount] = useState<number>(0);
-  const [purchaseTotal, setPurchaseTotal] = useState<number | null>(null);
   const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(false); 
-  const [, setError] = useState<string | null>(null); 
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const userId = 25;
+
+  const fetchActiveCart = async () => {
+    try {
+      console.log(`Verificando carrito activo para el usuario ${userId}`);
+      const response = await fetch(`http://localhost:8080/carro-compras/user/${userId}`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setCartId(data.id);
+        console.log('Carrito activo encontrado:', data);
+      } else if (response.status === 404) {
+        console.log('No hay carrito activo para este usuario.');
+        setCartId(null);
+      } else if (response.status === 400) {
+        console.error('Error 400: Solicitud mal formada al verificar carrito activo.');
+        alert('Hubo un problema al verificar el carrito activo. Contacta soporte.');
+        return;
+      } else {
+        throw new Error(`Error HTTP al verificar el carrito: ${response.status}`);
+      }
+    } catch (error: any) {
+      console.error('Error al verificar el carrito activo:', error.message);
+      alert('Hubo un problema inesperado. Inténtalo más tarde.');
+    }
+  };
+
+  const deleteActiveCarts = async () => {
+    try {
+      console.log(`Buscando y eliminando carritos conflictivos para el usuario ${userId}`);
+      const response = await fetch(`http://localhost:8080/carro-compras/user/${userId}`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (response.ok) {
+        const cart = await response.json();
+
+        if (!cart || cart.fecha_cierre) {
+          console.log('No hay carritos conflictivos para eliminar.');
+          return;
+        }
+
+        console.log(`Eliminando carrito conflictivo con ID ${cart.id}`);
+        const deleteResponse = await fetch(`http://localhost:8080/carro-compras/${cart.id}`, {
+          method: 'DELETE',
+        });
+
+        if (!deleteResponse.ok) {
+          throw new Error(`Error al eliminar carrito conflictivo con ID ${cart.id}: ${deleteResponse.status}`);
+        }
+
+        console.log(`Carrito conflictivo con ID ${cart.id} eliminado.`);
+      } else if (response.status === 404) {
+        console.log('No se encontró carrito activo para el usuario. No hay conflictos.');
+      } else {
+        throw new Error(`Error al obtener carrito conflictivo: ${response.status}`);
+      }
+    } catch (error: any) {
+      console.error('Error al manejar carritos conflictivos:', error.message);
+      alert('Hubo un problema al eliminar carritos conflictivos. Contacta soporte.');
+    }
+  };
+
+  const createCart = async () => {
+    try {
+      console.log(`Creando un nuevo carrito para el usuario ${userId}`);
+      const response = await fetch(`http://localhost:8080/carro-compras/${userId}`, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error al crear el carrito:', errorData);
+
+        if (errorData.message.includes('más de un carro activo')) {
+          console.warn('Conflicto detectado: más de un carrito activo.');
+          await deleteActiveCarts();
+          console.log('Reintentando creación después de resolver conflictos...');
+          return await createCart();
+        }
+
+        if (response.status === 400) {
+          console.error('El servidor rechazó la creación del carrito (400).');
+          alert('No se pudo crear el carrito debido a un error en el servidor. Contacta soporte.');
+          return;
+        }
+
+        throw new Error(errorData.message || `Error HTTP al crear carrito: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setCartId(data.id);
+      console.log('Carrito creado con éxito:', data);
+    } catch (error: any) {
+      console.error('Error crítico al intentar crear un carrito:', error.message);
+      alert('Hubo un problema al crear el carrito. Inténtalo nuevamente más tarde.');
+    }
+  };
+
+  const replaceCartProducts = async () => {
+    if (!cartId) {
+      console.error('No se puede actualizar el carrito porque no existe un ID de carrito.');
+      return;
+    }
+
+    try {
+      console.log(`Actualizando productos en el carrito con ID ${cartId}`);
+      const response = await fetch(`http://localhost:8080/carro-compras/replaceProductos/${cartId}`, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productosCarro: cartItems.map((item) => ({
+            productoId: item.id,
+            cantidadProducto: item.cantidad,
+          })),
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+      }
+
+      console.log('Productos del carrito actualizados en el backend.');
+    } catch (error: any) {
+      console.error('Error al actualizar el carrito en el backend:', error.message);
+      throw error;
+    }
+  };
 
   useEffect(() => {
-    const storedCart = localStorage.getItem('__redux__cart__');
-    console.log('Stored cart:', storedCart);
-    if (storedCart) {
-      const parsedCart = JSON.parse(storedCart);
-      if (parsedCart && parsedCart.items) {
-        parsedCart.items.forEach((item: CartItem) => {
-          dispatch(updateQuantity({ id: item.id, cantidad: item.cantidad }));
-        });
+    const initializeCart = async () => {
+      await fetchActiveCart();
+      if (!cartId) {
+        console.log('No hay carrito activo. Creando uno nuevo...');
+        await createCart();
       }
-    }
-  }, [dispatch]);
+    };
+
+    initializeCart();
+  }, []);
 
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {
@@ -52,8 +188,36 @@ const CartPage: React.FC = () => {
     dispatch(updateQuantity({ id: productId, cantidad: -1 }));
   };
 
-  const handleClearCart = () => {
-    dispatch(clearCart());
+  const handleClearCart = async () => {
+    if (!window.confirm('¿Estás seguro de que deseas vaciar el carrito?')) {
+      return;
+    }
+
+    try {
+      if (!cartId) {
+        alert('No hay carrito asociado para eliminar.');
+        return;
+      }
+
+      console.log(`Eliminando carrito con ID ${cartId}`);
+      const response = await fetch(`http://localhost:8080/carro-compras/${cartId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          alert('No se encontró un carrito con ese ID. No se puede eliminar.');
+        }
+        throw new Error(`Error al eliminar el carrito: ${response.status}`);
+      }
+
+      dispatch(clearCart());
+      setCartId(null);
+      alert('El carrito ha sido eliminado exitosamente.');
+    } catch (error) {
+      console.error(error);
+      alert('Hubo un problema al eliminar el carrito. Por favor, inténtalo nuevamente.');
+    }
   };
 
   const handleOpenModal = () => {
@@ -67,21 +231,26 @@ const CartPage: React.FC = () => {
 
   const handleFinalizePurchase = async () => {
     setLoading(true);
-    setError(null); 
-
-    setPurchasedItems(groupedItems); 
-    setPurchaseTotal(discountedTotal); 
+    setPurchasedItems(cartItems);
 
     try {
-      console.log(cartItems);
+      if (!cartId) {
+        console.log('No hay carrito activo. Creando uno nuevo.');
+        await createCart();
+      }
+      await replaceCartProducts();
       const response = await finalizePurchaseRequest(cartItems);
-      console.log(response);
-      console.log('Compra finalizada con éxito: HTTP statuscode ' + response.statusCode);
-      handleClearCart();
-      setIsPurchaseCompleted(true);
-    } catch (error) {
-      setError('Hubo un problema al finalizar la compra. Por favor, inténtalo nuevamente.');
-      console.error(error);
+      if (response.statusCode === 200) {
+        console.log('Compra finalizada exitosamente.');
+        handleClearCart();
+        setIsPurchaseCompleted(true);
+      } else {
+        console.error('Error al finalizar la compra:', response.statusCode);
+        alert(`Error al finalizar la compra: Código ${response.statusCode}`);
+      }
+    } catch (e) {
+      console.error('Error al finalizar la compra:', e);
+      alert('Error al finalizar la compra. Por favor, inténtalo nuevamente.');
     } finally {
       setLoading(false);
     }
@@ -124,17 +293,27 @@ const CartPage: React.FC = () => {
                   <small className="text-body-secondary">Precio: ${item.precio}</small>
                 </div>
                 <div>
-                  <button className="btn btn-outline-secondary btn-sm" onClick={() => handleDecrement(item.id)} disabled={item.cantidad === 1}>-</button>
+                  <button className="btn btn-outline-secondary btn-sm" onClick={() => handleDecrement(item.id)} disabled={item.cantidad === 1}>
+                    -
+                  </button>
                   <span className="mx-2">{item.cantidad}</span>
-                  <button className="btn btn-outline-secondary btn-sm" onClick={() => handleIncrement(item.id)}>+</button>
-                  <button className="btn btn-danger btn-sm ms-2" onClick={() => handleRemoveFromCart(item.id)}>Eliminar</button>
+                  <button className="btn btn-outline-secondary btn-sm" onClick={() => handleIncrement(item.id)}>
+                    +
+                  </button>
+                  <button className="btn btn-danger btn-sm ms-2" onClick={() => handleRemoveFromCart(item.id)}>
+                    Eliminar
+                  </button>
                 </div>
               </li>
             ))}
           </ul>
           <h2>Total: ${formattedTotal}</h2>
-          <button className="btn btn-danger" onClick={handleClearCart}>Vaciar Carrito</button>
-          <button className="btn btn-primary ms-2" onClick={handleOpenModal}>Pagar</button>
+          <button className="btn btn-danger" onClick={handleClearCart}>
+            Vaciar Carrito
+          </button>
+          <button className="btn btn-primary ms-2" onClick={handleOpenModal}>
+            Pagar
+          </button>
         </>
       )}
 
@@ -143,9 +322,7 @@ const CartPage: React.FC = () => {
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">
-                  {isPurchaseCompleted ? 'Tu compra ha sido finalizada con éxito' : 'Resumen del Pedido'}
-                </h5>
+                <h5 className="modal-title">{isPurchaseCompleted ? 'Tu compra ha sido finalizada con éxito' : 'Resumen del Pedido'}</h5>
                 <button type="button" className="btn-close" onClick={handleCloseModal}></button>
               </div>
               <div className="modal-body">
@@ -161,11 +338,9 @@ const CartPage: React.FC = () => {
                         </li>
                       ))}
                     </ul>
-                    <p>El total de tu compra fue de: <h3>${new Intl.NumberFormat('es-CL', {
-                      style: 'decimal',
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 2,
-                    }).format(purchaseTotal || 0)}</h3></p>
+                    <p>
+                      El total de tu compra fue de: <h3>${formattedTotal}</h3>
+                    </p>
                   </>
                 ) : (
                   <>
@@ -178,7 +353,9 @@ const CartPage: React.FC = () => {
                         placeholder="Ingresa tu cupón"
                         className="form-control"
                       />
-                      <button className="btn btn-secondary" onClick={handleApplyCoupon}>Aplicar</button>
+                      <button className="btn btn-secondary" onClick={handleApplyCoupon}>
+                        Aplicar
+                      </button>
                     </div>
                     <ul className="list-group">
                       {groupedItems.map((item: CartItem) => (
@@ -194,10 +371,14 @@ const CartPage: React.FC = () => {
               </div>
               <div className="modal-footer">
                 {isPurchaseCompleted ? (
-                  <button className="btn btn-primary" onClick={handleCloseModal}>Cerrar</button>
+                  <button className="btn btn-primary" onClick={handleCloseModal}>
+                    Cerrar
+                  </button>
                 ) : (
                   <>
-                    <button className="btn btn-secondary" onClick={handleCloseModal}>Cancelar</button>
+                    <button className="btn btn-secondary" onClick={handleCloseModal}>
+                      Cancelar
+                    </button>
                     <button className="btn btn-primary" onClick={handleFinalizePurchase} disabled={loading}>
                       {loading ? 'Procesando...' : 'Finalizar Compra'}
                     </button>
@@ -213,3 +394,6 @@ const CartPage: React.FC = () => {
 };
 
 export default CartPage;
+
+
+

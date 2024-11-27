@@ -1,4 +1,4 @@
-import './styles/App.css';
+import './styles/index.css';
 import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -15,6 +15,8 @@ import { PrivateRoute } from './protected/PrivateRoute';
 import CartPage from './pages/CartPage';
 import UserManagement from './pages/UserManagement';
 import EditProductPage from './pages/EditProductPage';
+import AdminCartPage from './pages/AdminCartPage';
+import StyleGuide from './components/StyleGuide';
 
 function App() {
   const [user, setUser] = useState<{ username: string; role: string } | null>(null);
@@ -33,6 +35,7 @@ function App() {
         <Routes>
           <Route path="/" element={<MainLayout user={user} onLogout={handleLogout} />}>
             <Route index element={<HomePage />} />
+            <Route path="style-guide" element={<StyleGuide />} />
             <Route path="catalogo" element={<CatalogPage />} />
             <Route path="catalogo/producto/:id" element={<ProductDetailPage />} />
             <Route path="about" element={<AboutPage />} />
@@ -45,6 +48,8 @@ function App() {
             <Route path="cart" element={<CartPage />} />
             <Route path="user-management" element={<PrivateRoute roles={['admin-1']}><UserManagement /></PrivateRoute>} />
 
+            {/* Nueva ruta para AdminCartPage */}
+            <Route path="admin-carts" element={<PrivateRoute roles={['admin-1']}><AdminCartPage /></PrivateRoute>} />
           </Route>
         </Routes>
       </Router>
@@ -53,6 +58,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
