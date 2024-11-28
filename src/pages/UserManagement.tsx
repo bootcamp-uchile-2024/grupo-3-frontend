@@ -7,13 +7,14 @@ import {
   Container,
   Row,
   Col,
-  Pagination,
   Form,
 } from 'react-bootstrap';
 import UserCreateForm from './UserCreateForm';
 import CardUser from '../components/CardUser';
 import UserTable from '../components/UserTable';
 import { User } from '../types/types';
+import CustomPagination from '../components/CustomPagination';
+
 
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -237,20 +238,7 @@ const UserManagement = () => {
                       selectedUser={selectedUser}
                       setSelectedUser={setSelectedUser}
                     />
-                    <Pagination className="justify-content-center mt-3">
-                      {Array.from(
-                        { length: Math.ceil(users.length / usersPerPage) },
-                        (_, index) => (
-                          <Pagination.Item
-                            key={index + 1}
-                            active={index + 1 === currentPage}
-                            onClick={() => paginate(index + 1)}
-                          >
-                            {index + 1}
-                          </Pagination.Item>
-                        )
-                      )}
-                    </Pagination>
+                    
                     {selectedUser && (
                       <div className="d-flex justify-content-center mt-3 gap-2">
                         <Button variant="secondary" onClick={handleCancelEdit}>
@@ -454,102 +442,11 @@ const UserManagement = () => {
                   </>
                   
                 )}
-                    <Pagination className="justify-content-center mt-3">
-  {/* Botón anterior (<) */}
-  <Pagination.Item
-    onClick={() => currentPage > 1 && paginate(currentPage - 1)}
-    style={{ border: 'none', background: 'transparent' }}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="40"
-      height="40"
-      viewBox="0 0 40 40"
-      fill="none"
-    >
-      <rect x="0.5" y="0.5" width="39" height="39" rx="4.5" fill="#466A76" />
-      <rect x="0.5" y="0.5" width="39" height="39" rx="4.5" stroke="#466A76" />
-      <path
-        d="M25 32.5L12.5 20L25 7.5"
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  </Pagination.Item>
-
-  {/* Botón de la primera página */}
-  <Pagination.Item
-    active={currentPage === 1}
-    onClick={() => paginate(1)}
-    style={{
-      border: currentPage === 1 ? '2px solid #466A76' : 'none',
-      background: currentPage === 1 ? '#E8F0F2' : 'transparent',
-    }}
-  >
-    1
-  </Pagination.Item>
-
-  {/* Botón de la página actual */}
-  {currentPage !== 1 && currentPage !== Math.ceil(users.length / usersPerPage) && (
-    <Pagination.Item
-      active
-      style={{
-        border: '2px solid #466A76',
-        background: '#E8F0F2',
-        cursor: 'default',
-      }}
-    >
-      {currentPage}
-    </Pagination.Item>
-  )}
-
-  {/* Botón de la última página */}
-  <Pagination.Item
-    active={currentPage === Math.ceil(users.length / usersPerPage)}
-    onClick={() => paginate(Math.ceil(users.length / usersPerPage))}
-    style={{
-      border:
-        currentPage === Math.ceil(users.length / usersPerPage)
-          ? '2px solid #466A76'
-          : 'none',
-      background:
-        currentPage === Math.ceil(users.length / usersPerPage)
-          ? '#E8F0F2'
-          : 'transparent',
-    }}
-  >
-    {Math.ceil(users.length / usersPerPage)}
-  </Pagination.Item>
-
-  {/* Botón siguiente (>) */}
-  <Pagination.Item
-    onClick={() =>
-      currentPage < Math.ceil(users.length / usersPerPage) &&
-      paginate(currentPage + 1)
-    }
-    style={{ border: 'none', background: 'transparent' }}
-  >
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="40"
-      height="40"
-      viewBox="0 0 40 40"
-      fill="none"
-    >
-      <rect x="0.5" y="0.5" width="39" height="39" rx="4.5" fill="#466A76" />
-      <rect x="0.5" y="0.5" width="39" height="39" rx="4.5" stroke="#466A76" />
-      <path
-        d="M15 7.5L27.5 20L15 32.5"
-        stroke="white"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  </Pagination.Item>
-</Pagination>
+                <CustomPagination
+  currentPage={currentPage}
+  totalPages={Math.ceil(users.length / usersPerPage)}
+  paginate={paginate}
+/>
 
               </Tab>
             </Tabs>
