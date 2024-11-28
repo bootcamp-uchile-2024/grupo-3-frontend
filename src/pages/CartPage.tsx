@@ -46,6 +46,38 @@ const CartPage: React.FC = () => {
       alert('Hubo un problema inesperado. Inténtalo más tarde.');
     }
   };
+  const addProductToCart = async (cartId: number, productId: number, quantity: number) => {
+  try {
+    console.log(`Intentando agregar producto ${productId} al carrito ${cartId} con cantidad ${quantity}`);
+    const response = await fetch(`http://localhost:8080/carro-compras/addproducto/${cartId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({ productoId: productId, cantidadProducto: quantity }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Respuesta del backend:', data);
+
+      if (data.producto.cantidad < quantity) {
+        alert(`No hay suficiente stock para este producto. Disponible: ${data.producto.cantidad}.`);
+        return;
+      }
+
+      console.log('Producto agregado al carrito:', data);
+    } else {
+      const errorData = await response.json();
+      console.error('Error en la respuesta del servidor:', errorData);
+      throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+    }
+  } catch (error: any) {
+    console.error('Error al agregar producto al carrito:', error.message);
+    alert('Hubo un problema al agregar el producto al carrito. Inténtalo nuevamente.');
+  }
+};
 
   const deleteActiveCarts = async () => {
     try {
@@ -180,9 +212,18 @@ const CartPage: React.FC = () => {
     dispatch(removeFromCart(productId));
   };
 
-  const handleIncrement = (productId: number) => {
-    dispatch(updateQuantity({ id: productId, cantidad: 1 }));
+  const handleIncrement = async (productId: number) => {
+    if (!cartId) {
+      alert('No se ha inicializado el carrito.');
+      return;
+    }
+  
+    const product = cartItems.find((item) => item.id === productId);
+    if (product) {
+      await addProductToCart(cartId, productId, product.cantidad + 1);
+    }
   };
+  
 
   const handleDecrement = (productId: number) => {
     dispatch(updateQuantity({ id: productId, cantidad: -1 }));

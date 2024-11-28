@@ -15,6 +15,8 @@ const CatalogPage: React.FC = () => {
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize,] = useState(12);
   const dispatch = useDispatch();
+  const [errorMessages, setErrorMessages] = useState<{ [key: number]: string }>({});
+
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('user') || '{}');
@@ -85,6 +87,15 @@ const CatalogPage: React.FC = () => {
 
   const handleAddToCart = (product: productsCatalog) => {
     const quantity = quantities[product.id] || 1;
+  
+    if (quantity > product.cantidad) {
+      setErrorMessages((prevMessages) => ({
+        ...prevMessages,
+        [product.id]: `Stock insuficiente. Solo hay ${product.cantidad} unidades disponibles.`,
+      }));
+      return;
+    }
+  
     dispatch(addToCart({
       id: product.id,
       nombre: product.nombre,
@@ -99,8 +110,13 @@ const CatalogPage: React.FC = () => {
       largo: product.largo,
       peso: product.peso,
     }));
+    setErrorMessages((prevMessages) => ({
+      ...prevMessages,
+      [product.id]: '',
+    }));
   };
-
+  
+  
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -127,6 +143,11 @@ const CatalogPage: React.FC = () => {
                 <button onClick={() => handleQuantityChange(product.id, true)}>+</button>
               </div>
               <button onClick={() => handleAddToCart(product)}>Añadir al carrito</button>
+              {errorMessages[product.id] && (
+                <p className="error-message" style={{ color: 'red', fontSize: '0.9em' }}>
+                  {errorMessages[product.id]}
+                </p>
+              )}
               <Link to={`/catalogo/producto/${product.id}`}>Ver detalle</Link>
               {userRole && userRole.includes('admin-1') && (
                 <>
@@ -137,6 +158,7 @@ const CatalogPage: React.FC = () => {
                 </>
               )}
             </div>
+
           ))
         ) : (
           <p>No se encontraron productos.</p>
