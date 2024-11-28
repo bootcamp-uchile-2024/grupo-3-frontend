@@ -1,8 +1,13 @@
 /* CSS file for estilos.css */
+
+@import url('./variables.css');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Quicksand:wght@400;500;700&display=swap');
+
+
 #root{
   margin: 0 auto;
   padding: 0;
-  font-family: Arial, sans-serif;
+  font-family: 'Quicksand', sans-serif;
   width: 1440px;
   border: 1px solid #cccccc;
 }
@@ -11,9 +16,25 @@ header{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0 0 0;
   color: black;
-  margin-bottom: -10px;
+  background-color: var(--main-bg-color);
+  height: 62px;
+}
+
+.navbar-brand {
+  background-image: url("/src/assets/LOGO_PLANTAI.png");
+  background-size: contain; 
+  background-repeat: no-repeat; 
+  background-position: center; 
+  display: block; 
+  width: 99px;
+  height: 100px;
+  margin-top: 77px;
+  margin-left: 34px;
+}
+
+nav.navbar-nav, .nav-link, nav.navbar-nav a, nav.navbar-nav a:active, nav.navbar-nav a:visited, nav.navbar-nav a:hover, nav.navbar-nav a:focus, nav.navbar-nav a:link {
+  color: white!important;
 }
 
 #nav{
@@ -76,32 +97,6 @@ nav#navbar-top {
   /* margin: 20px auto 0; */
 }
 
-#banner{
-  background-size: cover;
-  background-position: center;
-  width: 100%;
-  height: 370px;
-  display: inline-block;
-  color: #fff;
-  text-align: center;
-  background-color: #4f4f4f;
-}
-
-#banner h2{
-  display: flex;
-  font-size: 2.6rem;
-  color: white;
-  justify-content: center;
-  text-align: center;
-  padding-top: 30px;
-}
-
-#banner p{
-  display: block;
-  font-size: 1.2em;
-  color: black;
-}
-
 #productos{
   display: flex;
   justify-content: space-evenly;
@@ -137,22 +132,6 @@ nav#navbar-top {
   font-weight: bold;
 }
 
-#reviews{
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.review{
-  padding: 0 0 20px 0;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  display: flex;
-  flex-flow: row;
-  margin: 20px 15px;
-  width: 285px;
-}
-
 .user-avatar{
   width: 44px;
   height: 40px;
@@ -161,20 +140,6 @@ nav#navbar-top {
   float: left;
   display: flex;
   margin: 10px;
-}
-
-.star {
-  width: 20px;
-  height: 20px;
-  display: inline-block;
-}
-
-.fa-star {
-  color: rgb(255, 240, 31);
-}
-
-.fa-star-o {
-  color: rgb(190, 190, 190);
 }
 
 button {
@@ -251,10 +216,6 @@ i.fas.fa-search {
   position: relative;
   z-index: 999;
   left: 68px;
-}
-
-.header-left-sections{
-  text-align: left!important;
 }
 
 /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
@@ -445,7 +406,316 @@ i.fas.fa-search {
   position: absolute; 
 }
 
-h1{
-  padding: 10px;
+/* FOOTER */
+
+footer {
+  position: relative;
+  background: linear-gradient(to right, rgba(26, 71, 86, 1) 0%, rgba(26, 71, 86, 0) 100%), #1A4756;
+  color: white; 
+  overflow: hidden; 
+  padding: 40px; 
+  width: 1440px;
+  height: 367px;
 }
+
+footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("/src/assets/pattern_footer.png");
+  background-repeat: repeat;
+  background-position: center; 
+  opacity: 0.24; 
+  z-index: 1; 
+}
+
+footer > * {
+  position: relative;
+  z-index: 2; 
+}
+
+.footer-logo {
+  background-image: url("/src/assets/LOGO_PLANTAI.png");
+  background-size: contain; 
+  background-repeat: no-repeat; 
+  background-position: center; 
+  display: block; 
+  width: 99px;
+  height: 100px;
+  text-indent: -9999px; 
+  overflow: hidden; 
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+.footer-subscription-text {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.footer-input {
+  border-radius: 0;
+}
+
+.footer-button {
+  background-color: white;
+  color: #1A4756;
+  border: none;
+  padding: 8px 16px;
+  font-weight: bold;
+}
+
+.footer-button:hover {
+  background-color: #f8f9fa;
+  color: #1A4756;
+}
+
+/* Social Icons */
+.social-icons a {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+}
+
+/* BUTTONS */
+
+/* Primary Button */
+button.btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+button.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+button.btn-primary:active {
+  background-color: var(--primary-active);
+  border-color: var(--primary-active);
+}
+
+button.btn-primary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 148, 0.25); /* Adaptar al color del focus */
+  border-color: var(--primary-focus);
+}
+
+button.btn-primary:disabled, 
+button.btn-primary.disabled {
+  background-color: var(--primary-disabled-bg);
+  color: var(--primary-disabled-text);
+  border-color: var(--primary-disabled-bg);
+}
+
+/* Secondary Button */
+button.btn-secondary {
+  background-color: var(--secondary-color);
+  color: white;
+  border-color: var(--secondary-color);
+}
+
+button.btn-secondary:hover {
+  background-color: var(--secondary-hover);
+  border-color: var(--secondary-hover);
+}
+
+button.btn-secondary:active {
+  background-color: var(--secondary-active);
+  border-color: var(--secondary-active);
+}
+
+button.btn-secondary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(20, 108, 74, 0.25); /* Adaptar al color del focus */
+  border-color: var(--secondary-focus);
+}
+
+button.btn-secondary:disabled, 
+button.btn-secondary.disabled {
+  background-color: var(--primary-disabled-bg);
+  color: var(--primary-disabled-text);
+  border-color: var(--primary-disabled-bg);
+}
+
+/* Tertiary Button (Outline) */
+button.btn-outline-primary {
+  background-color: transparent;
+  color: var(--tertiary-color);
+  border-color: var(--tertiary-color);
+}
+
+button.btn-outline-primary:hover {
+  background-color: var(--tertiary-hover-bg);
+}
+
+button.btn-outline-primary:active {
+  background-color: var(--tertiary-active-bg);
+}
+
+button.btn-outline-primary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(0, 123, 148, 0.25); /* Adaptar al color del focus */
+  border-color: var(--primary-focus);
+}
+
+button.btn-outline-primary:disabled, 
+button.btn-outline-primary.disabled {
+  background-color: var(--tertiary-disabled-bg);
+  color: var(--primary-disabled-text);
+  border-color: var(--tertiary-disabled-border);
+}
+
+/* Orange Button */
+button.btn-orange {
+  background-color: var(--orange-color);
+  color: white;
+  border-color: var(--orange-color);
+}
+
+button.btn-orange:hover {
+  background-color: var(--orange-hover);
+  border-color: var(--orange-hover);
+}
+
+button.btn-orange:active {
+  background-color: var(--orange-active);
+  border-color: var(--orange-active);
+}
+
+button.btn-orange:focus {
+  box-shadow: 0 0 0 0.25rem rgba(227, 142, 36, 0.25); /* Adaptar al color del focus */
+  border-color: var(--orange-hover);
+}
+
+button.btn-orange:disabled, 
+button.btn-orange.disabled {
+  background-color: var(--primary-disabled-bg);
+  color: var(--primary-disabled-text);
+  border-color: var(--primary-disabled-bg);
+}
+
+/* Gray Button */
+button.btn-gray {
+  background-color: var(--gray-color);
+  color: white;
+  border-color: var(--gray-color);
+}
+
+button.btn-gray:hover {
+  background-color: var(--gray-hover);
+  border-color: var(--gray-hover);
+}
+
+button.btn-gray:active {
+  background-color: var(--gray-active);
+  border-color: var(--gray-active);
+}
+
+button.btn-gray:focus {
+  box-shadow: 0 0 0 0.25rem rgba(138, 153, 163, 0.25); /* Adaptar al color del focus */
+  border-color: var(--gray-hover);
+}
+
+button.btn-gray:disabled, 
+button.btn-gray.disabled {
+  background-color: var(--primary-disabled-bg);
+  color: var(--primary-disabled-text);
+  border-color: var(--primary-disabled-bg);
+}
+
+.icon-white {
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings: 'FILL' 1; 
+  font-size: 30px; 
+  color: white; 
+}
+
+/* Banner Home */
+
+.home-banner,
+.additional-banner {
+  width: 100%; 
+  display: flex; 
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.home-banner {
+  margin-top: 168px;
+}
+
+/* Home Banner */
+.home-banner {
+  background-image: url('/src/assets/001_Plantai_Home_Featured.webp'); 
+  height: 614px; 
+  color: white; 
+}
+
+.home-banner-uno {
+  background-image: url('/src/assets/Plantai_banner_02.webp'); 
+  height: 240px; 
+}
+
+.home-banner-dos {
+  background-image: url('/src/assets/Plantai_banner_01.webp'); 
+  height: 240px; 
+}
+
+/* Tabs */
+
+.custom-tabs .nav-link {
+  background-color: white;
+  color: #879DA5!important; 
+  border: 1px solid transparent!important; 
+  transition: all 0.3s ease-in-out;
+}
+
+.custom-tabs .nav-link.active {
+  background-color: #F5F5F5!important; 
+  color: #1A4756!important; 
+  border-color: #F5F5F5!important; 
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+ul.custom-tabs.mb-3.nav.nav-tabs {
+  position: relative;
+  bottom: 3.2rem;
+  z-index: -2;
+}
+
+.table-hover > tbody > tr:hover > * {
+  background-color: var(--custom-table-hover-bg, #6F8F75); 
+}
+
+
+
+
+
+
+
 

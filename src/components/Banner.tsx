@@ -1,16 +1,26 @@
 import React from 'react';
+import { Container } from 'react-bootstrap';
+import SearchBar from './SearchBar';
 
 const Banner: React.FC = () => {
   return (
-    <div className="container">
-      <section id="banner">
-        <h2>Traemos la naturaleza a la <br/> puerta de tu casa</h2>
-        <button className="btn btn-dark">
-          <a href="#">Comprar ahora</a>
-        </button>
-      </section>
-    </div>
+
+     <>
+      {/* Home Banner */}
+      <div className="home-banner">
+        <Container className="banner-content text-center">
+        <SearchBar />
+        </Container>
+      </div>
+
+      {/* Banner 1 */}
+      <div className="additional-banner home-banner-uno"></div>
+
+      {/* Banner 2 */}
+      <div className="additional-banner home-banner-dos"></div>
+    </>
   );
 };
+
 
 export default Banner;
