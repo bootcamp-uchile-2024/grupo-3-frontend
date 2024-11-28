@@ -1,0 +1,64 @@
+/* Catalog Page */
+
+.catalog-banner {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.catalog-banner {
+    background-image: url(/src/assets/PLANTAI_Planta_Group_09.webp);
+    height: 519px;
+    color: white;
+}
+
+/* Estilos generales para la paginación */
+.pagination-container {
+    gap: 10px;
+}
+
+.pagination-container .page-item {
+    margin: 0 5px;
+}
+
+.pagination-container .page-link {
+    color: black;
+}
+
+.pagination-container .page-link:hover {
+    background-color: var(--main-bg-color);
+    color: white;
+}
+
+.pagination-container .page-item.active .page-link {
+    background-color: var(--main-bg-color);
+    color: white; 
+    border: 1px solid var(--main-bg-color); 
+}
+
+.bold-text {
+    line-height: 30px;
+    font-size: 24px;
+  }
+
+/* Estilos para el selector de cantidad de productos por página */
+.show-products-selector a {
+    color: #1A4756;
+    font-weight: normal;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .show-products-selector a:hover {
+    color: black;
+  }
+  
+  /* Cuando el enlace está seleccionado, ponerlo en color negro */
+  .show-products-selector a.selected {
+    color: black;
+  }
+  

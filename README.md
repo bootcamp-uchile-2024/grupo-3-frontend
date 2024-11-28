@@ -54,6 +54,7 @@
   ```bash
   npm install bootstrap
   npm install bootstrap @popperjs/core
+  npm install react-bootstrap-icons
   ```
 
 - Para incluir type checker, ejecuta:

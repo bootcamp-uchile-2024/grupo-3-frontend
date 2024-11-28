@@ -1,11 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import '../styles/ProductDetailStyle.css';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { productsCatalog } from '../interfaces/ProductsCatalog';
-import Products from '../components/CardProducts';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../states/cartSlice';
+import { Button, Card, Col, Container, Row, Form } from 'react-bootstrap';
+import { CartPlus, CaretDown } from 'react-bootstrap-icons';
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -13,11 +14,13 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
+  const [isShipping, setIsShipping] = useState<boolean>(false);  // State for "Envío a Domicilio"
+  const [isPickup, setIsPickup] = useState<boolean>(false);      // State for "Retiro en Tienda"
+  const [openSection, setOpenSection] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string>('');
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  // Esto debería venir de tu lógica de usuario
-  const userRole = 'admin-1'; // Reemplaza esto con la lógica adecuada para obtener el rol del usuario
 
   const deleteProduct = async (productId: number) => {
     const confirmation = window.confirm(`¿Estás seguro de querer eliminar el producto ${productId}?`);
@@ -31,14 +34,11 @@ export default function ProductDetailPage() {
           throw new Error('Error al eliminar el producto');
         }
         alert(`Eliminaste exitosamente el producto: ${productId}`);
-        // Aquí puede que quieras redirigir o actualizar la lista de productos
-        navigate('/catalogo'); // O cualquier otra acción que necesites
+        navigate('/catalogo');
       } catch (error) {
         console.error('Error al eliminar el producto:', error);
         setError('Hubo un error al eliminar el producto');
       }
-    } else {
-      console.log('Eliminación cancelada');
     }
   };
 
@@ -100,50 +100,202 @@ export default function ProductDetailPage() {
     }
   };
 
+  const handleViewAvailability = () => {
+    alert('Verificando disponibilidad para la selección de envío/retirada.');
+  };
+
+
+  const toggleSection = (section: string) => {
+    setOpenSection(prev => (prev === section ? null : section));  // Si la sección ya está abierta, se cierra
+  };
+
+
+  const handleSelectImage = (image: string) => {
+    setSelectedImage(image);
+  };
+
   return (
     <>
-      <div className="product-detail-container">
-        {product && (
-          <div className="product-detail-container2">
-            <img
-              src={`https://placehold.co/700?text=${encodeURIComponent(product.nombre)}&font=roboto`}
+    <Container className="mt-4">
+      {product && (
+        <Row>
+          <Col md={6}>
+            <Card.Img
+              variant="top"
+              src={`https://placehold.co/454x608?text=${encodeURIComponent(product.nombre)}&font=roboto`}
               alt={product.nombre}
+              className="rounded"
             />
-            <div className="product-info">
-              <h1>{product.nombre}</h1>
-              <p>Precio: ${product.precio}</p>
-              <p>Descripción del producto: {product.descripcion}</p>
-              <p>Cantidad: {product.cantidad}</p>
-              <p>Unidades vendidas: {product.unidadesVendidas}</p>
-              <p>Puntuación: {product.puntuacion}</p>
-              <p>Ancho: {product.ancho}</p>
-              <p>Alto: {product.alto}</p>
-              <p>Largo: {product.largo}</p>
-              <p>Peso: {product.peso}</p>
-              <br />
-              <div className="quantity-controls ms-5">
-                <button className="btn btn-secondary me-2" onClick={decrementQuantity}>-</button>
-                <span className="mx-1">{quantity}</span>
-                <button className="btn btn-secondary me-2 mx-1" onClick={incrementQuantity}>+</button>
-                <button className="btn btn-dark w-auto mx-2" type="button" onClick={handleBuyNow}>Comprar</button>
-                <button className="btn btn-success w-auto" type="button" onClick={() => handleAddToCart(product)}>Agregar</button>
+            <Col className="mt-4">
+
+              <div className="image-thumbnails d-flex justify-content-start gap-5">
+                {[1, 2, 3, 4].map((index) => (
+                  <img
+                    key={index}
+                    src={`https://placehold.co/94x128?text=Imagen+${index}`}
+                    alt={`Imagen ${index}`}
+                    className="thumbnail-img rounded"
+                    onClick={() => handleSelectImage(`https://placehold.co/600x800?text=Imagen+${index}`)}
+                  />
+                ))}
               </div>
-              <br />
-              <div className="quantity-controls ms-5">
-                {userRole && userRole.includes('admin-1') && (
-                  <>
-                    <button className="btn btn-outline-danger w-auto mx-2" type="button" onClick={() => deleteProduct(product.id)}>Eliminar</button>
-                    <Link to={`/editar-producto/${product.id}`}>
-                      <button className="btn btn-primary w-auto mx-2" type="button">Editar</button>
-                    </Link>
-                  </>
-                )}
+
+            </Col>
+          </Col>
+
+          <Col md={6}>
+            <Card.Body>
+              <div>
+                <Card.Title className="product-title">{product.nombre}</Card.Title>
+                <Card.Text className="product-description">
+                  <strong>Descripción:</strong> {product.descripcion}
+                  <p>*Fotos de carácter referencial</p>
+                </Card.Text>
+                <Card.Text className="product-price">
+                  <strong>Precio:</strong> ${product.precio}
+                </Card.Text>
               </div>
+
+              <div className="d-flex align-items-center mb-3 quantity-controls">
+                <span>Cantidad </span>
+
+                <Button
+                  className="btn-primary small rounded-circle"
+                  onClick={decrementQuantity}
+                  style={{ width: '24px', height: '24px', padding: '0' }}
+                >
+                  -
+                </Button>
+
+                <span className="mx-2">{quantity}</span>
+
+                <Button
+                  className="btn-primary small rounded-circle"
+                  onClick={incrementQuantity}
+                  style={{ width: '24px', height: '24px', padding: '0' }}
+                >
+                  +
+                </Button>
+              </div>
+
+              <div className="d-flex gap-3 mt-3">
+                <Button className="btn-action" onClick={() => handleAddToCart(product)}>
+                  Añadir a Carrito <CartPlus className="ms-2" size={18} />
+                </Button>
+                <Button variant="outline-primary" className="btn-action" onClick={handleBuyNow}>
+                  Comprar Ahora
+                </Button>
+              </div>
+
+              {/* Nueva sección de "Ver disponibilidad" con checkboxes */}
+              <div className="mt-4">
+                <div className="d-flex justify-content-start align-items-center">
+                  <div className="me-3">
+                    <Form.Check
+                      type="checkbox"
+                      id="envio-a-domicilio"
+                      label="Envío A Domicilio"
+                      checked={isShipping}
+                      onChange={() => setIsShipping(!isShipping)}
+                    />
+                    <Form.Check
+                      type="checkbox"
+                      id="retiro-en-tienda"
+                      label="Retiro en Tienda"
+                      checked={isPickup}
+                      onChange={() => setIsPickup(!isPickup)}
+                    />
+                  </div>
+
+                  <Button
+                    variant="outline-primary"
+                    className="btn-action"
+                    onClick={handleViewAvailability}
+                  >
+                    Ver disponibilidad
+                  </Button>
+                </div>
+              </div>
+
+              <Card.Text className="product-details mt-3">
+                <strong>Características:</strong>
+                <p>Especie: {product?.planta?.especie || 'No especificado'}</p>
+                <p>Luz: {product?.planta?.fotoPeriodo || 'No especificado'}</p>
+                <p>Riego: {product?.planta?.tipoRiego || 'No especificado'}</p>
+                <p>Temperatura: {product?.planta?.toleranciaTemperatura || 'No especificado'}°C</p>
+              </Card.Text>
+            </Card.Body>
+          </Col>
+        </Row>
+      )}
+
+      <Row className="mt-4">
+        <Col md={3}>
+          <Button
+            variant="outline-secondary"
+            onClick={() => toggleSection('descripcion')}
+            className="d-flex justify-content-between align-items-center w-100"
+          >
+            Descripción
+            <CaretDown size={18} className={`ms-2 ${openSection === 'descripcion' ? 'rotate-180' : ''}`} />
+          </Button>
+          {openSection === 'descripcion' && (
+            <div className="mt-2">
+              {product?.descripcion}
             </div>
-          </div>
-        )}
-      </div>
-      <Products />
+          )}
+        </Col>
+        <Col md={3}>
+          <Button
+            variant="outline-secondary"
+            onClick={() => toggleSection('dimensiones')}
+            className="d-flex justify-content-between align-items-center w-100"
+          >
+            Dimensiones
+            <CaretDown size={18} className={`ms-2 ${openSection === 'dimensiones' ? 'rotate-180' : ''}`} />
+          </Button>
+          {openSection === 'dimensiones' && (
+            <div className="mt-2">
+              Ancho: {product?.ancho} cm<br />
+              Alto: {product?.alto} cm<br />
+              Largo: {product?.largo} cm
+            </div>
+          )}
+        </Col>
+        <Col md={3}>
+          <Button
+            variant="outline-secondary"
+            onClick={() => toggleSection('recomendaciones')}
+            className="d-flex justify-content-between align-items-center w-100"
+          >
+            Recomendaciones
+            <CaretDown size={18} className={`ms-2 ${openSection === 'recomendaciones' ? 'rotate-180' : ''}`} />
+          </Button>
+          {openSection === 'recomendaciones' && (
+            <div className="mt-2">
+              La planta es apta para exteriores, es resistente a altas temperaturas.
+            </div>
+          )}
+        </Col>
+        <Col md={3}>
+          <Button
+            variant="outline-secondary"
+            onClick={() => toggleSection('garantias')}
+            className="d-flex justify-content-between align-items-center w-100"
+          >
+            Garantías
+            <CaretDown size={18} className={`ms-2 ${openSection === 'garantias' ? 'rotate-180' : ''}`} />
+          </Button>
+          {openSection === 'garantias' && (
+            <div className="mt-2">
+              Garantía de 1 año contra defectos de fabricación.
+            </div>
+          )}
+        </Col>
+      </Row>
+      <br />
+
+    </Container>
     </>
   );
-}
+};

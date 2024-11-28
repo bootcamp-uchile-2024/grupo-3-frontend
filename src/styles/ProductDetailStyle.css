@@ -1,0 +1,55 @@
+.product-title {
+    font-size: 2rem;  /* Aumentar el tamaño del título */
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  /* Precio grande */
+  .product-price {
+    font-size: 1.5rem;  /* Aumentar el tamaño del precio */
+    font-weight: bold;
+    color: #2c3e50;  /* Color oscuro para el precio */
+    margin-top: 10px;
+  }
+  
+  /* Descripción */
+  .product-description {
+    font-size: 1rem;
+    color: #7f8c8d;
+    margin-top: 5px;
+  }
+  
+  /* Botones de cantidad */
+  .quantity-controls {
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  /* Botones principales */
+  .btn-primary {
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+  
+  /* Botón para agregar al carrito */
+  .btn-tertiary {
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+  
+  /* Características */
+  .product-details {
+    font-size: 1rem;
+    color: #7f8c8d;
+    margin-top: 20px;
+  }
+  
+  .product-details p {
+    margin: 5px 0;
+  }  
+
+  .rotate-180 {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+  }
+  
