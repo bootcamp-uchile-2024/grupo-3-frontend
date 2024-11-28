@@ -115,58 +115,23 @@ const UserManagement = () => {
               <Col md={2} className="d-flex flex-column gap-2" style={{ marginTop: '83px' }}>
           {[
             { text: 'Usuarios', icon: (
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <g clipPath="url(#clip0_3706_23838)">
-                    <path d="M11.9902 2C6.47023 2 1.99023 6.48 1.99023 12C1.99023 17.52 6.47023 22 11.9902 22C17.5102 22 21.9902 17.52 21.9902 12C21.9902 6.48 17.5102 2 11.9902 2ZM15.6002 8.34C16.6702 8.34 17.5302 9.2 17.5302 10.27C17.5302 11.34 16.6702 12.2 15.6002 12.2C14.5302 12.2 13.6702 11.34 13.6702 10.27C13.6602 9.2 14.5302 8.34 15.6002 8.34ZM9.60023 6.76C10.9002 6.76 11.9602 7.82 11.9602 9.12C11.9602 10.42 10.9002 11.48 9.60023 11.48C8.30023 11.48 7.24023 10.42 7.24023 9.12C7.24023 7.81 8.29024 6.76 9.60023 6.76ZM9.60023 15.89V19.64C7.20023 18.89 5.30023 17.04 4.46023 14.68C5.51023 13.56 8.13023 12.99 9.60023 12.99C10.1302 12.99 10.8002 13.07 11.5002 13.21C9.86023 14.08 9.60023 15.23 9.60023 15.89ZM11.9902 20C11.7202 20 11.4602 19.99 11.2002 19.96V15.89C11.2002 14.47 14.1402 13.76 15.6002 13.76C16.6702 13.76 18.5202 14.15 19.4402 14.91C18.2702 17.88 15.3802 20 11.9902 20Z" fill="#1A4756"/>
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_3706_23838">
-                      <rect width="24" height="24" fill="white"/>
-                    </clipPath>
-                  </defs>
-                </svg>
+              <span className="material-symbols-outlined" style={{color: '#1A4756'}}>
+              group
+              </span>
               )
             },
-            { text: 'Productos', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <g clip-path="url(#clip0_3706_29457)">
-                <path d="M20 6H17.82C17.93 5.69 18 5.35 18 5C18 3.34 16.66 2 15 2C13.95 2 13.04 2.54 12.5 3.35L12 4.02L11.5 3.34C10.96 2.54 10.05 2 9 2C7.34 2 6 3.34 6 5C6 5.35 6.07 5.69 6.18 6H4C2.89 6 2.01 6.89 2.01 8L2 19C2 20.11 2.89 21 4 21H20C21.11 21 22 20.11 22 19V8C22 6.89 21.11 6 20 6ZM15 4C15.55 4 16 4.45 16 5C16 5.55 15.55 6 15 6C14.45 6 14 5.55 14 5C14 4.45 14.45 4 15 4ZM9 4C9.55 4 10 4.45 10 5C10 5.55 9.55 6 9 6C8.45 6 8 5.55 8 5C8 4.45 8.45 4 9 4ZM20 19H4V17H20V19ZM20 14H4V8H9.08L7 10.83L8.62 12L11 8.76L12 7.4L13 8.76L15.38 12L17 10.83L14.92 8H20V14Z" fill="#1A4756"/>
-              </g>
-              <defs>
-                <clipPath id="clip0_3706_29457">
-                  <rect width="24" height="24" fill="white"/>
-                </clipPath>
-              </defs>
-            </svg>) },
-            { text: 'Seguimiento', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <g clip-path="url(#clip0_3706_29328)">
-                <path d="M17 5H3C1.9 5 1 5.89 1 7V16H3C3 17.65 4.34 19 6 19C7.66 19 9 17.65 9 16H14.5C14.5 17.65 15.84 19 17.5 19C19.16 19 20.5 17.65 20.5 16H23V11L17 5ZM3 11V7H7V11H3ZM6 17.5C5.17 17.5 4.5 16.83 4.5 16C4.5 15.17 5.17 14.5 6 14.5C6.83 14.5 7.5 15.17 7.5 16C7.5 16.83 6.83 17.5 6 17.5ZM13 11H9V7H13V11ZM17.5 17.5C16.67 17.5 16 16.83 16 16C16 15.17 16.67 14.5 17.5 14.5C18.33 14.5 19 15.17 19 16C19 16.83 18.33 17.5 17.5 17.5ZM15 11V7H16L20 11H15Z" fill="#1A4756"/>
-              </g>
-              <defs>
-                <clipPath id="clip0_3706_29328">
-                  <rect width="24" height="24" fill="white"/>
-                </clipPath>
-              </defs>
-            </svg>) },
-            { text: 'Métricas', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <g clip-path="url(#clip0_3706_17947)">
-                <path d="M7 18H9V6H7V18ZM11 22H13V2H11V22ZM3 14H5V10H3V14ZM15 18H17V6H15V18ZM19 10V14H21V10H19Z" fill="#1A4756"/>
-              </g>
-              <defs>
-                <clipPath id="clip0_3706_17947">
-                  <rect width="24" height="24" fill="white"/>
-                </clipPath>
-              </defs>
-            </svg>) },
-            { text: 'Comunidad', icon: (<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <g clip-path="url(#clip0_3706_12622)">
-                <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM8 17.5C6.62 17.5 5.5 16.38 5.5 15C5.5 13.62 6.62 12.5 8 12.5C9.38 12.5 10.5 13.62 10.5 15C10.5 16.38 9.38 17.5 8 17.5ZM9.5 8C9.5 6.62 10.62 5.5 12 5.5C13.38 5.5 14.5 6.62 14.5 8C14.5 9.38 13.38 10.5 12 10.5C10.62 10.5 9.5 9.38 9.5 8ZM16 17.5C14.62 17.5 13.5 16.38 13.5 15C13.5 13.62 14.62 12.5 16 12.5C17.38 12.5 18.5 13.62 18.5 15C18.5 16.38 17.38 17.5 16 17.5Z" fill="#1A4756"/>
-              </g>
-              <defs>
-                <clipPath id="clip0_3706_12622">
-                  <rect width="24" height="24" fill="white"/>
-                </clipPath>
-              </defs>
-            </svg>) },
+            { text: 'Productos', icon: (<span className="material-symbols-outlined" style={{color: '#1A4756'}}>
+              redeem
+              </span>)},
+            { text: 'Seguimiento', icon: (<span className="material-symbols-outlined" style={{color: '#1A4756'}}>
+              airport_shuttle
+              </span>) },
+            { text: 'Métricas', icon: (<span className="material-symbols-outlined" style={{color: '#1A4756'}}>
+              graphic_eq
+              </span>) },
+            { text: 'Comunidad', icon: (<span className="material-symbols-outlined" style={{color: '#1A4756'}}>
+              group_work
+              </span>) },
           ].map(({ text, icon }, index) => (
             <Button
               key={index}
@@ -442,12 +407,12 @@ const UserManagement = () => {
                   </>
                   
                 )}
-                <CustomPagination
-  currentPage={currentPage}
-  totalPages={Math.ceil(users.length / usersPerPage)}
-  paginate={paginate}
-/>
-
+          
+                  <CustomPagination
+                  currentPage={currentPage}
+                  totalPages={Math.ceil(users.length / usersPerPage)}
+                  paginate={paginate}
+                />
               </Tab>
             </Tabs>
           </div>

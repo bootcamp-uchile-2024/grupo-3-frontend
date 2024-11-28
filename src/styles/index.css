@@ -708,8 +708,23 @@ ul.custom-tabs.mb-3.nav.nav-tabs {
   z-index: -2;
 }
 
+/* Estilo para filas impares y pares */
+.table-custom tbody tr:nth-child(odd) {
+  background-color: #FFFFFF; /* Color para filas impares */
+}
+
+.table-custom tbody tr:nth-child(even) {
+  background-color: #BBB; /* Color para filas pares */
+}
+
+/* Estilo para la fila seleccionada */
+.table-custom tbody tr.selected {
+  background-color: #6F8F75 !important; /* Color para la fila seleccionada */
+}
+
 .table-hover > tbody > tr:hover > * {
   background-color: var(--custom-table-hover-bg, #6F8F75); 
+
 }
 
 
