@@ -358,15 +358,20 @@ return (
             borderRadius: '8px',
             background: '#F8FAFC',
             height: '40px',
+            textAlign: 'center'
           }}
+          
         >
           <option value="" disabled>
-            Género
+            Género 
           </option>
           <option value="Masculino">Masculino</option>
           <option value="Femenino">Femenino</option>
           <option value="Otro">Otro</option>
+          
         </Form.Select>
+        
+        
         {errors.genero && (
           <Form.Text className="text-danger">{errors.genero}</Form.Text>
         )}
