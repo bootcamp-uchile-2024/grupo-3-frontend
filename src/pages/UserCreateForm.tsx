@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/UserCreationForm.css';
 import { validateEmail, validatePassword } from '../utils/validators';
+import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 
 interface CreateUserDTO {
   nombre: string;
@@ -14,6 +16,7 @@ interface CreateUserDTO {
   rut: string;
   fechaNacimiento: string;
   tipoUsuarioId: number;
+  region?: string;
 }
 
 type UserCreationFormProps = {
@@ -22,6 +25,8 @@ type UserCreationFormProps = {
 };
 
 const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAdmin }) => {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState<CreateUserDTO>({
     nombre: '',
     apellido: '',
@@ -33,6 +38,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
     rut: '',
     fechaNacimiento: '',
     tipoUsuarioId: isAdmin ? 1 : 3,
+    region: ''
   });
 
   const [errors, setErrors] = useState({
@@ -50,6 +56,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({ ...prevState, [name]: value }));
@@ -58,11 +65,6 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
       ...prevErrors,
       [name]: '',
     }));
-  };
-
-  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevState) => ({ ...prevState, [name]: Number(value) }));
   };
 
   const validate = () => {
@@ -140,84 +142,427 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
     }
   };
 
-  return (
-    <div className="user-creation-container">
-      <form onSubmit={handleSubmit} className="user-creation-form">
-        <h2>Crear Usuario</h2>
+return (
+  <Container
+    className="user-creation-container"
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      padding: '20px',
+      background: '#fff',
+    }}
+  >
+    <Form
+      onSubmit={handleSubmit}
+      className="user-creation-form"
+      style={{
+        width: '700px',
+        padding: '0',
+        background: 'transparent',
+        border: 'none',
+        boxShadow: 'none',
+      }}
+    >
+      <h2
+        style={{
+          textAlign: 'center',
+          marginBottom: '10px',
+          fontFamily: 'Quicksand, sans-serif',
+          fontWeight: 700,
+        }}
+      >
+        ¿Eres nuevo en Plant AI?
+      </h2>
+      <p
+        style={{
+          textAlign: 'center',
+          marginBottom: '20px',
+          fontFamily: 'Quicksand, sans-serif',
+          color: '#1A4756',
+        }}
+      >
+        Regístrate y disfruta de nuestros <br />
+        productos y beneficios
+      </p>
 
-        <div>
-          <label>Nombre:</label>
-          <input type="text" name="nombre" value={formData.nombre} onChange={handleInputChange} />
-          {errors.nombre && <p className="text-danger">{errors.nombre}</p>}
-        </div>
+      <h3
+        style={{
+          marginBottom: '20px',
+          fontFamily: 'Quicksand',
+          fontWeight: 600,
+          marginTop: '40px',
+        }}
+      >
+        Mis datos:
+      </h3>
 
-        <div>
-          <label>Apellido:</label>
-          <input type="text" name="apellido" value={formData.apellido} onChange={handleInputChange} />
-          {errors.apellido && <p className="text-danger">{errors.apellido}</p>}
-        </div>
+      {/* Nombre y Apellido */}
+      <Row className="mb-3">
+        <Col>
+          <Form.Group controlId="nombre">
+            <Form.Label style={{ fontWeight: 'bold' }}>Nombre*</Form.Label>
+            <Form.Control
+              type="text"
+              name="nombre"
+              placeholder="Nombre"
+              value={formData.nombre}
+              onChange={handleInputChange}
+              style={{
+                borderRadius: '8px',
+                background: '#F8FAFC',
+                height: '35px',
+              }}
+            />
+            {errors.nombre && (
+              <Form.Text className="text-danger">{errors.nombre}</Form.Text>
+            )}
+          </Form.Group>
+        </Col>
+        <Col>
+          <Form.Group controlId="apellido">
+            <Form.Label style={{ fontWeight: 'bold' }}>Apellido*</Form.Label>
+            <Form.Control
+              type="text"
+              name="apellido"
+              placeholder="Apellido"
+              value={formData.apellido}
+              onChange={handleInputChange}
+              style={{
+                borderRadius: '8px',
+                background: '#F8FAFC',
+                height: '35px',
+              }}
+            />
+            {errors.apellido && (
+              <Form.Text className="text-danger">{errors.apellido}</Form.Text>
+            )}
+          </Form.Group>
+        </Col>
+      </Row>
 
-        <div>
-          <label>Nombre de usuario:</label>
-          <input type="text" name="nombreUsuario" value={formData.nombreUsuario} onChange={handleInputChange} />
-          {errors.nombreUsuario && <p className="text-danger">{errors.nombreUsuario}</p>}
-        </div>
-
-        <div>
-          <label>Correo electrónico:</label>
-          <input type="email" name="email" value={formData.email} onChange={handleInputChange} />
-          {errors.email && <p className="text-danger">{errors.email}</p>}
-        </div>
-
-        <div>
-          <label>Contraseña:</label>
-          <input type="password" name="contrasena" value={formData.contrasena} onChange={handleInputChange} />
-          {errors.contrasena && <p className="text-danger">{errors.contrasena}</p>}
-        </div>
-
-        <div>
-          <label>Teléfono:</label>
-          <input type="text" name="telefono" value={formData.telefono} onChange={handleInputChange} />
-          {errors.telefono && <p className="text-danger">{errors.telefono}</p>}
-        </div>
-
-        <div>
-          <label>Género:</label>
-          <input type="text" name="genero" value={formData.genero} onChange={handleInputChange} />
-          {errors.genero && <p className="text-danger">{errors.genero}</p>}
-        </div>
-
-        <div>
-          <label>RUT:</label>
-          <input type="text" name="rut" value={formData.rut} onChange={handleInputChange} />
-          {errors.rut && <p className="text-danger">{errors.rut}</p>}
-        </div>
-
-        <div>
-          <label>Fecha de Nacimiento:</label>
-          <input type="date" name="fechaNacimiento" value={formData.fechaNacimiento} onChange={handleInputChange} />
-          {errors.fechaNacimiento && <p className="text-danger">{errors.fechaNacimiento}</p>}
-        </div>
-
-        {isAdmin && (
-          <div>
-            <label>Tipo de Usuario:</label>
-            <select name="tipoUsuarioId" value={formData.tipoUsuarioId} onChange={handleSelectChange}>
-              <option value={1}>SuperAdmin</option>
-              <option value={2}>Admin</option>
-              <option value={3}>Cliente</option>
-              <option value={4}>Visitante</option>
-            </select>
-            {errors.tipoUsuarioId && <p className="text-danger">{errors.tipoUsuarioId}</p>}
-          </div>
+      {/* Nombre de Usuario */}
+      <Form.Group className="mb-3" controlId="nombreUsuario">
+        <Form.Label style={{ fontWeight: 'bold' }}>Nombre de usuario*</Form.Label>
+        <Form.Control
+          type="text"
+          name="nombreUsuario"
+          placeholder="Nombre de Usuario"
+          value={formData.nombreUsuario}
+          onChange={handleInputChange}
+          style={{
+            borderRadius: '8px',
+            background: '#F8FAFC',
+            height: '35px',
+          }}
+        />
+        {errors.nombreUsuario && (
+          <Form.Text className="text-danger">{errors.nombreUsuario}</Form.Text>
         )}
+      </Form.Group>
 
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Creando usuario...' : 'Crear Usuario'}
-        </button>
-      </form>
-    </div>
-  );
+      {/* Correo */}
+      <Form.Group className="mb-3" controlId="email">
+        <Form.Label style={{ fontWeight: 'bold' }}>Correo*</Form.Label>
+        <Form.Control
+          type="email"
+          name="email"
+          placeholder="Correo"
+          value={formData.email}
+          onChange={handleInputChange}
+          style={{
+            borderRadius: '8px',
+            background: '#F8FAFC',
+            height: '35px',
+          }}
+        />
+        {errors.email && (
+          <Form.Text className="text-danger">{errors.email}</Form.Text>
+        )}
+      </Form.Group>
+
+      {/* Contraseña */}
+      <Form.Group className="mb-3" controlId="contrasena">
+        <Form.Label style={{ fontWeight: 'bold' }}>Contraseña*</Form.Label>
+        <Form.Control
+          type="password"
+          name="contrasena"
+          placeholder="Contraseña"
+          value={formData.contrasena}
+          onChange={handleInputChange}
+          style={{
+            borderRadius: '8px',
+            background: '#F8FAFC',
+            height: '35px',
+          }}
+        />
+        {errors.contrasena && (
+          <Form.Text className="text-danger">{errors.contrasena}</Form.Text>
+        )}
+      </Form.Group>
+
+      {/* RUT y Teléfono */}
+      <Row className="mb-3">
+        <Col>
+          <Form.Group controlId="rut">
+            <Form.Label style={{ fontWeight: 'bold' }}>RUT*</Form.Label>
+            <Form.Control
+              type="text"
+              name="rut"
+              placeholder="RUT"
+              value={formData.rut}
+              onChange={handleInputChange}
+              style={{
+                borderRadius: '8px',
+                background: '#F8FAFC',
+                height: '35px',
+              }}
+            />
+            {errors.rut && (
+              <Form.Text className="text-danger">{errors.rut}</Form.Text>
+            )}
+          </Form.Group>
+        </Col>
+        <Col>
+          <Form.Group controlId="telefono">
+            <Form.Label style={{ fontWeight: 'bold' }}>Teléfono*</Form.Label>
+            <Form.Control
+              type="text"
+              name="telefono"
+              placeholder="Teléfono"
+              value={formData.telefono}
+              onChange={handleInputChange}
+              style={{
+                borderRadius: '8px',
+                background: '#F8FAFC',
+                height: '35px',
+              }}
+            />
+            {errors.telefono && (
+              <Form.Text className="text-danger">{errors.telefono}</Form.Text>
+            )}
+          </Form.Group>
+        </Col>
+      </Row>
+
+      {/* Género */}
+      <Form.Group className="mb-3" controlId="genero">
+        <Form.Label style={{ fontWeight: 'bold'
+         }}>Género:</Form.Label>
+        <Form.Select
+          name="genero"
+          value={formData.genero}
+          onChange={(e) => setFormData({ ...formData, genero: e.target.value })}
+          style={{
+            borderRadius: '8px',
+            background: '#F8FAFC',
+            height: '40px',
+          }}
+        >
+          <option value="" disabled>
+            Género
+          </option>
+          <option value="Masculino">Masculino</option>
+          <option value="Femenino">Femenino</option>
+          <option value="Otro">Otro</option>
+        </Form.Select>
+        {errors.genero && (
+          <Form.Text className="text-danger">{errors.genero}</Form.Text>
+        )}
+      </Form.Group>
+
+      {/* Fecha de Nacimiento */}
+<Form.Group className="mb-3" controlId="fechaNacimiento">
+  <Form.Label style={{ fontWeight: 'bold' }}>Fecha de Nacimiento*</Form.Label>
+  <Form.Control
+    type="date"
+    name="fechaNacimiento"
+    value={formData.fechaNacimiento}
+    onChange={handleInputChange}
+    style={{
+      width: '95%',
+      height: '35px',
+      padding: '10px',
+      borderRadius: '8px',
+      background: '#F8FAFC',
+      color: '#555',
+    }}
+  />
+  {errors.fechaNacimiento && (
+    <Form.Text className="text-danger">{errors.fechaNacimiento}</Form.Text>
+  )}
+</Form.Group>
+
+<h3
+  style={{
+    marginBottom: '20px',
+    fontFamily: 'Quicksand',
+    fontWeight: 600,
+    marginTop: '50px',
+  }}
+>
+  Información de Despacho:
+</h3>
+
+{/* Región */}
+<Form.Group className="mb-3" controlId="region">
+  <Form.Label style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+    Región
+  </Form.Label>
+  <Form.Select
+    name="region"
+    value={formData.region}
+    onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+    style={{
+      width: '95%',
+      height: '42px',
+      padding: '10px',
+      borderRadius: '8px',
+      background: '#F8FAFC',
+      border: '1px solid #CCC',
+      appearance: 'none',
+      cursor: 'pointer',
+      boxSizing: 'border-box',
+      fontSize: '15px',
+      color: '#555',
+    }}
+  >
+    <option value="" disabled>
+      Región
+    </option>
+    <option value="Arica y Parinacota">Arica y Parinacota</option>
+    <option value="Tarapacá">Tarapacá</option>
+    <option value="Antofagasta">Antofagasta</option>
+    <option value="Atacama">Atacama</option>
+    <option value="Coquimbo">Coquimbo</option>
+    <option value="Valparaíso">Valparaíso</option>
+    <option value="Metropolitana">Metropolitana</option>
+    <option value="O'Higgins">O'Higgins</option>
+    <option value="Maule">Maule</option>
+    <option value="Ñuble">Ñuble</option>
+    <option value="BioBio">BioBio</option>
+    <option value="Araucanía">Araucanía</option>
+    <option value="Los Ríos">Los Ríos</option>
+    <option value="Los Lagos">Los Lagos</option>
+    <option value="Aysén">Aysén</option>
+    <option value="Magallanes">Magallanes</option>
+    <option value="Antártida">Antártida Chilena</option>
+  </Form.Select>
+</Form.Group>
+
+<h3
+  style={{
+    marginBottom: '20px',
+    fontFamily: 'Quicksand',
+    fontWeight: 600,
+    marginTop: '50px',
+  }}
+>
+  Registra una tarjeta (Opcional)
+</h3>
+
+{/* Tarjeta */}
+<Form.Group className="mb-3">
+  <Form.Label style={{ fontWeight: 'bold' }}>Número de tarjeta</Form.Label>
+  <Form.Control
+    type="number"
+    name="numeroTarjeta"
+    placeholder="Número de tarjeta"
+    style={{
+      width: '95%',
+      height: '35px',
+      padding: '10px',
+      borderRadius: '8px',
+      background: '#F8FAFC',
+    }}
+  />
+</Form.Group>
+
+{/* Experación y CVC */}
+<Row className="mb-3">
+  <Col>
+    <Form.Group controlId="experacion">
+      <Form.Label style={{ fontWeight: 'bold' }}>Expiración (MM/YY)</Form.Label>
+      <Form.Control
+        type="number"
+        name="experacion"
+        placeholder="Expiración (MM/YY)"
+        style={{
+          width: '90%',
+          height: '35px',
+          padding: '10px',
+          borderRadius: '8px',
+          background: '#F8FAFC',
+        }}
+      />
+    </Form.Group>
+  </Col>
+  <Col>
+    <Form.Group controlId="cvc">
+      <Form.Label style={{ fontWeight: 'bold' }}>CVC</Form.Label>
+      <Form.Control
+        type="number"
+        name="cvc"
+        placeholder="CVC"
+        style={{
+          width: '90%',
+          height: '35px',
+          padding: '10px',
+          borderRadius: '8px',
+          background: '#F8FAFC',
+        }}
+      />
+    </Form.Group>
+  </Col>
+</Row>
+
+
+      {/* Botón */}
+<div style={{ textAlign: 'center', marginTop: '20px' }}>
+  <Button
+    variant="outline-primary"
+    onClick={() => navigate('../pages/LoginForm.tsx')}
+    style={{
+      display: 'flex',
+      width: '283px',
+      height: '48px',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: '8px',
+      border: '1px solid #1A4756',
+      backgroundColor: '#fff',
+      color: '#1A4756',
+    }}
+  >
+    Volver
+  </Button>
+
+  <Button
+    type="submit"
+    disabled={isSubmitting}
+    style={{
+      display: 'flex',
+      width: '283px',
+      height: '48px',
+      justifyContent: 'center',
+      alignItems: 'center',
+      borderRadius: '8px',
+      border: '1px solid #1A4756',
+      backgroundColor: '#1A4756',
+      color: '#fff',
+      marginTop: '10px',
+    }}
+  >
+    {isSubmitting ? 'Creando usuario...' : 'Crear cuenta'}
+  </Button>
+</div>
+
+    </Form>
+  </Container>
+);
+
+
 };
 
 export default UserCreationForm;
