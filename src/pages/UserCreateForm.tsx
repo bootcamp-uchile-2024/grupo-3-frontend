@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/UserCreationForm.css';
 import { validateEmail, validatePassword } from '../utils/validators';
+
 
 interface CreateUserDTO {
   nombre: string;
@@ -212,7 +212,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
           </div>
         )}
 
-        <button type="submit" disabled={isSubmitting}>
+        <button className='btn-primary medium' type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Creando usuario...' : 'Crear Usuario'}
         </button>
       </form>

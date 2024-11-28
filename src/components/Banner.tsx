@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container } from 'react-bootstrap';
+import SearchBar from './SearchBar';
 
 const Banner: React.FC = () => {
   return (
@@ -8,6 +9,7 @@ const Banner: React.FC = () => {
       {/* Home Banner */}
       <div className="home-banner">
         <Container className="banner-content text-center">
+        <SearchBar />
         </Container>
       </div>
 

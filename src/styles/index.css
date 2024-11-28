@@ -16,9 +16,7 @@ header{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0 0 0;
   color: black;
-  margin-bottom: -10px;
   background-color: var(--main-bg-color);
   height: 62px;
 }
@@ -31,6 +29,8 @@ header{
   display: block; 
   width: 99px;
   height: 100px;
+  margin-top: 77px;
+  margin-left: 34px;
 }
 
 nav.navbar-nav, .nav-link, nav.navbar-nav a, nav.navbar-nav a:active, nav.navbar-nav a:visited, nav.navbar-nav a:hover, nav.navbar-nav a:focus, nav.navbar-nav a:link {
@@ -662,6 +662,10 @@ button.btn-gray.disabled {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.home-banner {
+  margin-top: 168px;
 }
 
 /* Home Banner */

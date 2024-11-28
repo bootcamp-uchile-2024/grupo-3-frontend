@@ -22,36 +22,25 @@ const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
         <div className="collapse navbar-collapse" id="navbarScroll">
           <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
             <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" to="/">Home</Link>
+              <Link className="nav-link active" aria-current="page" to="/">Inicio</Link>
             </li>
             <li className="nav-item">
               <Link className="nav-link" to="/style-guide">Guía de estilos</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/catalogo">Catálogo</Link>
+              <Link className="nav-link" to="/catalogo">Plantas</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/about">Acerca</Link>
+              <Link className="nav-link" to="#">Comunidad</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/contact">Contacto</Link>
+              <Link className="nav-link" to="#">Educación</Link>
             </li>
-            {user && user.role === 'admin' && (
-              <li className="nav-item">
-                <Link className="nav-link" to="/dashboard">Dashboard</Link>
-              </li>
-            )}
+            <li className="nav-item">
+              <Link className="nav-link" to="#">Asistente Virtual</Link>
+            </li>
           </ul>
           <div className="d-flex ms-auto align-items-center">
-            <form className="d-flex me-2" role="search">
-              <input
-                className="form-control me-2"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
-              />
-              <button className="btn btn-dark" type="submit">Buscar</button>
-            </form>
             {user ? (
               <div className="dropdown">
                 <button
