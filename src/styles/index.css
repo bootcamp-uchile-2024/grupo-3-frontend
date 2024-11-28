@@ -704,8 +704,9 @@ ul.custom-tabs.mb-3.nav.nav-tabs {
   z-index: -2;
 }
 
-
-
+.table-hover > tbody > tr:hover > * {
+  background-color: var(--custom-table-hover-bg, #6F8F75); 
+}
 
 
 
