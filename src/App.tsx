@@ -17,6 +17,8 @@ import UserManagement from './pages/UserManagement';
 import EditProductPage from './pages/EditProductPage';
 import AdminCartPage from './pages/AdminCartPage';
 import StyleGuide from './components/StyleGuide';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
   const [user, setUser] = useState<{ username: string; role: string } | null>(null);

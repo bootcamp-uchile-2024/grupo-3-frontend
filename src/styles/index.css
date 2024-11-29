@@ -706,7 +706,7 @@ button.btn-gray.disabled {
 ul.custom-tabs.mb-3.nav.nav-tabs {
   position: relative;
   bottom: 3.2rem;
-  z-index: -2;
+  z-index: 1;
 }
 
 /* Estilo para filas impares y pares */
