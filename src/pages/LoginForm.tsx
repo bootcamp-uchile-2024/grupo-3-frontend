@@ -61,16 +61,24 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     const user = { username: formData.username, password: formData.password };
-
+  
     if (login(user)) {
       const userStored = JSON.parse(localStorage.getItem('user') || '{}');
+  
       alert(`Iniciaste sesión como ${userStored.roles.includes('admin-1') ? 'Admin' : 'User'}`);
+  
       onLogin(userStored.username, userStored.roles.includes('admin-1') ? 'admin' : 'user');
-      navigate('/');
+  
+      if (userStored.roles.includes('admin-1')) {
+        navigate('/user-management'); 
+      } else {
+        navigate('/');
+      }
     }
   };
+  
 
   return (
     <Container
