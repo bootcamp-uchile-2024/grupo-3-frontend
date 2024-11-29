@@ -29,8 +29,9 @@ header{
   display: block; 
   width: 99px;
   height: 100px;
-  margin-top: 77px;
   margin-left: 34px;
+  position: relative;
+  top: 9rem;
 }
 
 nav.navbar-nav, .nav-link, nav.navbar-nav a, nav.navbar-nav a:active, nav.navbar-nav a:visited, nav.navbar-nav a:hover, nav.navbar-nav a:focus, nav.navbar-nav a:link {
@@ -616,32 +617,74 @@ button.btn-orange.disabled {
 }
 
 /* Gray Button */
-button.btn-gray {
-  background-color: var(--gray-color);
-  color: white;
-  border-color: var(--gray-color);
+/* Estilos de Botones */
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
 }
 
-button.btn-gray:hover {
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+  border-color: var(--primary-hover);
+}
+
+.btn-primary:active {
+  background-color: var(--primary-active);
+  border-color: var(--primary-active);
+}
+
+.btn-primary:focus {
+  background-color: var(--primary-focus);
+  border-color: var(--primary-focus);
+}
+
+.btn-secondary {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background-color: var(--secondary-hover);
+  border-color: var(--secondary-hover);
+}
+
+.btn-secondary:active {
+  background-color: var(--secondary-active);
+  border-color: var(--secondary-active);
+}
+
+.btn-orange {
+  background-color: var(--orange-color);
+  border-color: var(--orange-color);
+  color: #fff;
+}
+
+.btn-orange:hover {
+  background-color: var(--orange-hover);
+  border-color: var(--orange-hover);
+}
+
+.btn-orange:active {
+  background-color: var(--orange-active);
+  border-color: var(--orange-active);
+}
+
+.btn-gray {
+  background-color: var(--gray-color);
+  border-color: var(--gray-color);
+  color: #fff;
+}
+
+.btn-gray:hover {
   background-color: var(--gray-hover);
   border-color: var(--gray-hover);
 }
 
-button.btn-gray:active {
+.btn-gray:active {
   background-color: var(--gray-active);
   border-color: var(--gray-active);
-}
-
-button.btn-gray:focus {
-  box-shadow: 0 0 0 0.25rem rgba(138, 153, 163, 0.25); /* Adaptar al color del focus */
-  border-color: var(--gray-hover);
-}
-
-button.btn-gray:disabled, 
-button.btn-gray.disabled {
-  background-color: var(--primary-disabled-bg);
-  color: var(--primary-disabled-text);
-  border-color: var(--primary-disabled-bg);
 }
 
 .icon-white {
@@ -672,7 +715,8 @@ button.btn-gray.disabled {
 .home-banner {
   background-image: url('/src/assets/001_Plantai_Home_Featured.webp'); 
   height: 614px; 
-  color: white; 
+  border-radius: 10px;
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.2);
 }
 
 .home-banner-uno {
@@ -684,6 +728,13 @@ button.btn-gray.disabled {
 .home-banner-dos {
   background-image: url('/src/assets/BANNER1.png'); 
   height: 240px; 
+}
+
+.home-banner,
+.home-banner-uno,
+.home-banner-dos {
+  border-radius: 8px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
 /* Tabs */
@@ -706,7 +757,7 @@ button.btn-gray.disabled {
 ul.custom-tabs.mb-3.nav.nav-tabs {
   position: relative;
   bottom: 3.2rem;
-  z-index: -2;
+  z-index: 1;
 }
 
 /* Estilo para filas impares y pares */

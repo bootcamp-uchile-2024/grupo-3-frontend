@@ -1,4 +1,3 @@
-import React from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 
 const InfoCards = () => {
@@ -7,6 +6,7 @@ const InfoCards = () => {
       <Row className="justify-content-center">
         {/* Card 1 */}
         <Col md={4} className="mb-4">
+        <p className="text-l-medium">Texto L Medium</p>
           <Card className="text-center shadow-sm">
             <Card.Body>
               <div>
