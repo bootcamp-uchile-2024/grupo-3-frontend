@@ -5,46 +5,36 @@ const StyleGuide = () => {
     <Container className="my-4">
       <h1 className="text-xxl-medium mb-4">Guía de Estilos</h1>
 
-      {/* Botones Primarios */}
-      <section className="mb-4">
-        <h2 className="text-xl-medium mb-3">Botones Primarios</h2>
+ {/* Botones Primarios */}
+ <section className="mb-4">
+        <h2 className="mb-3">Botones Primarios</h2>
         <Row className="mb-3">
           <Col>
-            <Button className="btn-primary small">Primary Small</Button>{" "}
-            <Button className="btn-primary medium">Primary Medium</Button>{" "}
-            <Button className="btn-primary large" disabled>
-              Primary Large Disabled
+            <Button className="btn-primary">Primary Button</Button>{" "}
+            <Button className="btn-primary" disabled>
+              Primary Disabled
             </Button>
           </Col>
         </Row>
       </section>
 
-      {/* Botones Secundarios y Terciarios */}
+      {/* Botones Secundarios */}
       <section className="mb-4">
-        <h2 className="text-xl-medium mb-3">Botones Secundarios y Terciarios</h2>
+        <h2 className="mb-3">Botones Secundarios</h2>
         <Row className="mb-3">
           <Col>
-            <Button variant="secondary" className="btn-secondary">
-              Secondary
-            </Button>{" "}
-            <Button variant="outline-primary" className="btn-tertiary">
-              Tertiary
-            </Button>
+            <Button className="btn-secondary">Secondary Button</Button>
           </Col>
         </Row>
       </section>
 
       {/* Botones de Colores */}
       <section className="mb-4">
-        <h2 className="text-xl-medium mb-3">Botones de Colores</h2>
+        <h2 className="mb-3">Botones de Colores</h2>
         <Row className="mb-3">
           <Col>
-            <Button variant="warning" className="btn-orange">
-              Orange Button
-            </Button>{" "}
-            <Button variant="dark" className="btn-gray">
-              Gray Button
-            </Button>
+            <Button className="btn-orange">Orange Button</Button>{" "}
+            <Button className="btn-gray">Gray Button</Button>
           </Col>
         </Row>
       </section>

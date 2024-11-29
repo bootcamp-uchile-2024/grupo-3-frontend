@@ -1,97 +1,133 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Navbar, Nav, NavDropdown, Container, Row, Col } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
-interface NavProps {
-  id?: string;
+interface TopBarProps {
   user: { username: string; role: string } | null;
   onLogout: () => void;
   cartItemCount: number;
 }
 
-const Nav: React.FC<NavProps> = ({ user, onLogout, cartItemCount }) => {
+const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => {
   const navigate = useNavigate();
-
   return (
-    <nav className="navbar navbar-expand-lg w-100">
-      <div className="container-fluid">
-        <Link to="/" className="navbar-brand d-flex align-items-center">
-        </Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
-        <div className="collapse navbar-collapse" id="navbarScroll">
-          <ul className="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll">
-            <li className="nav-item">
-              <Link className="nav-link active" aria-current="page" to="/">Inicio</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/style-guide">Guía de estilos</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="/catalogo">Plantas</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="#">Comunidad</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="#">Educación</Link>
-            </li>
-            <li className="nav-item">
-              <Link className="nav-link" to="#">Asistente Virtual</Link>
-            </li>
-          </ul>
-          <div className="d-flex ms-auto align-items-center">
-            {user ? (
-              <div className="dropdown">
-                <button
-                  className="btn btn-link dropdown-toggle"
-                  type="button"
-                  id="userDropdown"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false">
-                  Hola, {user.username}
-                </button>
-                <ul className="dropdown-menu" aria-labelledby="userDropdown">
-                  {user.role === 'admin' && (
-                    <>
-                      <li><Link className="dropdown-item" to="/crear-producto">Crear Producto</Link></li>
-                      <li><Link className="dropdown-item" to="/user-management">Gestión de Usuarios</Link></li>
-                      <li><Link className="dropdown-item" to="/admin-carts">Gestión de Carritos</Link></li> {/* NUEVO */}
-                    </>
-                  )}
-                  <li>
-                    <Link
-                      className="dropdown-item"
-                      to="/"
+    <>
+      <Container fluid>
+        <Row>
+          <Col md={12}>
+            <Navbar>
+              <Navbar.Brand
+                as={Link}
+                to="/">
+              </Navbar.Brand>
+              <div className="d-flex align-items-center justify-content-end gap-3" style={{ position: "relative", top:"3rem", left: "56rem" }}>
+                {user ? (
+                  <NavDropdown
+                    title={`Hola, ${user.username}`}
+                    id="user-dropdown"
+                  >
+                    {user.role === "admin" && (
+                      <>
+                        <NavDropdown.Item as={Link} to="/crear-producto">
+                          Crear Producto
+                        </NavDropdown.Item>
+                        <NavDropdown.Item as={Link} to="/user-management">
+                          Gestión de Usuarios
+                        </NavDropdown.Item>
+                        <NavDropdown.Item as={Link} to="/admin-carts">
+                          Gestión de Carritos
+                        </NavDropdown.Item>
+                      </>
+                    )}
+                    <NavDropdown.Item
                       onClick={() => {
-                        alert('Has cerrado sesión.');
+                        alert("Has cerrado sesión.");
                         onLogout();
-                        navigate('/login');
-                        localStorage.removeItem('user');
-                      }}>
+                        navigate("/login");
+                        localStorage.removeItem("user");
+                      }}
+                    >
                       Cerrar sesión
-                    </Link>
-                  </li>
-                </ul>
+                    </NavDropdown.Item>
+                  </NavDropdown>
+                ) : (
+                  <Nav.Link as={Link} to="/login">
+                    Login
+                  </Nav.Link>
+                )}
+
+                <Nav.Link as={Link} to="/cart" className="position-relative">
+                  <span className="material-symbols-outlined icon-dark">garden_cart</span>
+                  {cartItemCount > 0 && (
+                    <span className="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                      {cartItemCount}
+                    </span>
+                  )}
+                  Carro de compra
+                </Nav.Link>
               </div>
-            ) : (
-              <Link className="btn btn-link" to="/login">Login</Link>
-            )}
-            <Link to="/cart" className="btn btn-link me-3 position-relative">
-            <span className="material-symbols-outlined icon-white">garden_cart</span>
-              {cartItemCount > 0 && (
-                <span className="cart-count position-absolute top-0 translate-middle badge rounded-pill bg-danger">
-                  {cartItemCount}
-                </span>
-              )}
-              Carro de compra
-            </Link>
-          </div>
-        </div>
-      </div>
-    </nav>
+            </Navbar>
+          </Col>
+        </Row>
+        <Row>
+          <Col md={12}>
+            <Navbar>
+              <Nav style={{position: "relative", top:"1rem", left: "15rem", gap: "1.5rem" }}>
+                <Nav.Link as={Link} to="/">
+                <span style={{ color: "#1A4756" }} className="text-m-medium">Inicio</span>
+                </Nav.Link>
+                <NavDropdown
+                  title={<span style={{ color: "#1A4756" }}>Plantas</span>}
+                  id="plantas-dropdown" className="text-m-medium"
+                >
+                  <NavDropdown.Item as={Link} to="/catalogo">
+                    Catálogo
+                  </NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/categorias">
+                    Categorías
+                  </NavDropdown.Item>
+                </NavDropdown>
+                <NavDropdown
+                  title={<span style={{ color: "#1A4756" }}>Comunidad</span>}
+                  id="comunidad-dropdown" className="text-m-medium"
+                >
+                  <NavDropdown.Item as={Link} to="/foros">
+                    Foros
+                  </NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/eventos">
+                    Eventos
+                  </NavDropdown.Item>
+                </NavDropdown>
+                <NavDropdown
+                  title={<span style={{ color: "#1A4756" }}>Educación</span>}
+                  id="educacion-dropdown" className="text-m-medium"
+                >
+                  <NavDropdown.Item as={Link} to="/style-guide">
+                    Guía de Estilo
+                  </NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/recursos">
+                    Recursos
+                  </NavDropdown.Item>
+                </NavDropdown>
+                <NavDropdown
+                  title={<span style={{ color: "#1A4756" }}>Asistente Virtual</span>}
+                  id="asistente-dropdown" className="text-m-medium"
+                >
+                  <NavDropdown.Item as={Link} to="/faq">
+                    FAQ
+                  </NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/contacto">
+                    Contacto
+                  </NavDropdown.Item>
+                </NavDropdown>
+              </Nav>
+            </Navbar>
+          </Col>
+        </Row>
+      </Container>
+    </>
   );
-}
+};
 
-export default Nav;
-
+export default CustomNav;

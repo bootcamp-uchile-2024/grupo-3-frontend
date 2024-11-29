@@ -3,6 +3,7 @@ import Nav from './Nav';
 import { useSelector } from 'react-redux';
 import { RootState } from '../states/store';
 
+
 interface CartItem {
   id: number; // O el tipo correspondiente
   nombre: string;

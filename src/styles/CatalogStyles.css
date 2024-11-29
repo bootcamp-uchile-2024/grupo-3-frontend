@@ -7,14 +7,14 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    margin: 160px 0 0 0; 
 }
 
 .catalog-banner {
     background-image: url(/src/assets/PLANTAI_Planta_Group_09.webp);
-    border-radius: 10px;
     height: 519px;
-    color: white;
-    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
 /* Estilos generales para la paginación */
