@@ -5,19 +5,27 @@ import { useDispatch } from 'react-redux';
 import { addToCart } from '../states/cartSlice';
 import { Pagination, Card, Button, Row, Col, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { CartPlus } from 'react-bootstrap-icons';
+import SidebarFilters from '../components/SidebarFilters';
 
 const CatalogPage: React.FC = () => {
   const [products, setProducts] = useState<productsCatalog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
+  const [quantities,] = useState<{ [key: number]: number }>({});
   const [userRole, setUserRole] = useState<string[] | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState(12);
   const dispatch = useDispatch();
   const [errorMessages, setErrorMessages] = useState<{ [key: number]: string }>({});
+
+  // Función para truncar el texto y añadir "..." al final si es necesario
+  const truncateText = (text: string, limit: number) => {
+    if (text.length > limit) {
+      return text.substring(0, limit) + "...";
+    }
+    return text;
+  };
 
   // Cargar productos
   useEffect(() => {
@@ -57,13 +65,6 @@ const CatalogPage: React.FC = () => {
     }
   };
 
-  // Cambiar cantidad de producto
-  const handleQuantityChange = (productId: number, increment: boolean) => {
-    setQuantities(prevQuantities => ({
-      ...prevQuantities,
-      [productId]: Math.max(1, (prevQuantities[productId] || 1) + (increment ? 1 : -1)),
-    }));
-  };
 
   const deleteProduct = async (productId: number) => {
     const confirmation = window.confirm(`¿Estás seguro de querer eliminar el producto ${productId}?`);
@@ -123,40 +124,68 @@ const CatalogPage: React.FC = () => {
     }
   };
 
-  // Función para renderizar la paginación
-  const renderPaginationItems = () => {
-    let items: JSX.Element[] = [];
+ // Función para renderizar la paginación
+const renderPaginationItems = () => {
+  let items: JSX.Element[] = [];
 
+  // Flecha de "anterior"
+  items.push(
+    <Pagination.Prev key="prev" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+  );
+
+  // Primer número de página siempre visible
+  items.push(
+    <Pagination.Item
+      key={1}
+      active={currentPage === 1}
+      onClick={() => handlePageChange(1)}
+    >
+      1
+    </Pagination.Item>
+  );
+
+  if (currentPage > 2) {
+    items.push(<Pagination.Ellipsis key="ellipsis-start" />);
+  }
+
+  // Páginas cercanas a la página actual
+  for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
     items.push(
-      <Pagination.Prev key="prev" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+      <Pagination.Item
+        key={i}
+        active={i === currentPage}
+        onClick={() => handlePageChange(i)}
+      >
+        {i}
+      </Pagination.Item>
     );
+  }
 
-    const pageNumbers = [];
-    if (currentPage > 3) {
-      pageNumbers.push(<Pagination.Ellipsis key="ellipsis-start" />);
-    }
-    for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
-      pageNumbers.push(
-        <Pagination.Item
-          key={i}
-          active={i === currentPage}
-          onClick={() => handlePageChange(i)}
-        >
-          {i}
-        </Pagination.Item>
-      );
-    }
-    if (currentPage < totalPages - 2) {
-      pageNumbers.push(<Pagination.Ellipsis key="ellipsis-end" />);
-    }
-    items.push(...pageNumbers);
+  // Si no estamos cerca de la última página, mostrar "..."
+  if (currentPage < totalPages - 2) {
+    items.push(<Pagination.Ellipsis key="ellipsis-end" />);
+  }
 
+  // Último número de página siempre visible
+  if (totalPages > 1) {
     items.push(
-      <Pagination.Next key="next" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+      <Pagination.Item
+        key={totalPages}
+        active={currentPage === totalPages}
+        onClick={() => handlePageChange(totalPages)}
+      >
+        {totalPages}
+      </Pagination.Item>
     );
+  }
 
-    return items;
-  };
+  // Flecha de "siguiente"
+  items.push(
+    <Pagination.Next key="next" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+  );
+
+  return items;
+};
 
   // Cambiar cantidad de productos por página
   const handlePageSizeChange = (size: number) => {
@@ -168,57 +197,77 @@ const CatalogPage: React.FC = () => {
   if (error) return <p>Error: {error}</p>;
 
   return (
-    <><div className="catalog-banner">
-      <Container className="banner-content text-center">
-      </Container>
-    </div><Container fluid style={{ backgroundColor: 'white' }}>
-        <Row xs={2} lg={4} className="g-4">
+    <>
+  <div className="catalog-banner">
+    <Container className="banner-content text-center"></Container>
+  </div>
+  <Container fluid style={{ backgroundColor: 'white' }}>
+    <Row>
+      {/* Sidebar Filters: 3 columnas */}
+      <Col xs={12} sm={3} className="sidebar-filters">
+        <SidebarFilters onFilterChange={function (/*any*/): void {
+              throw new Error('Function not implemented.');
+            } }/>
+      </Col>
+
+      {/* Productos: 9 columnas */}
+      <Col xs={12} sm={9}>
+        <Row lg={4} className="g-4">
           {Array.isArray(products) && products.length > 0 ? (
             products.map((product) => (
               <Col key={product.id}>
                 <Card>
-                  <Link to={`/catalogo/producto/${product.id}`} className="btn btn-link">
+                  <Link to={`/catalogo/producto/${product.id}`}>
                     <Card.Img
                       variant="top"
                       src={`https://placehold.co/210x270?text=${encodeURIComponent(product.nombre)}&font=roboto`}
                       alt={product.nombre}
-                      className="rounded" />
+                      className="card-products-container rounded"
+                    />
                   </Link>
                   <Card.Body className="text-start">
-                    <Card.Title className="d-flex justify-content-between align-items-center">
-                      <span>{product.nombre}</span>
-                    </Card.Title>
+                    <div className='contenedordeTituloyDescripcion'>
+                      {/* Título del producto */}
+                      <Card.Title className="d-flex justify-content-between align-items-center" id="image-text">
+                        <span>{truncateText(product.nombre, 12)}</span>
+                      </Card.Title>
 
-                    <div className="d-flex flex-column align-items-start">
-                      <span> {product.descripcion}</span>
-                      <Card.Text className="fw-bold bold-text">${product.precio}
+                      {/* Descripción del producto */}
+                      <Card.Text className="description-text">
+                        <span>{truncateText(product.descripcion, 20)}</span>
                       </Card.Text>
-                      {errorMessages[product.id] && (
-                        <p className="error-message" style={{ color: 'red', fontSize: '0.9em' }}>
-                          {errorMessages[product.id]}
-                        </p>
-                      )}
-                      <div className="quantity-controls">
-                        <Button
-                          className="btn-primary small rounded-circle"
-                          onClick={() => handleQuantityChange(product.id, false)}
-                          style={{ width: '24px', height: '24px', padding: '0' }}
-                        >
-                          -
-                        </Button>
+                    </div>
+                    <br />
 
-                        <span>{quantities[product.id] || 1}</span>
-
-                        <Button
-                          className="btn-primary small rounded-circle"
-                          onClick={() => handleQuantityChange(product.id, true)}
-                          style={{ width: '24px', height: '24px', padding: '0' }}
-                        >
-                          +
-                        </Button>
-                      </div>
+                    {/* Precio del producto */}
+                    <div className="price-text">
+                      {new Intl.NumberFormat('es-CL', {
+                        style: 'currency',
+                        currency: 'CLP',
+                        minimumFractionDigits: 0,
+                      }).format(product.precio)}
                     </div>
 
+                    {/* Botón para agregar al carrito */}
+                    <div className="cart-button-container">
+                      <Button
+                        variant="primary"
+                        className="position-absolute bottom-0 end-0 mb-2 me-2 d-flex justify-content-center align-items-center"
+                        id="custom-cart-button"
+                        onClick={() => handleAddToCart(product)}
+                      >
+                        <span className="material-symbols-outlined">add_shopping_cart</span>
+                      </Button>
+                    </div>
+
+                    {/* Mensaje de error por stock*/}
+                    {errorMessages[product.id] && (
+                      <p className="error-message">
+                        {errorMessages[product.id]}
+                      </p>
+                    )}
+
+                    {/* Acciones del administrador */}
                     {userRole && userRole.includes('admin-1') && (
                       <div className="mt-2">
                         <Button variant="danger" size="sm" onClick={() => deleteProduct(product.id)}>
@@ -232,12 +281,6 @@ const CatalogPage: React.FC = () => {
                       </div>
                     )}
                   </Card.Body>
-                  <div className="cart-button-container">
-                  <Button variant="primary" className="position-absolute bottom-0 end-0 mb-2 me-2" onClick={() => handleAddToCart(product)}>
-                    <CartPlus size={20} />
-                  </Button>
-                </div>
-
                 </Card>
               </Col>
             ))
@@ -246,25 +289,33 @@ const CatalogPage: React.FC = () => {
           )}
         </Row>
 
-        {/* Selector para la cantidad de productos por página */}
-        <Row className="mb-4">
+        <br />
+        <br />
+        <Row className="mb-4 d-flex">
           <Col className="d-flex justify-content-end">
+            <Pagination className="pagination-container">
+              {renderPaginationItems()}
+            </Pagination>
+          </Col>
+          <Col xs="auto" sm={5} md={5} className="d-flex justify-content-end">
             <div className="d-inline show-products-selector">
-              <a id='itemshow-products'>Mostrar </a>
+              <a id="itemshow-products">Mostrar </a>
               <Link
                 to="#"
                 onClick={() => handlePageSizeChange(12)}
                 className={`text-decoration-none me-3 ${pageSize === 12 ? 'fw-bold' : ''}`}
               >
                 12
-              </Link>/
+              </Link>
+              /
               <Link
                 to="#"
                 onClick={() => handlePageSizeChange(25)}
                 className={`text-decoration-none me-3 ${pageSize === 25 ? 'fw-bold' : ''}`}
               >
                 25
-              </Link>/
+              </Link>
+              /
               <Link
                 to="#"
                 onClick={() => handlePageSizeChange(50)}
@@ -275,12 +326,10 @@ const CatalogPage: React.FC = () => {
             </div>
           </Col>
         </Row>
-
-        {/* Paginación */}
-        <Pagination className="pagination-container d-flex justify-content-center m">
-          {renderPaginationItems()}
-        </Pagination>
-      </Container></>
+      </Col>
+    </Row>
+  </Container>
+</>
   );
 };
 

@@ -1,5 +1,4 @@
 /* Catalog Page */
-
 .catalog-banner {
     width: 100%;
     display: flex;
@@ -17,8 +16,9 @@
 }
 
 /* Estilos generales para la paginación */
+
 .pagination-container {
-    gap: 10px;
+    align-items: center;
 }
 
 .pagination-container .page-item {
@@ -27,23 +27,36 @@
 
 .pagination-container .page-link {
     color: black;
+    border: 1px white;
 }
 
 .pagination-container .page-link:hover {
     background-color: var(--main-bg-color);
+    border-radius: 3px;
     color: white;
 }
 
 .pagination-container .page-item.active .page-link {
     background-color: var(--main-bg-color);
-    color: white; 
-    border: 1px solid var(--main-bg-color); 
+    color: white;
+    font-weight: bold;
+    font-size: large;
+    height: 39px;
+    border: 1px solid var(--main-bg-color);
+    border-radius: 3px;
 }
 
-.bold-text {
-    line-height: 30px;
-    font-size: 24px;
-  }
+.pagination-container .page-item:first-child .page-link,
+.pagination-container .page-item:last-child .page-link {
+    background-color: #466A76;
+    color: white;
+}
+
+.pagination-container .page-item:first-child .page-link:hover,
+.pagination-container .page-item:last-child .page-link:hover {
+    background-color: var(--main-bg-color);
+}
+
 
 /* Estilos para el selector de cantidad de productos por página */
 .show-products-selector a {
@@ -51,14 +64,86 @@
     font-weight: normal;
     text-decoration: none;
     transition: color 0.3s ease;
+}
+.page-item:last-child .page-link {
+    border-top-right-radius: var(--bs-pagination-border-radius);
+    border-bottom-right-radius: var(--bs-pagination-border-radius);
+}
+
+.show-products-selector a:hover {
+    color: black;
+}
+
+/* Estilo para el contenedor del botón del carrito */
+.cart-button-container {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+#custom-cart-button {
+    padding: 8px 8px;
+    border-radius: 12px;
+}
+
+.price-text {
+    font-size: 32px;
+    font-weight: bold;
+    color: #1A4756;
+}
+
+#image-text {
+    font-size: 22px;
+    font-weight: bold;
+    color: #1A4756;
+}
+
+.description-text {
+    font-size: 24px;
+}
+
+.card-products-container {
+    height: 250px;
+    width: 219px;
+}
+
+/* Estilo para la tarjeta del producto */
+.card-products-container {
+    position: relative;
+    height: 100%; 
   }
   
-  .show-products-selector a:hover {
-    color: black;
+  .description-text {
+    font-size: 1em;
+    color: #555;
   }
   
-  /* Cuando el enlace está seleccionado, ponerlo en color negro */
-  .show-products-selector a.selected {
-    color: black;
+  .price-text {
+    font-size: 1.8em;
+    font-weight: bold;
+    color: #1A4756;
+    margin-top: 10px;
   }
+  
+  .error-message {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 10px;
+  }
+  
+  .show-products-selector a {
+    cursor: pointer;
+    margin-right: 5px;
+  }
+  .col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+  }
+  
+  .contenedordeTituloyDescripcion{
+    height: 46px ;
+  }
+
   

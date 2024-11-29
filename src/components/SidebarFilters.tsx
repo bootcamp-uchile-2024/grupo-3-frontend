@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { Form, Button, InputGroup } from 'react-bootstrap';
+import React /*{ useState }*/ from 'react';
+import { Form, InputGroup } from 'react-bootstrap';
 
 interface SidebarFiltersProps {
   onFilterChange: (filters: any) => void;
 }
 
-const SidebarFilters: React.FC<SidebarFiltersProps> = ({ onFilterChange }) => {
-  const [filters, setFilters] = useState({
-    precio: [0, 100],  // Rango de precio
+const SidebarFilters: React.FC<SidebarFiltersProps> = (/*{ onFilterChange }*/) => {
+  /*const [, setFilters] = useState({
+    precio: [0, 10000],  // Rango de precio
     tamaño: '',
     disponibilidad: true,
     iluminación: '',
@@ -22,8 +22,8 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = ({ onFilterChange }) => {
     // Verificamos el tipo de elemento y manejamos los diferentes tipos de eventos
     if (type === 'checkbox') {
       setFilters((prev) => {
-        const newFilters = { ...prev}; // Usamos `checked` solo si es un checkbox
-        onFilterChange(newFilters); // Enviar los nuevos filtros al componente padre
+        const newFilters = { ...prev};
+        onFilterChange(newFilters); 
         return newFilters;
       });
     } else if (type === 'range') {
@@ -40,115 +40,165 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = ({ onFilterChange }) => {
         return newFilters;
       });
     }
-  };
+  };*/
 
   return (
     <div className="sidebar-filters">
-      <h3>Filtros</h3>
-
       {/* Filtro de precio */}
-      <Form.Group>
-        <Form.Label>Precio</Form.Label>
+      <Form.Group className="border-bottom mb-3 pb-3">
+        <Form.Label className="d-flex justify-content-between align-items-center">
+          Precio
+          <span className="ms-2">10.000 - 100.000</span>
+        </Form.Label>
         <InputGroup>
           <Form.Control
             as="input"
             type="range"
             name="precio"
             min="0"
-            max="1000"
-            value={filters.precio.join(',')}
-            onChange={handleFilterChange}
+            max="10000"
           />
         </InputGroup>
-        <div>
-          <span>De ${filters.precio[0]} a ${filters.precio[100000]}</span>
-        </div>
       </Form.Group>
-
+  
       {/* Filtro de tamaño */}
-      <Form.Group>
-        <Form.Label>Tamaño</Form.Label>
-        <Form.Control
-          as="select"
-          name="tamaño"
-          value={filters.tamaño}
-          onChange={handleFilterChange}
-        >
-          <option value="">Seleccionar tamaño</option>
-          <option value="pequeño">Pequeño</option>
-          <option value="mediano">Mediano</option>
-          <option value="grande">Grande</option>
-        </Form.Control>
+      <Form.Group className="border-bottom mb-3 pb-3">
+        <Form.Label className="d-flex justify-content-between align-items-center">
+          Tamaño
+          <span className="ms-2">60 - 150 cm</span>
+        </Form.Label>
+        <InputGroup>
+          <Form.Control
+            as="input"
+            type="range"
+            name="precio"
+            min="60"
+            max="150"
+          />
+        </InputGroup>
       </Form.Group>
-
+  
       {/* Filtro de disponibilidad */}
-      <Form.Group>
+      <Form.Group className="border-bottom mb-3 pb-3">
+        <Form.Label>Disponibilidad</Form.Label>
         <Form.Check
           type="checkbox"
           label="Disponible"
           name="disponibilidad"
-          checked={filters.disponibilidad}
-          onChange={handleFilterChange}
+        />
+        <Form.Check
+          type="checkbox"
+          label="Agotado"
+          name="disponibilidad"
         />
       </Form.Group>
-
+  
       {/* Filtro de iluminación */}
-      <Form.Group>
+      <Form.Group className="border-bottom mb-3 pb-3">
         <Form.Label>Iluminación</Form.Label>
-        <Form.Control
-          as="select"
-          name="iluminación"
-          value={filters.iluminación}
-          onChange={handleFilterChange}
-        >
-          <option value="">Seleccionar iluminación</option>
-          <option value="led">LED</option>
-          <option value="incandescente">Incandescente</option>
-        </Form.Control>
+        <Form.Check
+          type="checkbox"
+          label="Sol Directo"
+          name="Sol Directo"
+        />
+        <Form.Check
+          type="checkbox"
+          label="Semi Sombra"
+          name="Semi Sombra"
+        />
+        <Form.Check
+          type="checkbox"
+          label="Sombra"
+          name="Sombra"
+        />
       </Form.Group>
-
+  
       {/* Filtro de espacio */}
-      <Form.Group>
+      <Form.Group className="border-bottom mb-3 pb-3">
         <Form.Label>Espacio</Form.Label>
-        <Form.Control
-          type="text"
-          name="espacio"
-          value={filters.espacio}
-          onChange={handleFilterChange}
+        <Form.Check
+          type="checkbox"
+          label="Baño"
+          name="Baño"
+        />
+        <Form.Check
+          type="checkbox"
+          label="Cocina"
+          name="Cocina"
+        />
+        <Form.Check
+          type="checkbox"
+          label="Living"
+          name="Living"
+        />
+        <Form.Check
+          type="checkbox"
+          label="Pieza"
+          name="Pieza"
+        />
+        <Form.Check
+          type="checkbox"
+          label="Pasillo"
+          name="Pasillo"
+        />
+        <Form.Check
+          type="checkbox"
+          label="Terraza"
+          name="Terraza"
         />
       </Form.Group>
-
+  
       {/* Filtro de característica */}
-      <Form.Group>
+      <Form.Group className="border-bottom mb-3 pb-3">
         <Form.Label>Característica</Form.Label>
-        <Form.Control
-          type="text"
-          name="característica"
-          value={filters.característica}
-          onChange={handleFilterChange}
+        <Form.Check
+          type="checkbox"
+          label="Hoja Chica"
+          name="Hoja Chica"
+        />
+        <Form.Check
+          type="checkbox"
+          label="Hoja Grande"
+          name="Hoja Grande"
+        />
+        <Form.Check
+          type="checkbox"
+          label="Bajo Mantenimiento"
+          name="Bajo Mantenimiento"
+        />
+        <Form.Check
+          type="checkbox"
+          label="Resistente"
+          name="Resistente"
+        />
+        <Form.Check
+          type="checkbox"
+          label="Con Flor"
+          name="Con Flor"
+        />
+        <Form.Check
+          type="checkbox"
+          label="Palmera"
+          name="Palmera"
         />
       </Form.Group>
-
+  
       {/* Filtro de origen */}
       <Form.Group>
         <Form.Label>Origen</Form.Label>
-        <Form.Control
-          as="select"
-          name="origen"
-          value={filters.origen}
-          onChange={handleFilterChange}
-        >
-          <option value="">Seleccionar origen</option>
-          <option value="local">Local</option>
-          <option value="importado">Importado</option>
-        </Form.Control>
+        <Form.Check
+          type="checkbox"
+          label="Nacional"
+          name="Nacional"
+        />
+        <Form.Check
+          type="checkbox"
+          label="Extranjero"
+          name="Extranjero"
+        />
       </Form.Group>
-
-      <Button variant="primary" onClick={() => onFilterChange(filters)}>
-        Aplicar Filtros
-      </Button>
     </div>
   );
-};
+};  
 
 export default SidebarFilters;
