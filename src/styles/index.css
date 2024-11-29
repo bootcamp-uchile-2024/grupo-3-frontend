@@ -10,7 +10,6 @@
   padding: 0;
   font-family: 'Quicksand', sans-serif;
   width: 1440px;
-  border: 1px solid #cccccc;
 }
 
 header{
@@ -416,7 +415,7 @@ footer {
   overflow: hidden; 
   padding: 40px; 
   width: 1440px;
-  height: 367px;
+  height: 290px;
 }
 
 footer::before {
@@ -677,12 +676,13 @@ button.btn-gray.disabled {
 }
 
 .home-banner-uno {
-  background-image: url('/src/assets/Plantai_banner_02.webp'); 
-  height: 240px; 
+  background-image: url('/src/assets/BANNER2.png'); 
+  height: 240px;
+  margin: 40px 0; 
 }
 
 .home-banner-dos {
-  background-image: url('/src/assets/Plantai_banner_01.webp'); 
+  background-image: url('/src/assets/BANNER1.png'); 
   height: 240px; 
 }
 
@@ -726,6 +726,72 @@ ul.custom-tabs.mb-3.nav.nav-tabs {
 .table-hover > tbody > tr:hover > * {
   background-color: var(--custom-table-hover-bg, #6F8F75); 
 
+}
+
+/* Clases para aplicar estilos de texto */
+.text-xxl-medium {
+  font-size: var(--font-xxl-medium);
+  line-height: var(--line-height-xxl-medium);
+}
+
+.text-xl-medium {
+  font-size: var(--font-xl-medium);
+  line-height: var(--line-height-xl-medium);
+}
+
+.text-l-medium {
+  font-size: var(--font-l-medium);
+  line-height: var(--line-height-l-medium);
+}
+
+.text-m-medium {
+  font-size: var(--font-m-medium);
+  line-height: var(--line-height-m-medium);
+}
+
+.text-m-bold {
+  font-size: var(--font-m-bold);
+  line-height: var(--line-height-m-bold);
+  font-weight: bold;
+}
+
+.text-text1-regular {
+  font-size: var(--font-text1-regular);
+  line-height: var(--line-height-text1-regular);
+}
+
+.text-text2-medium {
+  font-size: var(--font-text2-medium);
+  line-height: var(--line-height-text2-medium);
+  font-weight: 500;
+}
+
+.text-text2-bold {
+  font-size: var(--font-text2-bold);
+  line-height: var(--line-height-text2-bold);
+  font-weight: bold;
+}
+
+.text-text3-regular {
+  font-size: var(--font-text3-regular);
+  line-height: var(--line-height-text3-regular);
+}
+
+.text-text3-semibold {
+  font-size: var(--font-text3-semibold);
+  line-height: var(--line-height-text3-semibold);
+  font-weight: 600;
+}
+
+.text-text4-xxs-regular {
+  font-size: var(--font-text4-xxs-regular);
+  line-height: var(--line-height-text4-xxs-regular);
+}
+
+.text-text4-xxs-medium {
+  font-size: var(--font-text4-xxs-medium);
+  line-height: var(--line-height-text4-xxs-medium);
+  font-weight: 500;
 }
 
 
