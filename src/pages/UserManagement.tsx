@@ -172,31 +172,53 @@ const UserManagement = () => {
 
 
         <Col md={10}>
-          <h1 className="text-end" style={{
-            fontFamily: 'Quicksand',
-            fontSize: '30px',
-            fontStyle: 'normal',
-            fontWeight: '500',
-            lineHeight: '52px',
-            color: '#1A4756',
-            marginRight: '84px'
-          }}>¡Buenos días Admin!</h1>
-          <p>Administrador/Usuarios/Modificar Usuarios</p>
-  
-          {error && <p className="text-danger">{error}</p>}
-  
-          <div
-            style={{
-              width: '1096px',
-              height: '1130px',
-              flexShrink: 0,
-              borderRadius: '0px 0px 8px 8px',
-              background: '#F5F5F5',
-              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-              padding: '16px',
-              marginTop: '10rem',
-            }}
-          >
+  <div 
+    className="d-flex align-items-center justify-content-end" 
+    style={{ marginRight: '84px', gap: '18px' }}
+  >
+    <img 
+      src="https://ui-avatars.com/api/?name=Admin&background=1A4756&color=fff&size=128" 
+      alt="Perfil Admin" 
+      style={{
+        width: '64px', 
+        height: '64px',
+        borderRadius: '50%', 
+        objectFit: 'cover', 
+        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)' 
+      }} 
+    />
+    <h1 
+      className="text-end" 
+      style={{
+        fontFamily: 'Quicksand',
+        fontSize: '30px',
+        fontStyle: 'normal',
+        fontWeight: '500',
+        lineHeight: '52px',
+        color: '#1A4756',
+        margin: 0 
+      }}
+    >
+      ¡Buenos días Admin!
+    </h1>
+  </div>
+  <p style={{ marginRight: '84px' }}>Administrador/Usuarios/Modificar Usuarios</p>
+
+  {error && <p className="text-danger">{error}</p>}
+
+  <div
+    style={{
+      width: '1096px',
+      height: '1130px',
+      flexShrink: 0,
+      borderRadius: '0px 0px 8px 8px',
+      background: '#F5F5F5',
+      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+      padding: '16px',
+      marginTop: '10rem',
+    }}
+  >
+
             <Tabs defaultActiveKey="modificarUsuario" className="custom-tabs mb-3">
               <Tab eventKey="crearUsuario" title="Crear Usuario">
                 {isAdmin && <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />}

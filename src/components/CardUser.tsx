@@ -43,7 +43,7 @@ const CardUser: React.FC<CardUserProps> = ({ selectedUser }) => {
             width: '140px',
             height: '135px',
             borderRadius: '512px',
-            background: `url("https://via.placeholder.com/140") lightgray 50% / cover no-repeat`,
+            background: `url("https://ui-avatars.com/api/?name=User+Name&background=1A4756&color=fff&size=128") lightgray 50% / cover no-repeat`,
             boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
           }}
         ></div>
