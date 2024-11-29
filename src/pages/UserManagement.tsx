@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Tabs,
   Tab,
@@ -8,13 +8,13 @@ import {
   Row,
   Col,
   Form,
-} from 'react-bootstrap';
-import UserCreateForm from './UserCreateForm';
-import CardUser from '../components/CardUser';
-import UserTable from '../components/UserTable';
-import { User } from '../types/types';
-import CustomPagination from '../components/CustomPagination';
-
+  Modal,
+} from "react-bootstrap";
+import UserCreateForm from "./UserCreateForm";
+import CardUser from "../components/CardUser";
+import UserTable from "../components/UserTable";
+import { User } from "../types/types";
+import CustomPagination from "../components/CustomPagination";
 
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -22,13 +22,14 @@ const UserManagement = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [error, setError] = useState<string>('');
+  const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
+  const [showModal, setShowModal] = useState(false);
   const usersPerPage = 5;
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (user && user.roles && user.roles.includes('admin-1')) {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (user && user.roles && user.roles.includes("admin-1")) {
       setIsAdmin(true);
     }
     fetchUsers();
@@ -36,16 +37,16 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:8080/usuarios');
+      const response = await fetch("http://localhost:8080/usuarios");
       if (!response.ok) {
-        throw new Error('Error al obtener los usuarios');
+        throw new Error("Error al obtener los usuarios");
       }
       const data: User[] = await response.json();
       setUsers(data);
       setSelectedUser(data.length > 0 ? data[0] : null);
     } catch (error) {
-      console.error('Error:', error);
-      setError('Error al obtener los usuarios');
+      console.error("Error:", error);
+      setError("Error al obtener los usuarios");
     } finally {
       setLoading(false);
     }
@@ -54,43 +55,21 @@ const UserManagement = () => {
   const deleteUser = async (userId: number) => {
     try {
       const response = await fetch(`http://localhost:8080/usuarios/${userId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
       if (!response.ok) {
-        throw new Error('Error al eliminar el usuario');
+        throw new Error("Error al eliminar el usuario");
       }
-      console.log('Usuario eliminado');
+      console.log("Usuario eliminado");
       fetchUsers();
     } catch (error) {
-      console.error('Error al eliminar el usuario:', error);
-      setError('Error al eliminar el usuario');
+      console.error("Error al eliminar el usuario:", error);
+      setError("Error al eliminar el usuario");
     }
   };
 
-  const handleUpdateUser = async () => {
-    if (!editingUser) return;
-
-    try {
-      const response = await fetch(`http://localhost:8080/usuarios/${editingUser.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(editingUser),
-      });
-
-      if (!response.ok) {
-        throw new Error('Error al actualizar el usuario');
-      }
-
-      console.log('Usuario actualizado');
-      fetchUsers();
-      setEditingUser(null);
-      setError('');
-    } catch (error) {
-      console.error('Error al actualizar el usuario:', error);
-      setError('Error al actualizar el usuario');
-    }
+  const handleCancelEdit = () => {
+    setEditingUser(null);
   };
 
   const handleModifyClick = () => {
@@ -99,8 +78,47 @@ const UserManagement = () => {
     }
   };
 
-  const handleCancelEdit = () => {
-    setEditingUser(null);
+
+  const handleUpdateUser = async () => {
+    if (!editingUser) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/usuarios/${editingUser.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(editingUser),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Error al actualizar el usuario");
+      }
+
+      console.log("Usuario actualizado");
+      fetchUsers();
+      setEditingUser(null);
+      setError("");
+    } catch (error) {
+      console.error("Error al actualizar el usuario:", error);
+      setError("Error al actualizar el usuario");
+    }
+  };
+
+  const handleSaveChangesClick = () => {
+    setShowModal(true); 
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false); 
+  };
+
+  const handleConfirmSaveChanges = () => {
+    handleUpdateUser(); 
+    setShowModal(false); 
   };
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -375,52 +393,100 @@ const UserManagement = () => {
                           </Form.Group>
                         </Col>
                       </Row>
-                    </Form>
-                    <div className="d-flex justify-content-center mt-3 gap-2">
-                      <Button variant="secondary" onClick={handleCancelEdit}>
-                        Cancelar
-                      </Button>
-                      <Button variant="success" onClick={handleUpdateUser}>
-                        Guardar Cambios
-                      </Button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {selectedUser && <CardUser selectedUser={selectedUser} />}
-                    <UserTable
-                      users={users}
-                      currentUsers={currentUsers}
-                      selectedUser={selectedUser}
-                      setSelectedUser={setSelectedUser}
-                    />
-                    
-                    <div className="d-flex justify-content-center mt-3 gap-2">
-                      <Button
-                        variant="primary"
-                        onClick={handleModifyClick}
-                        disabled={!selectedUser}
-                      >
-                        Modificar
-                      </Button>
-                    </div>
-                  </>
-                  
-                )}
-          
-                  <CustomPagination
-                  currentPage={currentPage}
-                  totalPages={Math.ceil(users.length / usersPerPage)}
-                  paginate={paginate}
-                />
-              </Tab>
-            </Tabs>
+                      </Form>
+                  <div className="d-flex justify-content-center mt-3 gap-2">
+                    <Button variant="secondary" onClick={() => setEditingUser(null)}>
+                      Cancelar
+                    </Button>
+                    <Button variant="success" onClick={handleSaveChangesClick}>
+                      Guardar Cambios
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {selectedUser && <CardUser selectedUser={selectedUser} />}
+                  <UserTable
+                    users={users}
+                    currentUsers={currentUsers}
+                    selectedUser={selectedUser}
+                    setSelectedUser={setSelectedUser}
+                  />
+                  <div className="d-flex justify-content-center mt-3 gap-2">
+                    <Button
+                      variant="primary"
+                      onClick={handleModifyClick}
+                      disabled={!selectedUser}
+                    >
+                      Modificar
+                    </Button>
+                  </div>
+                </>
+              )}
+
+              <CustomPagination
+                currentPage={currentPage}
+                totalPages={Math.ceil(users.length / usersPerPage)}
+                paginate={paginate}
+              />
+            </Tab>
+          </Tabs>
           </div>
         </Col>
       </Row>
+
+            {/* Modal de confirmación */}
+            <Modal show={showModal} onHide={handleCloseModal} centered style={{padding: '32px 41px 24px 41px'}}>
+            <Modal.Header closeButton style={{ borderBottom: "none", textAlign: "center", alignSelf:'stretch'}}>
+        <Modal.Title
+          style={{
+            color: "var(--Color1, #1A4756)",
+            fontFamily: "Quicksand",
+            fontSize: "24px",
+            fontStyle: "normal",
+            fontWeight: '700',
+            lineHeight: "30px",
+            borderTop: '200px'
+          }}
+        >
+          ¿Está Seguro de Modificar el 
+          Usuario?
+        </Modal.Title>
+      </Modal.Header>
+
+        <Modal.Body
+        style={{
+          textAlign: "center",
+          color: "var(--Color1, #1A4756)",
+          fontFamily: "Quicksand",
+          fontSize: "18px",
+          fontStyle: "normal",
+          fontWeight: 700,
+          lineHeight: "22px",
+        }}
+      >
+        <p>Esta acción no podrá deshacerse</p>
+      </Modal.Body>
+        <Modal.Footer style={{ borderTop: "none" }}>
+          <Button
+            variant="success"
+            onClick={handleConfirmSaveChanges}
+            style={{ backgroundColor: "#1A4756" }}
+          >
+            Modificar
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={handleCloseModal}
+            style={{ color: "#1A4756", backgroundColor: "#fff" }}
+          >
+            Cancelar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
     </Container>
   );
-  
 };
 
 export default UserManagement;

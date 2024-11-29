@@ -17,12 +17,12 @@ export default function ProductDetailPage() {
   const [isShipping, setIsShipping] = useState<boolean>(false);  // State for "Envío a Domicilio"
   const [isPickup, setIsPickup] = useState<boolean>(false);      // State for "Retiro en Tienda"
   const [openSection, setOpenSection] = useState<string | null>(null);
-  const [selectedImage, setSelectedImage] = useState<string>('');
+  const [,setSelectedImage] = useState<string>('');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const deleteProduct = async (productId: number) => {
+  /*const deleteProduct = async (productId: number) => {
     const confirmation = window.confirm(`¿Estás seguro de querer eliminar el producto ${productId}?`);
 
     if (confirmation) {
@@ -40,7 +40,7 @@ export default function ProductDetailPage() {
         setError('Hubo un error al eliminar el producto');
       }
     }
-  };
+  }; */
 
   useEffect(() => {
     const getProduct = async () => {
