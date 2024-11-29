@@ -1,86 +1,36 @@
-import React /*{ useState }*/ from 'react';
-import { Form, InputGroup } from 'react-bootstrap';
+import '../styles/SidebarFilters.css'
+import React from 'react';
+import { Form } from 'react-bootstrap';
 
 interface SidebarFiltersProps {
   onFilterChange: (filters: any) => void;
 }
 
-const SidebarFilters: React.FC<SidebarFiltersProps> = (/*{ onFilterChange }*/) => {
-  /*const [, setFilters] = useState({
-    precio: [0, 10000],  // Rango de precio
-    tamaño: '',
-    disponibilidad: true,
-    iluminación: '',
-    espacio: '',
-    característica: '',
-    origen: '',
-  });
-
-  const handleFilterChange = (event: React.ChangeEvent<HTMLElement>) => {
-    const { name, value, type} = event.target as HTMLInputElement | HTMLSelectElement;
-
-    // Verificamos el tipo de elemento y manejamos los diferentes tipos de eventos
-    if (type === 'checkbox') {
-      setFilters((prev) => {
-        const newFilters = { ...prev};
-        onFilterChange(newFilters); 
-        return newFilters;
-      });
-    } else if (type === 'range') {
-      const [min, max] = value.split(',').map(Number);
-      setFilters((prev) => {
-        const newFilters = { ...prev, [name]: [min, max] };
-        onFilterChange(newFilters);
-        return newFilters;
-      });
-    } else {
-      setFilters((prev) => {
-        const newFilters = { ...prev, [name]: value };
-        onFilterChange(newFilters);
-        return newFilters;
-      });
-    }
-  };*/
+const SidebarFilters: React.FC<SidebarFiltersProps> = () => {
 
   return (
-    <div className="sidebar-filters">
+    <div className="mt-4 sidebar-filters fontcolor">
       {/* Filtro de precio */}
       <Form.Group className="border-bottom mb-3 pb-3">
         <Form.Label className="d-flex justify-content-between align-items-center">
-          Precio
+          <span className='fontfilters'>Precio</span>
           <span className="ms-2">10.000 - 100.000</span>
         </Form.Label>
-        <InputGroup>
-          <Form.Control
-            as="input"
-            type="range"
-            name="precio"
-            min="0"
-            max="10000"
-          />
-        </InputGroup>
+        <input type="range" className="form-range" min="10000" max="100000"/>
       </Form.Group>
   
       {/* Filtro de tamaño */}
       <Form.Group className="border-bottom mb-3 pb-3">
         <Form.Label className="d-flex justify-content-between align-items-center">
-          Tamaño
+          <span className='fontfilters'> Tamaño </span>
           <span className="ms-2">60 - 150 cm</span>
         </Form.Label>
-        <InputGroup>
-          <Form.Control
-            as="input"
-            type="range"
-            name="precio"
-            min="60"
-            max="150"
-          />
-        </InputGroup>
+        <input type="range" className="form-range" min="60" max="150"/>
       </Form.Group>
   
       {/* Filtro de disponibilidad */}
       <Form.Group className="border-bottom mb-3 pb-3">
-        <Form.Label>Disponibilidad</Form.Label>
+        <Form.Label className='fontfilters'>Disponibilidad</Form.Label>
         <Form.Check
           type="checkbox"
           label="Disponible"
@@ -95,7 +45,7 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = (/*{ onFilterChange }*/) =
   
       {/* Filtro de iluminación */}
       <Form.Group className="border-bottom mb-3 pb-3">
-        <Form.Label>Iluminación</Form.Label>
+        <Form.Label className='fontfilters'>Iluminación</Form.Label>
         <Form.Check
           type="checkbox"
           label="Sol Directo"
@@ -115,7 +65,7 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = (/*{ onFilterChange }*/) =
   
       {/* Filtro de espacio */}
       <Form.Group className="border-bottom mb-3 pb-3">
-        <Form.Label>Espacio</Form.Label>
+        <Form.Label className='fontfilters'>Espacio</Form.Label>
         <Form.Check
           type="checkbox"
           label="Baño"
@@ -150,7 +100,7 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = (/*{ onFilterChange }*/) =
   
       {/* Filtro de característica */}
       <Form.Group className="border-bottom mb-3 pb-3">
-        <Form.Label>Característica</Form.Label>
+        <Form.Label className='fontfilters'>Característica</Form.Label>
         <Form.Check
           type="checkbox"
           label="Hoja Chica"
@@ -185,7 +135,7 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = (/*{ onFilterChange }*/) =
   
       {/* Filtro de origen */}
       <Form.Group>
-        <Form.Label>Origen</Form.Label>
+        <Form.Label className='fontfilters'>Origen</Form.Label>
         <Form.Check
           type="checkbox"
           label="Nacional"

@@ -6,6 +6,7 @@ import { addToCart } from '../states/cartSlice';
 import { Pagination, Card, Button, Row, Col, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import SidebarFilters from '../components/SidebarFilters';
+import SortFilters from '../components/SortFiltersCatalog';
 
 const CatalogPage: React.FC = () => {
   const [products, setProducts] = useState<productsCatalog[]>([]);
@@ -61,7 +62,9 @@ const CatalogPage: React.FC = () => {
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Ha ocurrido un error desconocido');
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 500); 
     }
   };
 
@@ -193,7 +196,14 @@ const renderPaginationItems = () => {
     setCurrentPage(1);
   };
 
-  if (loading) return <p>Cargando productos...</p>;
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <img src="https://i.gifer.com/4V0b.gif" alt="Loading..." />
+      </div>
+    );
+  }
+
   if (error) return <p>Error: {error}</p>;
 
   return (
@@ -201,7 +211,8 @@ const renderPaginationItems = () => {
   <div className="catalog-banner">
     <Container className="banner-content text-center"></Container>
   </div>
-  <Container fluid style={{ backgroundColor: 'white' }}>
+  <Container fluid>
+  <SortFilters/>
     <Row>
       {/* Sidebar Filters: 3 columnas */}
       <Col xs={12} sm={3} className="sidebar-filters">

@@ -1,0 +1,28 @@
+.custom-select-container {
+    position: relative;
+  }
+  
+  .custom-select {
+    padding-right: 30px; 
+  }
+  
+  .custom-arrow {
+    position: absolute;
+    right: 10px;  
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none; 
+    font-size: 20px; 
+    color: #000;  
+  }
+  .rotate-90 {
+    transform: rotate(90deg);
+  }
+
+  .colorlet {
+    color: var(--main-bg-color);
+
+  }
+  .titulopagecatalog {
+    font-size: var(--font-xl-medium);
+  }

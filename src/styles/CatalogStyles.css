@@ -11,8 +11,10 @@
 
 .catalog-banner {
     background-image: url(/src/assets/PLANTAI_Planta_Group_09.webp);
+    border-radius: 10px;
     height: 519px;
     color: white;
+    box-shadow: 0 5px 8px rgba(0, 0, 0, 0.2);
 }
 
 /* Estilos generales para la paginación */
@@ -145,5 +147,18 @@
   .contenedordeTituloyDescripcion{
     height: 46px ;
   }
-
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  .loading-spinner {
+    opacity: 1;
+    transition: opacity 0.5s ease-out;
+  }
+  
+  .loading-container.loading-finished .loading-spinner {
+    opacity: 0;
+  }
   
