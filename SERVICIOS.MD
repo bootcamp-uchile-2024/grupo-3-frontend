@@ -75,23 +75,36 @@ const handleApplyCoupon = () => {
 
 ### Funcionalidades
 
-- **Carga de Productos**: Realiza una petición `fetch` para obtener el catálogo de productos desde la API.
+- **Carga de Productos**: Realiza una petición `fetch` para obtener el catálogo de productos desde la Base de datos.
 
 ```
-const fetchProducts = async () => {
+  const fetchProducts = async () => {
     try {
-      const response = await fetch('https://clon-cotiledonbackend.onrender.com/catalogo');
+      setLoading(true);
+      const response = await fetch(`http://localhost:8080/catalogo?page=${currentPage}&pageSize=${pageSize}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+      });
+
       if (!response.ok) throw new Error('Error al cargar los productos');
-      const data: productsCatalog[] = await response.json();
-      setProducts(data);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message);
+
+      const data = await response.json();
+
+      if (Array.isArray(data.data)) {
+        setProducts(data.data);
+        setTotalPages(Math.ceil(data.totalItems / pageSize));
       } else {
-        setError('Ocurrió un error desconocido');
+        throw new Error('Datos de productos no válidos');
       }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Ha ocurrido un error desconocido');
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 500); 
     }
   };
 
@@ -102,8 +115,34 @@ const fetchProducts = async () => {
 ```
 const handleAddToCart = (product: productsCatalog) => {
     const quantity = quantities[product.id] || 1;
-    dispatch(addToCart({ id: product.id, nombre: product.nombre, precio: product.precio, cantidad: quantity }));
+
+    if (quantity > product.cantidad) {
+      setErrorMessages((prevMessages) => ({
+        ...prevMessages,
+        [product.id]: `Stock insuficiente. Solo hay ${product.cantidad} unidades disponibles.`,
+      }));
+      return;
+    }
+    dispatch(addToCart({
+      id: product.id,
+      nombre: product.nombre,
+      precio: product.precio,
+      imagen: product.imagen,
+      descripcion: product.descripcion,
+      cantidad: quantity,
+      unidadesVendidas: product.unidadesVendidas,
+      puntuacion: product.puntuacion,
+      ancho: product.ancho,
+      alto: product.alto,
+      largo: product.largo,
+      peso: product.peso,
+    }));
+    setErrorMessages((prevMessages) => ({
+      ...prevMessages,
+      [product.id]: '',
+    }));
   };
+
 ```
 
 ## cartSlice
@@ -122,16 +161,35 @@ El archivo `cartSlice` define el estado del carrito de compras y las acciones di
 - **clearCart**: Vacía todos los productos del carrito.
 
 ```
-addToCart(state, action: PayloadAction<CartItem>) {
-      const existingItem = state.items.find(item => item.id === action.payload.id);
+  const handleAddToCart = (product: productsCatalog) => {
+    const quantity = quantities[product.id] || 1;
 
-      if (existingItem) {
-        existingItem.cantidad += action.payload.cantidad;
-      } else {
-        state.items.push({ ...action.payload });
-      }
-      saveCartToLocalStorage(state);
+    if (quantity > product.cantidad) {
+      setErrorMessages((prevMessages) => ({
+        ...prevMessages,
+        [product.id]: `Stock insuficiente. Solo hay ${product.cantidad} unidades disponibles.`,
+      }));
+      return;
     }
+    dispatch(addToCart({
+      id: product.id,
+      nombre: product.nombre,
+      precio: product.precio,
+      imagen: product.imagen,
+      descripcion: product.descripcion,
+      cantidad: quantity,
+      unidadesVendidas: product.unidadesVendidas,
+      puntuacion: product.puntuacion,
+      ancho: product.ancho,
+      alto: product.alto,
+      largo: product.largo,
+      peso: product.peso,
+    }));
+    setErrorMessages((prevMessages) => ({
+      ...prevMessages,
+      [product.id]: '',
+    }));
+  };
 ```
 
 - `removeFromCart` elimina productos por su `id`.
@@ -180,10 +238,23 @@ El archivo `store.ts` configura el store de Redux para la aplicación, combinand
 
 La interfaz `CartItem` define la estructura de los elementos del carrito de compras, incluyendo:
 
-- `id: number` - Identificador único del producto.
-- `name: string` - Nombre del producto.
-- `price: number` - Precio unitario del producto.
-- `quantity: number` - Cantidad de ese producto en el carrito.
+- `id: number` - Identificador único del producto.  
+- `nombre: string` - Nombre del producto.  
+- `precio: number` - Precio unitario del producto.  
+- `imagen: string` - URL de la imagen del producto.  
+- `descripcion: string` - Descripción detallada del producto.  
+- `cantidad: number` - Cantidad de ese producto en el carrito.  
+- `unidadesVendidas: number` - Número de unidades vendidas del producto.  
+- `puntuacion: number` - Puntuación promedio del producto basada en reseñas.  
+- `familia?: string` - Familia botánica o categoría del producto (opcional).  
+- `fotoperiodo?: string` - Requisitos de fotoperiodo para el cuidado del producto (opcional).  
+- `tipoRiego?: string` - Tipo de riego recomendado para el producto (opcional).  
+- `petFriendly?: boolean` - Indica si el producto es seguro para mascotas (opcional).  
+- `color?: string` - Color característico del producto (opcional).  
+- `ancho: number` - Ancho del producto en centímetros.  
+- `alto: number` - Altura del producto en centímetros.  
+- `largo: number` - Largo del producto en centímetros.  
+- `peso: number` - Peso del producto en kilogramos.  
 
 ---
 
@@ -224,15 +295,13 @@ addToCart: (state, action) => {
 - **Descripción**: Muestra la oferta visible para los usuarios. <br>
 - **Método HTTP:** GET
 - **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/catalogo <br>
-- **Ruta local**: http://localhost:5173/catalog <br>
 - **Interface utilizada:** productosDeCatalogo
 
 ## Detalles de Producto<br>
 
 - **Descripción**: Proporciona los detalles específicos de un producto individual en el catálogo.<br>
 - **Método HTTP:** GET
-- **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/productos/{id} <br>
-- **Ruta local**: http://localhost:5173/catalog/producto/{id} <br>
+- **EndPoint consumido**: http://localhost:8080/catalogo?page=${currentPage}&pageSize=${pageSize} <br>
 - **Interface utilizada:** productosDeCatalogo
 
 ## Lista de interfaces
