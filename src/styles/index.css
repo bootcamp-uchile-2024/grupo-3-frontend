@@ -492,6 +492,20 @@ footer > * {
   color: #1A4756;
 }
 
+.footer h6 {
+  font-size: var(--font-footer-title);
+}
+
+.footer ul li a {
+  font-size: var(--font-footer-text);
+  text-decoration: none;
+}
+
+.footer p {
+  font-size: var(--font-footer-small);
+}
+
+
 /* Social Icons */
 .social-icons a {
   display: flex;
