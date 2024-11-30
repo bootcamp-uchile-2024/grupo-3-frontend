@@ -16,6 +16,8 @@ import UserTable from "../components/UserTable";
 import { User } from "../types/types";
 import CustomPagination from "../components/CustomPagination";
 
+
+
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -25,7 +27,8 @@ const UserManagement = () => {
   const [error, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showModal, setShowModal] = useState(false);
-  const usersPerPage = 5;
+  const [modalAction, setModalAction] = useState("");
+  const usersPerPage = 6;
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
@@ -109,68 +112,60 @@ const UserManagement = () => {
   };
 
   const handleSaveChangesClick = () => {
-    setShowModal(true); 
+    setModalAction("modify"); // Acción para modificar
+    setShowModal(true);
   };
-
+  
+  const handleDeleteUserClick = () => {
+    setModalAction("delete"); // Acción para eliminar
+    setShowModal(true);
+  };
+  
   const handleCloseModal = () => {
-    setShowModal(false); 
+    setShowModal(false);
   };
-
-  const handleConfirmSaveChanges = () => {
-    handleUpdateUser(); 
-    setShowModal(false); 
+  
+  const handleConfirmAction = () => {
+    if (modalAction === "modify") {
+      handleUpdateUser(); // Lógica para modificar usuario
+    } else if (modalAction === "delete" && selectedUser) {
+      deleteUser(selectedUser.id); // Lógica para eliminar usuario
+    }
+    setShowModal(false); // Cierra el modal
   };
-
+  
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
+  const userRoles = [
+    { id: 1, name: "Super Admin" },
+    { id: 2, name: "Admin" },
+    { id: 3, name: "Cliente" },
+    { id: 4, name: "Visitante" },
+  ];
+  
+
   return (
     <Container fluid className="mt-4" style={{}}>
       <Row>
-              <Col md={2} className="d-flex flex-column gap-2" style={{ marginTop: '180px' }}>
+              <Col md={2} className="d-flex flex-column gap-2" style={{ marginTop: '83px' }}>
           {[
-            { text: 'Usuarios', icon: (
-              <span className="material-symbols-outlined" style={{color: '#1A4756'}}>
-              group
-              </span>
-              )
-            },
-            { text: 'Productos', icon: (<span className="material-symbols-outlined" style={{color: '#1A4756'}}>
-              redeem
-              </span>)},
-            { text: 'Seguimiento', icon: (<span className="material-symbols-outlined" style={{color: '#1A4756'}}>
-              airport_shuttle
-              </span>) },
-            { text: 'Métricas', icon: (<span className="material-symbols-outlined" style={{color: '#1A4756'}}>
-              graphic_eq
-              </span>) },
-            { text: 'Comunidad', icon: (<span className="material-symbols-outlined" style={{color: '#1A4756'}}>
-              group_work
-              </span>) },
+            { text: 'Usuarios', icon: (<span className="material-symbols-outlined" style={{ color: '#1A4756' }}>group</span>) },
+            { text: 'Productos', icon: (<span className="material-symbols-outlined" style={{ color: '#1A4756' }}>redeem</span>) },
+            { text: 'Seguimiento', icon: (<span className="material-symbols-outlined" style={{ color: '#1A4756' }}>airport_shuttle</span>) },
+            { text: 'Métricas', icon: (<span className="material-symbols-outlined" style={{ color: '#1A4756' }}>graphic_eq</span>) },
+            { text: 'Comunidad', icon: (<span className="material-symbols-outlined" style={{ color: '#1A4756' }}>group_work</span>) },
           ].map(({ text, icon }, index) => (
-            <Button
-              key={index}
-              variant="light"
-              className="d-flex align-items-center gap-2"
-              style={{
-                height: '48px',
-                padding: '8px 16px',
-                borderRadius: '8px',
-                background: text === 'Usuarios' ? '#D3DBD5' : 'transparent',
-                color: text === 'Usuarios' ? '#000' : '#555',
-                border: text === 'Usuarios' ? 'none' : '1px solid transparent',
-              }}
-            >
+            <Button key={index} variant="light" className="d-flex align-items-center gap-2" style={{ height: '48px', padding: '8px 16px', borderRadius: '8px', background: text === 'Usuarios' ? '#D3DBD5' : 'transparent', color: text === 'Usuarios' ? '#000' : '#555', border: text === 'Usuarios' ? 'none' : '1px solid transparent' }}>
               {icon && <span>{icon}</span>}
               {text}
             </Button>
           ))}
         </Col>
-
-
+  
         <Col md={10}>
   <div 
     className="d-flex align-items-center justify-content-end" 
@@ -206,7 +201,18 @@ const UserManagement = () => {
 
   {error && <p className="text-danger">{error}</p>}
 
-  <div>
+  <div
+    style={{
+      width: '1096px',
+      height: '1130px',
+      flexShrink: 0,
+      borderRadius: '0px 0px 8px 8px',
+      background: '#F5F5F5',
+      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+      padding: '16px',
+      marginTop: '10rem',
+    }}
+  >
 
       <Tabs defaultActiveKey="modificarUsuario" className="custom-tabs mb-3">
         <Tab eventKey="crearUsuario" title="Crear Usuario">
@@ -439,7 +445,7 @@ const UserManagement = () => {
                 selectedUser={selectedUser}
                 setSelectedUser={setSelectedUser}
               />
-              <div className="d-flex justify-content-end mt-3 gap-2">
+              <div className="d-flex justify-content-center mt-3 gap-2">
                 <Button
                   variant="primary"
                   onClick={handleModifyClick}
@@ -462,59 +468,32 @@ const UserManagement = () => {
           </div>
         </Col>
       </Row>
-
-            {/* Modal de confirmación */}
-            <Modal show={showModal} onHide={handleCloseModal} centered style={{padding: '32px 41px 24px 41px'}}>
-            <Modal.Header closeButton style={{ borderBottom: "none", textAlign: "center", alignSelf:'stretch'}}>
-        <Modal.Title
-          style={{
-            color: "var(--Color1, #1A4756)",
-            fontFamily: "Quicksand",
-            fontSize: "24px",
-            fontStyle: "normal",
-            fontWeight: '700',
-            lineHeight: "30px",
-            borderTop: '200px'
-          }}
-        >
-          ¿Está Seguro de Modificar el 
-          Usuario?
-        </Modal.Title>
-      </Modal.Header>
-
-        <Modal.Body
-        style={{
-          textAlign: "center",
-          color: "var(--Color1, #1A4756)",
-          fontFamily: "Quicksand",
-          fontSize: "18px",
-          fontStyle: "normal",
-          fontWeight: 700,
-          lineHeight: "22px",
-        }}
-      >
-        <p>Esta acción no podrá deshacerse</p>
-      </Modal.Body>
-        <Modal.Footer style={{ borderTop: "none" }}>
-          <Button
-            variant="success"
-            onClick={handleConfirmSaveChanges}
-            style={{ backgroundColor: "#1A4756" }}
-          >
-            Modificar
+  
+      {/* Modal Dinámico */}
+      <Modal show={showModal} onHide={handleCloseModal} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>
+            {modalAction === "modify" ? "¿Está seguro que desea guardar los cambios?" : "¿Está seguro que desea eliminar este usuario?"}
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            {modalAction === "modify" ? "Los cambios realizados serán guardados." : "Esta acción no podrá deshacerse."}
+          </p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="success" onClick={handleConfirmAction} style={{ backgroundColor: modalAction === "modify" ? "#1A4756" : "red" }}>
+            {modalAction === "modify" ? "Guardar" : "Eliminar"}
           </Button>
-          <Button
-            variant="secondary"
-            onClick={handleCloseModal}
-            style={{ color: "#1A4756", backgroundColor: "#fff" }}
-          >
+          <Button variant="secondary" onClick={handleCloseModal}>
             Cancelar
           </Button>
         </Modal.Footer>
       </Modal>
-
     </Container>
   );
+  
+
 };
 
 export default UserManagement;
