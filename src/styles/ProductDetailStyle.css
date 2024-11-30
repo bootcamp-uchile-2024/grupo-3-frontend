@@ -1,22 +1,24 @@
 .product-title {
-    font-size: 2rem;  /* Aumentar el tamaño del título */
-    font-weight: bold;
+    font-size: var(--font-l-medium); 
     margin-bottom: 10px;
   }
   
   /* Precio grande */
   .product-price {
-    font-size: 1.5rem;  /* Aumentar el tamaño del precio */
-    font-weight: bold;
-    color: #2c3e50;  /* Color oscuro para el precio */
-    margin-top: 10px;
+    font-size: var(--line-height-text2-medium);
+    color: var(--main-bg-color);
   }
   
   /* Descripción */
   .product-description {
-    font-size: 1rem;
-    color: #7f8c8d;
+    font-size: var( --font-text4-s-regular);
+    color: var(--main-bg-color);
     margin-top: 5px;
+  }
+
+  .ref {
+    font-size: 0.8rem;
+
   }
   
   /* Botones de cantidad */
@@ -46,10 +48,33 @@
   
   .product-details p {
     margin: 5px 0;
+    color: #555555;
   }  
 
   .rotate-180 {
     transform: rotate(180deg);
     transition: transform 0.3s ease;
   }
-  
+
+  #textcolorinput {
+    color: black;
+  }
+
+
+  #product-icons .material-symbols-outlined {
+    color: var(--main-bg-color);
+  }
+
+input[type="checkbox"]:checked {
+  background-color: var(--main-bg-color); 
+  border-color: var(--main-bg-color); 
+}
+.card-img-top {
+  object-fit: cover;
+  height: 100%;      
+}
+
+.contenedorsupremo {
+  margin-top: 8%;
+  margin-left: 10rem;
+}

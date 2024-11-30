@@ -14,33 +14,13 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
-  const [isShipping, setIsShipping] = useState<boolean>(false);  // State for "Envío a Domicilio"
-  const [isPickup, setIsPickup] = useState<boolean>(false);      // State for "Retiro en Tienda"
+  const [isShipping, setIsShipping] = useState<boolean>(false);
+  const [isPickup, setIsPickup] = useState<boolean>(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
-  const [,setSelectedImage] = useState<string>('');
+  const [selectedImage, setSelectedImage] = useState<string>(''); // Asignación correcta de imagen seleccionada
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  /*const deleteProduct = async (productId: number) => {
-    const confirmation = window.confirm(`¿Estás seguro de querer eliminar el producto ${productId}?`);
-
-    if (confirmation) {
-      try {
-        const response = await fetch(`http://localhost:8080/productos/${productId}`, {
-          method: 'DELETE',
-        });
-        if (!response.ok) {
-          throw new Error('Error al eliminar el producto');
-        }
-        alert(`Eliminaste exitosamente el producto: ${productId}`);
-        navigate('/catalogo');
-      } catch (error) {
-        console.error('Error al eliminar el producto:', error);
-        setError('Hubo un error al eliminar el producto');
-      }
-    }
-  }; */
 
   useEffect(() => {
     const getProduct = async () => {
@@ -63,8 +43,24 @@ export default function ProductDetailPage() {
     getProduct();
   }, [id]);
 
-  if (loading) return <div>Cargando producto...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <img src="https://i.gifer.com/4V0b.gif" alt="Loading..." />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div>
+        <p>Error: {error}</p>
+        <Button variant="primary" onClick={() => window.location.reload()}>
+          Intentar nuevamente
+        </Button>
+      </div>
+    );
+  }
 
   const handleAddToCart = (product: productsCatalog) => {
     dispatch(addToCart({
@@ -83,15 +79,8 @@ export default function ProductDetailPage() {
     }));
   };
 
-  const incrementQuantity = () => {
-    setQuantity(prevQuantity => prevQuantity + 1);
-  };
-
-  const decrementQuantity = () => {
-    if (quantity > 1) {
-      setQuantity(prevQuantity => prevQuantity - 1);
-    }
-  };
+  const incrementQuantity = () => setQuantity(prevQuantity => prevQuantity + 1);
+  const decrementQuantity = () => quantity > 1 && setQuantity(prevQuantity => prevQuantity - 1);
 
   const handleBuyNow = () => {
     if (product) {
@@ -104,198 +93,185 @@ export default function ProductDetailPage() {
     alert('Verificando disponibilidad para la selección de envío/retirada.');
   };
 
-
   const toggleSection = (section: string) => {
-    setOpenSection(prev => (prev === section ? null : section));  // Si la sección ya está abierta, se cierra
+    setOpenSection(prev => (prev === section ? null : section));
   };
 
-
-  const handleSelectImage = (image: string) => {
-    setSelectedImage(image);
-  };
+  const handleSelectImage = (image: string) => setSelectedImage(image);
 
   return (
-    <>
-    <Container className="mt-4">
-      {product && (
-        <Row>
-          <Col md={6}>
-            <Card.Img
-              variant="top"
-              src={`https://placehold.co/454x608?text=${encodeURIComponent(product.nombre)}&font=roboto`}
-              alt={product.nombre}
-              className="rounded"
-            />
-            <Col className="mt-4">
-
-              <div className="image-thumbnails d-flex justify-content-start gap-5">
-                {[1, 2, 3, 4].map((index) => (
-                  <img
-                    key={index}
-                    src={`https://placehold.co/94x128?text=Imagen+${index}`}
-                    alt={`Imagen ${index}`}
-                    className="thumbnail-img rounded"
-                    onClick={() => handleSelectImage(`https://placehold.co/600x800?text=Imagen+${index}`)}
+    <div className='contenedorsupremo'>
+      <Container className="mt-5 mb-5 pt-5">
+        {product && (
+          <Row>
+            <Col md={6}>
+              <Row>
+                <Col md={10}>
+                  <Card.Img
+                    variant="top"
+                    src={selectedImage || `https://placehold.co/454x608?text=${encodeURIComponent(product.nombre)}&font=roboto`}
+                    alt={product.nombre}
+                    className="rounded img-fluid" // Asegura que la imagen principal sea responsiva
                   />
-                ))}
-              </div>
-
+                </Col>
+                <Col className="d-flex justify-content-center align-items-center">
+                  <span className="material-symbols-outlined">
+                    arrow_forward_ios
+                  </span>
+                </Col>
+              </Row>
+              <Row className="mt-5">
+                <div className="image-thumbnails d-flex flex-wrap gap-3">
+                  {[1, 2, 3, 4].map((index) => (
+                    <Col>
+                      <img
+                        src={`https://placehold.co/95x128?text=Imagen+${index}`}
+                        alt={`Imagen ${index}`}
+                        className="thumbnail-img rounded img-fluid"
+                        onClick={() => handleSelectImage(`https://placehold.co/454x608?text=Imagen+${index}`)}
+                        style={{ cursor: 'pointer', width: '100%', height: 'auto' }}
+                      />
+                    </Col>
+                  ))}
+                </div>
+              </Row>
             </Col>
-          </Col>
-
-          <Col md={6}>
-            <Card.Body>
-              <div>
+            <Col md={6}>
+              <Card.Body>
                 <Card.Title className="product-title">{product.nombre}</Card.Title>
                 <Card.Text className="product-description">
-                  <strong>Descripción:</strong> {product.descripcion}
-                  <p>*Fotos de carácter referencial</p>
+                  {product.descripcion}
+                  <p className='ref'>*Fotos De Carácter Referencial</p>
                 </Card.Text>
-                <Card.Text className="product-price">
-                  <strong>Precio:</strong> ${product.precio}
+                <Card.Text>
+                  <span className="product-price">
+                    <div>
+                      <span>Ahora </span>
+                      {new Intl.NumberFormat('es-CL', {
+                        style: 'currency',
+                        currency: 'CLP',
+                        minimumFractionDigits: 0,
+                      }).format(product.precio)}
+                    </div>
+                  </span>
+                  <span className='product-details p'>
+                    <div>
+                      <span>Normal </span>
+                      {new Intl.NumberFormat('es-CL', {
+                        style: 'currency',
+                        currency: 'CLP',
+                        minimumFractionDigits: 0,
+                      }).format(product.precio)}
+                    </div>
+                  </span>
                 </Card.Text>
-              </div>
 
-              <div className="d-flex align-items-center mb-3 quantity-controls">
-                <span>Cantidad </span>
+                {/* Controles de cantidad */}
+                <div className="d-flex align-items-center mb-3 mt-4 quantity-controls">
+                  <span>Cantidad</span>
+                  <Button onClick={decrementQuantity} className="btn-primary small rounded-circle" style={{ width: '24px', height: '24px', padding: '0' }}>-</Button>
+                  <span className="mx-2">{quantity}</span>
+                  <Button onClick={incrementQuantity} className="btn-primary small rounded-circle" style={{ width: '24px', height: '24px', padding: '0' }}>+</Button>
+                </div>
 
-                <Button
-                  className="btn-primary small rounded-circle"
-                  onClick={decrementQuantity}
-                  style={{ width: '24px', height: '24px', padding: '0' }}
-                >
-                  -
-                </Button>
-
-                <span className="mx-2">{quantity}</span>
-
-                <Button
-                  className="btn-primary small rounded-circle"
-                  onClick={incrementQuantity}
-                  style={{ width: '24px', height: '24px', padding: '0' }}
-                >
-                  +
-                </Button>
-              </div>
-
-              <div className="d-flex gap-3 mt-3">
-                <Button className="btn-action" onClick={() => handleAddToCart(product)}>
-                  Añadir a Carrito <CartPlus className="ms-2" size={18} />
-                </Button>
-                <Button variant="outline-primary" className="btn-action" onClick={handleBuyNow}>
-                  Comprar Ahora
-                </Button>
-              </div>
-
-              {/* Nueva sección de "Ver disponibilidad" con checkboxes */}
-              <div className="mt-4">
-                <div className="d-flex justify-content-start align-items-center">
-                  <div className="me-3">
-                    <Form.Check
-                      type="checkbox"
-                      id="envio-a-domicilio"
-                      label="Envío A Domicilio"
-                      checked={isShipping}
-                      onChange={() => setIsShipping(!isShipping)}
-                    />
-                    <Form.Check
-                      type="checkbox"
-                      id="retiro-en-tienda"
-                      label="Retiro en Tienda"
-                      checked={isPickup}
-                      onChange={() => setIsPickup(!isPickup)}
-                    />
-                  </div>
-
-                  <Button
-                    variant="outline-primary"
-                    className="btn-action"
-                    onClick={handleViewAvailability}
-                  >
-                    Ver disponibilidad
+                {/* Botones de acción */}
+                <div className="d-flex gap-3 mt-3">
+                  <Button className="btn-action" onClick={() => handleAddToCart(product)}>
+                    Añadir a Carrito <CartPlus className="ms-2" size={18} />
+                  </Button>
+                  <Button variant="outline-primary" className="btn-action" onClick={handleBuyNow}>
+                    Comprar Ahora
                   </Button>
                 </div>
-              </div>
 
-              <Card.Text className="product-details mt-3">
-                <strong>Características:</strong>
-                <p>Especie: {product?.planta?.especie || 'No especificado'}</p>
-                <p>Luz: {product?.planta?.fotoPeriodo || 'No especificado'}</p>
-                <p>Riego: {product?.planta?.tipoRiego || 'No especificado'}</p>
-                <p>Temperatura: {product?.planta?.toleranciaTemperatura || 'No especificado'}°C</p>
-              </Card.Text>
-            </Card.Body>
-          </Col>
+                {/* Tipo de entrega */}
+                <div className="mt-4">
+                  <a> ¿Qué tipo de entrega deseas?</a>
+                  <Row className="textcolorinput">
+                    <Col md={12} className="d-flex justify-content-start align-items-center mt-1">
+                      <Form.Check
+                        type="checkbox"
+                        id="envio-a-domicilio"
+                        label="Envío a Domicilio"
+                        checked={isShipping}
+                        onChange={() => setIsShipping(!isShipping)}
+                      />
+                    </Col>
+                    <Col md={12} className="d-flex justify-content-start align-items-center">
+                      <Form.Check
+                        type="checkbox"
+                        id="retiro-en-tienda"
+                        label="Retiro en Tienda"
+                        checked={isPickup}
+                        onChange={() => setIsPickup(!isPickup)}
+                      />
+                    </Col>
+                  </Row>
+                  <Col className="d-flex">
+                    <Button variant="outline-primary" className="btn-action" onClick={handleViewAvailability}>
+                      Ver disponibilidad
+                    </Button>
+                  </Col>
+                </div>
+
+                {/* Características del producto */}
+                <Card.Text className="product-details mt-3" id="product-icons">
+                  <p id="textcolorinput">Características:</p>
+                  <Row className="g-0 mt-2">
+                    {/* Columna de iconos */}
+                    <Col md={1} className="d-flex flex-column align-items-center gap-2">
+                      <span className="material-symbols-outlined">potted_plant</span>
+                      <span className="material-symbols-outlined">wb_sunny</span>
+                      <span className="material-symbols-outlined">opacity</span>
+                      <span className="material-symbols-outlined">device_thermostat</span>
+                    </Col>
+
+                    {/* Columna de características del producto */}
+                    <Col md={11} className="p-0">
+                      <p>Especie: {product?.planta?.especie || 'No especificado'}</p>
+                      <p>Luz: {product?.planta?.fotoPeriodo || 'No especificado'}</p>
+                      <p>Riego: {product?.planta?.tipoRiego || 'No especificado'}</p>
+                      <p>Temperatura: {product?.planta?.toleranciaTemperatura || 'No especificado'}°C</p>
+                    </Col>
+                  </Row>
+                </Card.Text>
+
+              </Card.Body>
+            </Col>
+
+          </Row>
+        )
+        }
+
+        <Row className="mt-4">
+          {['descripcion', 'dimensiones', 'recomendaciones', 'garantias'].map((section) => (
+            <Col md={3} key={section}>
+              <Button
+                variant="outline-secondary"
+                onClick={() => toggleSection(section)}
+                className="d-flex justify-content-between align-items-center w-100"
+              >
+                {section.charAt(0).toUpperCase() + section.slice(1)}
+                <CaretDown size={18} className={`ms-2 ${openSection === section ? 'rotate-180' : ''}`} />
+              </Button>
+              {openSection === section && (
+                <div className="mt-2">
+                  {section === 'descripcion' && product?.descripcion}
+                  {section === 'dimensiones' && (
+                    <>
+                      Ancho: {product?.ancho} cm<br />
+                      Alto: {product?.alto} cm<br />
+                      Largo: {product?.largo} cm
+                    </>
+                  )}
+                  {section === 'recomendaciones' && 'La planta es apta para exteriores, es resistente a altas temperaturas.'}
+                  {section === 'garantias' && 'Garantía de 1 año contra defectos de fabricación.'}
+                </div>
+              )}
+            </Col>
+          ))}
         </Row>
-      )}
-
-      <Row className="mt-4">
-        <Col md={3}>
-          <Button
-            variant="outline-secondary"
-            onClick={() => toggleSection('descripcion')}
-            className="d-flex justify-content-between align-items-center w-100"
-          >
-            Descripción
-            <CaretDown size={18} className={`ms-2 ${openSection === 'descripcion' ? 'rotate-180' : ''}`} />
-          </Button>
-          {openSection === 'descripcion' && (
-            <div className="mt-2">
-              {product?.descripcion}
-            </div>
-          )}
-        </Col>
-        <Col md={3}>
-          <Button
-            variant="outline-secondary"
-            onClick={() => toggleSection('dimensiones')}
-            className="d-flex justify-content-between align-items-center w-100"
-          >
-            Dimensiones
-            <CaretDown size={18} className={`ms-2 ${openSection === 'dimensiones' ? 'rotate-180' : ''}`} />
-          </Button>
-          {openSection === 'dimensiones' && (
-            <div className="mt-2">
-              Ancho: {product?.ancho} cm<br />
-              Alto: {product?.alto} cm<br />
-              Largo: {product?.largo} cm
-            </div>
-          )}
-        </Col>
-        <Col md={3}>
-          <Button
-            variant="outline-secondary"
-            onClick={() => toggleSection('recomendaciones')}
-            className="d-flex justify-content-between align-items-center w-100"
-          >
-            Recomendaciones
-            <CaretDown size={18} className={`ms-2 ${openSection === 'recomendaciones' ? 'rotate-180' : ''}`} />
-          </Button>
-          {openSection === 'recomendaciones' && (
-            <div className="mt-2">
-              La planta es apta para exteriores, es resistente a altas temperaturas.
-            </div>
-          )}
-        </Col>
-        <Col md={3}>
-          <Button
-            variant="outline-secondary"
-            onClick={() => toggleSection('garantias')}
-            className="d-flex justify-content-between align-items-center w-100"
-          >
-            Garantías
-            <CaretDown size={18} className={`ms-2 ${openSection === 'garantias' ? 'rotate-180' : ''}`} />
-          </Button>
-          {openSection === 'garantias' && (
-            <div className="mt-2">
-              Garantía de 1 año contra defectos de fabricación.
-            </div>
-          )}
-        </Col>
-      </Row>
-      <br />
-
-    </Container>
-    </>
+      </Container >
+    </div>
   );
-};
+}

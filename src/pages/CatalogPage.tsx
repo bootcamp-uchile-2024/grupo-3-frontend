@@ -214,14 +214,13 @@ const renderPaginationItems = () => {
   <Container fluid>
   <SortFilters/>
     <Row>
-      {/* Sidebar Filters: 3 columnas */}
+      
       <Col xs={12} sm={3} className="sidebar-filters">
         <SidebarFilters onFilterChange={function (/*any*/): void {
               throw new Error('Function not implemented.');
             } }/>
       </Col>
 
-      {/* Productos: 9 columnas */}
       <Col xs={12} sm={9}>
         <Row lg={4} className="g-4">
           {Array.isArray(products) && products.length > 0 ? (
