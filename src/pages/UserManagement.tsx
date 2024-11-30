@@ -16,8 +16,6 @@ import UserTable from "../components/UserTable";
 import { User } from "../types/types";
 import CustomPagination from "../components/CustomPagination";
 
-
-
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -189,7 +187,6 @@ const UserManagement = () => {
       ¡Buenos días Admin!
     </h1>
   </div>
-  <p style={{ marginRight: '84px' }}>Administrador/Usuarios/Modificar Usuarios</p>
 
   {error && <p className="text-danger">{error}</p>}
 </Col>
