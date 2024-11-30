@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearCart, updateQuantity } from '../states/cartSlice';
 import { RootState } from '../states/store';
@@ -17,33 +17,35 @@ const CartPage: React.FC = () => {
   const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const userId = 2;
+  const userId = 10;
 
-  const fetchActiveCart = async (): Promise<number | null> => {
-    try {
-      console.log(`Verificando carrito activo para el usuario ${userId}`);
-      const response = await fetch(`http://localhost:8080/carro-compras/user/${userId}`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        setCartId(data.id);
-        console.log('Carrito activo encontrado:', data);
-        return data.id;
-      } else if (response.status === 404) {
-        console.log('No hay carrito activo para este usuario.');
-        setCartId(null);
-        return null;
-      } else {
-        throw new Error(`Error HTTP al verificar el carrito: ${response.status}`);
-      }
-    } catch (error: any) {
-      console.error('Error al verificar el carrito activo:', error.message);
+
+const fetchActiveCart = useCallback(async (): Promise<number | null> => {
+  try {
+    console.log(`Verificando carrito activo para el usuario ${userId}`);
+    const response = await fetch(`http://localhost:8080/carro-compras/user/${userId}`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setCartId(data.id);
+      console.log('Carrito activo encontrado:', data);
+      return data.id;
+    } else if (response.status === 404) {
+      console.log('No hay carrito activo para este usuario.');
+      setCartId(null);
       return null;
+    } else {
+      throw new Error(`Error HTTP al verificar el carrito: ${response.status}`);
     }
-  };
+  } catch (error: unknown) {
+    console.error(getErrorMessage(error));
+    return null;
+  }
+}, [userId, setCartId]);
+
   
   const addProductToCart = async (cartId: number, productId: number, quantity: number) => {
   try {
@@ -72,13 +74,14 @@ const CartPage: React.FC = () => {
       console.error('Error en la respuesta del servidor:', errorData);
       throw new Error(errorData.message || `Error HTTP: ${response.status}`);
     }
-  } catch (error: any) {
-    console.error('Error al agregar producto al carrito:', error.message);
+  }catch (error: unknown) {
+    console.error('Error al agregar producto al carrito:', getErrorMessage(error));
     alert('Hubo un problema al agregar el producto al carrito. Inténtalo nuevamente.');
   }
+  
 };
 
-const createCart = async () => {
+const createCart = useCallback(async () => {
   try {
     if (cartId) {
       console.log(`Ya existe un carrito activo con ID ${cartId}. No se creará uno nuevo.`);
@@ -107,11 +110,11 @@ const createCart = async () => {
     const data = await response.json();
     setCartId(data.id);
     console.log('Carrito creado con éxito:', data);
-  } catch (error: any) {
-    console.error('Error crítico al intentar crear un carrito:', error.message);
+  } catch (error: unknown) {
+    console.error('Error crítico al intentar crear un carrito:', getErrorMessage(error));
     alert('Hubo un problema al crear el carrito. Inténtalo nuevamente más tarde.');
   }
-};
+}, [cartId, userId]);
 
 
   const handleDeleteCart = async () => {
@@ -141,10 +144,11 @@ const createCart = async () => {
       dispatch(clearCart());
       setCartId(null);
       alert('El carrito ha sido eliminado completamente.');
-    } catch (error: any) {
-      console.error('Error al intentar eliminar el carrito:', error.message);
+    } catch (error: unknown) {
+      console.error('Error al intentar eliminar el carrito:', getErrorMessage(error));
       alert('Hubo un problema al eliminar el carrito. Por favor, inténtalo nuevamente.');
     }
+    
   };
   
   const replaceCartProducts = async () => {
@@ -175,10 +179,11 @@ const createCart = async () => {
       }
 
       console.log('Productos del carrito actualizados en el backend.');
-    } catch (error: any) {
-      console.error('Error al actualizar el carrito en el backend:', error.message);
+    } catch (error: unknown) {
+      console.error('Error al actualizar el carrito en el backend:', getErrorMessage(error));
       throw error;
     }
+    
   };
 
   useEffect(() => {
@@ -195,7 +200,8 @@ const createCart = async () => {
     };
   
     initializeCart();
-  }, []);
+  }, [fetchActiveCart, createCart]); 
+  
   
 
   const handleApplyCoupon = () => {
@@ -258,10 +264,11 @@ const createCart = async () => {
   
       dispatch(clearCart());
       alert('El carrito ha sido vaciado exitosamente.');
-    } catch (error: any) {
-      console.error('Error al intentar vaciar el carrito:', error.message);
+    } catch (error: unknown) {
+      console.error('Error al intentar vaciar el carrito:', getErrorMessage(error));
       alert('Hubo un problema al vaciar el carrito. Por favor, inténtalo nuevamente.');
     }
+    
   };
   
   const handleOpenModal = () => {
@@ -292,12 +299,13 @@ const createCart = async () => {
         console.error('Error al finalizar la compra:', response.statusCode);
         alert(`Error al finalizar la compra: Código ${response.statusCode}`);
       }
-    } catch (e) {
-      console.error('Error al finalizar la compra:', e);
+    } catch (e: unknown) {
+      console.error('Error al finalizar la compra:', getErrorMessage(e));
       alert('Error al finalizar la compra. Por favor, inténtalo nuevamente.');
     } finally {
       setLoading(false);
     }
+    
   };
 
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
@@ -321,6 +329,14 @@ const createCart = async () => {
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   }).format(discountedTotal);
+
+  const getErrorMessage = (error: unknown): string => {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return 'Error inesperado.';
+  };
+  
 
   return (
     <div className="container carro-container mt-4">
