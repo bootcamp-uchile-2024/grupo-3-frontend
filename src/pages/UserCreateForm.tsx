@@ -524,44 +524,44 @@ return (
 
 
       {/* Botón */}
-<div style={{ textAlign: 'center', marginTop: '20px' }}>
-  <Button
-    variant="outline-primary"
-    onClick={() => navigate('../pages/LoginForm.tsx')}
-    style={{
-      display: 'flex',
-      width: '283px',
-      height: '48px',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: '8px',
-      border: '1px solid #1A4756',
-      backgroundColor: '#fff',
-      color: '#1A4756',
-    }}
-  >
-    Volver
-  </Button>
-
-  <Button
-    type="submit"
-    disabled={isSubmitting}
-    style={{
-      display: 'flex',
-      width: '283px',
-      height: '48px',
-      justifyContent: 'center',
-      alignItems: 'center',
-      borderRadius: '8px',
-      border: '1px solid #1A4756',
-      backgroundColor: '#1A4756',
-      color: '#fff',
-      marginTop: '10px',
-    }}
-  >
-    {isSubmitting ? 'Creando usuario...' : 'Crear cuenta'}
-  </Button>
-</div>
+      <div className="mt-3">
+      <Button
+        variant="outline-primary float-end"
+        onClick={() => navigate("../pages/LoginForm.tsx")}
+        className="mb-3"
+        style={{
+          width: "283px",
+          height: "48px",
+          borderRadius: "8px",
+          border: "1px solid #1A4756",
+          backgroundColor: "#fff",
+          color: "#1A4756",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        Volver
+      </Button>
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="btn-primary"
+        style={{
+          width: "283px",
+          height: "48px",
+          borderRadius: "8px",
+          border: "1px solid #1A4756",
+          backgroundColor: "#1A4756",
+          color: "#fff",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {isSubmitting ? "Creando usuario..." : "Crear cuenta"}
+      </Button>
+    </div>
 
     </Form>
   </Container>

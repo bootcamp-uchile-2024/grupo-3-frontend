@@ -130,7 +130,7 @@ const UserManagement = () => {
   return (
     <Container fluid className="mt-4" style={{}}>
       <Row>
-              <Col md={2} className="d-flex flex-column gap-2" style={{ marginTop: '83px' }}>
+              <Col md={2} className="d-flex flex-column gap-2" style={{ marginTop: '180px' }}>
           {[
             { text: 'Usuarios', icon: (
               <span className="material-symbols-outlined" style={{color: '#1A4756'}}>
@@ -206,18 +206,7 @@ const UserManagement = () => {
 
   {error && <p className="text-danger">{error}</p>}
 
-  <div
-    style={{
-      width: '1096px',
-      height: '1130px',
-      flexShrink: 0,
-      borderRadius: '0px 0px 8px 8px',
-      background: '#F5F5F5',
-      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-      padding: '16px',
-      marginTop: '10rem',
-    }}
-  >
+  <div>
 
       <Tabs defaultActiveKey="modificarUsuario" className="custom-tabs mb-3">
         <Tab eventKey="crearUsuario" title="Crear Usuario">
@@ -450,7 +439,7 @@ const UserManagement = () => {
                 selectedUser={selectedUser}
                 setSelectedUser={setSelectedUser}
               />
-              <div className="d-flex justify-content-center mt-3 gap-2">
+              <div className="d-flex justify-content-end mt-3 gap-2">
                 <Button
                   variant="primary"
                   onClick={handleModifyClick}
