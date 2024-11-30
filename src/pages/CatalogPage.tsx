@@ -1,5 +1,7 @@
 import '../styles/CatalogStyles.css'
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../states/store';
 import { productsCatalog } from '../interfaces/ProductsCatalog';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../states/cartSlice';
@@ -19,6 +21,7 @@ const CatalogPage: React.FC = () => {
   const [pageSize, setPageSize] = useState(12);
   const dispatch = useDispatch();
   const [errorMessages, setErrorMessages] = useState<{ [key: number]: string }>({});
+  const cart = useSelector((state: RootState) => state.cart.productos);
 
   // Función para truncar el texto y añadir "..." al final si es necesario
   const truncateText = (text: string, limit: number) => {
@@ -92,14 +95,24 @@ const CatalogPage: React.FC = () => {
   // Agregar al carrito
   const handleAddToCart = (product: productsCatalog) => {
     const quantity = quantities[product.id] || 1;
-
-    if (quantity > product.cantidad) {
+  
+    // Verificar el stock
+    const currentCartQuantity = cart.reduce((total, item) => {
+      if (item.id === product.id) {
+        total += item.cantidad; 
+      }
+      return total;
+    }, 0);
+  
+    if (currentCartQuantity + quantity > product.cantidad) {
       setErrorMessages((prevMessages) => ({
         ...prevMessages,
-        [product.id]: `Stock insuficiente. Solo hay ${product.cantidad} unidades disponibles.`,
+        [product.id]: `Stock de ${product.cantidad} unidades.`,
       }));
-      return;
+      return; 
     }
+  
+    // Si el stock es suficiente, agregar el producto al carrito
     dispatch(addToCart({
       id: product.id,
       nombre: product.nombre,
@@ -114,11 +127,13 @@ const CatalogPage: React.FC = () => {
       largo: product.largo,
       peso: product.peso,
     }));
+  
+    // Limpiar los mensajes de error para este producto si la adición fue exitosa
     setErrorMessages((prevMessages) => ({
       ...prevMessages,
       [product.id]: '',
     }));
-  };
+  };  
 
   // Cambiar página de la paginación
   const handlePageChange = (page: number) => {
@@ -211,16 +226,17 @@ const renderPaginationItems = () => {
   <div className="catalog-banner">
     <Container className="banner-content text-center"></Container>
   </div>
-  <Container fluid>
+  <Container fluid style={{ backgroundColor: 'white' }}>
   <SortFilters/>
     <Row>
-      
+      {/* Sidebar Filters: 3 columnas */}
       <Col xs={12} sm={3} className="sidebar-filters">
         <SidebarFilters onFilterChange={function (/*any*/): void {
               throw new Error('Function not implemented.');
             } }/>
       </Col>
 
+      {/* Productos: 9 columnas */}
       <Col xs={12} sm={9}>
         <Row lg={4} className="g-4">
           {Array.isArray(products) && products.length > 0 ? (
@@ -268,14 +284,13 @@ const renderPaginationItems = () => {
                       >
                         <span className="material-symbols-outlined">add_shopping_cart</span>
                       </Button>
-                    </div>
-
-                    {/* Mensaje de error por stock*/}
+                       {/* Mensaje de error por stock*/}
                     {errorMessages[product.id] && (
                       <p className="error-message">
                         {errorMessages[product.id]}
                       </p>
                     )}
+                    </div>
 
                     {/* Acciones del administrador */}
                     {userRole && userRole.includes('admin-1') && (

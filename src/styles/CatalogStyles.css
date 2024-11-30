@@ -129,8 +129,10 @@
   
   .error-message {
     color: red;
-    font-size: 0.9em;
-    margin-top: 10px;
+    font-size: 0.8em;
+    position: relative;
+    bottom: 40px;
+    left: -65px;
   }
   
   .show-products-selector a {

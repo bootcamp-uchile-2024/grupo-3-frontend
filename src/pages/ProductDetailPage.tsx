@@ -17,7 +17,7 @@ export default function ProductDetailPage() {
   const [isShipping, setIsShipping] = useState<boolean>(false);
   const [isPickup, setIsPickup] = useState<boolean>(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
-  const [selectedImage, setSelectedImage] = useState<string>(''); // Asignación correcta de imagen seleccionada
+  const [selectedImage, setSelectedImage] = useState<string>('');
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -63,6 +63,11 @@ export default function ProductDetailPage() {
   }
 
   const handleAddToCart = (product: productsCatalog) => {
+    if (quantity > product.cantidad) {
+      alert(`Solo hay ${product.cantidad} unidades disponibles.`);
+      return;
+    }
+
     dispatch(addToCart({
       id: product.id,
       nombre: product.nombre,
@@ -79,7 +84,14 @@ export default function ProductDetailPage() {
     }));
   };
 
-  const incrementQuantity = () => setQuantity(prevQuantity => prevQuantity + 1);
+  const incrementQuantity = () => {
+    if (quantity < (product?.cantidad || 0)) {
+      setQuantity(prevQuantity => prevQuantity + 1);
+    } else {
+      alert(`Solo hay ${product?.cantidad} unidades disponibles.`);
+    }
+  };
+
   const decrementQuantity = () => quantity > 1 && setQuantity(prevQuantity => prevQuantity - 1);
 
   const handleBuyNow = () => {
@@ -111,7 +123,7 @@ export default function ProductDetailPage() {
                     variant="top"
                     src={selectedImage || `https://placehold.co/454x608?text=${encodeURIComponent(product.nombre)}&font=roboto`}
                     alt={product.nombre}
-                    className="rounded img-fluid" // Asegura que la imagen principal sea responsiva
+                    className="rounded img-fluid" 
                   />
                 </Col>
                 <Col className="d-flex justify-content-center align-items-center">
