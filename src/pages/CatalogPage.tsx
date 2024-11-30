@@ -1,7 +1,5 @@
 import '../styles/CatalogStyles.css'
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from '../states/store';
+import React, { useCallback, useEffect, useState } from 'react';
 import { productsCatalog } from '../interfaces/ProductsCatalog';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../states/cartSlice';
@@ -21,7 +19,6 @@ const CatalogPage: React.FC = () => {
   const [pageSize, setPageSize] = useState(12);
   const dispatch = useDispatch();
   const [errorMessages, setErrorMessages] = useState<{ [key: number]: string }>({});
-  const cart = useSelector((state: RootState) => state.cart.productos);
 
   // Función para truncar el texto y añadir "..." al final si es necesario
   const truncateText = (text: string, limit: number) => {
@@ -31,17 +28,8 @@ const CatalogPage: React.FC = () => {
     return text;
   };
 
-  // Cargar productos
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (user && Array.isArray(user.roles)) {
-      setUserRole(user.roles);
-    }
-    fetchProducts();
-  }, [currentPage, pageSize]);
-
   // Obtener productos desde el servidor
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`http://localhost:8080/catalogo?page=${currentPage}&pageSize=${pageSize}`, {
@@ -69,7 +57,15 @@ const CatalogPage: React.FC = () => {
         setLoading(false);
       }, 500); 
     }
-  };
+  }, [currentPage, pageSize]);
+  
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (user && Array.isArray(user.roles)) {
+      setUserRole(user.roles);
+    }
+    fetchProducts();
+  }, [currentPage, pageSize, fetchProducts]);
 
 
   const deleteProduct = async (productId: number) => {
@@ -95,24 +91,14 @@ const CatalogPage: React.FC = () => {
   // Agregar al carrito
   const handleAddToCart = (product: productsCatalog) => {
     const quantity = quantities[product.id] || 1;
-  
-    // Verificar el stock
-    const currentCartQuantity = cart.reduce((total, item) => {
-      if (item.id === product.id) {
-        total += item.cantidad; 
-      }
-      return total;
-    }, 0);
-  
-    if (currentCartQuantity + quantity > product.cantidad) {
+
+    if (quantity > product.cantidad) {
       setErrorMessages((prevMessages) => ({
         ...prevMessages,
-        [product.id]: `Stock de ${product.cantidad} unidades.`,
+        [product.id]: `Stock insuficiente. Solo hay ${product.cantidad} unidades disponibles.`,
       }));
-      return; 
+      return;
     }
-  
-    // Si el stock es suficiente, agregar el producto al carrito
     dispatch(addToCart({
       id: product.id,
       nombre: product.nombre,
@@ -127,13 +113,11 @@ const CatalogPage: React.FC = () => {
       largo: product.largo,
       peso: product.peso,
     }));
-  
-    // Limpiar los mensajes de error para este producto si la adición fue exitosa
     setErrorMessages((prevMessages) => ({
       ...prevMessages,
       [product.id]: '',
     }));
-  };  
+  };
 
   // Cambiar página de la paginación
   const handlePageChange = (page: number) => {
@@ -144,7 +128,7 @@ const CatalogPage: React.FC = () => {
 
  // Función para renderizar la paginación
 const renderPaginationItems = () => {
-  let items: JSX.Element[] = [];
+  const items: JSX.Element[] = [];
 
   // Flecha de "anterior"
   items.push(
@@ -226,17 +210,16 @@ const renderPaginationItems = () => {
   <div className="catalog-banner">
     <Container className="banner-content text-center"></Container>
   </div>
-  <Container fluid style={{ backgroundColor: 'white' }}>
+  <Container fluid>
   <SortFilters/>
     <Row>
-      {/* Sidebar Filters: 3 columnas */}
+      
       <Col xs={12} sm={3} className="sidebar-filters">
         <SidebarFilters onFilterChange={function (/*any*/): void {
               throw new Error('Function not implemented.');
             } }/>
       </Col>
 
-      {/* Productos: 9 columnas */}
       <Col xs={12} sm={9}>
         <Row lg={4} className="g-4">
           {Array.isArray(products) && products.length > 0 ? (
@@ -284,13 +267,14 @@ const renderPaginationItems = () => {
                       >
                         <span className="material-symbols-outlined">add_shopping_cart</span>
                       </Button>
-                       {/* Mensaje de error por stock*/}
+                    </div>
+
+                    {/* Mensaje de error por stock*/}
                     {errorMessages[product.id] && (
                       <p className="error-message">
                         {errorMessages[product.id]}
                       </p>
                     )}
-                    </div>
 
                     {/* Acciones del administrador */}
                     {userRole && userRole.includes('admin-1') && (

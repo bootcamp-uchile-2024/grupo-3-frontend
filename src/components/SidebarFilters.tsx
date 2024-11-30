@@ -3,10 +3,10 @@ import React from 'react';
 import { Form } from 'react-bootstrap';
 
 interface SidebarFiltersProps {
-  onFilterChange: (filters: any) => void;
-}
+  onFilterChange: () => void; }
 
-const SidebarFilters: React.FC<SidebarFiltersProps> = () => {
+  const SidebarFilters: React.FC<SidebarFiltersProps> = ({ onFilterChange })  => {
+    console.log (onFilterChange)
 
   return (
     <div className="mt-4 sidebar-filters fontcolor">

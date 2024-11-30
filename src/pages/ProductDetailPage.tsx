@@ -35,6 +35,7 @@ export default function ProductDetailPage() {
         setProduct(productJson);
       } catch (error) {
         setError('Hubo un error al obtener el producto');
+        console.log(error)
       } finally {
         setLoading(false);
       }
