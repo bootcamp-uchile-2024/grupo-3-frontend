@@ -156,10 +156,10 @@ const UserManagement = () => {
   
   return (
     <Container fluid className="mt-4" style={{}}>
-      <Col md={10}>
+      <Col md={12}>
   <div 
     className="d-flex align-items-center justify-content-end" 
-    style={{ marginRight: '84px', gap: '18px' }}
+    style={{ marginLeft: '184px', gap: '18px', marginTop: '140px' }}
   >
     <img 
       src="https://ui-avatars.com/api/?name=Admin&background=1A4756&color=fff&size=128" 

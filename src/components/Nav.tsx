@@ -21,7 +21,7 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                 as={Link}
                 to="/">
               </Navbar.Brand>
-              <div className="d-flex align-items-center justify-content-end gap-3" style={{ position: "relative", top:"3rem", left: "56rem" }}>
+              <div className="d-flex align-items-center justify-content-end gap-3" style={{ position: "relative", top:"2rem", left: "56rem" }}>
                 {user ? (
                   <NavDropdown
                     title={`Hola, ${user.username}`}
