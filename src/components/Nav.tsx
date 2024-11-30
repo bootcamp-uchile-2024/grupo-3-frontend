@@ -75,11 +75,11 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
             <Navbar>
               <Nav style={{position: "relative", top:"1rem", left: "15rem", gap: "1.5rem" }}>
                 <Nav.Link as={Link} to="/">
-                <span style={{ color: "#1A4756" }} className="text-m-medium">Inicio</span>
+                <span style={{ color: "#1A4756" }} className="text-text1-regular">Inicio</span>
                 </Nav.Link>
                 <NavDropdown
                   title={<span style={{ color: "#1A4756" }}>Plantas</span>}
-                  id="plantas-dropdown" className="text-m-medium"
+                  id="plantas-dropdown" className="text-text1-regular"
                 >
                   <NavDropdown.Item as={Link} to="/catalogo">
                     Catálogo
@@ -90,7 +90,7 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                 </NavDropdown>
                 <NavDropdown
                   title={<span style={{ color: "#1A4756" }}>Comunidad</span>}
-                  id="comunidad-dropdown" className="text-m-medium"
+                  id="comunidad-dropdown" className="text-text1-regular"
                 >
                   <NavDropdown.Item as={Link} to="/foros">
                     Foros
@@ -101,7 +101,7 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                 </NavDropdown>
                 <NavDropdown
                   title={<span style={{ color: "#1A4756" }}>Educación</span>}
-                  id="educacion-dropdown" className="text-m-medium"
+                  id="educacion-dropdown" className="text-text1-regular"
                 >
                   <NavDropdown.Item as={Link} to="/style-guide">
                     Guía de Estilo
@@ -112,7 +112,7 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                 </NavDropdown>
                 <NavDropdown
                   title={<span style={{ color: "#1A4756" }}>Asistente Virtual</span>}
-                  id="asistente-dropdown" className="text-m-medium"
+                  id="asistente-dropdown" className="text-text1-regular"
                 >
                   <NavDropdown.Item as={Link} to="/faq">
                     FAQ

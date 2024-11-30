@@ -5,8 +5,8 @@ const InfoCards = () => {
     <Container className="mt-4">
       <Row className="justify-content-center">
         {/* Card 1 */}
+        <p className="text-l-medium">Encuéntranos aquí</p>
         <Col md={4} className="mb-4">
-        <p className="text-l-medium">Texto L Medium</p>
           <Card className="text-center shadow-sm">
             <Card.Body>
               <div>

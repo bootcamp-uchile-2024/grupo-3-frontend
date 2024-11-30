@@ -1,8 +1,6 @@
-import React from "react";
-
 const GoogleMapEmbed = () => {
   return (
-    <div style={{ textDecoration: "none", overflow: "hidden", maxWidth: "100%", width: "1326px", height: "280px" }}>
+    <div style={{ textDecoration: "none", overflow: "hidden", maxWidth: "100%", width: "1326px", height: "280px", marginTop:"60px", marginBottom:"100px" }}>
       <div id="google-maps-canvas" style={{ height: "100%", width: "100%", maxWidth: "100%" }}>
         <iframe
           style={{ height: "100%", width: "100%", border: "0" }}
