@@ -850,6 +850,14 @@ ul.custom-tabs.mb-3.nav.nav-tabs {
   font-weight: 500;
 }
 
+/* Carro de compra */
+
+.carro-container {
+  margin-top: 2rem;
+  position: relative;
+  top: 10rem;
+  margin-bottom: 12rem;
+}
 
 
 
