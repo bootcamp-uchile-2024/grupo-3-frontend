@@ -344,7 +344,7 @@ const createCart = async () => {
                   <button className="btn btn-outline-secondary btn-sm" onClick={() => handleIncrement(item.id)}>
                     +
                   </button>
-                  <button className="btn btn-danger btn-sm ms-2" onClick={handleDeleteCart}>
+                  <button className="btn btn-primary btn-sm ms-2" onClick={handleDeleteCart}>
                     Eliminar
                   </button>
                 </div>
@@ -352,7 +352,7 @@ const createCart = async () => {
             ))}
           </ul>
           <h2>Total: ${formattedTotal}</h2>
-          <button className="btn btn-danger" onClick={handleClearCart}>
+          <button className="btn btn btn-outline-primary" onClick={handleClearCart}>
             Vaciar Carrito
           </button>
           <button className="btn btn-primary ms-2" onClick={handleOpenModal}>

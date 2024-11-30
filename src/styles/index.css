@@ -582,7 +582,9 @@ button.btn-outline-primary {
 }
 
 button.btn-outline-primary:hover {
-  background-color: var(--tertiary-hover-bg);
+  background-color: white;
+  color: #1A4756;
+  border-color: var(--tertiary-color);
 }
 
 button.btn-outline-primary:active {
@@ -628,77 +630,6 @@ button.btn-orange.disabled {
   background-color: var(--primary-disabled-bg);
   color: var(--primary-disabled-text);
   border-color: var(--primary-disabled-bg);
-}
-
-/* Gray Button */
-/* Estilos de Botones */
-.btn-primary {
-  background-color: var(--primary-color);
-  border-color: var(--primary-color);
-  color: #fff;
-}
-
-.btn-primary:hover {
-  background-color: var(--primary-hover);
-  border-color: var(--primary-hover);
-}
-
-.btn-primary:active {
-  background-color: var(--primary-active);
-  border-color: var(--primary-active);
-}
-
-.btn-primary:focus {
-  background-color: var(--primary-focus);
-  border-color: var(--primary-focus);
-}
-
-.btn-secondary {
-  background-color: var(--secondary-color);
-  border-color: var(--secondary-color);
-  color: #fff;
-}
-
-.btn-secondary:hover {
-  background-color: var(--secondary-hover);
-  border-color: var(--secondary-hover);
-}
-
-.btn-secondary:active {
-  background-color: var(--secondary-active);
-  border-color: var(--secondary-active);
-}
-
-.btn-orange {
-  background-color: var(--orange-color);
-  border-color: var(--orange-color);
-  color: #fff;
-}
-
-.btn-orange:hover {
-  background-color: var(--orange-hover);
-  border-color: var(--orange-hover);
-}
-
-.btn-orange:active {
-  background-color: var(--orange-active);
-  border-color: var(--orange-active);
-}
-
-.btn-gray {
-  background-color: var(--gray-color);
-  border-color: var(--gray-color);
-  color: #fff;
-}
-
-.btn-gray:hover {
-  background-color: var(--gray-hover);
-  border-color: var(--gray-hover);
-}
-
-.btn-gray:active {
-  background-color: var(--gray-active);
-  border-color: var(--gray-active);
 }
 
 .icon-white {
