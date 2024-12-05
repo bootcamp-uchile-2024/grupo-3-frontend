@@ -1,27 +1,26 @@
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { Container, Row, Col, Form} from "react-bootstrap";
 
 const Footer = () => {
   return (
     <footer className="footer">
       <Container fluid>
         <Row>
-          <Col lg={3} className="d-flex align-items-center">
+          <Col lg={2} className="d-flex align-items-center gap-2">
           <h1 className="footer-logo" aria-label="PlantAI Logo"></h1>
           </Col>
-          <Col lg={6}>
+          <Col lg={9}>
             <Row>
               <Col sm={4}>
                 <h6>¿Necesitas ayuda?</h6>
                 <ul className="footer-links">
                   <li></li>
                   <li><a href="#faq">Preguntas Frecuentes</a></li>
-                  <li><a href="#help-center">Centro de Ayuda</a></li>
                   <li><a href="#tracking">Seguimiento de Pedido</a></li>
                   <li><a href="#returns">Devoluciones y Cambios</a></li>
                   <li><a href="#shipping-policy">Política de Despacho</a></li>
                 </ul>
               </Col>
-              <Col sm={4}>
+              <Col sm={3}>
                 <h6>Infórmate</h6>
                 <ul className="footer-links">
                   <li><a href="#payment-methods">Medios de Pago</a></li>
@@ -30,9 +29,9 @@ const Footer = () => {
                   <li><a href="#work-with-us">Trabaja con Nosotros</a></li>
                 </ul>
               </Col>
-              <Col sm={4}>
-                <h6 className="d-flex justify-content-center align-items-center">Síguenos</h6>
-                <ul className="social-icons d-flex justify-content-center align-items-center list-unstyled gap-3">
+              <Col sm={5}>
+                <h6>Síguenos</h6>
+                <ul className="social-icons d-flex justify-content-left align-items-left list-unstyled gap-3">
                   <li>
                     <a href="#twitter" title="Twitter" aria-label="Twitter">
                       <svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -70,14 +69,7 @@ const Footer = () => {
                     </a>
                   </li>
                 </ul>
-
-
-              </Col>
-            </Row>
-          </Col>
-
-          <Col lg={3}>
-            <p className="footer-subscription-text">
+                <p className="footer-subscription-text">
               Inscríbete y obtén <b>15% OFF</b> en tu primera compra
             </p>
             <Form className="footer-subscription-form">
@@ -88,10 +80,13 @@ const Footer = () => {
                   className="footer-input"
                 />
               </Form.Group>
-              <Button variant="light" className="footer-button">
+              <p className="mt-2">Centro de Ayuda</p>
+{/*               <Button variant="light" className="footer-button">
                 Enviar
-              </Button>
+              </Button> */}
             </Form>
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Container>

@@ -471,8 +471,9 @@ footer > * {
 }
 
 .footer-subscription-text {
-  font-size: 14px;
+  font-size: 14px!important;
   margin-bottom: 10px;
+  color: #F2D95E;
 }
 
 .footer-input {
@@ -493,11 +494,12 @@ footer > * {
 }
 
 .footer h6 {
-  font-size: var(--font-footer-title);
+  font-size: var(--font-footer-title)!important;
 }
 
 .footer ul li a {
   font-size: var(--font-footer-text);
+  line-height: 30px;
   text-decoration: none;
 }
 
