@@ -2,32 +2,33 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Navbar, Nav, NavDropdown, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from '../context/AuthContext';
+import '../styles/CustomNav.css';
 
-interface TopBarProps {
-  user: { username: string; role: string } | null;
-  onLogout: () => void;
-  cartItemCount: number;
-}
-
-const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => {
+const CustomNav: React.FC = () => {
   const navigate = useNavigate();
+  const { auth, cartItemCount, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    alert("Has cerrado sesión.");
+    navigate("/login");
+  };
+
   return (
-    <>
-      <Container fluid>
-        <Row>
-          <Col md={12}>
-            <Navbar>
-              <Navbar.Brand
-                as={Link}
-                to="/">
-              </Navbar.Brand>
-              <div className="d-flex align-items-center justify-content-end gap-3" style={{ position: "relative", top:"2rem", left: "56rem" }}>
-                {user ? (
+    <Container fluid className="nav-container">
+      <Row className="header-row">
+        <Col md={12}>
+          <Navbar expand="lg" className="top-navbar">
+            <Link to="/" className="navbar-brand" />
+            <div className="nav-controls">
+              <div className="auth-controls">
+                {auth.isAuthenticated && auth.user ? (
                   <NavDropdown
-                    title={`Hola, ${user.username}`}
+                    title={`Hola, ${auth.user.username}`}
                     id="user-dropdown"
                   >
-                    {user.role === "admin" && (
+                    {auth.user.roles?.includes('admin-1') && (
                       <>
                         <NavDropdown.Item as={Link} to="/crear-producto">
                           Crear Producto
@@ -40,14 +41,7 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                         </NavDropdown.Item>
                       </>
                     )}
-                    <NavDropdown.Item
-                      onClick={() => {
-                        alert("Has cerrado sesión.");
-                        onLogout();
-                        navigate("/login");
-                        localStorage.removeItem("user");
-                      }}
-                    >
+                    <NavDropdown.Item onClick={handleLogout}>
                       Cerrar sesión
                     </NavDropdown.Item>
                   </NavDropdown>
@@ -56,30 +50,32 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                     Login
                   </Nav.Link>
                 )}
-
-                <Nav.Link as={Link} to="/cart" className="position-relative">
-                  <span className="material-symbols-outlined icon-dark">garden_cart</span>
-                  {cartItemCount > 0 && (
-                    <span className="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                      {cartItemCount}
-                    </span>
-                  )}
-                  Carro de compra
-                </Nav.Link>
               </div>
-            </Navbar>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={12}>
-            <Navbar>
-              <Nav style={{position: "relative", top:"1rem", left: "15rem", gap: "1.5rem" }}>
+              <Link to="/cart" className="cart-link">
+                <span className="material-symbols-outlined icon-dark">garden_cart</span>
+                {cartItemCount > 0 && (
+                  <span className="cart-count">
+                    {cartItemCount}
+                  </span>
+                )}
+                <span>Carro de compra</span>
+              </Link>
+            </div>
+          </Navbar>
+        </Col>
+      </Row>
+      <Row className="nav-row">
+        <Col md={12}>
+          <Navbar expand="lg" className="bottom-navbar">
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+              <Nav className="main-nav">
                 <Nav.Link as={Link} to="/">
-                <span style={{ color: "#1A4756" }} className="text-text1-regular">Inicio</span>
+                  <span className="nav-text">Inicio</span>
                 </Nav.Link>
                 <NavDropdown
-                  title={<span style={{ color: "#1A4756" }}>Plantas</span>}
-                  id="plantas-dropdown" className="text-text1-regular"
+                  title={<span className="nav-text">Plantas</span>}
+                  id="plantas-dropdown"
                 >
                   <NavDropdown.Item as={Link} to="/catalogo">
                     Catálogo
@@ -89,8 +85,8 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                   </NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown
-                  title={<span style={{ color: "#1A4756" }}>Comunidad</span>}
-                  id="comunidad-dropdown" className="text-text1-regular"
+                  title={<span className="nav-text">Comunidad</span>}
+                  id="comunidad-dropdown"
                 >
                   <NavDropdown.Item as={Link} to="/foros">
                     Foros
@@ -100,8 +96,8 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                   </NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown
-                  title={<span style={{ color: "#1A4756" }}>Educación</span>}
-                  id="educacion-dropdown" className="text-text1-regular"
+                  title={<span className="nav-text">Educación</span>}
+                  id="educacion-dropdown"
                 >
                   <NavDropdown.Item as={Link} to="/style-guide">
                     Guía de Estilo
@@ -111,8 +107,8 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                   </NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown
-                  title={<span style={{ color: "#1A4756" }}>Asistente Virtual</span>}
-                  id="asistente-dropdown" className="text-text1-regular"
+                  title={<span className="nav-text">Asistente Virtual</span>}
+                  id="asistente-dropdown"
                 >
                   <NavDropdown.Item as={Link} to="/faq">
                     FAQ
@@ -122,11 +118,11 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                   </NavDropdown.Item>
                 </NavDropdown>
               </Nav>
-            </Navbar>
-          </Col>
-        </Row>
-      </Container>
-    </>
+            </Navbar.Collapse>
+          </Navbar>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
