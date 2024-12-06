@@ -5,7 +5,7 @@ const Footer = () => {
     <footer className="footer">
       <Container fluid>
         <Row>
-          <Col lg={2} className="d-flex align-items-center gap-2">
+        <Col lg={2} className="d-flex align-items-center me-3">
           <h1 className="footer-logo" aria-label="PlantAI Logo"></h1>
           </Col>
           <Col lg={9}>
