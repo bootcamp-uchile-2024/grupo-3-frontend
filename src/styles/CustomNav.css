@@ -4,6 +4,24 @@
   left: 0;
   right: 0;
   background-color: white;
+  z-index: 1030; 
+}
+
+main {
+  position: relative;
+  z-index: 1;
+  bottom: -4rem;
+}
+
+.header-row {
+  background-color: #1A4756;
+  z-index: 1031;
+}
+
+/* Para el nav row */
+.nav-row {
+  background-color: white;
+  z-index: 1031;
 }
 
 nav.top-navbar.navbar.navbar-expand-lg.navbar-light {
@@ -29,12 +47,6 @@ nav.navbar-nav, .nav-link, nav.navbar-nav a, nav.navbar-nav a:active, nav.navbar
   top:90px;
   left: 35px;
   z-index: 1;
-}
-
-.nav-row {
-  display: flex;
-  justify-content: center;
-  width: 100%;
 }
 
 .bottom-navbar {
