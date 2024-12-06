@@ -15,6 +15,7 @@ import CardUser from "../components/CardUser";
 import UserTable from "../components/UserTable";
 import { User } from "../types/types";
 import CustomPagination from "../components/CustomPagination";
+import AdminSideBar from "../components/AdminSideBar";
 
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -113,25 +114,25 @@ const UserManagement = () => {
     setModalAction("modify");
     setShowModal(true);
   };
-  
+
   const handleDeleteUserClick = () => {
     setModalAction("delete");
     setShowModal(true);
   };
-  
+
   const handleCloseModal = () => {
     setShowModal(false);
   };
-  
+
   const handleConfirmAction = () => {
     if (modalAction === "modify") {
-      handleUpdateUser(); 
+      handleUpdateUser();
     } else if (modalAction === "delete" && selectedUser) {
-      deleteUser(selectedUser.id); 
+      deleteUser(selectedUser.id);
     }
     setShowModal(false);
   };
-  
+
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
   const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
@@ -147,73 +148,62 @@ const UserManagement = () => {
 
   const handleConfirmSaveChanges = () => {
     if (editingUser) {
-      handleUpdateUser(); 
-      setShowModal(false); 
+      handleUpdateUser();
+      setShowModal(false);
     } else {
       console.error("No hay un usuario seleccionado para modificar.");
     }
   };
-  
+
   return (
     <Container fluid className="mt-4" style={{}}>
       <Col md={12}>
-  <div 
-    className="d-flex align-items-center justify-content-end" 
-    style={{ marginLeft: '184px', gap: '18px', marginTop: '140px' }}
-  >
-    <img 
-      src="https://ui-avatars.com/api/?name=Admin&background=1A4756&color=fff&size=128" 
-      alt="Perfil Admin" 
-      style={{
-        width: '64px', 
-        height: '64px',
-        borderRadius: '50%', 
-        objectFit: 'cover', 
-        boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)' 
-      }} 
-    />
-    <h1 
-      className="text-end" 
-      style={{
-        fontFamily: 'Quicksand',
-        fontSize: '30px',
-        fontStyle: 'normal',
-        fontWeight: '500',
-        lineHeight: '52px',
-        color: '#1A4756',
-        margin: 0 
-      }}
-    >
-      ¡Buenos días Admin!
-    </h1>
-  </div>
+        <div
+          className="d-flex align-items-center justify-content-end"
+          style={{ marginLeft: '184px', gap: '18px', marginTop: '140px' }}
+        >
+          <img
+            src="https://ui-avatars.com/api/?name=Admin&background=1A4756&color=fff&size=128"
+            alt="Perfil Admin"
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)'
+            }}
+          />
+          <h1
+            className="text-end"
+            style={{
+              fontFamily: 'Quicksand',
+              fontSize: '30px',
+              fontStyle: 'normal',
+              fontWeight: '500',
+              lineHeight: '52px',
+              color: '#1A4756',
+              margin: 0
+            }}
+          >
+            ¡Buenos días Admin!
+          </h1>
+        </div>
 
-  {error && <p className="text-danger">{error}</p>}
-</Col>
+        {error && <p className="text-danger">{error}</p>}
+      </Col>
 
       <Row>
-        <Col md={2} className="d-flex flex-column gap-2" style={{ marginTop: '83px' }}>
-          {[
-            { text: 'Usuarios', icon: (<span className="material-symbols-outlined" style={{ color: '#1A4756' }}>group</span>) },
-            { text: 'Productos', icon: (<span className="material-symbols-outlined" style={{ color: '#1A4756' }}>redeem</span>) },
-            { text: 'Seguimiento', icon: (<span className="material-symbols-outlined" style={{ color: '#1A4756' }}>airport_shuttle</span>) },
-            { text: 'Métricas', icon: (<span className="material-symbols-outlined" style={{ color: '#1A4756' }}>graphic_eq</span>) },
-            { text: 'Comunidad', icon: (<span className="material-symbols-outlined" style={{ color: '#1A4756' }}>group_work</span>) },
-          ].map(({ text, icon }, index) => (
-            <Button key={index} variant="light" className="d-flex align-items-center gap-2" style={{ height: '48px', padding: '8px 16px', borderRadius: '8px', background: text === 'Usuarios' ? '#D3DBD5' : 'transparent', color: text === 'Usuarios' ? '#000' : '#555', border: text === 'Usuarios' ? 'none' : '1px solid transparent' }}>
-              {icon && <span>{icon}</span>}
-              {text}
-            </Button>
-          ))}
+        <Col>
+          <AdminSideBar />
         </Col>
-  
+
         <Col md={10}>
           <div style={{ marginTop: "10rem", padding: "16px", background: "#F5F5F5", borderRadius: "0px 0px 8px 8px", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}>
             <Tabs defaultActiveKey="modificarUsuario" className="custom-tabs mb-3">
               <Tab eventKey="crearUsuario" title="Crear Usuario">
                 {isAdmin && <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />}
               </Tab>
-  
+
               <Tab eventKey="eliminarUsuario" title="Eliminar Usuario">
                 {loading ? (
                   <Spinner animation="border" variant="primary" />
@@ -299,7 +289,7 @@ const UserManagement = () => {
                   </Button>
                 </Modal.Footer>
               </Modal>
-                
+
               <Tab eventKey="modificarUsuario" title="Modificar Usuario">
                 {loading ? (
                   <Spinner animation="border" variant="primary" />
@@ -445,26 +435,26 @@ const UserManagement = () => {
                           </Form.Group>
                         </Col>
                         <Col>
-                        <Form.Group>
-                          <Form.Label>Tipo de Usuario</Form.Label>
-                          <Form.Select
-                            value={editingUser?.tipoUsuarioId || ""}
-                            onChange={(e) =>
-                              setEditingUser((prev) =>
-                                prev
-                                  ? { ...prev, tipoUsuarioId: parseInt(e.target.value, 10) || 0 }
-                                  : null
-                              )
-                            }
-                          >
-                            <option value="">Seleccione un tipo de usuario</option>
-                            {userRoles.map((role) => (
-                              <option key={role.id} value={role.id}>
-                                {role.name}
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </Form.Group>
+                          <Form.Group>
+                            <Form.Label>Tipo de Usuario</Form.Label>
+                            <Form.Select
+                              value={editingUser?.tipoUsuarioId || ""}
+                              onChange={(e) =>
+                                setEditingUser((prev) =>
+                                  prev
+                                    ? { ...prev, tipoUsuarioId: parseInt(e.target.value, 10) || 0 }
+                                    : null
+                                )
+                              }
+                            >
+                              <option value="">Seleccione un tipo de usuario</option>
+                              {userRoles.map((role) => (
+                                <option key={role.id} value={role.id}>
+                                  {role.name}
+                                </option>
+                              ))}
+                            </Form.Select>
+                          </Form.Group>
 
                         </Col>
                       </Row>
@@ -488,14 +478,14 @@ const UserManagement = () => {
                       setSelectedUser={setSelectedUser}
                     />
                     <div className="d-flex justify-content-center mt-3 gap-2" style={{ position: "relative" }}>
-                    <Button
-                      variant="primary"
-                      onClick={handleModifyClick}
-                      disabled={!selectedUser}
-                      className="btn-modify-position"
-                    >
-                      Modificar
-                    </Button>
+                      <Button
+                        variant="primary"
+                        onClick={handleModifyClick}
+                        disabled={!selectedUser}
+                        className="btn-modify-position"
+                      >
+                        Modificar
+                      </Button>
 
                     </div>
                   </>
@@ -510,7 +500,7 @@ const UserManagement = () => {
           </div>
         </Col>
       </Row>
-  
+
       {/* Modal Dinámico */}
 
       <Modal show={showModal} onHide={handleCloseModal} centered style={{ padding: '32px 41px 24px 41px' }}>
@@ -561,7 +551,7 @@ const UserManagement = () => {
         </Modal.Footer>
       </Modal>
     </Container>
-);
+  );
 };
 
 export default UserManagement;

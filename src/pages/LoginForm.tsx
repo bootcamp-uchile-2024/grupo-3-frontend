@@ -57,34 +57,34 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     const datosUsuario = JSON.stringify(userResponse);
     localStorage.setItem('user', datosUsuario);
     return true;
-  } 
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     const user = { username: formData.username, password: formData.password };
-  
+
     if (login(user)) {
       const userStored = JSON.parse(localStorage.getItem('user') || '{}');
-  
+
       alert(`Iniciaste sesión como ${userStored.roles.includes('admin-1') ? 'Admin' : 'User'}`);
-  
+
       onLogin(userStored.username, userStored.roles.includes('admin-1') ? 'admin' : 'user');
-  
+
       if (userStored.roles.includes('admin-1')) {
-        navigate('/user-management'); 
+        navigate('/user-management');
       } else {
         navigate('/');
       }
     }
   };
-  
+
 
   return (
     <Container
       className="d-flex justify-content-center align-items-center"
       style={{
-        height: '100vh',
+        height: '40vh',
       }}
     >
       <Card
@@ -183,7 +183,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
                 <Form.Control.Feedback type="invalid">{errors.usernameError}</Form.Control.Feedback>
               </div>
             </Form.Group>
-  
+
             <Form.Group
               className="mb-3"
               controlId="password"
@@ -245,23 +245,48 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
                 <Form.Control.Feedback type="invalid">{errors.passwordError}</Form.Control.Feedback>
               </div>
             </Form.Group>
-  
-     
-              <div
+
+
+            <div
+              style={{
+                display: 'flex',
+                width: '230px',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: '24px',
+                margin: '0 auto',
+              }}
+            >
+              {/* Botón Ingresar */}
+              <Button
+                variant="dark"
+                type="submit"
                 style={{
                   display: 'flex',
-                  width: '230px',
-                  flexDirection: 'column',
                   justifyContent: 'center',
                   alignItems: 'center',
-                  gap: '24px',
-                  margin: '0 auto',
+                  gap: '8px',
+                  width: '100%',
+                  height: '48px',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  backgroundColor: '#1A4756',
+                  border: 'none',
+                  color: '#FFF',
+                  fontFamily: 'Quicksand, sans-serif',
+                  fontSize: '18px',
+                  fontWeight: 500,
+                  lineHeight: '22px',
+                  textAlign: 'center',
                 }}
               >
-                {/* Botón Ingresar */}
+                Ingresar
+              </Button>
+
+              <Link to="/crear-usuario" style={{ width: '100%', textDecoration: 'none' }}>
                 <Button
-                  variant="dark"
-                  type="submit"
+                  variant="outline-dark"
                   style={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -271,67 +296,42 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
                     height: '48px',
                     padding: '8px 16px',
                     borderRadius: '8px',
-                    backgroundColor: '#1A4756',
-                    border: 'none',
-                    color: '#FFF', 
-                    fontFamily: 'Quicksand, sans-serif', 
+                    fontFamily: 'Quicksand, sans-serif',
                     fontSize: '18px',
-                    fontWeight: 500, 
-                    lineHeight: '22px', 
-                    textAlign: 'center', 
+                    fontWeight: 500,
+                    lineHeight: '22px',
+                    color: '#1A4756',
+                    textAlign: 'center',
                   }}
                 >
-                  Ingresar
+                  Registrarme
                 </Button>
+              </Link>
 
-                <Link to="/crear-usuario" style={{ width: '100%', textDecoration: 'none' }}>
-                  <Button
-                    variant="outline-dark"
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      gap: '8px',
-                      width: '100%',
-                      height: '48px',
-                      padding: '8px 16px',
-                      borderRadius: '8px',
-                      fontFamily: 'Quicksand, sans-serif', 
-                      fontSize: '18px',
-                      fontWeight: 500, 
-                      lineHeight: '22px', 
-                      color: '#1A4756',
-                      textAlign: 'center', 
-                    }}
-                  >
-                    Registrarme
-                  </Button>
-                </Link>
-
-                <Link to="/recuperar-contraseña" style={{ textDecoration: 'none' }}>
+              <Link to="/recuperar-contraseña" style={{ textDecoration: 'none' }}>
                 <p
                   style={{
-                    fontFamily: 'Quicksand, sans-serif', 
-                    fontSize: '18px', 
-                    fontWeight: 500, 
-                    lineHeight: '22px', 
-                    color: '#1A4756', 
-                    textAlign: 'center', 
-                    margin: '0', 
+                    fontFamily: 'Quicksand, sans-serif',
+                    fontSize: '18px',
+                    fontWeight: 500,
+                    lineHeight: '22px',
+                    color: '#1A4756',
+                    textAlign: 'center',
+                    margin: '0',
                   }}
                 >
                   ¿Olvidaste tu contraseña?
                 </p>
               </Link>
 
-              </div>
+            </div>
 
           </Form>
         </Card.Body>
       </Card>
     </Container>
   );
-  
+
 };
 
 export default LoginForm;
