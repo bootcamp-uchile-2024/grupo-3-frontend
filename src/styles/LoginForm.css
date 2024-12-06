@@ -2,10 +2,10 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 160px); 
   padding: 2rem;
-  margin-top: 120px; 
+  margin-top: 120px;
   background-color: #f9f9f9;
+  margin-bottom: 4rem;
 }
 
 .login-card {
