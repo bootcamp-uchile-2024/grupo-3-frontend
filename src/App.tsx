@@ -8,9 +8,7 @@ import ContactPage from './pages/ContactPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import LoginForm from './pages/LoginForm';
 import UserCreationForm from './pages/UserCreateForm';
-/* import DashboardPage from './pages/DashboardPage'; */
 import CrearProducto from './pages/CreateProductForm';
-import { useState } from 'react';
 import { PrivateRoute } from './protected/PrivateRoute';
 import CartPage from './pages/CartPage';
 import UserManagement from './pages/UserManagement';
@@ -18,18 +16,18 @@ import EditProductPage from './pages/EditProductPage';
 import AdminCartPage from './pages/AdminCartPage';
 import StyleGuide from './components/StyleGuide';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import ProductManagement from './pages/ProductManagement';
+import { AuthProvider, useAuth } from './context/AuthContext';import ProductManagement from './pages/ProductManagement';
 
 
-function App() {
-  const [user, setUser] = useState<{ username: string; role: string } | null>(null);
-
-  const handleLogin = (username: string, role: string) => {
-    setUser({ username, role });
-  };
+function AppContent() {
+  const { auth, setAuth } = useAuth();
 
   const handleLogout = () => {
-    setUser(null); 
+    setAuth({
+      isAuthenticated: false,
+      user: null
+    });
+    localStorage.removeItem('user');
   };
 
   return (
@@ -50,7 +48,6 @@ function App() {
             <Route path="editar-producto/:id" element={<PrivateRoute roles={["admin-1"]}><EditProductPage /></PrivateRoute>} />
             <Route path="cart" element={<CartPage />} />
             <Route path="user-management" element={<PrivateRoute roles={['admin-1']}><UserManagement /></PrivateRoute>} />
-            <Route path="product-management" element={<PrivateRoute roles={['admin-1']}><ProductManagement/></PrivateRoute>}/>
 
             {/* Nueva ruta para AdminCartPage */}
             <Route path="admin-carts" element={<PrivateRoute roles={['admin-1']}><AdminCartPage /></PrivateRoute>} />
@@ -62,7 +59,3 @@ function App() {
 }
 
 export default App;
-
-
-
-

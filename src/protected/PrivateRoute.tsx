@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
-import { isAuth, userHasRole } from "../services/LoginService";
 import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 interface PrivateRouteProps {
     children: ReactNode;
@@ -8,14 +8,20 @@ interface PrivateRouteProps {
 }
 
 export const PrivateRoute = ({ children, roles }: PrivateRouteProps) => {
-    const auth = isAuth(); 
-    const hasRole = userHasRole(roles); 
+    const { auth } = useAuth();
 
-    if (!auth || !hasRole) {
+    // Verifica si el usuario está autenticado
+    if (!auth.isAuthenticated || !auth.user) {
         localStorage.removeItem('user');
         return <Navigate to="/login" replace />;
     }
 
+    // Verifica si el usuario tiene los roles necesarios
+    const hasRequiredRole = roles.some(role => auth.user?.roles?.includes(role));
+    
+    if (!hasRequiredRole) {
+        return <Navigate to="/" replace />;
+    }
+
     return <>{children}</>;
 };
-
