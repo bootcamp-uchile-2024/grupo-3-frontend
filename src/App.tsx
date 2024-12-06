@@ -1,7 +1,7 @@
 import './styles/index.css';
 import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import CatalogPage from './pages/CatalogPage';
 import AboutPage from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
@@ -31,30 +31,63 @@ function AppContent() {
   };
 
   return (
-    <>
-      <Router>
+    <Router>
+      <MainLayout user={auth.user} onLogout={handleLogout}>
         <Routes>
-          <Route path="/" element={<MainLayout user={user} onLogout={handleLogout} />}>
-            <Route index element={<HomePage />} />
-            <Route path="style-guide" element={<StyleGuide />} />
-            <Route path="catalogo" element={<CatalogPage />} />
-            <Route path="catalogo/producto/:id" element={<ProductDetailPage />} />
-            <Route path="about" element={<AboutPage />} />
-            <Route path="contact" element={<ContactPage />} />
-            <Route path="login" element={<LoginForm onLogin={handleLogin} />} />
-            {/* <Route path="dashboard" element={<DashboardPage />} /> */}
-            <Route path="crear-usuario" element={<UserCreationForm isAdmin={false}/>} />
-            <Route path="crear-producto" element={<PrivateRoute roles={["admin-1"]}><CrearProducto /></PrivateRoute>} />
-            <Route path="editar-producto/:id" element={<PrivateRoute roles={["admin-1"]}><EditProductPage /></PrivateRoute>} />
-            <Route path="cart" element={<CartPage />} />
-            <Route path="user-management" element={<PrivateRoute roles={['admin-1']}><UserManagement /></PrivateRoute>} />
-
-            {/* Nueva ruta para AdminCartPage */}
-            <Route path="admin-carts" element={<PrivateRoute roles={['admin-1']}><AdminCartPage /></PrivateRoute>} />
-          </Route>
+          <Route path="/" element={<HomePage />} />
+          <Route path="style-guide" element={<StyleGuide />} />
+          <Route path="catalogo" element={<CatalogPage />} />
+          <Route path="catalogo/producto/:id" element={<ProductDetailPage />} />
+          <Route path="about" element={<AboutPage />} />
+          <Route path="contact" element={<ContactPage />} />
+          <Route path="login" element={<LoginForm />} />
+          <Route path="crear-usuario" element={<UserCreationForm isAdmin={false}/>} />
+          <Route
+            path="crear-producto"
+            element={
+              <PrivateRoute roles={["admin-1"]}>
+                <CrearProducto />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="editar-producto/:id"
+            element={
+              <PrivateRoute roles={["admin-1"]}>
+                <EditProductPage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="cart" element={<CartPage />} />
+          <Route
+            path="user-management"
+            element={
+              <PrivateRoute roles={['admin-1']}>
+                <UserManagement />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="admin-carts"
+            element={
+              <PrivateRoute roles={['admin-1']}>
+                <AdminCartPage />
+              </PrivateRoute>
+            }
+          />
+          {/* Ruta para manejar rutas no encontradas */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </Router>
-    </>
+      </MainLayout>
+    </Router>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
   );
 }
 

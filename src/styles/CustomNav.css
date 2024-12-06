@@ -28,6 +28,7 @@ nav.navbar-nav, .nav-link, nav.navbar-nav a, nav.navbar-nav a:active, nav.navbar
   position: relative;
   top:90px;
   left: 35px;
+  z-index: 1;
 }
 
 .nav-row {
