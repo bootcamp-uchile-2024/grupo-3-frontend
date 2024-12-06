@@ -1,0 +1,57 @@
+.custom-tabs {
+    background-color: #F5F5F5;
+    border: none;
+    padding: 1rem 1rem 0;
+  }
+ 
+  .create-user-container {
+    background-color: #FFFFFF;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 1rem;
+  }
+  
+  .form-section {
+    margin-bottom: 2rem;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .form-group {
+    flex: 1;
+  }
+
+  .form-label {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    color: #1A4756;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #BBB;
+    border-radius: 8px;
+    font-family: 'Quicksand', sans-serif;
+  }
+  
+  .buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .action-button {
+    min-width: 120px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
+  }

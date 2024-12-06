@@ -44,4 +44,11 @@
     min-height: calc(100vh - 200px); 
     box-sizing: border-box;
   }
+
+  .tab-content {
+    margin: 0;
+    padding: 0;
+    position: relative;
+    top: -2rem;
+}
   

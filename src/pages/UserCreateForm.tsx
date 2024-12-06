@@ -147,6 +147,9 @@ return (
     className="user-creation-container"
     style={{
       display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
       padding: '20px',
       background: '#fff',
     }}
@@ -166,6 +169,7 @@ return (
         style={{
           textAlign: 'center',
           marginBottom: '10px',
+          marginTop: '19px',
           fontFamily: 'Quicksand, sans-serif',
           fontWeight: 700,
         }}
@@ -197,7 +201,7 @@ return (
 
       {/* Nombre y Apellido */}
       <Row className="mb-3">
-        <Col>
+      <Col md={6}>
           <Form.Group controlId="nombre">
             <Form.Label style={{ fontWeight: 'bold' }}>Nombre*</Form.Label>
             <Form.Control
@@ -217,7 +221,7 @@ return (
             )}
           </Form.Group>
         </Col>
-        <Col>
+        <Col md={6}>
           <Form.Group controlId="apellido">
             <Form.Label style={{ fontWeight: 'bold' }}>Apellido*</Form.Label>
             <Form.Control
@@ -301,7 +305,7 @@ return (
 
       {/* RUT y Teléfono */}
       <Row className="mb-3">
-        <Col>
+      <Col md={6}>
           <Form.Group controlId="rut">
             <Form.Label style={{ fontWeight: 'bold' }}>RUT*</Form.Label>
             <Form.Control
@@ -321,7 +325,7 @@ return (
             )}
           </Form.Group>
         </Col>
-        <Col>
+        <Col md={6}>
           <Form.Group controlId="telefono">
             <Form.Label style={{ fontWeight: 'bold' }}>Teléfono*</Form.Label>
             <Form.Control
