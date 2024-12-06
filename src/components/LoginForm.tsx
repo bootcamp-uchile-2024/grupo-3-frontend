@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Form, Button, Card, Container } from 'react-bootstrap';
+import { useAuth } from '../context/AuthContext';
 import '../styles/LoginForm.css';
-
-interface LoginFormProps {
-  onLogin: (username: string, role: string) => void;
-}
 
 export interface ILogin {
   username: string;
@@ -13,8 +10,9 @@ export interface ILogin {
   roles?: string[];
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
+const LoginForm: React.FC = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const users = [
     { username: 'administrador', password: 'administrador', roles: ['admin-1'] },
@@ -37,44 +35,34 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     setErrors({ ...errors, [`${name}Error`]: '' });
   };
 
-  const login = (user: ILogin): boolean => {
-    const foundUser = users.find(u => u.username === user.username);
-
-    if (!foundUser) {
-      setErrors(prev => ({ ...prev, usernameError: 'Nombre de usuario incorrecto' }));
-      return false;
-    }
-
-    if (foundUser.password !== user.password) {
-      setErrors(prev => ({ ...prev, passwordError: 'Contraseña incorrecta' }));
-      return false;
-    }
-
-    const userResponse: ILogin = {
-      ...user,
-      roles: foundUser.roles
-    };
-
-    const datosUsuario = JSON.stringify(userResponse);
-    localStorage.setItem('user', datosUsuario);
-    return true;
-  }
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const user = { username: formData.username, password: formData.password };
+    const foundUser = users.find(u => u.username === formData.username);
 
-    if (login(user)) {
-      const userStored = JSON.parse(localStorage.getItem('user') || '{}');
-      alert(`Iniciaste sesión como ${userStored.roles.includes('admin-1') ? 'Admin' : 'User'}`);
-      onLogin(userStored.username, userStored.roles.includes('admin-1') ? 'admin' : 'user');
+    if (!foundUser) {
+      setErrors(prev => ({ ...prev, usernameError: 'Nombre de usuario incorrecto' }));
+      return;
+    }
 
-      if (userStored.roles.includes('admin-1')) {
-        navigate('/user-management');
-      } else {
-        navigate('/');
-      }
+    if (foundUser.password !== formData.password) {
+      setErrors(prev => ({ ...prev, passwordError: 'Contraseña incorrecta' }));
+      return;
+    }
+
+    // Usar la función login del context
+    login(
+      foundUser.username,
+      foundUser.roles.includes('admin-1') ? 'admin' : 'user',
+      foundUser.roles
+    );
+
+    alert(`Iniciaste sesión como ${foundUser.roles.includes('admin-1') ? 'Admin' : 'User'}`);
+
+    if (foundUser.roles.includes('admin-1')) {
+      navigate('/user-management');
+    } else {
+      navigate('/');
     }
   };
 
