@@ -68,14 +68,18 @@ const cartSlice = createSlice({
     updateQuantity: (state, action: PayloadAction<{ id: number; cantidad: number }>) => {
       const { id, cantidad } = action.payload;
       const item = state.productos.find(item => item.id === id); 
+    
+      console.log('Intentando actualizar cantidad en Redux:', { id, cantidad, item });
+    
       if (item) {
         item.cantidad += cantidad;
-        if (item.cantidad < 1) {
-          item.cantidad = 1; 
-        }
+        console.log('Cantidad después de actualizar:', item.cantidad);
+      } else {
+        console.error('Producto no encontrado en Redux.');
       }
-      saveCartToLocalStorage(state);
     },
+    
+    
   },
 });
 
