@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Navbar, Nav, NavDropdown, Container, Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import "../styles/CustomNav.css";
 
 interface TopBarProps {
   user: { username: string; role: string } | null;
@@ -21,7 +22,7 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                 as={Link}
                 to="/">
               </Navbar.Brand>
-              <div className="d-flex align-items-center justify-content-end gap-3" style={{ position: "relative", top:"2rem", left: "56rem" }}>
+              <div className="d-flex align-items-center justify-content-end gap-3" style={{ position: "relative", top:"2rem", left: "66rem" }}>
                 {user ? (
                   <NavDropdown
                     title={`Hola, ${user.username}`}
@@ -64,7 +65,6 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                       {cartItemCount}
                     </span>
                   )}
-                  Carro de compra
                 </Nav.Link>
               </div>
             </Navbar>
@@ -73,23 +73,25 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
         <Row>
           <Col md={12}>
             <Navbar>
-              <Nav style={{position: "relative", top:"1rem", left: "15rem", gap: "1.5rem" }}>
+              <Nav style={{position: "relative", top:"3rem", left: "20rem", gap: "1.5rem" }}>
                 <Nav.Link as={Link} to="/">
-                <span style={{ color: "#1A4756" }} className="text-text1-regular">Inicio</span>
+                <span className="text-text1-regular">Inicio</span>
                 </Nav.Link>
                 <NavDropdown
-                  title={<span style={{ color: "#1A4756" }}>Plantas</span>}
-                  id="plantas-dropdown" className="text-text1-regular"
-                >
+                  title={<span>Plantas</span>}
+                  id="plantas-dropdown" className="text-text1-regular">
                   <NavDropdown.Item as={Link} to="/catalogo">
                     Catálogo
                   </NavDropdown.Item>
                   <NavDropdown.Item as={Link} to="/categorias">
                     Categorías
                   </NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/checkout-invitado">
+                    Checkout Invitado
+                  </NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown
-                  title={<span style={{ color: "#1A4756" }}>Comunidad</span>}
+                  title={<span>Comunidad</span>}
                   id="comunidad-dropdown" className="text-text1-regular"
                 >
                   <NavDropdown.Item as={Link} to="/foros">
@@ -100,7 +102,7 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                   </NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown
-                  title={<span style={{ color: "#1A4756" }}>Educación</span>}
+                  title={<span>Educación</span>}
                   id="educacion-dropdown" className="text-text1-regular"
                 >
                   <NavDropdown.Item as={Link} to="/style-guide">
@@ -111,7 +113,7 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                   </NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown
-                  title={<span style={{ color: "#1A4756" }}>Asistente Virtual</span>}
+                  title={<span>Asistente Virtual</span>}
                   id="asistente-dropdown" className="text-text1-regular"
                 >
                   <NavDropdown.Item as={Link} to="/faq">

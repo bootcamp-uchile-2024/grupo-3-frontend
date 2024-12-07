@@ -1,0 +1,185 @@
+.nav-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    z-index: 1030; 
+  }
+  
+  main {
+    position: relative;
+    z-index: 1;
+    bottom: 0;
+  }
+  
+  .header-row {
+    background-color: #1A4756;
+    z-index: 1031;
+  }
+  
+  .nav-row {
+    background-color: white;
+    z-index: 1031;
+  }
+  
+  nav.top-navbar.navbar.navbar-expand-lg.navbar-light {
+    height: 62px;
+  }
+  
+  nav.navbar-nav, .nav-link, nav.navbar-nav a, nav.navbar-nav a:active, nav.navbar-nav a:visited, nav.navbar-nav a:hover, nav.navbar-nav a:focus, nav.navbar-nav a:link {
+    color: white!important;
+  }
+  
+  .top-navbar{
+    background-color: #1A4756;
+  }
+  
+  .navbar-brand {
+    background-image: url("/src/assets/LOGO_PLANTAI.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100px;
+    height: 100px;
+    position: relative;
+    top:128px;
+    left: 35px;
+    z-index: 1;
+  }
+  
+  .bottom-navbar {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  
+  #basic-navbar-nav {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .main-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    margin: 0 auto;
+    padding: 1rem 0;
+  }
+  
+  .nav-text {
+    color: #1A4756;
+    font-size: 25px;
+  }
+  
+  .nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-left: auto;
+    padding-right: 2rem;
+    margin-right: 35px; 
+  }
+  
+  .cart-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: #1A4756;
+    position: relative; 
+  }
+  
+  .cart-count {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    min-width: 18px;
+    text-align: center;
+  }
+  .top-navbar {
+    padding: 0.5rem 2rem;
+    display: flex;
+    align-items: center;
+    height: 80px;
+  }
+  
+  #user-dropdown, .nav-link {
+    color: #1A4756;
+  }
+  
+  .dropdown-menu {
+    border-radius: 4px;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .navbar-toggler {
+    margin: 0 auto;
+  }
+  
+  /* Responsive */
+  @media (max-width: 991px) {
+    .nav-row {
+      padding: 0 1rem;
+    }
+    
+    .main-nav {
+      gap: 1rem;
+    }
+  }
+  
+  .auth-controls .nav-link,
+  .auth-controls #user-dropdown,
+  .auth-controls .dropdown-toggle {
+    color: white !important;
+  }
+  
+  .cart-link {
+    color: white !important;
+  }
+  
+  .cart-link span {
+    color: white !important;
+  }
+  
+  .icon-dark {
+    color: white !important;
+  }
+  
+  .auth-controls .dropdown-menu {
+    background-color: #1A4756;
+  }
+  
+  .auth-controls .dropdown-menu .dropdown-item {
+    color: #1A4756; 
+  }
+  
+  .auth-controls .dropdown-menu .dropdown-item:hover {
+    background-color: #f8f9fa;
+    color: #1A4756;
+  }
+  
+  .bg-danger {
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+    padding-right: 1rem;
+    margin-left: 0.8rem;
+    padding-left: 0.2rem;
+    color: white !important;
+  }
+
+  .navbar span{
+    color: #1A4756;
+  }
+
+  header .navbar {
+    position: relative;
+    z-index: 999;
+  }

@@ -19,6 +19,7 @@ import AdminCartPage from './pages/AdminCartPage';
 import StyleGuide from './components/StyleGuide';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ProductManagement from './pages/ProductManagement';
+import CheckoutInvitadoForm from './pages/CheckoutInvitadoForm';
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="style-guide" element={<StyleGuide />} />
             <Route path="catalogo" element={<CatalogPage />} />
+            <Route path="checkout-invitado" element={<CheckoutInvitadoForm />} />
             <Route path="catalogo/producto/:id" element={<ProductDetailPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="contact" element={<ContactPage />} />

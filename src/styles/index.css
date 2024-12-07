@@ -16,72 +16,16 @@ header{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: black;
   background-color: var(--main-bg-color);
-  height: 62px;
-}
-
-.navbar-brand {
-  background-image: url("/src/assets/LOGO_PLANTAI.png");
-  background-size: contain; 
-  background-repeat: no-repeat; 
-  background-position: center; 
-  display: block; 
-  width: 99px;
-  height: 100px;
-  margin-left: 34px;
-  position: relative;
-  top: 9rem;
-}
-
-nav.navbar-nav, .nav-link, nav.navbar-nav a, nav.navbar-nav a:active, nav.navbar-nav a:visited, nav.navbar-nav a:hover, nav.navbar-nav a:focus, nav.navbar-nav a:link {
-  color: white!important;
-}
-
-#nav{
-  display: flex;
-  width: 100%;
-}
+  height: 60px;
+  }
+  
 
 form#search-form {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-}
-
-nav#navbar-top {
-  display: flex;
-  align-items: center;
-  position: relative;
-  bottom: 8px;
-  left: 240px;
-}
-
-#navbar-top ul{
-  display: flex;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  flex-direction: row;
-}
-
-#navbar-top ul li{
-  display: inline-flex;
-  margin-right: 10px;
-  text-decoration: none;
-  color: black;
-  padding: 0 12px;
-}
-
-#navbar-top ul li a{
-  text-decoration: none;
-  color: black;
-}
-
-#navbar-top ul li a{
-  text-decoration: none;
-  color: black;
 }
 
 .search-form-input {

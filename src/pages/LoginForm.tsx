@@ -84,7 +84,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     <Container
       className="d-flex justify-content-center align-items-center"
       style={{
-        height: '40vh',
+        marginTop: '120px',
+        marginBottom: '64px',
       }}
     >
       <Card
@@ -146,7 +147,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
               >
                 <Form.Label
                   style={{
-                    fontFamily: 'Quicksand, sans-serif',
                     fontSize: '18px',
                     fontStyle: 'normal',
                     fontWeight: 700,
