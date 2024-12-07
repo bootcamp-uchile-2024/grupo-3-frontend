@@ -17,12 +17,19 @@ services:
     command: [ '-url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false', '-user=${DB_USERNAME}', '-password=${DB_PASSWORD}', '-connectRetries=60', 'migrate' ]
 
   cotiledon-prod:
-    image: muinidoconeg/cotiledon-test:1.10.1
+    image: nicolasf1/cotiledonapp:1.11.0
     depends_on:
       - database-prod
     environment:
-      - AMBIENTE=${AMBIENTE}
       - PORT=${API_PORT}
+      - AMBIENTE=${AMBIENTE}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - RUTA_ESTATICOS=${RUTA_ESTATICOS}
+      - RUTA_FISICA=${RUTA_FISICA}
     ports:
       - '8080:${API_PORT}'
   frontend-prod:
