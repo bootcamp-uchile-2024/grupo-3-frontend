@@ -18,6 +18,7 @@ import EditProductPage from './pages/EditProductPage';
 import AdminCartPage from './pages/AdminCartPage';
 import StyleGuide from './components/StyleGuide';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import ProductManagement from './pages/ProductManagement';
 
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
             <Route path="editar-producto/:id" element={<PrivateRoute roles={["admin-1"]}><EditProductPage /></PrivateRoute>} />
             <Route path="cart" element={<CartPage />} />
             <Route path="user-management" element={<PrivateRoute roles={['admin-1']}><UserManagement /></PrivateRoute>} />
+            <Route path="product-management" element={<PrivateRoute roles={['admin-1']}><ProductManagement/></PrivateRoute>}/>
 
             {/* Nueva ruta para AdminCartPage */}
             <Route path="admin-carts" element={<PrivateRoute roles={['admin-1']}><AdminCartPage /></PrivateRoute>} />

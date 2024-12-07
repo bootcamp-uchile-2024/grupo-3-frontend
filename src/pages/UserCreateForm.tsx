@@ -147,12 +147,8 @@ return (
     className="user-creation-container"
     style={{
       display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '100vh',
       padding: '20px',
       background: '#fff',
-      marginTop: '150px',
     }}
   >
     <Form

@@ -1,0 +1,65 @@
+/* Estilos generales para la vista */
+
+  
+  .product-management-content {
+    margin-top: 10rem;
+    padding: 16px;
+    background: #f5f5f5;
+    border-radius: 0px 0px 8px 8px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Modal Estilos */
+  .modal-header {
+    border-bottom: none;
+    text-align: center;
+    align-self: stretch;
+  }
+  
+  .modal-title {
+    color: var(--Color1, #1A4756);
+    font-family: 'Quicksand';
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 30px;
+  }
+  
+  .modal-body {
+    text-align: center;
+    color: var(--Color1, #1A4756);
+    font-family: 'Quicksand';
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 22px;
+  }
+  
+  .modal-footer {
+    border-top: none;
+  }
+  
+  .modal-btn-danger {
+    background-color: #d9534f;
+    color: #fff;
+  }
+  
+  .modal-btn-secondary {
+    color: #1a4756;
+    background-color: #fff;
+  }
+  
+  /* Botón de Modificar */
+  .btn-modify-position {
+    position: relative;
+  }
+  
+  /* Otras clases para márgenes y disposición */
+  .mt-3 {
+    margin-top: 3rem;
+  }
+  
+  .mt-2 {
+    margin-top: 2rem;
+  }
+  .transparent-button {
+    background-color: transparent;
+  }

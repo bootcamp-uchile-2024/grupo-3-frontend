@@ -16,6 +16,8 @@ import UserTable from "../components/UserTable";
 import { User } from "../types/types";
 import CustomPagination from "../components/CustomPagination";
 import AdminSideBar from "../components/AdminSideBar";
+import UserGreeting from "../components/UserGreeting";
+import "../styles/UserManagementStyle.css"
 
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -23,7 +25,7 @@ const UserManagement = () => {
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [error, setError] = useState<string>("");
+  const [, setError] = useState<string>("");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showModal, setShowModal] = useState(false);
   const [modalAction, setModalAction] = useState("");
@@ -157,48 +159,17 @@ const UserManagement = () => {
 
   return (
     <Container fluid className="mt-4" style={{}}>
-      <Col md={12}>
-        <div
-          className="d-flex align-items-center justify-content-end"
-          style={{ marginLeft: '184px', gap: '18px', marginTop: '140px' }}
-        >
-          <img
-            src="https://ui-avatars.com/api/?name=Admin&background=1A4756&color=fff&size=128"
-            alt="Perfil Admin"
-            style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              objectFit: 'cover',
-              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)'
-            }}
-          />
-          <h1
-            className="text-end"
-            style={{
-              fontFamily: 'Quicksand',
-              fontSize: '30px',
-              fontStyle: 'normal',
-              fontWeight: '500',
-              lineHeight: '52px',
-              color: '#1A4756',
-              margin: 0
-            }}
-          >
-            ¡Buenos días Admin!
-          </h1>
-        </div>
-
-        {error && <p className="text-danger">{error}</p>}
+       <Col md={12}>
+        <UserGreeting/>
       </Col>
-
+      
       <Row>
         <Col>
           <AdminSideBar />
         </Col>
 
         <Col md={10}>
-          <div style={{ marginTop: "10rem", padding: "16px", background: "#F5F5F5", borderRadius: "0px 0px 8px 8px", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}>
+          <div className="product-management-content">
             <Tabs defaultActiveKey="modificarUsuario" className="custom-tabs mb-3">
               <Tab eventKey="crearUsuario" title="Crear Usuario">
                 {isAdmin && <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />}
@@ -242,49 +213,22 @@ const UserManagement = () => {
                 />
               </Tab>
 
-              <Modal show={showModal} onHide={handleCloseModal} centered style={{ padding: '32px 41px 24px 41px' }}>
-                <Modal.Header closeButton style={{ borderBottom: "none", textAlign: "center", alignSelf: 'stretch' }}>
-                  <Modal.Title
-                    style={{
-                      color: "var(--Color1, #1A4756)",
-                      fontFamily: "Quicksand",
-                      fontSize: "24px",
-                      fontStyle: "normal",
-                      fontWeight: '700',
-                      lineHeight: "30px",
-                    }}
-                  >
+              <Modal show={showModal} onHide={handleCloseModal} centered className="modal-custom">
+                <Modal.Header closeButton>
+                  <Modal.Title className="modal-title">
                     ¿Está Seguro que desea eliminar Usuario?
                   </Modal.Title>
                 </Modal.Header>
 
-                <Modal.Body
-                  style={{
-                    textAlign: "center",
-                    color: "var(--Color1, #1A4756)",
-                    fontFamily: "Quicksand",
-                    fontSize: "18px",
-                    fontStyle: "normal",
-                    fontWeight: 700,
-                    lineHeight: "22px",
-                  }}
-                >
+                <Modal.Body className="modal-body">
                   <p>Esta acción no podrá deshacerse</p>
                 </Modal.Body>
 
-                <Modal.Footer style={{ borderTop: "none" }}>
-                  <Button
-                    variant="danger"
-                    onClick={handleConfirmAction}
-                    style={{ backgroundColor: "#D9534F", color: "#fff" }}
-                  >
+                <Modal.Footer className="modal-footer">
+                  <Button variant="danger" onClick={handleConfirmAction} className="modal-btn-danger">
                     Eliminar
                   </Button>
-                  <Button
-                    variant="secondary"
-                    onClick={handleCloseModal}
-                    style={{ color: "#1A4756", backgroundColor: "#fff" }}
-                  >
+                  <Button variant="secondary" onClick={handleCloseModal} className="modal-btn-secondary">
                     Cancelar
                   </Button>
                 </Modal.Footer>
@@ -455,7 +399,6 @@ const UserManagement = () => {
                               ))}
                             </Form.Select>
                           </Form.Group>
-
                         </Col>
                       </Row>
                     </Form>
@@ -486,7 +429,6 @@ const UserManagement = () => {
                       >
                         Modificar
                       </Button>
-
                     </div>
                   </>
                 )}
