@@ -10,7 +10,7 @@
 main {
   position: relative;
   z-index: 1;
-  bottom: -4rem;
+  bottom: 0;
 }
 
 .header-row {
@@ -18,7 +18,6 @@ main {
   z-index: 1031;
 }
 
-/* Para el nav row */
 .nav-row {
   background-color: white;
   z-index: 1031;
@@ -44,7 +43,7 @@ nav.navbar-nav, .nav-link, nav.navbar-nav a, nav.navbar-nav a:active, nav.navbar
   width: 100px;
   height: 100px;
   position: relative;
-  top:90px;
+  top:128px;
   left: 35px;
   z-index: 1;
 }
@@ -74,19 +73,36 @@ nav.navbar-nav, .nav-link, nav.navbar-nav a, nav.navbar-nav a:active, nav.navbar
   font-size: 25px;
 }
 
-.nav-link {
-  padding: 0.5rem 1rem;
-  color: #1A4756 !important;
-  text-decoration: none;
-}
-
 .nav-controls {
-  margin-left: auto;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 2rem;
+  margin-left: auto;
+  padding-right: 2rem;
+  margin-right: 35px; 
 }
 
+.cart-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: #1A4756;
+  position: relative; 
+}
+
+.cart-count {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: #dc3545;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 6px;
+  font-size: 12px;
+  min-width: 18px;
+  text-align: center;
+}
 .top-navbar {
   padding: 0.5rem 2rem;
   display: flex;
@@ -96,32 +112,12 @@ nav.navbar-nav, .nav-link, nav.navbar-nav a, nav.navbar-nav a:active, nav.navbar
 
 #user-dropdown, .nav-link {
   color: #1A4756;
-  font-family: 'Quicksand', sans-serif;
 }
 
 .dropdown-menu {
   border-radius: 4px;
   border: 1px solid #E0E0E0;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.cart-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  text-decoration: none;
-  color: #1A4756;
-}
-
-.cart-count {
-  background-color: #dc3545;
-  color: white;
-  border-radius: 50%;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  position: absolute;
-  top: -8px;
-  right: -8px;
 }
 
 .navbar-toggler {
@@ -169,4 +165,12 @@ nav.navbar-nav, .nav-link, nav.navbar-nav a, nav.navbar-nav a:active, nav.navbar
 .auth-controls .dropdown-menu .dropdown-item:hover {
   background-color: #f8f9fa;
   color: #1A4756;
+}
+
+.bg-danger {
+  --bs-bg-opacity: 1;
+  background-color: rgba(var(--bs-danger-rgb), var(--bs-bg-opacity)) !important;
+  padding-right: 1rem;
+  margin-left: 0.8rem;
+  padding-left: 0.2rem;
 }
