@@ -221,9 +221,17 @@ const createCart = useCallback(async () => {
   
     const product = cartItems.find((item) => item.id === productId);
     if (product) {
-      await addProductToCart(cartId, productId, product.cantidad + 1);
+      try {
+        const newQuantity = product.cantidad + 1;
+        await addProductToCart(cartId, productId, newQuantity);
+  
+        dispatch(updateQuantity({ id: productId, cantidad: +1 }));
+      } catch (error) {
+        alert('Error al intentar incrementar el producto. Por favor, inténtalo nuevamente.');
+      }
     }
   };
+  
   
 
   const handleDecrement = (productId: number) => {
