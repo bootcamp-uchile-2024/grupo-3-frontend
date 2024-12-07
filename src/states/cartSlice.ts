@@ -45,15 +45,15 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart(state, action: PayloadAction<CartItem>) {
-      const existingItem = state.productos.find(item => item.id === action.payload.id); 
-
+      const existingItem = state.productos.find((item) => item.id === action.payload.id);
       if (existingItem) {
-        existingItem.cantidad += action.payload.cantidad;
+        existingItem.cantidad += action.payload.cantidad; 
       } else {
         state.productos.push({ ...action.payload }); 
       }
-      saveCartToLocalStorage(state);
+      saveCartToLocalStorage(state); 
     },
+    
 
     removeFromCart(state, action: PayloadAction<number>) {
       state.productos = state.productos.filter(item => item.id !== action.payload);
@@ -67,17 +67,20 @@ const cartSlice = createSlice({
 
     updateQuantity: (state, action: PayloadAction<{ id: number; cantidad: number }>) => {
       const { id, cantidad } = action.payload;
-      const item = state.productos.find(item => item.id === id); 
+      const item = state.productos.find((item) => item.id === id);
     
       console.log('Intentando actualizar cantidad en Redux:', { id, cantidad, item });
     
       if (item) {
         item.cantidad += cantidad;
         console.log('Cantidad después de actualizar:', item.cantidad);
+    
+        saveCartToLocalStorage(state);
       } else {
         console.error('Producto no encontrado en Redux.');
       }
     },
+    
     
     
   },

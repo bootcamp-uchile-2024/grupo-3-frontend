@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { clearCart, updateQuantity } from '../states/cartSlice';
+import { clearCart, updateQuantity, addToCart } from '../states/cartSlice';
 import { RootState } from '../states/store';
 import { CartItem } from '../interfaces/CartItem';
 import { finalizePurchaseRequest } from '../endpoints/purchase';
@@ -192,6 +192,25 @@ const createCart = useCallback(async () => {
   
       if (activeCartId) {
         console.log(`Carrito activo detectado con ID ${activeCartId}. No se creará un nuevo carrito.`);
+  
+        const savedCartItems = localStorage.getItem('__redux__cart__');
+        if (savedCartItems) {
+          try {
+            const parsedCart = JSON.parse(savedCartItems);
+
+            if (parsedCart && Array.isArray(parsedCart.productos)) {
+              dispatch(clearCart());
+
+              parsedCart.productos.forEach((item: CartItem) => {
+                dispatch(addToCart(item));
+              });
+            } else {
+              console.warn('El contenido de productos no es un array:', parsedCart.productos);
+            }
+          } catch (error) {
+            console.error('Error al parsear los datos del carrito desde localStorage:', error);
+          }
+        }
         return;
       }
   
@@ -200,10 +219,10 @@ const createCart = useCallback(async () => {
     };
   
     initializeCart();
-  }, [fetchActiveCart, createCart]); 
+  }, [fetchActiveCart, createCart, dispatch]); 
   
   
-
+  
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {
       setDiscount(0.1);
@@ -223,21 +242,20 @@ const createCart = useCallback(async () => {
     if (product) {
       try {
         const newQuantity = product.cantidad + 1;
+  
         await addProductToCart(cartId, productId, newQuantity);
   
-        dispatch(updateQuantity({ id: productId, cantidad: +1 }));
-      } catch (error) {
-        alert('Error al intentar incrementar el producto. Por favor, inténtalo nuevamente.');
+        dispatch(updateQuantity({ id: productId, cantidad: 1 }));
+  
+      } catch (_error) {
+        alert('Error al intentar incrementar el producto. Por favor, inténtalo nuevamente.',);
       }
     }
   };
   
-  
-
   const handleDecrement = (productId: number) => {
     dispatch(updateQuantity({ id: productId, cantidad: -1 }));
   };
-
 
   const handleClearCart = async () => {
     if (!window.confirm('¿Estás seguro de que deseas vaciar el carrito?')) {
