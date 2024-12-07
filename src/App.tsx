@@ -16,8 +16,7 @@ import EditProductPage from './pages/EditProductPage';
 import AdminCartPage from './pages/AdminCartPage';
 import StyleGuide from './components/StyleGuide';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { AuthProvider, useAuth } from './context/AuthContext';import ProductManagement from './pages/ProductManagement';
-
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 function AppContent() {
   const { auth, setAuth } = useAuth();
