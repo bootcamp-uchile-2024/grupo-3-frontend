@@ -19,128 +19,126 @@ const CartPage: React.FC = () => {
 
   const userId = 10;
 
+  const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
 
-const fetchActiveCart = useCallback(async (): Promise<number | null> => {
-  try {
-    console.log(`Verificando carrito activo para el usuario ${userId}`);
-    const response = await fetch(`http://localhost:8080/carro-compras/user/${userId}`, {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
-    });
+  const fetchActiveCart = useCallback(async (): Promise<number | null> => {
+    try {
+      console.log(`Verificando carrito activo para el usuario ${userId}`);
+      const response = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
 
-    if (response.ok) {
+      if (response.ok) {
+        const data = await response.json();
+        setCartId(data.id);
+        console.log('Carrito activo encontrado:', data);
+        return data.id;
+      } else if (response.status === 404) {
+        console.log('No hay carrito activo para este usuario.');
+        setCartId(null);
+        return null;
+      } else {
+        throw new Error(`Error HTTP al verificar el carrito: ${response.status}`);
+      }
+    } catch (error: unknown) {
+      console.error(getErrorMessage(error));
+      return null;
+    }
+  }, [userId, setCartId, API_BASE_URL]);
+
+  const addProductToCart = async (cartId: number, productId: number, quantity: number) => {
+    try {
+      console.log(`Intentando agregar producto ${productId} al carrito ${cartId} con cantidad ${quantity}`);
+      const response = await fetch(`${API_BASE_URL}/carro-compras/addproducto/${cartId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({ productoId: productId, cantidadProducto: quantity }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Respuesta del backend:', data);
+
+        if (data.producto.cantidad < quantity) {
+          alert(`No hay suficiente stock para este producto. Disponible: ${data.producto.cantidad}.`);
+          return;
+        }
+
+        console.log('Producto agregado al carrito:', data);
+      } else {
+        const errorData = await response.json();
+        console.error('Error en la respuesta del servidor:', errorData);
+        throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+      }
+    } catch (error: unknown) {
+      console.error('Error al agregar producto al carrito:', getErrorMessage(error));
+      alert('Hubo un problema al agregar el producto al carrito. Inténtalo nuevamente.');
+    }
+  };
+
+  const createCart = useCallback(async () => {
+    try {
+      if (cartId) {
+        console.log(`Ya existe un carrito activo con ID ${cartId}. No se creará uno nuevo.`);
+        return;
+      }
+
+      console.log(`Creando un nuevo carrito para el usuario ${userId}`);
+      const response = await fetch(`${API_BASE_URL}/carro-compras/${userId}`, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error al crear el carrito:', errorData);
+
+        if (response.status === 400) {
+          console.error('El servidor rechazó la creación del carrito (400).');
+          alert(errorData.message || 'No se pudo crear el carrito debido a un error en el servidor. Contacta soporte.');
+          return;
+        }
+
+        throw new Error(errorData.message || `Error HTTP al crear carrito: ${response.status}`);
+      }
+
       const data = await response.json();
       setCartId(data.id);
-      console.log('Carrito activo encontrado:', data);
-      return data.id;
-    } else if (response.status === 404) {
-      console.log('No hay carrito activo para este usuario.');
-      setCartId(null);
-      return null;
-    } else {
-      throw new Error(`Error HTTP al verificar el carrito: ${response.status}`);
+      console.log('Carrito creado con éxito:', data);
+    } catch (error: unknown) {
+      console.error('Error crítico al intentar crear un carrito:', getErrorMessage(error));
+      alert('Hubo un problema al crear el carrito. Inténtalo nuevamente más tarde.');
     }
-  } catch (error: unknown) {
-    console.error(getErrorMessage(error));
-    return null;
-  }
-}, [userId, setCartId]);
-
-  
-  const addProductToCart = async (cartId: number, productId: number, quantity: number) => {
-  try {
-    console.log(`Intentando agregar producto ${productId} al carrito ${cartId} con cantidad ${quantity}`);
-    const response = await fetch(`http://localhost:8080/carro-compras/addproducto/${cartId}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({ productoId: productId, cantidadProducto: quantity }),
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log('Respuesta del backend:', data);
-
-      if (data.producto.cantidad < quantity) {
-        alert(`No hay suficiente stock para este producto. Disponible: ${data.producto.cantidad}.`);
-        return;
-      }
-
-      console.log('Producto agregado al carrito:', data);
-    } else {
-      const errorData = await response.json();
-      console.error('Error en la respuesta del servidor:', errorData);
-      throw new Error(errorData.message || `Error HTTP: ${response.status}`);
-    }
-  }catch (error: unknown) {
-    console.error('Error al agregar producto al carrito:', getErrorMessage(error));
-    alert('Hubo un problema al agregar el producto al carrito. Inténtalo nuevamente.');
-  }
-  
-};
-
-const createCart = useCallback(async () => {
-  try {
-    if (cartId) {
-      console.log(`Ya existe un carrito activo con ID ${cartId}. No se creará uno nuevo.`);
-      return;
-    }
-
-    console.log(`Creando un nuevo carrito para el usuario ${userId}`);
-    const response = await fetch(`http://localhost:8080/carro-compras/${userId}`, {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Error al crear el carrito:', errorData);
-
-      if (response.status === 400) {
-        console.error('El servidor rechazó la creación del carrito (400).');
-        alert(errorData.message || 'No se pudo crear el carrito debido a un error en el servidor. Contacta soporte.');
-        return;
-      }
-
-      throw new Error(errorData.message || `Error HTTP al crear carrito: ${response.status}`);
-    }
-
-    const data = await response.json();
-    setCartId(data.id);
-    console.log('Carrito creado con éxito:', data);
-  } catch (error: unknown) {
-    console.error('Error crítico al intentar crear un carrito:', getErrorMessage(error));
-    alert('Hubo un problema al crear el carrito. Inténtalo nuevamente más tarde.');
-  }
-}, [cartId, userId]);
-
+  }, [cartId, userId, API_BASE_URL]);
 
   const handleDeleteCart = async () => {
     if (!window.confirm('¿Estás seguro de que deseas eliminar el carrito por completo?')) {
       return;
     }
-  
+
     try {
       if (!cartId) {
         alert('No hay carrito asociado para eliminar.');
         return;
       }
-  
+
       console.log(`Eliminando carrito con ID ${cartId}`);
-      const response = await fetch(`http://localhost:8080/carro-compras/${cartId}`, {
+      const response = await fetch(`${API_BASE_URL}/carro-compras/${cartId}`, {
         method: 'DELETE',
         headers: { Accept: 'application/json' },
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Error al eliminar el carrito:', errorData);
         alert(errorData.message || 'Hubo un problema al eliminar el carrito.');
         return;
       }
-  
+
       dispatch(clearCart());
       setCartId(null);
       alert('El carrito ha sido eliminado completamente.');
@@ -148,9 +146,8 @@ const createCart = useCallback(async () => {
       console.error('Error al intentar eliminar el carrito:', getErrorMessage(error));
       alert('Hubo un problema al eliminar el carrito. Por favor, inténtalo nuevamente.');
     }
-    
   };
-  
+
   const replaceCartProducts = async () => {
     if (!cartId) {
       console.error('No se puede actualizar el carrito porque no existe un ID de carrito.');
@@ -159,7 +156,7 @@ const createCart = useCallback(async () => {
 
     try {
       console.log(`Actualizando productos en el carrito con ID ${cartId}`);
-      const response = await fetch(`http://localhost:8080/carro-compras/replaceProductos/${cartId}`, {
+      const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
         method: 'PUT',
         headers: {
           Accept: 'application/json',
@@ -183,16 +180,15 @@ const createCart = useCallback(async () => {
       console.error('Error al actualizar el carrito en el backend:', getErrorMessage(error));
       throw error;
     }
-    
   };
 
   useEffect(() => {
     const initializeCart = async () => {
       const activeCartId = await fetchActiveCart();
-  
+
       if (activeCartId) {
         console.log(`Carrito activo detectado con ID ${activeCartId}. No se creará un nuevo carrito.`);
-  
+
         const savedCartItems = localStorage.getItem('__redux__cart__');
         if (savedCartItems) {
           try {
@@ -213,16 +209,14 @@ const createCart = useCallback(async () => {
         }
         return;
       }
-  
+
       console.log('No hay carrito activo. Creando uno nuevo...');
       await createCart();
     };
-  
+
     initializeCart();
-  }, [fetchActiveCart, createCart, dispatch]); 
-  
-  
-  
+  }, [fetchActiveCart, createCart, dispatch]);
+
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {
       setDiscount(0.1);
@@ -237,22 +231,21 @@ const createCart = useCallback(async () => {
       alert('No se ha inicializado el carrito.');
       return;
     }
-  
+
     const product = cartItems.find((item) => item.id === productId);
     if (product) {
       try {
         const newQuantity = product.cantidad + 1;
-  
+
         await addProductToCart(cartId, productId, newQuantity);
-  
+
         dispatch(updateQuantity({ id: productId, cantidad: 1 }));
-  
       } catch (_error) {
-        alert('Error al intentar incrementar el producto. Por favor, inténtalo nuevamente.',);
+        alert('Error al intentar incrementar el producto. Por favor, inténtalo nuevamente.');
       }
     }
   };
-  
+
   const handleDecrement = (productId: number) => {
     dispatch(updateQuantity({ id: productId, cantidad: -1 }));
   };
@@ -261,16 +254,16 @@ const createCart = useCallback(async () => {
     if (!window.confirm('¿Estás seguro de que deseas vaciar el carrito?')) {
       return;
     }
-  
+
     try {
       if (!cartId) {
         alert('No hay un carrito asociado para vaciar.');
         return;
       }
-  
+
       console.log(`Vaciando carrito con ID ${cartId}`);
-  
-      const response = await fetch(`http://localhost:8080/carro-compras/replaceProductos/${cartId}`, {
+
+      const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
         method: 'PUT',
         headers: {
           Accept: 'application/json',
@@ -280,23 +273,22 @@ const createCart = useCallback(async () => {
           productosCarro: [],
         }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Error al vaciar el carrito:', errorData);
         alert(errorData.message || 'Hubo un problema al vaciar el carrito.');
         return;
       }
-  
+
       dispatch(clearCart());
       alert('El carrito ha sido vaciado exitosamente.');
     } catch (error: unknown) {
       console.error('Error al intentar vaciar el carrito:', getErrorMessage(error));
       alert('Hubo un problema al vaciar el carrito. Por favor, inténtalo nuevamente.');
     }
-    
   };
-  
+
   const handleOpenModal = () => {
     setIsModalOpen(true);
   };
@@ -314,7 +306,7 @@ const createCart = useCallback(async () => {
       if (!cartId && cartItems.length > 0) {
         console.log('No hay carrito activo. Creando uno nuevo.');
         await createCart();
-      }      
+      }
       await replaceCartProducts();
       const response = await finalizePurchaseRequest(cartItems);
       if (response.statusCode === 200) {
@@ -331,7 +323,6 @@ const createCart = useCallback(async () => {
     } finally {
       setLoading(false);
     }
-    
   };
 
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
