@@ -358,9 +358,9 @@ const CartPage: React.FC = () => {
   
 
   return (
-    <Container className="cart-container mt-4">
+    <Container className="cart-container">
       <Row>
-        <Col md={8}>
+        <Col md={8} className='mt-2'>
           <h4>Tu compra</h4>
           {groupedItems.length === 0 ? (
             <p>El carrito está vacío.</p>
@@ -409,7 +409,7 @@ const CartPage: React.FC = () => {
           )}
         </Col>
   
-        <Col md={4}>
+        <Col md={4} className='mt-5'>
           <Card className="summary-card">
             <Card.Body>
               <Card.Title>Resumen de mi compra</Card.Title>
@@ -445,77 +445,123 @@ const CartPage: React.FC = () => {
       </Row>
 
       {isModalOpen && (
-        <div className="modal show" style={{ display: 'block' }} aria-modal="true">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">{isPurchaseCompleted ? 'Tu compra ha sido finalizada con éxito' : 'Resumen del Pedido'}</h5>
-                <button type="button" className="btn-close" onClick={handleCloseModal}></button>
-              </div>
-              <div className="modal-body">
-                {isPurchaseCompleted ? (
-                  <>
-                    <p>¡Gracias por tu compra!</p>
-                    <h6>Detalles del pedido:</h6>
-                    <ul className="list-group">
-                      {purchasedItems.map((item: CartItem) => (
-                        <li key={item.id} className="list-group-item d-flex justify-content-between">
-                          <span>{item.nombre}</span>
-                          <span>x {item.cantidad} - ${item.precio * item.cantidad}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <p>
-                      El total de tu compra fue de: <h3>${formattedTotal}</h3>
-                    </p>
-                  </>
-                ) : (
-                  <>
-                    <span>Aplicar cupón de descuento?</span>
-                    <div className="input-group mb-3">
-                      <input
-                        type="text"
-                        value={coupon}
-                        onChange={(e) => setCoupon(e.target.value)}
-                        placeholder="Ingresa tu cupón"
-                        className="form-control"
+  <div className="modal show" style={{ display: 'block' }} aria-modal="true">
+    <div className="modal-dialog">
+      <div className="modal-content">
+        {isPurchaseCompleted ? (
+          // Vista de compra completada
+          <>
+            <div className="modal-header">
+              <h5 className="modal-title">Tu compra ha sido finalizada con éxito</h5>
+              <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+            </div>
+            <div className="modal-body">
+              <p>¡Gracias por tu compra!</p>
+              <h6>Detalles del pedido:</h6>
+              <ul className="list-group">
+                {purchasedItems.map((item: CartItem) => (
+                  <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
+                    <div className="d-flex align-items-center">
+                      <img 
+                        src={item.imagen || 'placeholder.jpg'} 
+                        alt={item.nombre} 
+                        className="product-image me-3"
                       />
-                      <button className="btn btn-secondary" onClick={handleApplyCoupon}>
-                        Aplicar
-                      </button>
+                      <span>{item.nombre}</span>
                     </div>
-                    <ul className="list-group">
-                      {groupedItems.map((item: CartItem) => (
-                        <li key={item.id} className="list-group-item d-flex justify-content-between">
-                          <span>{item.nombre}</span>
-                          <span> x {item.cantidad} - ${item.precio * item.cantidad}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <h3 className="mt-3">Total: ${formattedTotal}</h3>
-                  </>
-                )}
-              </div>
+                    <span>x {item.cantidad} - ${item.precio * item.cantidad}</span>
+                  </li>
+                ))}
+              </ul>
+              <p>El total de tu compra fue de: <h3>${formattedTotal}</h3></p>
               <div className="modal-footer">
-                {isPurchaseCompleted ? (
-                  <button className="btn btn-primary" onClick={handleCloseModal}>
-                    Cerrar
-                  </button>
-                ) : (
-                  <>
-                    <button className="btn btn-secondary" onClick={handleCloseModal}>
-                      Cancelar
-                    </button>
-                    <button className="btn btn-primary" onClick={handleFinalizePurchase} disabled={loading}>
-                      {loading ? 'Procesando...' : 'Finalizar Compra'}
-                    </button>
-                  </>
-                )}
+                <button className="btn btn-primary w-100" onClick={handleCloseModal}>
+                  Cerrar
+                </button>
               </div>
             </div>
-          </div>
-        </div>
-      )}
+          </>
+        ) : (
+          // Vista de carrito/resumen de compra
+          <>
+            <div className="modal-header">
+              <h5 className="modal-title">Mi Carrito de compras</h5>
+              <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+            </div>
+            <div className="modal-body">
+              <div className="list-group">
+                {groupedItems.map((item: CartItem) => (
+                  <div key={item.id} className="list-group-item">
+                    <img 
+                      src={item.imagen || 'placeholder.jpg'} 
+                      alt={item.nombre} 
+                      className="product-image"
+                    />
+                    <div className="product-details">
+                      <h6>{item.nombre}</h6>
+                      <p>Normal ${item.precio.toLocaleString('es-CL')}</p>
+                      <div className="quantity-controls">
+                        <Button
+                          variant="link"
+                          size="sm"
+                          onClick={() => handleDecrement(item.id)}
+                          disabled={item.cantidad === 1}
+                        >-</Button>
+                        <span>{item.cantidad}</span>
+                        <Button
+                          variant="link"
+                          size="sm"
+                          onClick={() => handleIncrement(item.id)}
+                        >+</Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="coupon-section mb-3">
+                <span>Aplicar cupón de descuento?</span>
+                <div className="input-group">
+                  <input
+                    type="text"
+                    value={coupon}
+                    onChange={(e) => setCoupon(e.target.value)}
+                    placeholder="Ingresa tu cupón"
+                    className="form-control"
+                  />
+                  <button className="btn btn-secondary" onClick={handleApplyCoupon}>
+                    Aplicar
+                  </button>
+                </div>
+              </div>
+
+              <div className="total-section mt-3">
+                <strong>Total a pagar: ${formattedTotal}</strong>
+              </div>
+            </div>
+            
+            <div className="modal-footer flex-column">
+              <Button 
+                variant="primary" 
+                className="w-100"
+                onClick={handleFinalizePurchase}
+                disabled={loading}
+              >
+                {loading ? 'Procesando...' : 'Finalizar compra'}
+              </Button>
+              <button 
+                className="btn btn-link text-secondary w-100"
+                onClick={handleCloseModal}
+              >
+                Seguir comprando
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  </div>
+)}
     </Container>
   );
 };

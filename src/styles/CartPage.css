@@ -1,5 +1,5 @@
 .cart-container {
-    margin-top: 120px;  /* Para dar espacio al nav fijo */
+    margin-top: 160px;
     margin-bottom: 40px;
   }
   
@@ -117,4 +117,78 @@
   
   .input-group .btn {
     border-radius: 0 4px 4px 0;
+  }
+
+  /* Modal */
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+  }
+  
+  .modal-dialog {
+    margin: 0;
+    max-width: 400px;
+    width: 90%;
+  }
+  
+  .modal-content {
+    background: white;
+    border-radius: 8px;
+    border: none;
+    padding: 20px;
+  }
+  
+  .product-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .modal-header {
+    border: none;
+    padding: 0;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  
+  .modal-title {
+    color: #1A4756;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  
+  .modal-body {
+    padding: 0;
+  }
+  
+  .modal-footer {
+    border: none;
+    padding: 20px 0 0;
+  }
+  
+  .list-group-item {
+    border: none;
+    padding: 10px 0;
+    display: flex;
+    gap: 15px;
+  }
+  
+  .product-details {
+    flex-grow: 1;
+  }
+  
+  .quantity-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
