@@ -47,8 +47,8 @@ export interface CreateProductData {
   largo: number;
   peso: number;
   habilitado: boolean;
-  planta: Planta;
-  macetero: Macetero;
-  accesorio: Accesorio;
-  insumo: Insumo;
+  planta?: Planta;
+  macetero?: Macetero;
+  accesorio?: Accesorio;
+  insumo?: Insumo;
 }

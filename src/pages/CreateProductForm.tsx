@@ -62,13 +62,10 @@ const CreateProduct: React.FC = () => {
     ];
 
     useEffect(() => {
-        // Dependiendo de la categoría, se actualizan los datos de planta, macetero, accesorio e insumo
         if (producto.idCategoria === 1) { // Plantas
             setProducto((prevProducto) => ({
                 ...prevProducto,
                 planta: {
-                    ...prevProducto.planta,
-                    // Poner los valores por defecto para plantas
                     petFriendly: false,
                     ciclo: false,
                     especie: '',
@@ -81,43 +78,19 @@ const CreateProduct: React.FC = () => {
                     idEntorno: 1,
                     idIluminacion: 1
                 },
-                macetero: {
-                    ...prevProducto.macetero,
-                    idMarca: 1,
-                    idTipoMacetero: 1,
-                    material: '',
-                    forma: '',
-                    diametro: 0,
-                    litros: 0
-                },
-                accesorio: {
-                    idMarca: 1,
-                    idTipoAccesorio: 1,
-                    idColor: 1
-                },
-                insumo: {
-                    idTipoInsumo: 1,
-                    idMarca: 1
-                }
             }));
         } else if (producto.idCategoria === 2) { // Accesorios
             setProducto((prevProducto) => ({
                 ...prevProducto,
-                planta: { ...prevProducto.planta }, // Dejar planta vacía o ajustarla según sea necesario
-                macetero: { ...prevProducto.macetero }, // Ajustar si necesario
                 accesorio: {
                     idMarca: 1,
                     idTipoAccesorio: 1,
                     idColor: 1
                 },
-                insumo: { ...prevProducto.insumo } // Ajustar si necesario
             }));
         } else if (producto.idCategoria === 3) { // Insumos
             setProducto((prevProducto) => ({
                 ...prevProducto,
-                planta: { ...prevProducto.planta }, // Dejar planta vacía o ajustarla según sea necesario
-                macetero: { ...prevProducto.macetero }, // Ajustar si necesario
-                accesorio: { ...prevProducto.accesorio }, // Ajustar si necesario
                 insumo: {
                     idTipoInsumo: 1,
                     idMarca: 1
@@ -126,7 +99,6 @@ const CreateProduct: React.FC = () => {
         } else if (producto.idCategoria === 4) { // Maceteros
             setProducto((prevProducto) => ({
                 ...prevProducto,
-                planta: { ...prevProducto.planta }, // Dejar planta vacía o ajustarla según sea necesario
                 macetero: {
                     idMarca: 1,
                     idTipoMacetero: 1,
@@ -135,8 +107,6 @@ const CreateProduct: React.FC = () => {
                     diametro: 0,
                     litros: 0
                 },
-                accesorio: { ...prevProducto.accesorio }, // Ajustar si necesario
-                insumo: { ...prevProducto.insumo } // Ajustar si necesario
             }));
         }
     }, [producto.idCategoria]); // Cuando cambia la categoría, actualiza el estado de acuerdo a la lógica
@@ -244,7 +214,7 @@ const CreateProduct: React.FC = () => {
         if (!producto.idCategoria) {
             newErrors.idCategoria = 'Debe seleccionar una categoría';
             isValid = false;
-        }        
+        }
 
         if (producto.stock <= 0) {
             newErrors.cantidad = 'La cantidad debe ser mayor que 0';
@@ -264,7 +234,7 @@ const CreateProduct: React.FC = () => {
         setErrores(newErrors);
         return isValid;
     };
-    
+
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (validate()) {
@@ -287,11 +257,25 @@ const CreateProduct: React.FC = () => {
                     largo: producto.largo,
                     peso: producto.peso,
                     habilitado: producto.habilitado,
-                    planta: producto.planta,
-                    macetero: producto.macetero,
-                    accesorio: producto.accesorio,
-                    insumo: producto.insumo,
+                    // Solo agregar la categoría relevante
+                    planta: producto.idCategoria === 1 ? producto.planta : undefined,
+                    macetero: producto.idCategoria === 4 ? producto.macetero : undefined,
+                    accesorio: producto.idCategoria === 2 ? producto.accesorio : undefined,
+                    insumo: producto.idCategoria === 3 ? producto.insumo : undefined,
                 };
+                // Eliminar las propiedades de categorías no seleccionadas
+                if (producto.idCategoria !== 1) {
+                    delete productoData.planta;
+                }
+                if (producto.idCategoria !== 4) {
+                    delete productoData.macetero;
+                }
+                if (producto.idCategoria !== 2) {
+                    delete productoData.accesorio;
+                }
+                if (producto.idCategoria !== 3) {
+                    delete productoData.insumo;
+                }
                 setProducto({ ...producto, SKU });
                 console.log("Producto JSON para enviar:", JSON.stringify(productoData));
 
