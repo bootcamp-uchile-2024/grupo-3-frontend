@@ -4,7 +4,6 @@ import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import '../styles/CheckoutInvitadoForm.css';
 
 interface CheckoutInvitadoDTO {
-  // Datos personales
   email: string;
   nombre: string;
   apellido: string;
@@ -226,7 +225,8 @@ const CheckoutInvitadoForm: React.FC = () => {
               value={formData.tipoRecibo}
               onChange={handleInputChange}
             >
-              <option value="boleto">Boleto</option>
+              <option value="boleto">Boleta</option>
+              <option value="boleto">Factura</option>
               {/* Agregar más opciones */}
             </Form.Select>
           </Form.Group>

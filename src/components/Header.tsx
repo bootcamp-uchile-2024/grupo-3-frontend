@@ -5,11 +5,10 @@ import { RootState } from '../states/store';
 
 
 interface CartItem {
-  id: number; // O el tipo correspondiente
+  id: number; 
   nombre: string;
   cantidad: number;
   precio: number;
-  // Otros campos si es necesario
 }
 
 interface HeaderProps {
@@ -18,10 +17,10 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
-  const cartItems = useSelector((state: RootState) => state.cart.productos) || []; // Asegúrate de que nunca sea undefined
+  const cartItems = useSelector((state: RootState) => state.cart.productos) || []; 
 
   const getTotalItems = (items: CartItem[] = []) => {
-    return items.reduce((total, item) => total + item.cantidad, 0); // Calcular el total de productos
+    return items.reduce((total, item) => total + item.cantidad, 0); 
   };
 
   const cartItemCount = getTotalItems(cartItems);

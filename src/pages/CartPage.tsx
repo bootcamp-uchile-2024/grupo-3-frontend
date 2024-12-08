@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { clearCart, updateQuantity, addToCart } from '../states/cartSlice';
+import { removeFromCart, clearCart, updateQuantity, addToCart } from '../states/cartSlice';
 import { RootState } from '../states/store';
 import { CartItem } from '../interfaces/CartItem';
 import { finalizePurchaseRequest } from '../endpoints/purchase';
@@ -117,36 +117,31 @@ const CartPage: React.FC = () => {
     }
   }, [cartId, userId, API_BASE_URL]);
 
-  const handleDeleteCart = async () => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar el carrito por completo?')) {
+  const handleRemoveProductFromCart = async (productId: number) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
       return;
     }
-
+  
     try {
-      if (!cartId) {
-        alert('No hay carrito asociado para eliminar.');
-        return;
-      }
-
-      console.log(`Eliminando carrito con ID ${cartId}`);
-      const response = await fetch(`${API_BASE_URL}/carro-compras/${cartId}`, {
-        method: 'DELETE',
-        headers: { Accept: 'application/json' },
-      });
-
+      const response = await fetch(
+        `${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`,
+        {
+          method: 'DELETE',
+          headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+        }
+      );
+  
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('Error al eliminar el carrito:', errorData);
-        alert(errorData.message || 'Hubo un problema al eliminar el carrito.');
+        alert(errorData.message || 'Hubo un problema al eliminar el producto.');
         return;
       }
-
-      dispatch(clearCart());
-      setCartId(null);
-      alert('El carrito ha sido eliminado completamente.');
-    } catch (error: unknown) {
-      console.error('Error al intentar eliminar el carrito:', getErrorMessage(error));
-      alert('Hubo un problema al eliminar el carrito. Por favor, inténtalo nuevamente.');
+  
+      dispatch(removeFromCart(productId));
+      alert('El producto ha sido eliminado del carrito.');
+    } catch (error) {
+      console.error('Error al intentar eliminar el producto:', error);
+      alert('No se pudo eliminar el producto. Por favor, inténtalo nuevamente.');
     }
   };
 
@@ -397,7 +392,11 @@ const CartPage: React.FC = () => {
                         </div>
                       </Col>
                       <Col md={3} className="text-end">
-                        <Button variant="link" className="text-danger" onClick={handleDeleteCart}>
+                        <Button
+                          variant="link"
+                          className="text-danger"
+                          onClick={() => handleRemoveProductFromCart(item.id)} // Cambiado `product.id` por `item.id`
+                        >
                           Eliminar
                         </Button>
                       </Col>
