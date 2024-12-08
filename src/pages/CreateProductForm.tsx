@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CreateProductData } from '../interfaces/CreateProductData.ts';
 import fileTypeChecker from 'file-type-checker';
 import { useEffect } from 'react';
+import { Image, Form, Button, Row, Col, Container } from 'react-bootstrap';
 
 const CreateProduct: React.FC = () => {
 
@@ -53,6 +54,7 @@ const CreateProduct: React.FC = () => {
     });
 
     const [errores, setErrores] = useState<{ [key: string]: string }>({});
+    const [imagePreview, setImagePreview] = useState('');
 
     const categories = [
         { id: 1, name: 'Plantas' },
@@ -155,6 +157,7 @@ const CreateProduct: React.FC = () => {
 
         const base64 = await convertirBase64(file);
         setProducto({ ...producto, imagen: base64 });
+        setImagePreview(base64);
     };
 
     const validarTamanoFichero = (file: File) => {
@@ -257,13 +260,12 @@ const CreateProduct: React.FC = () => {
                     largo: producto.largo,
                     peso: producto.peso,
                     habilitado: producto.habilitado,
-                    // Solo agregar la categoría relevante
                     planta: producto.idCategoria === 1 ? producto.planta : undefined,
                     macetero: producto.idCategoria === 4 ? producto.macetero : undefined,
                     accesorio: producto.idCategoria === 2 ? producto.accesorio : undefined,
                     insumo: producto.idCategoria === 3 ? producto.insumo : undefined,
                 };
-                // Eliminar las propiedades de categorías no seleccionadas
+                // Elimina las propiedades de categorías no seleccionadas
                 if (producto.idCategoria !== 1) {
                     delete productoData.planta;
                 }
@@ -336,6 +338,7 @@ const CreateProduct: React.FC = () => {
                         idMarca: 1
                     }
                 });
+                setImagePreview('');
                 console.log("Producto creado: ", productoData)
             } catch (error) {
                 console.error("Error al crear el producto: ", error);
@@ -346,135 +349,175 @@ const CreateProduct: React.FC = () => {
     };
 
     return (
-        <div className="Create-product-container">
-            <form>
-                <h2>Crear Producto </h2>
-                <div className='Create-product-container-divs'>
-                    <div>
-                        <label htmlFor="nombre">Nombre del producto:</label>
-                        <input
-                            id="nombre"
-                            className='Create-product-container-inputs'
+        <Container>
+            <Form>
+                <div>
+                    {/* Nombre del Producto */}
+                    <Form.Group controlId="nombre">
+                        <Form.Label>Nombre:</Form.Label>
+                        <Form.Control
+                            type="text"
                             name="nombre"
                             value={producto.nombre}
                             onChange={handleChange}
+                            isInvalid={!!errores.nombre}
                         />
-                        {errores.nombre && <p className='Create-product-container-inputs-error'>{errores.nombre}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="idCategoria">Categoría:</label>
-                        <select
-                            id="idCategoria"
+                        <Form.Control.Feedback type="invalid">
+                            {errores.nombre}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+
+                    {/* Categoría */}
+                    <Form.Group controlId="idCategoria">
+                        <Form.Label>Categoría:</Form.Label>
+                        <Form.Control
+                            as="select"
                             name="idCategoria"
-                            className='Create-product-container-inputs'
                             value={producto.idCategoria}
                             onChange={handleChange}
+                            isInvalid={!!errores.idCategoria}
                         >
                             {categories.map((category) => (
                                 <option key={category.id} value={category.id}>
                                     {category.name}
                                 </option>
                             ))}
-                        </select>
-                        {errores.idCategoria && <p className='Create-product-container-inputs-error'>{errores.idCategoria}</p>}
-                    </div>
+                        </Form.Control>
+                        <Form.Control.Feedback type="invalid">
+                            {errores.idCategoria}
+                        </Form.Control.Feedback>
+                    </Form.Group>
 
-                    <div>
-                        <label htmlFor="precio">Precio:</label>
-                        <input
+                    {/* Precio */}
+                    <Form.Group controlId="precio">
+                        <Form.Label>Precio:</Form.Label>
+                        <Form.Control
                             type="number"
-                            id="precio"
                             name="precio"
-                            className='Create-product-container-inputs'
                             value={producto.precio}
                             onChange={handleChange}
+                            isInvalid={!!errores.precio}
                         />
-                        {errores.precio && <p className='Create-product-container-inputs-error'>{errores.precio}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="imagen">Imagen:</label>
-                        <input
+                        <Form.Control.Feedback type="invalid">
+                            {errores.precio}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+
+                    {/* Imagen */}
+                    <Form.Group controlId="imagen">
+                        <Form.Label>Imagen:</Form.Label>
+                        <Form.Control
                             type="file"
-                            id="imagen"
-                            className='Create-product-container-inputs'
                             name="imagen"
                             onChange={handleFileUpload}
+                            isInvalid={!!errores.imagen}
                         />
-                        {errores.imagen && <p className='Create-product-container-inputs-error'>{errores.imagen}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="descripcion">Descripción del producto:</label>
-                        <textarea
-                            id="descripcion"
+                        <Form.Control.Feedback type="invalid">
+                            {errores.imagen}
+                        </Form.Control.Feedback>
+                        {/* Previsualización de la imagen */}
+                        {imagePreview && (
+                            <div className="mt-3">
+                                <Image src={imagePreview} alt="Previsualización" thumbnail />
+                            </div>
+                        )}
+                    </Form.Group>
+
+                    {/* Descripción */}
+                    <Form.Group controlId="descripcion">
+                        <Form.Label>Descripción del producto:</Form.Label>
+                        <Form.Control
+                            as="textarea"
                             name="descripcion"
                             value={producto.descripcion}
-                            className='Create-product-container-inputs'
                             onChange={handleChange}
                             rows={5}
-                            cols={40}
+                            isInvalid={!!errores.descripcion}
                         />
-                        {errores.descripcion && <p className='Create-product-container-inputs-error'>{errores.descripcion}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="stock">Stock:</label>
-                        <input
+                        <Form.Control.Feedback type="invalid">
+                            {errores.descripcion}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+
+                    {/* Stock */}
+                    <Form.Group controlId="stock">
+                        <Form.Label>Cantidad de Stock:</Form.Label>
+                        <Form.Control
                             type="number"
                             name="stock"
-                            id="stock"
-                            className='Create-product-container-inputs'
-                            onChange={handleChange}
                             value={producto.stock}
-                        />
-                        {errores.cantidad && <p className='Create-product-container-inputs-error'>{errores.cantidad}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="Ancho">Ancho en cm:</label>
-                        <input
-                            type="number"
-                            name="ancho"
-                            id="ancho"
-                            className='Create-product-container-inputs'
                             onChange={handleChange}
-                            value={producto.ancho}
+                            isInvalid={!!errores.cantidad}
                         />
-                        <label htmlFor="alto">Alto en cm:</label>
-                        <input
-                            type="number"
-                            name="alto"
-                            id="alto"
-                            className='Create-product-container-inputs'
-                            onChange={handleChange}
-                            value={producto.alto}
-                        />
-                        <label htmlFor="largo">Largo en cm:</label>
-                        <input
-                            type="number"
-                            name="largo"
-                            id="largo"
-                            className='Create-product-container-inputs'
-                            onChange={handleChange}
-                            value={producto.largo}
-                        />
-                        {errores.dimensiones && <p className='Create-product-container-inputs-error'>{errores.dimensiones}</p>}
-                    </div>
-                    <div>
-                        <label htmlFor="peso">Peso en Kg:</label>
-                        <input
+                        <Form.Control.Feedback type="invalid">
+                            {errores.cantidad}
+                        </Form.Control.Feedback>
+                    </Form.Group>
+
+                    {/* Dimensiones */}
+                    <Row>
+                        <Col md={4}>
+                            <Form.Group controlId="ancho">
+                                <Form.Label>Ancho en cm:</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="ancho"
+                                    value={producto.ancho}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                            <Form.Group controlId="alto">
+                                <Form.Label>Alto en cm:</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="alto"
+                                    value={producto.alto}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                            <Form.Group controlId="largo">
+                                <Form.Label>Largo en cm:</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="largo"
+                                    value={producto.largo}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    {errores.dimensiones && (
+                        <p className="Create-product-container-inputs-error">{errores.dimensiones}</p>
+                    )}
+
+                    {/* Peso */}
+                    <Form.Group controlId="peso">
+                        <Form.Label>Peso en gramos:</Form.Label>
+                        <Form.Control
                             type="number"
                             name="peso"
-                            id="peso"
-                            className='Create-product-container-inputs'
-                            onChange={handleChange}
                             value={producto.peso}
+                            onChange={handleChange}
+                            isInvalid={!!errores.peso}
                         />
-                        {errores.peso && <p className='Create-product-container-inputs-error'>{errores.peso}</p>}
-                    </div>
+                        <Form.Control.Feedback type="invalid">
+                            {errores.peso}
+                        </Form.Control.Feedback>
+                    </Form.Group>
                 </div>
-                <button type="button" onClick={handleSubmit} className='Create-product-container-button'>
+                <Button
+                    type="button"
+                    onClick={handleSubmit}
+                    className="Create-product-container-button"
+                >
                     Crear Producto
-                </button>
-            </form>
-        </div>
+                </Button>
+            </Form>
+        </Container>
     );
 };
 
