@@ -1,0 +1,120 @@
+.cart-container {
+    margin-top: 120px;  /* Para dar espacio al nav fijo */
+    margin-bottom: 40px;
+  }
+  
+  .product-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  .cart-item {
+    border: none !important;
+    background-color: #f8f9fa !important;
+    margin-bottom: 10px;
+    border-radius: 4px !important;
+    padding: 15px !important;
+  }
+  
+  .product-title {
+    color: #1A4756;
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  
+  .price-text {
+    color: #1A4756;
+    font-weight: bold;
+  }
+  
+  .original-price {
+    font-size: 14px;
+    color: #6c757d;
+    text-decoration: line-through;
+  }
+  
+  .quantity-controls {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .quantity-controls button {
+    border-color: #1A4756;
+    color: #1A4756;
+  }
+  
+  .quantity-controls button:hover {
+    background-color: #1A4756;
+    color: white;
+  }
+  
+  .summary-card {
+    border: none;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+  }
+  
+  .summary-card .card-title {
+    color: #1A4756;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 20px;
+  }
+  
+  .summary-card .list-group-item {
+    border: none;
+    background-color: transparent;
+    padding: 10px 0;
+    color: #1A4756;
+  }
+  
+  .total-row {
+    border-top: 1px solid #dee2e6 !important;
+    margin-top: 10px;
+    padding-top: 15px !important;
+  }
+  
+  .btn-primary {
+    background-color: #1A4756;
+    border-color: #1A4756;
+  }
+  
+  .btn-primary:hover {
+    background-color: #143642;
+    border-color: #143642;
+  }
+  
+  .btn-outline-primary {
+    color: #1A4756;
+    border-color: #1A4756;
+  }
+  
+  .btn-outline-primary:hover {
+    background-color: #1A4756;
+    color: white;
+  }
+  
+  /* Estilos para el modal */
+  .modal {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+    border-radius: 8px;
+  }
+  
+  .modal-title {
+    color: #1A4756;
+  }
+  
+  .input-group .form-control {
+    border-radius: 4px 0 0 4px;
+  }
+  
+  .input-group .btn {
+    border-radius: 0 4px 4px 0;
+  }

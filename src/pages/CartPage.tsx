@@ -4,6 +4,8 @@ import { clearCart, updateQuantity, addToCart } from '../states/cartSlice';
 import { RootState } from '../states/store';
 import { CartItem } from '../interfaces/CartItem';
 import { finalizePurchaseRequest } from '../endpoints/purchase';
+import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap';
+import '../styles/CartPage.css';
 
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -356,43 +358,91 @@ const CartPage: React.FC = () => {
   
 
   return (
-    <div className="container carro-container mt-4">
-      <h4>Carrito de Compras</h4>
-      {groupedItems.length === 0 ? (
-        <p>El carrito está vacío.</p>
-      ) : (
-        <>
-          <ul className="list-group mb-3">
-            {groupedItems.map((item: CartItem) => (
-              <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
-                <div>
-                  <h6 className="my-0">{item.nombre}</h6>
-                  <small className="text-body-secondary">Precio: ${item.precio}</small>
-                </div>
-                <div>
-                  <button className="btn btn-outline-secondary btn-sm" onClick={() => handleDecrement(item.id)} disabled={item.cantidad === 1}>
-                    -
-                  </button>
-                  <span className="mx-2">{item.cantidad}</span>
-                  <button className="btn btn-outline-secondary btn-sm" onClick={() => handleIncrement(item.id)}>
-                    +
-                  </button>
-                  <button className="btn btn-primary btn-sm ms-2" onClick={handleDeleteCart}>
-                    Eliminar
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-          <h2>Total: ${formattedTotal}</h2>
-          <button className="btn btn btn-outline-primary" onClick={handleClearCart}>
-            Vaciar Carrito
-          </button>
-          <button className="btn btn-primary ms-2" onClick={handleOpenModal}>
-            Pagar
-          </button>
-        </>
-      )}
+    <Container className="cart-container mt-4">
+      <Row>
+        <Col md={8}>
+          <h4>Tu compra</h4>
+          {groupedItems.length === 0 ? (
+            <p>El carrito está vacío.</p>
+          ) : (
+            <>
+              <ListGroup className="mb-4">
+                {groupedItems.map((item: CartItem) => (
+                  <ListGroup.Item key={item.id} className="cart-item py-3">
+                    <Row className="align-items-center">
+                      <Col md={3}>
+                        <img src={item.imagen || 'placeholder.jpg'} alt={item.nombre} className="product-image img-fluid" />
+                      </Col>
+                      <Col md={6}>
+                        <h5 className="product-title mb-2">{item.nombre}</h5>
+                        <p className="price-text mb-1">Ahora ${item.precio.toLocaleString('es-CL')}</p>
+                        <p className="original-price text-muted">Normal ${item.precio}</p>
+                        <div className="quantity-controls">
+                          <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            onClick={() => handleDecrement(item.id)}
+                            disabled={item.cantidad === 1}
+                          >
+                            -
+                          </Button>
+                          <span className="mx-3">{item.cantidad}</span>
+                          <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            onClick={() => handleIncrement(item.id)}
+                          >
+                            +
+                          </Button>
+                        </div>
+                      </Col>
+                      <Col md={3} className="text-end">
+                        <Button variant="link" className="text-danger" onClick={handleDeleteCart}>
+                          Eliminar
+                        </Button>
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
+            </>
+          )}
+        </Col>
+  
+        <Col md={4}>
+          <Card className="summary-card">
+            <Card.Body>
+              <Card.Title>Resumen de mi compra</Card.Title>
+              <ListGroup variant="flush" className="mb-3">
+                <ListGroup.Item className="d-flex justify-content-between">
+                  <span>Costos de tus productos</span>
+                  <span>${total}</span>
+                </ListGroup.Item>
+                <ListGroup.Item className="d-flex justify-content-between">
+                  <span>Descuentos</span>
+                  <span>-${(total * discount).toLocaleString('es-CL')}</span>
+                </ListGroup.Item>
+                <ListGroup.Item className="d-flex justify-content-between">
+                  <span>Envío</span>
+                  <span>$0</span>
+                </ListGroup.Item>
+                <ListGroup.Item className="d-flex justify-content-between total-row">
+                  <strong>Total</strong>
+                  <strong>${formattedTotal}</strong>
+                </ListGroup.Item>
+              </ListGroup>
+              <div className="d-grid gap-2">
+                <Button variant="outline-primary" onClick={handleClearCart}>
+                  Volver
+                </Button>
+                <Button variant="primary" onClick={handleOpenModal}>
+                  Finalizar la compra
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
 
       {isModalOpen && (
         <div className="modal show" style={{ display: 'block' }} aria-modal="true">
@@ -466,7 +516,7 @@ const CartPage: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </Container>
   );
 };
 
