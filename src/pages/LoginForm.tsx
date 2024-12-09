@@ -84,7 +84,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     <Container
       className="d-flex justify-content-center align-items-center"
       style={{
-        marginTop: '120px',
+        marginTop: '160px',
         marginBottom: '64px',
       }}
     >
@@ -108,7 +108,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
               alignSelf: 'stretch',
               textAlign: 'center',
               color: '#1A4756',
-              fontFamily: 'Quicksand, sans-serif',
               fontSize: '30px',
               fontStyle: 'normal',
               fontWeight: 500,
