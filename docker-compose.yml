@@ -17,7 +17,7 @@ services:
     command: [ '-url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false', '-user=${DB_USERNAME}', '-password=${DB_PASSWORD}', '-connectRetries=60', 'migrate' ]
 
   cotiledon-prod:
-    image: nicolasf1/cotiledonapp:1.11.1
+    image: nicolasf1/cotiledonapp:1.11.2
     depends_on:
       - database-prod
     environment:
