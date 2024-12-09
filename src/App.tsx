@@ -21,6 +21,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ProductManagement from './pages/ProductManagement';
 import CheckoutInvitadoForm from './pages/CheckoutInvitadoForm';
 import CheckoutLoginForm from './pages/CheckoutLoginForm';
+import CartPagePay from './pages/CartPagePay';
 
 
 function App() {
@@ -44,6 +45,7 @@ function App() {
             <Route path="catalogo" element={<CatalogPage />} />
             <Route path="checkout-invitado" element={<CheckoutInvitadoForm />} />
             <Route path="login-checkout" element={<CheckoutLoginForm />} />
+            <Route path="cart-page-pay" element={<CartPagePay/>} />
             <Route path="catalogo/producto/:id" element={<ProductDetailPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="contact" element={<ContactPage />} />

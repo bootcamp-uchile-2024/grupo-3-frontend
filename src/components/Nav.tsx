@@ -92,6 +92,9 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                   <NavDropdown.Item as={Link} to="/login-checkout">
                     Login Checkout
                   </NavDropdown.Item>
+                  <NavDropdown.Item as={Link} to="/cart-page-pay">
+                    Carro de compra / Pago
+                  </NavDropdown.Item>
                 </NavDropdown>
                 <NavDropdown
                   title={<span>Comunidad</span>}
