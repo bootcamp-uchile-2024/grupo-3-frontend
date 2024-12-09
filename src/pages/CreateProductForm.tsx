@@ -525,83 +525,83 @@ const CreateProduct: React.FC = () => {
 
                                 {/* Campos Condicionales */}
                                 {producto.idCategoria === 1 && ( // Mostrar campos de planta
-                                   <>
-                                   <Col md={4}>
-                                        <Form.Group controlId="planta.petFriendly">
-                                            <Form.Label>¿Es pet-friendly?:</Form.Label>
-                                            <Form.Control
-                                                as="select"
-                                                name="planta.petFriendly"
-                                                value={producto.planta?.petFriendly ? "Sí" : "No"}  // Usamos "true" o "false" como strings
-                                                onChange={handleChange}
-                                            >
-                                                <option value="Sí">Sí</option>  {/* Usamos true como valor */}
-                                                <option value="No">No</option>  {/* Usamos false como valor */}
-                                            </Form.Control>
-                                        </Form.Group>
-                                    </Col>
-                                    <Col md={4}>
-                                        <Form.Group controlId="ciclo">
-                                            <Form.Label>¿Tiene ciclo?</Form.Label>
-                                            <Form.Control
-                                                as="select"
-                                                name="planta.ciclo"
-                                                value={producto.planta?.ciclo ? "Sí" : "No"}
-                                                onChange={handleChange}
-                                            >
-                                                <option value="Sí">Sí</option>
-                                                <option value="No">No</option>
-                                            </Form.Control>
-                                        </Form.Group>
-                                    </Col>
+                                    <>
+                                        <Col md={4}>
+                                            <Form.Group controlId="planta.petFriendly">
+                                                <Form.Label>¿Es pet-friendly?:</Form.Label>
+                                                <Form.Control
+                                                    as="select"
+                                                    name="planta.petFriendly"
+                                                    value={producto.planta?.petFriendly ? "Sí" : "No"}  // Usamos "true" o "false" como strings
+                                                    onChange={handleChange}
+                                                >
+                                                    <option value="Sí">Sí</option>  {/* Usamos true como valor */}
+                                                    <option value="No">No</option>  {/* Usamos false como valor */}
+                                                </Form.Control>
+                                            </Form.Group>
+                                        </Col>
+                                        <Col md={4}>
+                                            <Form.Group controlId="ciclo">
+                                                <Form.Label>¿Tiene ciclo?</Form.Label>
+                                                <Form.Control
+                                                    as="select"
+                                                    name="planta.ciclo"
+                                                    value={producto.planta?.ciclo ? "Sí" : "No"}
+                                                    onChange={handleChange}
+                                                >
+                                                    <option value="Sí">Sí</option>
+                                                    <option value="No">No</option>
+                                                </Form.Control>
+                                            </Form.Group>
+                                        </Col>
                                     </>
                                 )}
 
                                 {producto.idCategoria === 2 && ( // Mostrar campos de accesorios
-                                  <>
-                                   <Col md={4}>
-                                    <Form.Group controlId="idTipoAccesorio">
-                                        <Form.Label>Tipo de Accesorio:</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="material"
-                                            value={producto.accesorio?.idTipoAccesorio}
-                                            onChange={handleChange}
-                                        />
-                                    </Form.Group>
-                                    </Col>
+                                    <>
+                                        <Col md={4}>
+                                            <Form.Group controlId="idTipoAccesorio">
+                                                <Form.Label>Tipo de Accesorio:</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name="material"
+                                                    value={producto.accesorio?.idTipoAccesorio}
+                                                    onChange={handleChange}
+                                                />
+                                            </Form.Group>
+                                        </Col>
                                     </>
                                 )}
 
                                 {producto.idCategoria === 3 && ( // Mostrar campos de insumos
-                                 <>
-                                   <Col md={4}>        
-                                    <Form.Group controlId="tipoInsumo">
-                                        <Form.Label>Tipo de Insumo</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="tipoInsumo"
-                                            value={producto.insumo?.idTipoInsumo}
-                                            onChange={handleChange}
-                                        />
-                                    </Form.Group>
-                                    </Col>
-                                </>
+                                    <>
+                                        <Col md={4}>
+                                            <Form.Group controlId="tipoInsumo">
+                                                <Form.Label>Tipo de Insumo</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name="tipoInsumo"
+                                                    value={producto.insumo?.idTipoInsumo}
+                                                    onChange={handleChange}
+                                                />
+                                            </Form.Group>
+                                        </Col>
+                                    </>
                                 )}
 
                                 {producto.idCategoria === 4 && ( // Mostrar campos de maceteros
-                                     <>
-                                   <Col md={4}>   
-                                    <Form.Group controlId="materialMacetero">
-                                        <Form.Label>Material del Macetero:</Form.Label>
-                                        <Form.Control
-                                            type="text"
-                                            name="materialMacetero"
-                                            value={producto.macetero?.material}
-                                            onChange={handleChange}
-                                        />
-                                    </Form.Group>
-                                    </Col>
+                                    <>
+                                        <Col md={4}>
+                                            <Form.Group controlId="materialMacetero">
+                                                <Form.Label>Material del Macetero:</Form.Label>
+                                                <Form.Control
+                                                    type="text"
+                                                    name="materialMacetero"
+                                                    value={producto.macetero?.material}
+                                                    onChange={handleChange}
+                                                />
+                                            </Form.Group>
+                                        </Col>
                                     </>
                                 )}
                             </Row>
@@ -609,11 +609,16 @@ const CreateProduct: React.FC = () => {
                             {/* Imagen */}
                             <Form.Group controlId="imagen">
                                 <Form.Label>Subir Imagen</Form.Label>
+                                <br/>
                                 {/* Previsualización */}
-                                {imagePreview && (
+                                {imagePreview ? (
                                     <div className="mt-3">
                                         <Image src={imagePreview} alt="Previsualización" className="small-preview" />
                                     </div>
+                                ) : (
+                                    <span className="mt-3 material-symbols-outlined icono-tamano-personalizado" >
+                                        add_photo_alternate
+                                    </span>
                                 )}
                                 <Form.Control
                                     type="file"
@@ -629,7 +634,7 @@ const CreateProduct: React.FC = () => {
                     </Form>
                 </Col>
             </Row >
-
+            <br />
             <Button
                 type="button"
                 onClick={handleSubmit}

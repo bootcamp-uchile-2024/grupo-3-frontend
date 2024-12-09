@@ -1,7 +1,21 @@
-
 .small-preview {
-    width: 220px;
-    height: auto;
-    margin-bottom: 10px;
-  }
+  width: 220px;
+  height: auto;
+  margin-bottom: 10px;
+  border-radius: 5%;
+}
+
+.icono-tamano-personalizado {
+  font-size: 90px;
+  margin-block: 10%;
+  border: 0.5px solid #1A4756;
+  border-radius: 5%;
+  width: 220px;
+  height: 220px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #1A4756;
+  margin-bottom: 10px;
   
+}
