@@ -169,7 +169,7 @@ const UserManagement = () => {
         </Col>
 
         <Col md={10}>
-          <div className="product-management-content">
+          <div style={{ marginTop: "10rem", padding: "16px", background: "#F5F5F5", borderRadius: "0px 0px 8px 8px", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}>
             <Tabs defaultActiveKey="modificarUsuario" className="custom-tabs mb-3">
               <Tab eventKey="crearUsuario" title="Crear Usuario">
                 {isAdmin && <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />}

@@ -176,8 +176,8 @@ return (
         style={{
           textAlign: 'center',
           marginBottom: '20px',
-          fontFamily: 'Quicksand, sans-serif',
           color: '#1A4756',
+          fontWeight: 500,
         }}
       >
         Regístrate y disfruta de nuestros <br />
@@ -187,7 +187,6 @@ return (
       <h3
         style={{
           marginBottom: '20px',
-          fontFamily: 'Quicksand',
           fontWeight: 600,
           marginTop: '40px',
         }}
@@ -197,7 +196,7 @@ return (
 
       {/* Nombre y Apellido */}
       <Row className="mb-3">
-        <Col>
+      <Col md={6}>
           <Form.Group controlId="nombre">
             <Form.Label style={{ fontWeight: 'bold' }}>Nombre*</Form.Label>
             <Form.Control
@@ -217,7 +216,7 @@ return (
             )}
           </Form.Group>
         </Col>
-        <Col>
+        <Col md={6}>
           <Form.Group controlId="apellido">
             <Form.Label style={{ fontWeight: 'bold' }}>Apellido*</Form.Label>
             <Form.Control
@@ -301,7 +300,7 @@ return (
 
       {/* RUT y Teléfono */}
       <Row className="mb-3">
-        <Col>
+      <Col md={6}>
           <Form.Group controlId="rut">
             <Form.Label style={{ fontWeight: 'bold' }}>RUT*</Form.Label>
             <Form.Control
@@ -321,7 +320,7 @@ return (
             )}
           </Form.Group>
         </Col>
-        <Col>
+        <Col md={6}>
           <Form.Group controlId="telefono">
             <Form.Label style={{ fontWeight: 'bold' }}>Teléfono*</Form.Label>
             <Form.Control
@@ -399,7 +398,6 @@ return (
 <h3
   style={{
     marginBottom: '20px',
-    fontFamily: 'Quicksand',
     fontWeight: 600,
     marginTop: '50px',
   }}
@@ -456,7 +454,6 @@ return (
 <h3
   style={{
     marginBottom: '20px',
-    fontFamily: 'Quicksand',
     fontWeight: 600,
     marginTop: '50px',
   }}

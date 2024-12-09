@@ -7,12 +7,6 @@
     z-index: 1030; 
   }
   
-  main {
-    position: relative;
-    z-index: 1;
-    bottom: 0;
-  }
-  
   .header-row {
     background-color: #1A4756;
     z-index: 1031;
@@ -110,8 +104,8 @@
     height: 80px;
   }
   
-  #user-dropdown, .nav-link {
-    color: #1A4756!important;
+ .nav-link {
+    color: white!important;
   }
   
   .dropdown-menu {

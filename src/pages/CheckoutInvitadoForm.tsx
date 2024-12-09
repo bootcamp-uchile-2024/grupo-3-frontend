@@ -60,11 +60,40 @@ const CheckoutInvitadoForm: React.FC = () => {
 
   return (
     <Container className="checkout-container">
+       <h2
+        style={{
+          textAlign: 'center',
+          marginBottom: '10px',
+          fontFamily: 'Quicksand, sans-serif',
+          fontWeight: 700,
+        }}
+      >
+        ¿Eres nuevo en Plant AI?
+      </h2>
+      <p
+        style={{
+          textAlign: 'center',
+          marginBottom: '20px',
+          color: '#1A4756',
+          fontWeight: 500,
+        }}
+      >
+        Regístrate y disfruta de nuestros <br />
+        productos y beneficios
+      </p>
+
+      <h3
+        style={{
+          marginBottom: '20px',
+          fontWeight: 600,
+          marginTop: '40px',
+        }}
+      >
+        Mis datos:
+      </h3>
       <Form onSubmit={handleSubmit}>
         {/* Mis datos */}
         <section className="checkout-section">
-          <h2>Mis datos</h2>
-          
           <Form.Group className="mb-3" controlId="email">
             <Form.Label>Correo</Form.Label>
             <Form.Control
