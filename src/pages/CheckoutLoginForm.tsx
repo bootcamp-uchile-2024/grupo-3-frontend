@@ -6,6 +6,10 @@ import '../styles/CheckoutLoginForm.css';
 const CheckoutLoginForm: React.FC = () => {
   const navigate = useNavigate();
 
+  const handleContinueAsGuest = (): void => {
+    navigate('/checkout-invitado');
+  };
+
   return (
     <Container fluid>
       <Row className="justify-content-center">
@@ -22,7 +26,11 @@ const CheckoutLoginForm: React.FC = () => {
                 <Button className="action-button secondary-button">
                   Registrarme
                 </Button>
-                <span className="checkout-bajada-form">
+                <span
+                  className="checkout-bajada-form"
+                  onClick={handleContinueAsGuest} 
+                  style={{ cursor: 'pointer'}}
+                >
                   Seguir como invitado
                 </span>
               </div>
