@@ -22,6 +22,7 @@ import ProductManagement from './pages/ProductManagement';
 import CheckoutInvitadoForm from './pages/CheckoutInvitadoForm';
 import CheckoutLoginForm from './pages/CheckoutLoginForm';
 import CartPagePay from './pages/CartPagePay';
+import SuccessPage from './pages/SuccessPage';
 
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
             <Route path="checkout-invitado" element={<CheckoutInvitadoForm />} />
             <Route path="login-checkout" element={<CheckoutLoginForm />} />
             <Route path="cart-page-pay" element={<CartPagePay/>} />
+            <Route path="success-page" element={<SuccessPage/>} />
             <Route path="catalogo/producto/:id" element={<ProductDetailPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="contact" element={<ContactPage />} />
