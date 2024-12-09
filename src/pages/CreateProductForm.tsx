@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { CreateProductData } from '../interfaces/CreateProductData.ts';
 import fileTypeChecker from 'file-type-checker';
-import { useEffect } from 'react';
 import { Image, Form, Button, Row, Col, Container } from 'react-bootstrap';
-
+import '../styles/CreateProductFormStyles.css'
 const CreateProduct: React.FC = () => {
-
     const [producto, setProducto] = useState<CreateProductData>({
         SKU: '',
         nombre: '',
@@ -22,8 +20,8 @@ const CreateProduct: React.FC = () => {
         peso: 0,
         habilitado: true,
         planta: {
-            petFriendly: false,
-            ciclo: false,
+            petFriendly: true,
+            ciclo: true,
             especie: '',
             idColor: 1,
             idFotoperiodo: 1,
@@ -63,56 +61,6 @@ const CreateProduct: React.FC = () => {
         { id: 4, name: 'Maceteros' },
     ];
 
-    useEffect(() => {
-        if (producto.idCategoria === 1) { // Plantas
-            setProducto((prevProducto) => ({
-                ...prevProducto,
-                planta: {
-                    petFriendly: false,
-                    ciclo: false,
-                    especie: '',
-                    idColor: 1,
-                    idFotoperiodo: 1,
-                    idTipoRiego: 1,
-                    idHabitoCrecimiento: 1,
-                    idTamano: 1,
-                    idToleranciaTemperatura: 1,
-                    idEntorno: 1,
-                    idIluminacion: 1
-                },
-            }));
-        } else if (producto.idCategoria === 2) { // Accesorios
-            setProducto((prevProducto) => ({
-                ...prevProducto,
-                accesorio: {
-                    idMarca: 1,
-                    idTipoAccesorio: 1,
-                    idColor: 1
-                },
-            }));
-        } else if (producto.idCategoria === 3) { // Insumos
-            setProducto((prevProducto) => ({
-                ...prevProducto,
-                insumo: {
-                    idTipoInsumo: 1,
-                    idMarca: 1
-                }
-            }));
-        } else if (producto.idCategoria === 4) { // Maceteros
-            setProducto((prevProducto) => ({
-                ...prevProducto,
-                macetero: {
-                    idMarca: 1,
-                    idTipoMacetero: 1,
-                    material: '',
-                    forma: '',
-                    diametro: 0,
-                    litros: 0
-                },
-            }));
-        }
-    }, [producto.idCategoria]); // Cuando cambia la categoría, actualiza el estado de acuerdo a la lógica
-
     // Función para generar SKU
     const generarSKU = (nombre: string, numero: number): string => {
         const letrasSKU = nombre.slice(0, 3).toUpperCase();
@@ -122,22 +70,86 @@ const CreateProduct: React.FC = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
+        
 
-        // Convertir el valor a número si el campo es numérico
-        const numericFields = ["precio", "stock", "ancho", "alto", "largo", "peso", "unidadesVendidas"];
-        const parsedValue = numericFields.includes(name) ? (parseFloat(value)) : value;
+        // Si el campo es idCategoria, asegúrate de que se convierta a número
+        if (name === "idCategoria") {
+            setProducto((prevProducto) => {
+                const categoriaId = parseInt(value, 10);  
+                let newProducto = { ...prevProducto, [name]: categoriaId };
 
-        setProducto((prevProducto) => ({
-            ...prevProducto,
-            [name]: parsedValue,
-        }));
+                // Limpiar los campos específicos de la categoría al cambiar
+                if (categoriaId === 1) { // Plantas
+                    newProducto = {
+                        ...newProducto,
+                        planta: {
+                            petFriendly: false,
+                            ciclo: false,
+                            especie: '',
+                            idColor: 1,
+                            idFotoperiodo: 1,
+                            idTipoRiego: 1,
+                            idHabitoCrecimiento: 1,
+                            idTamano: 1,
+                            idToleranciaTemperatura: 1,
+                            idEntorno: 1,
+                            idIluminacion: 1
+                        },
+                    };
+                } else if (categoriaId === 2) { // Accesorios
+                    newProducto = {
+                        ...newProducto,
+                        accesorio: {
+                            idMarca: 1,
+                            idTipoAccesorio: 1,
+                            idColor: 1
+                        },
+                    };
+                } else if (categoriaId === 3) { // Insumos
+                    newProducto = {
+                        ...newProducto,
+                        insumo: {
+                            idTipoInsumo: 1,
+                            idMarca: 1
+                        }
+                    };
+                } else if (categoriaId === 4) { // Maceteros
+                    newProducto = {
+                        ...newProducto,
+                        macetero: {
+                            idMarca: 1,
+                            idTipoMacetero: 1,
+                            material: '',
+                            forma: '',
+                            diametro: 0,
+                            litros: 0
+                        },
+                    };
+                }
+                return newProducto;
+            });
+        } else {
+            // Procesar los demás campos (nombre, precio, etc.)
+            const numericFields = ["precio", "stock", "ancho", "alto", "largo", "peso", "unidadesVendidas"];
+            const valueToSave = 
+            (name === "habilitado" || name === "petFriendly" || name === "ciclo") // Para los campos booleanos
+                ? value === "Sí" // Si es "Sí", se convierte a true, sino a false
+                : numericFields.includes(name) // Si es un campo numérico
+                    ? (value === '' ? 0 : parseFloat(value)) // Si el campo es numérico, convertirlo a número, o 0 si está vacío
+                    : value; // Si no es ni booleano ni numérico, mantener el valor original
+    
 
-        setErrores((prev) => ({
-            ...prev,
-            [name]: '',
-        }));
+            setProducto((prevProducto) => ({
+                ...prevProducto,
+                [name]: valueToSave,
+            }));
+
+            setErrores((prev) => ({
+                ...prev,
+                [name]: '',
+            }));
+        }
     };
-
 
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -308,8 +320,8 @@ const CreateProduct: React.FC = () => {
                     peso: 0,
                     habilitado: true,
                     planta: {
-                        petFriendly: false,
-                        ciclo: false,
+                        petFriendly: false||true,
+                        ciclo: false||true,
                         especie: '',
                         idColor: 1,
                         idFotoperiodo: 1,
@@ -350,173 +362,272 @@ const CreateProduct: React.FC = () => {
 
     return (
         <Container>
-            <Form>
-                <div>
-                    {/* Nombre del Producto */}
-                    <Form.Group controlId="nombre">
-                        <Form.Label>Nombre:</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="nombre"
-                            value={producto.nombre}
-                            onChange={handleChange}
-                            isInvalid={!!errores.nombre}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errores.nombre}
-                        </Form.Control.Feedback>
-                    </Form.Group>
+            <Row>
+                <Col md={6}>
+                    <Form>
+                        <div>
+                            {/* Nombre del Producto */}
+                            <Form.Group controlId="nombre">
+                                <Form.Label>Nombre del Producto:</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="nombre"
+                                    value={producto.nombre}
+                                    onChange={handleChange}
+                                    isInvalid={!!errores.nombre}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errores.nombre}
+                                </Form.Control.Feedback>
+                            </Form.Group>
 
-                    {/* Categoría */}
-                    <Form.Group controlId="idCategoria">
-                        <Form.Label>Categoría:</Form.Label>
-                        <Form.Control
-                            as="select"
-                            name="idCategoria"
-                            value={producto.idCategoria}
-                            onChange={handleChange}
-                            isInvalid={!!errores.idCategoria}
-                        >
-                            {categories.map((category) => (
-                                <option key={category.id} value={category.id}>
-                                    {category.name}
-                                </option>
-                            ))}
-                        </Form.Control>
-                        <Form.Control.Feedback type="invalid">
-                            {errores.idCategoria}
-                        </Form.Control.Feedback>
-                    </Form.Group>
+                            {/* Categoría */}
+                            <Form.Group controlId="idCategoria">
+                                <Form.Label>Categoría:</Form.Label>
+                                <Form.Control
+                                    as="select"
+                                    name="idCategoria"
+                                    value={producto.idCategoria}
+                                    onChange={handleChange}
+                                    isInvalid={!!errores.idCategoria}
+                                >
+                                    {categories.map((category) => (
+                                        <option key={category.id} value={category.id}>
+                                            {category.name}
+                                        </option>
+                                    ))}
+                                </Form.Control>
+                                <Form.Control.Feedback type="invalid">
+                                    {errores.idCategoria}
+                                </Form.Control.Feedback>
+                            </Form.Group>
 
-                    {/* Precio */}
-                    <Form.Group controlId="precio">
-                        <Form.Label>Precio:</Form.Label>
-                        <Form.Control
-                            type="number"
-                            name="precio"
-                            value={producto.precio}
-                            onChange={handleChange}
-                            isInvalid={!!errores.precio}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errores.precio}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-
-                    {/* Imagen */}
-                    <Form.Group controlId="imagen">
-                        <Form.Label>Imagen:</Form.Label>
-                        <Form.Control
-                            type="file"
-                            name="imagen"
-                            onChange={handleFileUpload}
-                            isInvalid={!!errores.imagen}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errores.imagen}
-                        </Form.Control.Feedback>
-                        {/* Previsualización de la imagen */}
-                        {imagePreview && (
-                            <div className="mt-3">
-                                <Image src={imagePreview} alt="Previsualización" thumbnail />
-                            </div>
-                        )}
-                    </Form.Group>
-
-                    {/* Descripción */}
-                    <Form.Group controlId="descripcion">
-                        <Form.Label>Descripción del producto:</Form.Label>
-                        <Form.Control
-                            as="textarea"
-                            name="descripcion"
-                            value={producto.descripcion}
-                            onChange={handleChange}
-                            rows={5}
-                            isInvalid={!!errores.descripcion}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errores.descripcion}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-
-                    {/* Stock */}
-                    <Form.Group controlId="stock">
-                        <Form.Label>Cantidad de Stock:</Form.Label>
-                        <Form.Control
-                            type="number"
-                            name="stock"
-                            value={producto.stock}
-                            onChange={handleChange}
-                            isInvalid={!!errores.cantidad}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errores.cantidad}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-
-                    {/* Dimensiones */}
-                    <Row>
-                        <Col md={4}>
-                            <Form.Group controlId="ancho">
-                                <Form.Label>Ancho en cm:</Form.Label>
+                            {/* Precio */}
+                            <Form.Group controlId="precio">
+                                <Form.Label>Precio:</Form.Label>
                                 <Form.Control
                                     type="number"
-                                    name="ancho"
-                                    value={producto.ancho}
+                                    name="precio"
+                                    value={producto.precio}
+                                    onChange={handleChange}
+                                    isInvalid={!!errores.precio}
+                                    min={0}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errores.precio}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+
+                            {/* Stock */}
+                            <Form.Group controlId="stock">
+                                <Form.Label>Cantidad de Stock:</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="stock"
+                                    value={producto.stock}
+                                    onChange={handleChange}
+                                    isInvalid={!!errores.cantidad}
+                                    min={0}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errores.cantidad}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+
+                            {/* Descripción */}
+                            <Form.Group controlId="descripcion">
+                                <Form.Label>Descripción del producto:</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    name="descripcion"
+                                    value={producto.descripcion}
+                                    onChange={handleChange}
+                                    rows={5}
+                                    isInvalid={!!errores.descripcion}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errores.descripcion}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+                        </div>
+                    </Form>
+                </Col>
+
+                <Col md={6}>
+                    <Form>
+                        <div>
+
+                            {/* Dimensiones */}
+                            <Row>
+                                <Col md={4}>
+                                    <Form.Group controlId="ancho">
+                                        <Form.Label>Ancho en cm:</Form.Label>
+                                        <Form.Control
+                                            type="number"
+                                            name="ancho"
+                                            value={producto.ancho}
+                                            onChange={handleChange}
+                                            min={0}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={4}>
+                                    <Form.Group controlId="alto">
+                                        <Form.Label>Alto en cm:</Form.Label>
+                                        <Form.Control
+                                            type="number"
+                                            name="alto"
+                                            value={producto.alto}
+                                            onChange={handleChange}
+                                            min={0}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={4}>
+                                    <Form.Group controlId="largo">
+                                        <Form.Label>Largo en cm:</Form.Label>
+                                        <Form.Control
+                                            type="number"
+                                            name="largo"
+                                            value={producto.largo}
+                                            onChange={handleChange}
+                                            min={0}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                            {errores.dimensiones && (
+                                <p className="Create-product-container-inputs-error">{errores.dimensiones}</p>
+                            )}
+
+                            {/* Peso */}
+                            <Form.Group controlId="peso">
+                                <Form.Label>Peso en gramos:</Form.Label>
+                                <Form.Control
+                                    type="number"
+                                    name="peso"
+                                    value={producto.peso}
+                                    onChange={handleChange}
+                                    isInvalid={!!errores.peso}
+                                    min={0}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errores.peso}
+                                </Form.Control.Feedback>
+                            </Form.Group>
+
+                            {/* Imagen */}
+                            <Form.Group controlId="imagen">
+                                <Form.Label>Imagen:</Form.Label>
+                                <Form.Control
+                                    type="file"
+                                    name="imagen"
+                                    onChange={handleFileUpload}
+                                    isInvalid={!!errores.imagen}
+                                />
+                                <Form.Control.Feedback type="invalid">
+                                    {errores.imagen}
+                                </Form.Control.Feedback>
+                                {/* Previsualización */}
+                                {imagePreview && (
+                                    <div className="mt-3">
+                                        <Image src={imagePreview} alt="Previsualización" className="small-preview" />
+                                    </div>
+                                )}
+                            </Form.Group>
+                        </div>
+                    </Form>
+                </Col>
+            </Row>
+
+            <Row>
+                {/* Campos Condicionales */}
+                <Form>
+                    {producto.idCategoria === 1 && ( // Mostrar campos de planta
+                        <div>
+                            <Form.Group controlId="petFriendly">
+                                <Form.Label>¿Es pet-friendly?:</Form.Label>
+                                <Form.Control
+                                    as="select"
+                                    name="planta.petFriendly"
+                                    value={producto.planta?.petFriendly ? "Sí" : "No"}
+                                    onChange={handleChange}
+                                >
+                                    <option value="Sí">Sí</option>
+                                    <option value="No">No</option>
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId="ciclo">
+                                <Form.Label>¿Tiene ciclo?</Form.Label>
+                                <Form.Control
+                                    as="select"
+                                    name="planta.ciclo"
+                                    value={producto.planta?.ciclo ? "Sí" : "No"}
+                                    onChange={handleChange}
+                                >
+                                    <option value="Sí">Sí</option>
+                                    <option value="No">No</option>
+                                </Form.Control>
+                            </Form.Group>
+
+                            <Form.Group controlId="especie">
+                                <Form.Label>Especie de Planta:</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="especie"
+                                    value={producto.planta?.especie || ''}
                                     onChange={handleChange}
                                 />
                             </Form.Group>
-                        </Col>
-                        <Col md={4}>
-                            <Form.Group controlId="alto">
-                                <Form.Label>Alto en cm:</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    name="alto"
-                                    value={producto.alto}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                        <Col md={4}>
-                            <Form.Group controlId="largo">
-                                <Form.Label>Largo en cm:</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    name="largo"
-                                    value={producto.largo}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                        </Col>
-                    </Row>
-                    {errores.dimensiones && (
-                        <p className="Create-product-container-inputs-error">{errores.dimensiones}</p>
+                        </div>
                     )}
 
-                    {/* Peso */}
-                    <Form.Group controlId="peso">
-                        <Form.Label>Peso en gramos:</Form.Label>
-                        <Form.Control
-                            type="number"
-                            name="peso"
-                            value={producto.peso}
-                            onChange={handleChange}
-                            isInvalid={!!errores.peso}
-                        />
-                        <Form.Control.Feedback type="invalid">
-                            {errores.peso}
-                        </Form.Control.Feedback>
-                    </Form.Group>
-                </div>
-                <Button
-                    type="button"
-                    onClick={handleSubmit}
-                    className="Create-product-container-button"
-                >
-                    Crear Producto
-                </Button>
-            </Form>
+                    {producto.idCategoria === 2 && ( // Mostrar campos de accesorios
+                        <Form.Group controlId="material">
+                            <Form.Label>Material del Accesorio:</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="material"
+                                value={producto.accesorio?.idTipoAccesorio}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+                    )}
+
+                    {producto.idCategoria === 3 && ( // Mostrar campos de insumos
+                        <Form.Group controlId="tipoInsumo">
+                            <Form.Label>Tipo de Insumo:</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="tipoInsumo"
+                                value={producto.insumo?.idTipoInsumo}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+                    )}
+
+                    {producto.idCategoria === 4 && ( // Mostrar campos de maceteros
+                        <Form.Group controlId="materialMacetero">
+                            <Form.Label>Material del Macetero:</Form.Label>
+                            <Form.Control
+                                type="text"
+                                name="materialMacetero"
+                                value={producto.macetero?.material}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+                    )}
+                </Form>
+            </Row>
+
+            <Button
+                type="button"
+                onClick={handleSubmit}
+                className="Create-product-container-button"
+            >
+                Crear Producto
+            </Button>
         </Container>
     );
 };
