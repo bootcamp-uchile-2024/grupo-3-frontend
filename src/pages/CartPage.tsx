@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, {useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, clearCart, updateQuantity, addToCart } from '../states/cartSlice';
 import { RootState } from '../states/store';
@@ -10,6 +11,7 @@ import '../styles/CartPage.css';
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
+  const navigate = useNavigate();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false);
@@ -286,10 +288,10 @@ const CartPage: React.FC = () => {
     }
   };
 
-  const handleOpenModal = () => {
+  /*const handleOpenModal = () => {
     setIsModalOpen(true);
   };
-
+*/
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setIsPurchaseCompleted(false);
@@ -350,6 +352,11 @@ const CartPage: React.FC = () => {
     }
     return 'Error inesperado.';
   };
+
+  const handleNavigateToCheckout = (): void => {
+    navigate('/login-checkout');
+  };
+  
   
 
   return (
@@ -395,7 +402,7 @@ const CartPage: React.FC = () => {
                         <Button
                           variant="link"
                           className="text-danger"
-                          onClick={() => handleRemoveProductFromCart(item.id)} // Cambiado `product.id` por `item.id`
+                          onClick={() => handleRemoveProductFromCart(item.id)}
                         >
                           Eliminar
                         </Button>
@@ -434,7 +441,7 @@ const CartPage: React.FC = () => {
                 <Button variant="outline-primary" onClick={handleClearCart}>
                   Volver
                 </Button>
-                <Button variant="primary" onClick={handleOpenModal}>
+                <Button variant="primary" onClick={handleNavigateToCheckout}>
                   Finalizar la compra
                 </Button>
               </div>
