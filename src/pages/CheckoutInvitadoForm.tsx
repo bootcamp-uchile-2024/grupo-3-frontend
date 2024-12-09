@@ -84,9 +84,9 @@ const CheckoutInvitadoForm: React.FC = () => {
 
       <h3
         style={{
-          marginBottom: '20px',
           fontWeight: 600,
-          marginTop: '40px',
+          display: 'block',
+          width: '56%',
         }}
       >
         Mis datos:

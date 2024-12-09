@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, clearCart, updateQuantity, addToCart } from '../states/cartSlice';
@@ -123,7 +123,7 @@ const CartPage: React.FC = () => {
     if (!window.confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
       return;
     }
-  
+
     try {
       const response = await fetch(
         `${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`,
@@ -132,13 +132,13 @@ const CartPage: React.FC = () => {
           headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
         }
       );
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         alert(errorData.message || 'Hubo un problema al eliminar el producto.');
         return;
       }
-  
+
       dispatch(removeFromCart(productId));
       alert('El producto ha sido eliminado del carrito.');
     } catch (error) {
@@ -356,13 +356,11 @@ const CartPage: React.FC = () => {
   const handleNavigateToCheckout = (): void => {
     navigate('/login-checkout');
   };
-  
-  
 
   return (
     <Container className="cart-container">
       <Row>
-        <Col md={8} className='mt-2'>
+        <Col md={6} className='mt-2'>
           <h4>Tu compra</h4>
           {groupedItems.length === 0 ? (
             <p>El carrito está vacío.</p>
@@ -370,12 +368,12 @@ const CartPage: React.FC = () => {
             <>
               <ListGroup className="mb-4">
                 {groupedItems.map((item: CartItem) => (
-                  <ListGroup.Item key={item.id} className="cart-item py-3">
-                    <Row className="align-items-center">
+                  <ListGroup.Item key={item.id} className="cart-item">
+                    <Row className="align-items-center row col-md-12">
                       <Col md={3}>
                         <img src={item.imagen || 'placeholder.jpg'} alt={item.nombre} className="product-image img-fluid" />
                       </Col>
-                      <Col md={6}>
+                      <Col md={7}>
                         <h5 className="product-title mb-2">{item.nombre}</h5>
                         <p className="price-text mb-1">Ahora ${item.precio.toLocaleString('es-CL')}</p>
                         <p className="original-price text-muted">Normal ${item.precio}</p>
@@ -398,7 +396,7 @@ const CartPage: React.FC = () => {
                           </Button>
                         </div>
                       </Col>
-                      <Col md={3} className="text-end">
+                      <Col md={1} className="">
                         <Button
                           variant="link"
                           className="text-danger"
@@ -414,8 +412,8 @@ const CartPage: React.FC = () => {
             </>
           )}
         </Col>
-  
-        <Col md={4} className='mt-5'>
+
+        <Col md={6} className='mt-5'>
           <Card className="summary-card">
             <Card.Body>
               <Card.Title>Resumen de mi compra</Card.Title>
@@ -437,137 +435,142 @@ const CartPage: React.FC = () => {
                   <strong>${formattedTotal}</strong>
                 </ListGroup.Item>
               </ListGroup>
-              <div className="d-grid gap-2">
-                <Button variant="outline-primary" onClick={handleClearCart}>
-                  Volver
-                </Button>
-                <Button variant="primary" onClick={handleNavigateToCheckout}>
-                  Finalizar la compra
-                </Button>
-              </div>
             </Card.Body>
           </Card>
         </Col>
       </Row>
-
+      <Row>
+        <Col md={12} className="d-flex justify-content-between mt-4">
+            <Col md={4}>
+              <Button className='back-button float-start btn btn-primary' variant="outline-primary" onClick={handleClearCart}>
+                Volver
+              </Button>
+            </Col>
+            <Col md={5}>
+              <Button className='bt go-button float-end' variant="primary" onClick={handleNavigateToCheckout}>
+                Finalizar la compra
+              </Button>
+            </Col>
+        </Col>
+      </Row>
       {isModalOpen && (
-  <div className="modal show" style={{ display: 'block' }} aria-modal="true">
-    <div className="modal-dialog">
-      <div className="modal-content">
-        {isPurchaseCompleted ? (
-          // Vista de compra completada
-          <>
-            <div className="modal-header">
-              <h5 className="modal-title">Tu compra ha sido finalizada con éxito</h5>
-              <button type="button" className="btn-close" onClick={handleCloseModal}></button>
-            </div>
-            <div className="modal-body">
-              <p>¡Gracias por tu compra!</p>
-              <h6>Detalles del pedido:</h6>
-              <ul className="list-group">
-                {purchasedItems.map((item: CartItem) => (
-                  <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
-                    <div className="d-flex align-items-center">
-                      <img 
-                        src={item.imagen || 'placeholder.jpg'} 
-                        alt={item.nombre} 
-                        className="product-image me-3"
-                      />
-                      <span>{item.nombre}</span>
-                    </div>
-                    <span>x {item.cantidad} - ${item.precio * item.cantidad}</span>
-                  </li>
-                ))}
-              </ul>
-              <p>El total de tu compra fue de: <h3>${formattedTotal}</h3></p>
-              <div className="modal-footer">
-                <button className="btn btn-primary w-100" onClick={handleCloseModal}>
-                  Cerrar
-                </button>
-              </div>
-            </div>
-          </>
-        ) : (
-          // Vista de carrito/resumen de compra
-          <>
-            <div className="modal-header">
-              <h5 className="modal-title">Mi Carrito de compras</h5>
-              <button type="button" className="btn-close" onClick={handleCloseModal}></button>
-            </div>
-            <div className="modal-body">
-              <div className="list-group">
-                {groupedItems.map((item: CartItem) => (
-                  <div key={item.id} className="list-group-item">
-                    <img 
-                      src={item.imagen || 'placeholder.jpg'} 
-                      alt={item.nombre} 
-                      className="product-image"
-                    />
-                    <div className="product-details">
-                      <h6>{item.nombre}</h6>
-                      <p>Normal ${item.precio.toLocaleString('es-CL')}</p>
-                      <div className="quantity-controls">
-                        <Button
-                          variant="link"
-                          size="sm"
-                          onClick={() => handleDecrement(item.id)}
-                          disabled={item.cantidad === 1}
-                        >-</Button>
-                        <span>{item.cantidad}</span>
-                        <Button
-                          variant="link"
-                          size="sm"
-                          onClick={() => handleIncrement(item.id)}
-                        >+</Button>
-                      </div>
+        <div className="modal show" style={{ display: 'block' }} aria-modal="true">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              {isPurchaseCompleted ? (
+                // Vista de compra completada
+                <>
+                  <div className="modal-header">
+                    <h5 className="modal-title">Tu compra ha sido finalizada con éxito</h5>
+                    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                  </div>
+                  <div className="modal-body">
+                    <p>¡Gracias por tu compra!</p>
+                    <h6>Detalles del pedido:</h6>
+                    <ul className="list-group">
+                      {purchasedItems.map((item: CartItem) => (
+                        <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
+                          <div className="d-flex align-items-center">
+                            <img
+                              src={item.imagen || 'placeholder.jpg'}
+                              alt={item.nombre}
+                              className="product-image me-3"
+                            />
+                            <span>{item.nombre}</span>
+                          </div>
+                          <span>x {item.cantidad} - ${item.precio * item.cantidad}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <p>El total de tu compra fue de: <h3>${formattedTotal}</h3></p>
+                    <div className="modal-footer">
+                      <button className="btn btn-primary w-100" onClick={handleCloseModal}>
+                        Cerrar
+                      </button>
                     </div>
                   </div>
-                ))}
-              </div>
-              
-              <div className="coupon-section mb-3">
-                <span>Aplicar cupón de descuento?</span>
-                <div className="input-group">
-                  <input
-                    type="text"
-                    value={coupon}
-                    onChange={(e) => setCoupon(e.target.value)}
-                    placeholder="Ingresa tu cupón"
-                    className="form-control"
-                  />
-                  <button className="btn btn-secondary" onClick={handleApplyCoupon}>
-                    Aplicar
-                  </button>
-                </div>
-              </div>
+                </>
+              ) : (
+                // Vista de carrito/resumen de compra
+                <>
+                  <div className="modal-header">
+                    <h5 className="modal-title">Mi Carrito de compras</h5>
+                    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
+                  </div>
+                  <div className="modal-body">
+                    <div className="list-group">
+                      {groupedItems.map((item: CartItem) => (
+                        <div key={item.id} className="list-group-item">
+                          <img
+                            src={item.imagen || 'placeholder.jpg'}
+                            alt={item.nombre}
+                            className="product-image"
+                          />
+                          <div className="product-details">
+                            <h6>{item.nombre}</h6>
+                            <p>Normal ${item.precio.toLocaleString('es-CL')}</p>
+                            <div className="quantity-controls">
+                              <Button
+                                variant="link"
+                                size="sm"
+                                onClick={() => handleDecrement(item.id)}
+                                disabled={item.cantidad === 1}
+                              >-</Button>
+                              <span>{item.cantidad}</span>
+                              <Button
+                                variant="link"
+                                size="sm"
+                                onClick={() => handleIncrement(item.id)}
+                              >+</Button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
 
-              <div className="total-section mt-3">
-                <strong>Total a pagar: ${formattedTotal}</strong>
-              </div>
+                    <div className="coupon-section mb-3">
+                      <span>Aplicar cupón de descuento?</span>
+                      <div className="input-group">
+                        <input
+                          type="text"
+                          value={coupon}
+                          onChange={(e) => setCoupon(e.target.value)}
+                          placeholder="Ingresa tu cupón"
+                          className="form-control"
+                        />
+                        <button className="btn btn-secondary" onClick={handleApplyCoupon}>
+                          Aplicar
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="total-section mt-3">
+                      <strong>Total a pagar: ${formattedTotal}</strong>
+                    </div>
+                  </div>
+
+                  <div className="modal-footer flex-column">
+                    <Button
+                      variant="primary"
+                      className="w-100"
+                      onClick={handleFinalizePurchase}
+                      disabled={loading}
+                    >
+                      {loading ? 'Procesando...' : 'Finalizar compra'}
+                    </Button>
+                    <button
+                      className="btn btn-link text-secondary w-100"
+                      onClick={handleCloseModal}
+                    >
+                      Seguir comprando
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
-            
-            <div className="modal-footer flex-column">
-              <Button 
-                variant="primary" 
-                className="w-100"
-                onClick={handleFinalizePurchase}
-                disabled={loading}
-              >
-                {loading ? 'Procesando...' : 'Finalizar compra'}
-              </Button>
-              <button 
-                className="btn btn-link text-secondary w-100"
-                onClick={handleCloseModal}
-              >
-                Seguir comprando
-              </button>
-            </div>
-          </>
-        )}
-      </div>
-    </div>
-  </div>
-)}
+          </div>
+        </div>
+      )}
     </Container>
   );
 };

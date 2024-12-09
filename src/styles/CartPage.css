@@ -53,9 +53,8 @@
   }
   
   .summary-card {
-    border: none;
-    background-color: #f8f9fa;
-    border-radius: 4px;
+    background-color: #ffffff;
+    border-radius: 8px;
   }
   
   .summary-card .card-title {
@@ -66,7 +65,6 @@
   }
   
   .summary-card .list-group-item {
-    border: none;
     background-color: transparent;
     padding: 10px 0;
     color: #1A4756;
@@ -98,31 +96,10 @@
     color: white;
   }
   
-  /* Estilos para el modal */
-  .modal {
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  
-  .modal-content {
-    border-radius: 8px;
-  }
-  
-  .modal-title {
-    color: #1A4756;
-  }
-  
-  .input-group .form-control {
-    border-radius: 4px 0 0 4px;
-  }
-  
-  .input-group .btn {
-    border-radius: 0 4px 4px 0;
-  }
-
   /* Modal */
 
   .modal {
-     background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex !important;
     align-items: center;
     justify-content: center;
@@ -186,3 +163,4 @@
     align-items: center;
     gap: 10px;
   }
+  
