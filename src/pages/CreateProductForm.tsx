@@ -70,20 +70,21 @@ const CreateProduct: React.FC = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        
-
+        console.log(`Campo: ${name}, Valor seleccionado: ${value}`);
+        //planta.petfriendly = true °° false
         // Si el campo es idCategoria, asegúrate de que se convierta a número
         if (name === "idCategoria") {
             setProducto((prevProducto) => {
-                const categoriaId = parseInt(value, 10);  
+                const categoriaId = parseInt(value, 10);
                 let newProducto = { ...prevProducto, [name]: categoriaId };
 
                 // Limpiar los campos específicos de la categoría al cambiar
                 if (categoriaId === 1) { // Plantas
+
                     newProducto = {
                         ...newProducto,
                         planta: {
-                            petFriendly: false,
+                            petFriendly: true,
                             ciclo: false,
                             especie: '',
                             idColor: 1,
@@ -131,13 +132,14 @@ const CreateProduct: React.FC = () => {
         } else {
             // Procesar los demás campos (nombre, precio, etc.)
             const numericFields = ["precio", "stock", "ancho", "alto", "largo", "peso", "unidadesVendidas"];
-            const valueToSave = 
-            (name === "habilitado" || name === "petFriendly" || name === "ciclo") // Para los campos booleanos
-                ? value === "Sí" // Si es "Sí", se convierte a true, sino a false
-                : numericFields.includes(name) // Si es un campo numérico
-                    ? (value === '' ? 0 : parseFloat(value)) // Si el campo es numérico, convertirlo a número, o 0 si está vacío
-                    : value; // Si no es ni booleano ni numérico, mantener el valor original
-    
+
+            const valueToSave =
+                (name === "habilitado" || name === "petFriendly" || name === "ciclo") // Para los campos booleanos
+                    ? value === "Sí" || value == "No" // Si es "Sí", se convierte a true, sino a false
+                    : numericFields.includes(name) // Si es un campo numérico
+                        ? (value === '' ? 0 : parseFloat(value)) // Si el campo es numérico, convertirlo a número, o 0 si está vacío
+                        : value; // Si no es ni booleano ni numérico, mantener el valor original
+
 
             setProducto((prevProducto) => ({
                 ...prevProducto,
@@ -320,8 +322,8 @@ const CreateProduct: React.FC = () => {
                     peso: 0,
                     habilitado: true,
                     planta: {
-                        petFriendly: false||true,
-                        ciclo: false||true,
+                        petFriendly: false,
+                        ciclo: true,
                         especie: '',
                         idColor: 1,
                         idFotoperiodo: 1,
@@ -363,18 +365,19 @@ const CreateProduct: React.FC = () => {
     return (
         <Container>
             <Row>
-                <Col md={6}>
+                <Col md={4}>
                     <Form>
                         <div>
                             {/* Nombre del Producto */}
                             <Form.Group controlId="nombre">
-                                <Form.Label>Nombre del Producto:</Form.Label>
+                                <Form.Label>Nombre del Producto</Form.Label>
                                 <Form.Control
                                     type="text"
                                     name="nombre"
                                     value={producto.nombre}
                                     onChange={handleChange}
                                     isInvalid={!!errores.nombre}
+                                    placeholder='Ingrese Nombre'
                                 />
                                 <Form.Control.Feedback type="invalid">
                                     {errores.nombre}
@@ -383,7 +386,7 @@ const CreateProduct: React.FC = () => {
 
                             {/* Categoría */}
                             <Form.Group controlId="idCategoria">
-                                <Form.Label>Categoría:</Form.Label>
+                                <Form.Label>Categoría</Form.Label>
                                 <Form.Control
                                     as="select"
                                     name="idCategoria"
@@ -404,7 +407,7 @@ const CreateProduct: React.FC = () => {
 
                             {/* Precio */}
                             <Form.Group controlId="precio">
-                                <Form.Label>Precio:</Form.Label>
+                                <Form.Label>Precio</Form.Label>
                                 <Form.Control
                                     type="number"
                                     name="precio"
@@ -420,7 +423,7 @@ const CreateProduct: React.FC = () => {
 
                             {/* Stock */}
                             <Form.Group controlId="stock">
-                                <Form.Label>Cantidad de Stock:</Form.Label>
+                                <Form.Label>Cantidad de Stock</Form.Label>
                                 <Form.Control
                                     type="number"
                                     name="stock"
@@ -436,12 +439,13 @@ const CreateProduct: React.FC = () => {
 
                             {/* Descripción */}
                             <Form.Group controlId="descripcion">
-                                <Form.Label>Descripción del producto:</Form.Label>
+                                <Form.Label>Descripción del producto</Form.Label>
                                 <Form.Control
                                     as="textarea"
                                     name="descripcion"
                                     value={producto.descripcion}
                                     onChange={handleChange}
+                                    placeholder='Ingrese Descripción'
                                     rows={5}
                                     isInvalid={!!errores.descripcion}
                                 />
@@ -453,7 +457,7 @@ const CreateProduct: React.FC = () => {
                     </Form>
                 </Col>
 
-                <Col md={6}>
+                <Col md={8}>
                     <Form>
                         <div>
 
@@ -461,7 +465,7 @@ const CreateProduct: React.FC = () => {
                             <Row>
                                 <Col md={4}>
                                     <Form.Group controlId="ancho">
-                                        <Form.Label>Ancho en cm:</Form.Label>
+                                        <Form.Label>Ancho en cm.</Form.Label>
                                         <Form.Control
                                             type="number"
                                             name="ancho"
@@ -473,7 +477,7 @@ const CreateProduct: React.FC = () => {
                                 </Col>
                                 <Col md={4}>
                                     <Form.Group controlId="alto">
-                                        <Form.Label>Alto en cm:</Form.Label>
+                                        <Form.Label>Alto en cm.</Form.Label>
                                         <Form.Control
                                             type="number"
                                             name="alto"
@@ -485,7 +489,7 @@ const CreateProduct: React.FC = () => {
                                 </Col>
                                 <Col md={4}>
                                     <Form.Group controlId="largo">
-                                        <Form.Label>Largo en cm:</Form.Label>
+                                        <Form.Label>Largo en cm.</Form.Label>
                                         <Form.Control
                                             type="number"
                                             name="largo"
@@ -501,24 +505,116 @@ const CreateProduct: React.FC = () => {
                             )}
 
                             {/* Peso */}
-                            <Form.Group controlId="peso">
-                                <Form.Label>Peso en gramos:</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    name="peso"
-                                    value={producto.peso}
-                                    onChange={handleChange}
-                                    isInvalid={!!errores.peso}
-                                    min={0}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errores.peso}
-                                </Form.Control.Feedback>
-                            </Form.Group>
+                            <Row>
+                                <Col md={4}>
+                                    <Form.Group controlId="peso">
+                                        <Form.Label>Peso en grs.</Form.Label>
+                                        <Form.Control
+                                            type="number"
+                                            name="peso"
+                                            value={producto.peso}
+                                            onChange={handleChange}
+                                            isInvalid={!!errores.peso}
+                                            min={0}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errores.peso}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                </Col>
+
+                                {/* Campos Condicionales */}
+                                {producto.idCategoria === 1 && ( // Mostrar campos de planta
+                                   <>
+                                   <Col md={4}>
+                                        <Form.Group controlId="planta.petFriendly">
+                                            <Form.Label>¿Es pet-friendly?:</Form.Label>
+                                            <Form.Control
+                                                as="select"
+                                                name="planta.petFriendly"
+                                                value={producto.planta?.petFriendly ? "Sí" : "No"}  // Usamos "true" o "false" como strings
+                                                onChange={handleChange}
+                                            >
+                                                <option value="Sí">Sí</option>  {/* Usamos true como valor */}
+                                                <option value="No">No</option>  {/* Usamos false como valor */}
+                                            </Form.Control>
+                                        </Form.Group>
+                                    </Col>
+                                    <Col md={4}>
+                                        <Form.Group controlId="ciclo">
+                                            <Form.Label>¿Tiene ciclo?</Form.Label>
+                                            <Form.Control
+                                                as="select"
+                                                name="planta.ciclo"
+                                                value={producto.planta?.ciclo ? "Sí" : "No"}
+                                                onChange={handleChange}
+                                            >
+                                                <option value="Sí">Sí</option>
+                                                <option value="No">No</option>
+                                            </Form.Control>
+                                        </Form.Group>
+                                    </Col>
+                                    </>
+                                )}
+
+                                {producto.idCategoria === 2 && ( // Mostrar campos de accesorios
+                                  <>
+                                   <Col md={4}>
+                                    <Form.Group controlId="idTipoAccesorio">
+                                        <Form.Label>Tipo de Accesorio:</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            name="material"
+                                            value={producto.accesorio?.idTipoAccesorio}
+                                            onChange={handleChange}
+                                        />
+                                    </Form.Group>
+                                    </Col>
+                                    </>
+                                )}
+
+                                {producto.idCategoria === 3 && ( // Mostrar campos de insumos
+                                 <>
+                                   <Col md={4}>        
+                                    <Form.Group controlId="tipoInsumo">
+                                        <Form.Label>Tipo de Insumo</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            name="tipoInsumo"
+                                            value={producto.insumo?.idTipoInsumo}
+                                            onChange={handleChange}
+                                        />
+                                    </Form.Group>
+                                    </Col>
+                                </>
+                                )}
+
+                                {producto.idCategoria === 4 && ( // Mostrar campos de maceteros
+                                     <>
+                                   <Col md={4}>   
+                                    <Form.Group controlId="materialMacetero">
+                                        <Form.Label>Material del Macetero:</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            name="materialMacetero"
+                                            value={producto.macetero?.material}
+                                            onChange={handleChange}
+                                        />
+                                    </Form.Group>
+                                    </Col>
+                                    </>
+                                )}
+                            </Row>
 
                             {/* Imagen */}
                             <Form.Group controlId="imagen">
-                                <Form.Label>Imagen:</Form.Label>
+                                <Form.Label>Subir Imagen</Form.Label>
+                                {/* Previsualización */}
+                                {imagePreview && (
+                                    <div className="mt-3">
+                                        <Image src={imagePreview} alt="Previsualización" className="small-preview" />
+                                    </div>
+                                )}
                                 <Form.Control
                                     type="file"
                                     name="imagen"
@@ -528,98 +624,11 @@ const CreateProduct: React.FC = () => {
                                 <Form.Control.Feedback type="invalid">
                                     {errores.imagen}
                                 </Form.Control.Feedback>
-                                {/* Previsualización */}
-                                {imagePreview && (
-                                    <div className="mt-3">
-                                        <Image src={imagePreview} alt="Previsualización" className="small-preview" />
-                                    </div>
-                                )}
                             </Form.Group>
                         </div>
                     </Form>
                 </Col>
-            </Row>
-
-            <Row>
-                {/* Campos Condicionales */}
-                <Form>
-                    {producto.idCategoria === 1 && ( // Mostrar campos de planta
-                        <div>
-                            <Form.Group controlId="petFriendly">
-                                <Form.Label>¿Es pet-friendly?:</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    name="planta.petFriendly"
-                                    value={producto.planta?.petFriendly ? "Sí" : "No"}
-                                    onChange={handleChange}
-                                >
-                                    <option value="Sí">Sí</option>
-                                    <option value="No">No</option>
-                                </Form.Control>
-                            </Form.Group>
-
-                            <Form.Group controlId="ciclo">
-                                <Form.Label>¿Tiene ciclo?</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    name="planta.ciclo"
-                                    value={producto.planta?.ciclo ? "Sí" : "No"}
-                                    onChange={handleChange}
-                                >
-                                    <option value="Sí">Sí</option>
-                                    <option value="No">No</option>
-                                </Form.Control>
-                            </Form.Group>
-
-                            <Form.Group controlId="especie">
-                                <Form.Label>Especie de Planta:</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="especie"
-                                    value={producto.planta?.especie || ''}
-                                    onChange={handleChange}
-                                />
-                            </Form.Group>
-                        </div>
-                    )}
-
-                    {producto.idCategoria === 2 && ( // Mostrar campos de accesorios
-                        <Form.Group controlId="material">
-                            <Form.Label>Material del Accesorio:</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="material"
-                                value={producto.accesorio?.idTipoAccesorio}
-                                onChange={handleChange}
-                            />
-                        </Form.Group>
-                    )}
-
-                    {producto.idCategoria === 3 && ( // Mostrar campos de insumos
-                        <Form.Group controlId="tipoInsumo">
-                            <Form.Label>Tipo de Insumo:</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="tipoInsumo"
-                                value={producto.insumo?.idTipoInsumo}
-                                onChange={handleChange}
-                            />
-                        </Form.Group>
-                    )}
-
-                    {producto.idCategoria === 4 && ( // Mostrar campos de maceteros
-                        <Form.Group controlId="materialMacetero">
-                            <Form.Label>Material del Macetero:</Form.Label>
-                            <Form.Control
-                                type="text"
-                                name="materialMacetero"
-                                value={producto.macetero?.material}
-                                onChange={handleChange}
-                            />
-                        </Form.Group>
-                    )}
-                </Form>
-            </Row>
+            </Row >
 
             <Button
                 type="button"
@@ -628,7 +637,7 @@ const CreateProduct: React.FC = () => {
             >
                 Crear Producto
             </Button>
-        </Container>
+        </Container >
     );
 };
 
