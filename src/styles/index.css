@@ -477,6 +477,16 @@ footer * {
 
 /* BUTTONS */
 
+button {
+  display: flex;
+height: 48px!important;
+padding: 8px 16px!important;
+justify-content: center;
+align-items: center;
+gap: 8px;
+align-self: stretch;
+}
+
 /* Primary Button */
 button.btn-primary {
   background-color: var(--primary-color);

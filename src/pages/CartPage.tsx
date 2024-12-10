@@ -359,19 +359,34 @@ const CartPage: React.FC = () => {
 
   return (
     <Container className="cart-container">
-      <Row>
-        <Col md={6} className='mt-2'>
-          <h4>Tu compra</h4>
+       <Row className="justify-content-center">
+        <Col md={5} className='me-5'>
+          <div className="cart-header">
+            <h4>Tu compra</h4>
+            {groupedItems.length > 0 && (
+              <Button
+                className="empty-cart-button"
+                variant="link"
+                onClick={handleClearCart}
+              >
+                Vaciar Carrito
+              </Button>
+            )}
+          </div>
           {groupedItems.length === 0 ? (
             <p>El carrito está vacío.</p>
           ) : (
-            <>
+            <div className="products-scroll-container">
               <ListGroup className="mb-4">
                 {groupedItems.map((item: CartItem) => (
                   <ListGroup.Item key={item.id} className="cart-item">
                     <Row className="align-items-center row col-md-12">
                       <Col md={3}>
-                        <img src={item.imagen || 'placeholder.jpg'} alt={item.nombre} className="product-image img-fluid" />
+                        <img
+                          src={item.imagen || 'placeholder.jpg'}
+                          alt={item.nombre}
+                          className="product-image img-fluid"
+                        />
                       </Col>
                       <Col md={7}>
                         <h5 className="product-title mb-2">{item.nombre}</h5>
@@ -396,7 +411,7 @@ const CartPage: React.FC = () => {
                           </Button>
                         </div>
                       </Col>
-                      <Col md={1} className="">
+                      <Col md={1}>
                         <Button
                           variant="link"
                           className="text-danger"
@@ -409,11 +424,11 @@ const CartPage: React.FC = () => {
                   </ListGroup.Item>
                 ))}
               </ListGroup>
-            </>
+            </div>
           )}
         </Col>
 
-        <Col md={6} className='mt-5'>
+        <Col md={5} className='mt-5'>
           <Card className="summary-card">
             <Card.Body>
               <Card.Title>Resumen de mi compra</Card.Title>
@@ -441,16 +456,16 @@ const CartPage: React.FC = () => {
       </Row>
       <Row>
         <Col md={12} className="d-flex justify-content-between mt-4">
-            <Col md={4}>
-              <Button className='back-button float-start btn btn-primary' variant="outline-primary" onClick={handleClearCart}>
-                Volver
-              </Button>
-            </Col>
-            <Col md={5}>
-              <Button className='bt go-button float-end' variant="primary" onClick={handleNavigateToCheckout}>
-                Finalizar la compra
-              </Button>
-            </Col>
+          <Col md={4}>
+            <Button className='back-button float-start btn btn-primary' variant="outline-primary" onClick={handleClearCart}>
+              Volver
+            </Button>
+          </Col>
+          <Col md={5}>
+            <Button className='bt go-button float-end' variant="primary" onClick={handleNavigateToCheckout}>
+              Finalizar la compra
+            </Button>
+          </Col>
         </Col>
       </Row>
       {isModalOpen && (

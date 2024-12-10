@@ -1,10 +1,9 @@
 .user-creation-container {
     display: flex;
     justify-content: center;
-    background-color: #f5f5f5;
     box-sizing: border-box;
-    margin-top: -2rem;
-  }
+    margin-top: 11rem;
+}
   
   .user-creation-form {
     background-color: white;
