@@ -171,7 +171,7 @@ const CheckoutInvitadoForm: React.FC = () => {
         style={{
           fontWeight: 600,
           display: 'block',
-          width: '56%',
+          width: '79%',
         }}
       >
         Mis datos:
