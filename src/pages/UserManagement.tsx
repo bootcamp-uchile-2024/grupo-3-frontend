@@ -20,7 +20,7 @@ import UserGreeting from "../components/UserGreeting";
 import "../styles/UserManagementStyle.css"
 
 const UserManagement = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[]>([]); 
   const [loading, setLoading] = useState<boolean>(true);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -45,9 +45,11 @@ const UserManagement = () => {
       if (!response.ok) {
         throw new Error("Error al obtener los usuarios");
       }
-      const data: User[] = await response.json();
+      const responseData = await response.json();
+      console.log("Datos obtenidos del backend:", responseData);
+  
+      const data: User[] = Array.isArray(responseData.data) ? responseData.data : [];
       setUsers(data);
-      setSelectedUser(data.length > 0 ? data[0] : null);
     } catch (error) {
       console.error("Error:", error);
       setError("Error al obtener los usuarios");
@@ -137,7 +139,10 @@ const UserManagement = () => {
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+  const currentUsers = Array.isArray(users)
+  ? users.slice(indexOfFirstUser, indexOfLastUser)
+  : [];
+
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
