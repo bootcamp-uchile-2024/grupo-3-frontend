@@ -19,7 +19,7 @@ const CartPagePay: React.FC = () => {
   const [cartId, setCartId] = useState<number | null>(null);
   const [coupon, setCoupon] = useState<string>('');
   const [discount, setDiscount] = useState<number>(0);
-  const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
+  const [purchasedItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const userId = 1;
@@ -307,13 +307,8 @@ const CartPagePay: React.FC = () => {
 
   const handleFinalizePurchase = async () => {
     setLoading(true);
-    setPurchasedItems(cartItems);
   
     try {
-      if (!cartId && cartItems.length > 0) {
-        console.log('No hay carrito activo. Creando uno nuevo.');
-        await createCart();
-      }
       await replaceCartProducts();
   
       const payload = {
@@ -321,13 +316,13 @@ const CartPagePay: React.FC = () => {
         idMedioPago: 1,
         idEstado: 1,
         idTipoDespacho: 1,
-        receptor: 'Nombre del receptor',
+        receptor: formData.quienRecibe,
         fechaEntrega: new Date(new Date().setDate(new Date().getDate() + 3))
           .toISOString()
           .split('T')[0],
         direccionEnvio: {
-          comuna: 'Puente Alto',
-          calle: 'Los Toros',
+          comuna: formData.comuna,
+          calle: formData.direccion,
           numero: '123',
           departamento: '1215',
           referencia: 'Cerca del parque',
@@ -336,11 +331,9 @@ const CartPagePay: React.FC = () => {
   
       console.log('Enviando datos al endpoint de finalizar compra:', payload);
   
-      const response = await fetch(`http://localhost:8080/pedidos/${userId}`, {
+      const response = await fetch(`${API_BASE_URL}/pedidos/${userId}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
   
@@ -354,23 +347,29 @@ const CartPagePay: React.FC = () => {
       const data = await response.json();
       console.log('Compra finalizada exitosamente:', data);
   
+      console.log(`Vaciando el carrito con ID ${cartId}`);
+      await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ productosCarro: [] }),
+      });
+  
+      dispatch(clearCart());
+  
       const nuevoCarritoId = data.nuevoCarritoId;
       console.log('Nuevo carrito asignado al usuario:', nuevoCarritoId);
-  
-      handleClearCart();
-  
       setCartId(nuevoCarritoId);
   
       setIsPurchaseCompleted(true);
-  
-      navigate('/confirmation');
+      navigate('/success-page');
     } catch (e: unknown) {
-      console.error('Error crítico al finalizar la compra:', getErrorMessage(e));
-      alert('Error al finalizar la compra. Por favor, inténtalo nuevamente.');
+      console.error('Error crítico al finalizar la compra:', e);
+      alert('Hubo un problema al finalizar la compra. Por favor, inténtalo nuevamente.');
     } finally {
       setLoading(false);
     }
   };
+  
   
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
     const existingItem = acc.find((i: CartItem) => i.id === item.id);

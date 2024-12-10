@@ -250,43 +250,42 @@ const CartPage: React.FC = () => {
   };
 
   const handleClearCart = async () => {
-    if (!window.confirm('¿Estás seguro de que deseas vaciar el carrito?')) {
+    if (!cartId) {
+      alert('No hay un carrito asociado para vaciar.');
       return;
     }
-
+  
     try {
-      if (!cartId) {
-        alert('No hay un carrito asociado para vaciar.');
-        return;
-      }
-
       console.log(`Vaciando carrito con ID ${cartId}`);
-
+  
       const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
         method: 'PUT',
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          productosCarro: [],
-        }),
+        body: JSON.stringify({ productosCarro: [] }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Error al vaciar el carrito:', errorData);
-        alert(errorData.message || 'Hubo un problema al vaciar el carrito.');
+        alert(`Error al vaciar el carrito: ${errorData.message || 'Error desconocido'}`);
         return;
       }
-
+  
+      const data = await response.json();
+      console.log('Carrito vaciado en el backend:', data);
+  
       dispatch(clearCart());
       alert('El carrito ha sido vaciado exitosamente.');
-    } catch (error: unknown) {
-      console.error('Error al intentar vaciar el carrito:', getErrorMessage(error));
+    } catch (error) {
+      console.error('Error al intentar vaciar el carrito:', error);
       alert('Hubo un problema al vaciar el carrito. Por favor, inténtalo nuevamente.');
     }
   };
+  
+  
 
   /*const handleOpenModal = () => {
     setIsModalOpen(true);
