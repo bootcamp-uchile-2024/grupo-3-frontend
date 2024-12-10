@@ -5,5 +5,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
   
-  }
+  },
+  build: {
+    chunkSizeWarningLimit: 1000,
+  },
 })
