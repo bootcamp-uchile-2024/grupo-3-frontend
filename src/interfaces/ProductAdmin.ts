@@ -50,17 +50,18 @@ interface Categoria {
     idCategoria: number;
     precio: number;
     descripcion: string;
-    imagen: string;
-    cantidad: number;
+    imagen?: string;
+    stock: number;
     unidadesVendidas: number;
     puntuacion: number;
     ancho: number;
     alto: number;
     largo: number;
     peso: number;
+    habilitado: boolean;
     categoria: Categoria; 
-    planta: Planta; 
-    macetero: Macetero;
-    accesorio: Accesorio; 
+    planta?: Planta; 
+    macetero?: Macetero;
+    accesorio?: Accesorio; 
     insumo?: boolean;  
   }  

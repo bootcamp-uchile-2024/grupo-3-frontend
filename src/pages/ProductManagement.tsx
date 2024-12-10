@@ -3,7 +3,6 @@ import AdminSideBar from '../components/AdminSideBar';
 import UserGreeting from '../components/UserGreeting';
 import CreateProduct from './CreateProductForm';
 import { useCallback, useEffect, useState } from 'react';
-import CustomPagination from '../components/CustomPagination';
 import ProductTable from '../components/ProductTable';
 import '../styles/ProductManagementStyle.css';
 import { ProductAdmin } from '../interfaces/ProductAdmin';
@@ -12,12 +11,9 @@ const ProductManagement = () => {
     const [products, setProducts] = useState<ProductAdmin[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedProduct, setSelectedProduct] = useState<ProductAdmin | null>(null);
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [productsPerPage, setProductsPerPage] = useState<number>(50);
-    const [totalItems, setTotalItems] = useState<number>(0);
-    const [totalPages, setTotalPages] = useState<number>(0);
     const [, setError] = useState<string | null>(null);
-   
+    const [searchId, setSearchId] = useState<number | string>('');
+
     const fetchProducts = useCallback(async () => {
         try {
             setLoading(true);
@@ -28,60 +24,41 @@ const ProductManagement = () => {
                     'Content-Type': 'application/json',
                 },
             });
-    
-            if (!response.ok) throw new Error('Error al cargar los productos');
-    
-            const data = await response.json();
 
-            if (data && data.data && Array.isArray(data.data) && data.totalItems !== undefined) {
-                setProducts(data.data);
-                setTotalItems(data.totalItems); 
-                setTotalPages(Math.ceil(data.totalItems / productsPerPage)); 
-                console.log (data.data)
+            if (!response.ok) throw new Error('Error al cargar los productos');
+
+            const data = await response.json();
+            console.log("Datos recibidos:", data);
+
+            if (Array.isArray(data)) {
+                setProducts(data);
             } else {
                 throw new Error('Datos de productos no válidos');
             }
         } catch (error) {
             setError(error instanceof Error ? error.message : 'Ha ocurrido un error desconocido');
+            console.error(error);
         } finally {
             setLoading(false);
         }
-    }, [currentPage, productsPerPage]);
-    
+    }, []);
+
     useEffect(() => {
         fetchProducts();
-    }, [currentPage, productsPerPage, fetchProducts]);    
+    }, [fetchProducts]);
 
-    const handleDeleteProduct = async (productId: number) => {
-        const confirmation = window.confirm(`¿Estás seguro de querer eliminar el producto ${productId}?`);
-        if (confirmation) {
-          try {
-            const response = await fetch(`http://localhost:8080/productos/${productId}`, {
-              method: 'DELETE',
-            });
-            if (!response.ok) {
-              throw new Error('Error al eliminar el producto');
-            }
-            alert(`Eliminaste exitosamente el producto: ${productId}`);
-            fetchProducts();
-          } catch (error) {
-            console.error('Error al eliminar el producto:', error);
-          }
-        } else {
-          console.log('Eliminación cancelada');
-        }
-      };
-
-   
-    const handlePageSizeChange = (size: number) => {
-        setProductsPerPage(size);
-        setCurrentPage(1); 
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setSearchId(value);
     };
 
-    
-    const paginate = (pageNumber: number) => {
-        if (pageNumber >= 1 && pageNumber <= totalPages) {
-            setCurrentPage(pageNumber);
+    const handleSearchSubmit = () => {
+        const product = products.find((prod) => prod.id === Number(searchId));
+        if (product) {
+            setSelectedProduct(product); // Si se encuentra el producto, seleccionarlo
+        } else {
+            alert('Producto no encontrado');
+            setSelectedProduct(null); // Si no se encuentra el producto, deseleccionarlo
         }
     };
 
@@ -108,56 +85,39 @@ const ProductManagement = () => {
                             </Tab>
 
                             {/* Eliminar Producto */}
-                            <Tab eventKey="eliminarProducto" title="Eliminar Producto">
+                            <Tab eventKey="eliminarProducto" title="Gestión de Productos">
                                 {loading ? (
                                     <Spinner animation="border" variant="primary" />
                                 ) : (
                                     <>
-                                        <h1>Lista de Productos:</h1>
-                                        <Form.Select
-                                            aria-label="Seleccionar cantidad de productos por página"
-                                            value={productsPerPage}
-                                            onChange={(e) => handlePageSizeChange(Number(e.target.value))}
-                                            className="d-inline w-auto"
-                                        >
-                                            <option value={12}>12</option>
-                                            <option value={25}>25</option>
-                                            <option value={50}>50</option>
-                                        </Form.Select>
-                                        <span className="ms-2">productos por página</span>
+                                    <Row>
+                                        {/* Buscador por ID */}
+                                        <Col md={2}>
+                                            <Form.Label>Buscar por ID</Form.Label>
+                                            <Form className="d-flex">
+
+                                                <Form.Control
+                                                    type="number"
+                                                    placeholder="ID"
+                                                    value={searchId}
+                                                    onChange={handleSearchChange}
+                                                />
+                                                <Button onClick={handleSearchSubmit} variant='outline-primary' className='botonbuscador'>
+                                                    <span className="material-symbols-outlined">
+                                                        search
+                                                    </span>
+                                                </Button>
+                                            </Form>
+                                        </Col>
+
                                         <ProductTable
                                             currentProducts={products}
                                             selectedProduct={selectedProduct}
                                             setSelectedProduct={setSelectedProduct}
                                         />
-                                        {selectedProduct && (
-                                            <div className="d-flex justify-content-center mt-3 gap-2">
-                                                <Button variant="secondary" onClick={() => setSelectedProduct(null)}>
-                                                    Cancelar
-                                                </Button>
-                                                <Button variant="danger" onClick={() => handleDeleteProduct(selectedProduct?.id ?? 0)}>
-                                                    Eliminar
-                                                </Button>
-                                            </div>
-                                        )}
+                                        </Row>
                                     </>
                                 )}
-
-                                {/* Componente de paginación */}
-                                <CustomPagination
-                                    currentPage={currentPage}
-                                    totalPages={totalPages}
-                                    paginate={paginate}
-                                />
-
-                                {/* Mostrar el número total de productos */}
-                                <div className="d-flex justify-content-center mt-3">
-                                    {totalItems > 0 ? (
-                                        <span>Mostrando {products.length} de {totalItems} productos</span>
-                                    ) : (
-                                        <span>No hay productos disponibles</span>
-                                    )}
-                                </div>
                             </Tab>
                         </Tabs>
                     </div>
