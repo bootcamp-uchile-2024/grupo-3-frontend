@@ -317,16 +317,16 @@ const CartPagePay: React.FC = () => {
       await replaceCartProducts();
   
       const payload = {
-        fechaCreacion: new Date().toISOString().split('T')[0], 
-        idMedioPago: 1, 
-        idEstado: 1, 
+        fechaCreacion: new Date().toISOString().split('T')[0],
+        idMedioPago: 1,
+        idEstado: 1,
         idTipoDespacho: 1,
         receptor: 'Nombre del receptor',
         fechaEntrega: new Date(new Date().setDate(new Date().getDate() + 3))
           .toISOString()
-          .split('T')[0], 
+          .split('T')[0],
         direccionEnvio: {
-          comuna: 'Puente Alto', 
+          comuna: 'Puente Alto',
           calle: 'Los Toros',
           numero: '123',
           departamento: '1215',
@@ -354,10 +354,15 @@ const CartPagePay: React.FC = () => {
       const data = await response.json();
       console.log('Compra finalizada exitosamente:', data);
   
+      const nuevoCarritoId = data.nuevoCarritoId;
+      console.log('Nuevo carrito asignado al usuario:', nuevoCarritoId);
+  
       handleClearCart();
-
+  
+      setCartId(nuevoCarritoId);
+  
       setIsPurchaseCompleted(true);
-
+  
       navigate('/confirmation');
     } catch (e: unknown) {
       console.error('Error crítico al finalizar la compra:', getErrorMessage(e));
@@ -367,8 +372,6 @@ const CartPagePay: React.FC = () => {
     }
   };
   
-  
-
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
     const existingItem = acc.find((i: CartItem) => i.id === item.id);
     if (existingItem) {

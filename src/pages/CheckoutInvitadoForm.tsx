@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
+import { useSelector } from 'react-redux'; 
+import { RootState } from '../states/store';
 import '../styles/CheckoutInvitadoForm.css';
 
 interface CheckoutInvitadoDTO {
@@ -18,8 +20,15 @@ interface CheckoutInvitadoDTO {
   aceptaTerminos: boolean;
 }
 
+interface CartItem {
+  id: number;
+  cantidad: number;
+}
+
 const CheckoutInvitadoForm: React.FC = () => {
   const navigate = useNavigate();
+
+  const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
 
   const [formData, setFormData] = useState<CheckoutInvitadoDTO>({
     email: '',
@@ -54,15 +63,23 @@ const CheckoutInvitadoForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    const userId = 1;
-  
-    if (!formData.email || !formData.nombre || !formData.telefono) {
+
+    const userId = 1; 
+    const cartId = 2; 
+
+    if (!formData.email || !formData.nombre || !formData.telefono || !formData.quienRecibe) {
       alert('Por favor completa todos los campos obligatorios.');
       return;
     }
-  
-    const payload = {
+
+    const cartPayload = {
+      productosCarro: cartItems.map((item: CartItem) => ({
+        productoId: item.id,
+        cantidadProducto: item.cantidad,
+      })),
+    };
+
+    const pedidoPayload = {
       fechaCreacion: new Date().toISOString().split('T')[0],
       idMedioPago: 1,
       idEstado: 1,
@@ -74,38 +91,57 @@ const CheckoutInvitadoForm: React.FC = () => {
       direccionEnvio: {
         comuna: formData.comuna,
         calle: formData.direccion,
-        numero: '', 
-        departamento: '', 
-        referencia: '', 
+        numero: '03010',
+        departamento: '1215',
+        referencia: 'Junto al supermercado',
       },
     };
-  
+
     try {
+      console.log('Sincronizando carrito con el backend:', cartPayload);
+      const cartResponse = await fetch(`http://localhost:8080/carro-compras/replaceProductos/${cartId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cartPayload),
+      });
+
+      if (!cartResponse.ok) {
+        const cartError = await cartResponse.json();
+        console.error('Error al sincronizar el carrito:', cartError);
+        alert(`Error al sincronizar el carrito: ${cartError.message || 'Error desconocido'}`);
+        return;
+      }
+
+      console.log('Carrito sincronizado correctamente.');
+
+      console.log('Enviando datos al endpoint de finalizar compra:', pedidoPayload);
       const response = await fetch(`http://localhost:8080/pedidos/${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(pedidoPayload),
       });
-  
+
       if (!response.ok) {
-        throw new Error('Error al crear el pedido');
+        const errorData = await response.json();
+        console.error('Error al finalizar la compra:', errorData);
+        alert(`Error al finalizar la compra: ${errorData.message || 'Error desconocido'}`);
+        return;
       }
-  
+
       const data = await response.json();
-      console.log('Pedido creado:', data);
-  
-      navigate('/cart-page-pay', { state: { formData, pedidoId: data.id } });
+      console.log('Pedido creado exitosamente:', data);
+
+      navigate('/cart-page-pay', { state: { pedidoId: data.id, formData } });
+
     } catch (error) {
-      console.error('Error:', error);
-      alert('Hubo un problema al procesar tu pedido.');
+      console.error('Error crítico al procesar el pedido:', error);
+      alert('Hubo un problema al procesar tu pedido. Por favor, inténtalo nuevamente.');
     }
   };
-  
-  
-  
-  
 
   return (
     <Container className="checkout-container">
