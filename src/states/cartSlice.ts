@@ -27,14 +27,14 @@ const loadCartFromLocalStorage = (): CartState => {
 };
 
 
-
 const saveCartToLocalStorage = (state: CartState) => {
+  console.log('Estado actual del carrito antes de guardar:', state);
   try {
-    console.log('Guardando en localStorage:', state);
-    const stateAsJson = JSON.stringify(state);
-    localStorage.setItem('__redux__cart__', stateAsJson);
+    const cleanState = JSON.parse(JSON.stringify(state));
+    localStorage.setItem('__redux__cart__', JSON.stringify(cleanState));
+    console.log('Estado guardado en localStorage:', cleanState);
   } catch (error) {
-    console.error('Error al guardar el carrito de compras', error);
+    console.error('Error al guardar el carrito de compras en localStorage:', error);
   }
 };
 
@@ -61,25 +61,38 @@ const cartSlice = createSlice({
     },
 
     clearCart(state) {
+      console.log('Limpiando el carrito en Redux...');
       state.productos = [];
-      saveCartToLocalStorage(state);
+      console.log('Estado en Redux después de limpiar:', state);
+      
+      console.log('Eliminando carrito del LocalStorage...');
+      localStorage.removeItem('__redux__cart__');
+      console.log('LocalStorage después de limpiar:', localStorage.getItem('__redux__cart__'));
     },
+    
+    
+    
 
     updateQuantity: (state, action: PayloadAction<{ id: number; cantidad: number }>) => {
       const { id, cantidad } = action.payload;
       const item = state.productos.find((item) => item.id === id);
     
-      console.log('Intentando actualizar cantidad en Redux:', { id, cantidad, item });
-    
       if (item) {
+        console.log(`Actualizando cantidad del producto ${id} en Redux.`);
         item.cantidad += cantidad;
-        console.log('Cantidad después de actualizar:', item.cantidad);
+    
+        if (item.cantidad <= 0) {
+          console.log(`Eliminando producto ${id} del carrito porque su cantidad es 0.`);
+          state.productos = state.productos.filter((product) => product.id !== id);
+        }
     
         saveCartToLocalStorage(state);
+        console.log('LocalStorage actualizado después de modificar cantidad.');
       } else {
-        console.error('Producto no encontrado en Redux.');
+        console.error(`Producto ${id} no encontrado en Redux para actualizar cantidad.`);
       }
     },
+    
     
     
     

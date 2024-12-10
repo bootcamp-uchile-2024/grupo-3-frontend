@@ -8,6 +8,7 @@ import { finalizePurchaseRequest } from '../endpoints/purchase';
 import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap';
 import '../styles/CartPage.css';
 
+
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
@@ -183,38 +184,46 @@ const CartPage: React.FC = () => {
 
   useEffect(() => {
     const initializeCart = async () => {
+      console.log('Inicializando carrito...');
       const activeCartId = await fetchActiveCart();
-
+  
       if (activeCartId) {
-        console.log(`Carrito activo detectado con ID ${activeCartId}. No se creará un nuevo carrito.`);
-
+        console.log(`Carrito activo detectado con ID ${activeCartId}.`);
         const savedCartItems = localStorage.getItem('__redux__cart__');
+  
         if (savedCartItems) {
           try {
             const parsedCart = JSON.parse(savedCartItems);
-
+  
             if (parsedCart && Array.isArray(parsedCart.productos)) {
-              dispatch(clearCart());
-
-              parsedCart.productos.forEach((item: CartItem) => {
-                dispatch(addToCart(item));
-              });
+              if (parsedCart.productos.length > 0) {
+                console.log('Sincronizando carrito desde el localStorage...');
+                dispatch(clearCart());
+                parsedCart.productos.forEach((item: CartItem) => {
+                  dispatch(addToCart(item));
+                });
+              } else {
+                console.log('El carrito está vacío en localStorage. No se sincronizará.');
+                dispatch(clearCart());
+                localStorage.removeItem('__redux__cart__');
+              }
             } else {
-              console.warn('El contenido de productos no es un array:', parsedCart.productos);
+              console.warn('El carrito en localStorage tiene un formato inválido.');
             }
           } catch (error) {
-            console.error('Error al parsear los datos del carrito desde localStorage:', error);
+            console.error('Error al parsear los datos del carrito:', error);
           }
         }
         return;
       }
-
+  
       console.log('No hay carrito activo. Creando uno nuevo...');
       await createCart();
     };
-
+  
     initializeCart();
   }, [fetchActiveCart, createCart, dispatch]);
+  
 
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {
@@ -254,10 +263,10 @@ const CartPage: React.FC = () => {
       alert('No hay un carrito asociado para vaciar.');
       return;
     }
-  
+
     try {
       console.log(`Vaciando carrito con ID ${cartId}`);
-  
+
       const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
         method: 'PUT',
         headers: {
@@ -266,17 +275,17 @@ const CartPage: React.FC = () => {
         },
         body: JSON.stringify({ productosCarro: [] }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Error al vaciar el carrito:', errorData);
         alert(`Error al vaciar el carrito: ${errorData.message || 'Error desconocido'}`);
         return;
       }
-  
+
       const data = await response.json();
       console.log('Carrito vaciado en el backend:', data);
-  
+
       dispatch(clearCart());
       alert('El carrito ha sido vaciado exitosamente.');
     } catch (error) {
@@ -284,13 +293,7 @@ const CartPage: React.FC = () => {
       alert('Hubo un problema al vaciar el carrito. Por favor, inténtalo nuevamente.');
     }
   };
-  
-  
 
-  /*const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-*/
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setIsPurchaseCompleted(false);

@@ -9,5 +9,7 @@ const store = configureStore({
   },
 });
 
+(window as any).store = store;
+
 export type RootState = ReturnType<typeof store.getState>;
 export default store;

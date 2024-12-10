@@ -296,10 +296,6 @@ const CartPagePay: React.FC = () => {
     }
   };
 
-  /*const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-*/
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setIsPurchaseCompleted(false);
@@ -309,6 +305,7 @@ const CartPagePay: React.FC = () => {
     setLoading(true);
   
     try {
+      console.log('Sincronizando productos antes de finalizar la compra...');
       await replaceCartProducts();
   
       const payload = {
@@ -330,7 +327,6 @@ const CartPagePay: React.FC = () => {
       };
   
       console.log('Enviando datos al endpoint de finalizar compra:', payload);
-  
       const response = await fetch(`${API_BASE_URL}/pedidos/${userId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -347,18 +343,17 @@ const CartPagePay: React.FC = () => {
       const data = await response.json();
       console.log('Compra finalizada exitosamente:', data);
   
-      console.log(`Vaciando el carrito con ID ${cartId}`);
-      await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ productosCarro: [] }),
-      });
-  
+      console.log('Limpiando carrito anterior...');
       dispatch(clearCart());
+      localStorage.removeItem('__redux__cart__');
   
-      const nuevoCarritoId = data.nuevoCarritoId;
-      console.log('Nuevo carrito asignado al usuario:', nuevoCarritoId);
-      setCartId(nuevoCarritoId);
+      console.log('Sincronizando con el nuevo carrito activo creado por el backend...');
+      const newCartId = await fetchActiveCart();
+      if (newCartId) {
+        console.log(`Nuevo carrito activo sincronizado con ID ${newCartId}`);
+      } else {
+        console.warn('No se pudo sincronizar con el nuevo carrito activo.');
+      }
   
       setIsPurchaseCompleted(true);
       navigate('/success-page');
@@ -369,7 +364,7 @@ const CartPagePay: React.FC = () => {
       setLoading(false);
     }
   };
-  
+
   
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
     const existingItem = acc.find((i: CartItem) => i.id === item.id);
