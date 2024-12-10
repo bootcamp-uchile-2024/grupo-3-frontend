@@ -21,7 +21,7 @@ const CartPage: React.FC = () => {
   const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const userId = 10;
+  const userId = 1;
 
   const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
 

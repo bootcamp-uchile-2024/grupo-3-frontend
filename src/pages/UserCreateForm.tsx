@@ -451,6 +451,72 @@ return (
   </Form.Select>
 </Form.Group>
 
+<h3
+  style={{
+    marginBottom: '20px',
+    fontWeight: 600,
+    marginTop: '50px',
+  }}
+>
+  Registra una tarjeta (Opcional)
+</h3>
+
+{/* Tarjeta */}
+<Form.Group className="mb-3">
+  <Form.Label style={{ fontWeight: 'bold' }}>Número de tarjeta</Form.Label>
+  <Form.Control
+    type="number"
+    name="numeroTarjeta"
+    placeholder="Número de tarjeta"
+    style={{
+      width: '95%',
+      height: '35px',
+      padding: '10px',
+      borderRadius: '8px',
+      background: '#F8FAFC',
+    }}
+  />
+</Form.Group>
+
+{/* Experación y CVC */}
+<Row className="mb-3">
+  <Col>
+    <Form.Group controlId="experacion">
+      <Form.Label style={{ fontWeight: 'bold' }}>Expiración (MM/YY)</Form.Label>
+      <Form.Control
+        type="number"
+        name="experacion"
+        placeholder="Expiración (MM/YY)"
+        style={{
+          width: '90%',
+          height: '35px',
+          padding: '10px',
+          borderRadius: '8px',
+          background: '#F8FAFC',
+        }}
+      />
+    </Form.Group>
+  </Col>
+  <Col>
+    <Form.Group controlId="cvc">
+      <Form.Label style={{ fontWeight: 'bold' }}>CVC</Form.Label>
+      <Form.Control
+        type="number"
+        name="cvc"
+        placeholder="CVC"
+        style={{
+          width: '90%',
+          height: '35px',
+          padding: '10px',
+          borderRadius: '8px',
+          background: '#F8FAFC',
+        }}
+      />
+    </Form.Group>
+  </Col>
+</Row>
+
+
       {/* Botón */}
       <div className="mt-3">
       <Button

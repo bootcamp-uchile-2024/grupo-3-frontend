@@ -9,7 +9,6 @@ interface CheckoutInvitadoDTO {
   apellido: string;
   rut: string;
   telefono: string;
-  // Datos de envío
   region: string;
   comuna: string;
   direccion: string;
@@ -34,33 +33,83 @@ const CheckoutInvitadoForm: React.FC = () => {
     quienRecibe: '',
     formaEnvio: 'envio',
     tipoRecibo: 'boleto',
-    aceptaTerminos: false
+    aceptaTerminos: false,
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     if (type === 'checkbox') {
       const target = e.target as HTMLInputElement;
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: target.checked
+        [name]: target.checked,
       }));
     } else {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        [name]: value
+        [name]: value,
       }));
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Procesar el pago
+  
+    const userId = 1;
+  
+    if (!formData.email || !formData.nombre || !formData.telefono) {
+      alert('Por favor completa todos los campos obligatorios.');
+      return;
+    }
+  
+    const payload = {
+      fechaCreacion: new Date().toISOString().split('T')[0],
+      idMedioPago: 1,
+      idEstado: 1,
+      idTipoDespacho: formData.formaEnvio === 'envio' ? 1 : 2,
+      receptor: formData.quienRecibe,
+      fechaEntrega: new Date(new Date().setDate(new Date().getDate() + 3))
+        .toISOString()
+        .split('T')[0],
+      direccionEnvio: {
+        comuna: formData.comuna,
+        calle: formData.direccion,
+        numero: '', 
+        departamento: '', 
+        referencia: '', 
+      },
+    };
+  
+    try {
+      const response = await fetch(`http://localhost:8080/pedidos/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Error al crear el pedido');
+      }
+  
+      const data = await response.json();
+      console.log('Pedido creado:', data);
+  
+      navigate('/cart-page-pay', { state: { formData, pedidoId: data.id } });
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Hubo un problema al procesar tu pedido.');
+    }
   };
+  
+  
+  
+  
 
   return (
     <Container className="checkout-container">
-       <h2
+      <h2
         style={{
           textAlign: 'center',
           marginBottom: '10px',
@@ -173,7 +222,6 @@ const CheckoutInvitadoForm: React.FC = () => {
         {/* Información de despacho */}
         <section className="checkout-section">
           <h2>Información de despacho</h2>
-          
           <Form.Group className="mb-3">
             <Form.Label>Forma de envío</Form.Label>
             <div>
@@ -208,7 +256,6 @@ const CheckoutInvitadoForm: React.FC = () => {
                   onChange={handleInputChange}
                 >
                   <option>Metropolitana</option>
-                  {/* Agregar más opciones */}
                 </Form.Select>
               </Form.Group>
             </Col>
@@ -221,7 +268,6 @@ const CheckoutInvitadoForm: React.FC = () => {
                   onChange={handleInputChange}
                 >
                   <option>Maipu</option>
-                  {/* Agregar más opciones */}
                 </Form.Select>
               </Form.Group>
             </Col>
@@ -256,7 +302,6 @@ const CheckoutInvitadoForm: React.FC = () => {
             >
               <option value="boleto">Boleta</option>
               <option value="boleto">Factura</option>
-              {/* Agregar más opciones */}
             </Form.Select>
           </Form.Group>
         </section>

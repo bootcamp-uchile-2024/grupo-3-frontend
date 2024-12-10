@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, clearCart, updateQuantity, addToCart } from '../states/cartSlice';
 import { RootState } from '../states/store';
 import { CartItem } from '../interfaces/CartItem';
-import { finalizePurchaseRequest } from '../endpoints/purchase';
 import { Button, Card, Col, Container, ListGroup, Row, Form } from 'react-bootstrap';
 import '../styles/CartPage.css';
 
@@ -12,6 +11,8 @@ const CartPagePay: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
   const navigate = useNavigate();
+  const location = useLocation(); 
+  const { formData, pedidoId } = location.state || {};
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false);
@@ -21,7 +22,14 @@ const CartPagePay: React.FC = () => {
   const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const userId = 10;
+  const userId = 1;
+
+  if (!formData || !pedidoId) {
+    console.error('No se encontraron datos para la página de pago.');
+    return <p>Error: No hay datos disponibles para finalizar el pago.</p>;
+  }
+
+  console.log('Datos recibidos en CartPagePay:', formData, pedidoId);
 
   const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
 
@@ -300,29 +308,66 @@ const CartPagePay: React.FC = () => {
   const handleFinalizePurchase = async () => {
     setLoading(true);
     setPurchasedItems(cartItems);
-
+  
     try {
       if (!cartId && cartItems.length > 0) {
         console.log('No hay carrito activo. Creando uno nuevo.');
         await createCart();
       }
       await replaceCartProducts();
-      const response = await finalizePurchaseRequest(cartItems);
-      if (response.statusCode === 200) {
-        console.log('Compra finalizada exitosamente.');
-        handleClearCart();
-        setIsPurchaseCompleted(true);
-      } else {
-        console.error('Error al finalizar la compra:', response.statusCode);
-        alert(`Error al finalizar la compra: Código ${response.statusCode}`);
+  
+      const payload = {
+        fechaCreacion: new Date().toISOString().split('T')[0], 
+        idMedioPago: 1, 
+        idEstado: 1, 
+        idTipoDespacho: 1,
+        receptor: 'Nombre del receptor',
+        fechaEntrega: new Date(new Date().setDate(new Date().getDate() + 3))
+          .toISOString()
+          .split('T')[0], 
+        direccionEnvio: {
+          comuna: 'Puente Alto', 
+          calle: 'Los Toros',
+          numero: '123',
+          departamento: '1215',
+          referencia: 'Cerca del parque',
+        },
+      };
+  
+      console.log('Enviando datos al endpoint de finalizar compra:', payload);
+  
+      const response = await fetch(`http://localhost:8080/pedidos/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error al finalizar la compra:', errorData);
+        alert(`Error al finalizar la compra: ${errorData.message || 'Error desconocido'}`);
+        return;
       }
+  
+      const data = await response.json();
+      console.log('Compra finalizada exitosamente:', data);
+  
+      handleClearCart();
+
+      setIsPurchaseCompleted(true);
+
+      navigate('/confirmation');
     } catch (e: unknown) {
-      console.error('Error al finalizar la compra:', getErrorMessage(e));
+      console.error('Error crítico al finalizar la compra:', getErrorMessage(e));
       alert('Error al finalizar la compra. Por favor, inténtalo nuevamente.');
     } finally {
       setLoading(false);
     }
   };
+  
+  
 
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
     const existingItem = acc.find((i: CartItem) => i.id === item.id);
@@ -354,7 +399,7 @@ const CartPagePay: React.FC = () => {
   };
 
   const handleNavigateToCheckout = (): void => {
-    navigate('/login-checkout');
+    navigate('/success-page');
   };
 
   return (
