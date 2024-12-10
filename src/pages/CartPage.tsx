@@ -419,7 +419,7 @@ const CartPage: React.FC = () => {
                           className="text-danger"
                           onClick={() => handleRemoveProductFromCart(item.id)}
                         >
-                          Eliminar
+                          <span className="material-symbols-outlined">delete</span>
                         </Button>
                       </Col>
                     </Row>

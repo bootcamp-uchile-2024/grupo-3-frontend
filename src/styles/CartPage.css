@@ -205,14 +205,12 @@
   }
   
   .empty-cart-button {
-    color: #DC2626 !important;
-    background: none !important;
-    border: none !important;
+    color: #1A4756 !important;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 8px !important;
     padding: 8px 16px !important;
     font-size: 14px !important;
+    text-decoration: none;
   }
   
-  .empty-cart-button:hover {
-    text-decoration: underline !important;
-  }
   
