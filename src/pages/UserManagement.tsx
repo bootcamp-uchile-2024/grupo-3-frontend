@@ -46,8 +46,11 @@ const UserManagement = () => {
         throw new Error("Error al obtener los usuarios");
       }
       const responseData = await response.json();
-      console.log("Datos obtenidos del backend:", responseData);
-  
+      console.log("Estructura de responseData:", responseData);
+      if (!Array.isArray(responseData.data)) {
+        console.error("El campo 'data' no es un array:", responseData.data);
+      }
+
       const data: User[] = Array.isArray(responseData.data) ? responseData.data : [];
       setUsers(data);
     } catch (error) {
@@ -161,7 +164,8 @@ const UserManagement = () => {
       console.error("No hay un usuario seleccionado para modificar.");
     }
   };
-
+// 
+// currentUsers
   return (
     <Container fluid className="mt-4" style={{}}>
        <Col md={12}>
@@ -194,11 +198,12 @@ const UserManagement = () => {
                       />
                     )}
                     <UserTable
-                      users={users}
-                      currentUsers={currentUsers}
-                      selectedUser={selectedUser}
-                      setSelectedUser={setSelectedUser}
+                      users={Array.isArray(users) ? users : []} 
+                      currentUsers={Array.isArray(currentUsers) ? currentUsers : []} 
+                      selectedUser={selectedUser ?? null} 
+                      setSelectedUser={setSelectedUser} 
                     />
+
                     {selectedUser && (
                       <div className="d-flex justify-content-center mt-3 gap-2">
                         <Button variant="secondary" onClick={handleCancelEdit}>
@@ -418,13 +423,18 @@ const UserManagement = () => {
                   </>
                 ) : (
                   <>
-                    {selectedUser && <CardUser selectedUser={selectedUser} />}
-                    <UserTable
-                      users={users}
-                      currentUsers={currentUsers}
-                      selectedUser={selectedUser}
-                      setSelectedUser={setSelectedUser}
-                    />
+                    {selectedUser ? (
+                        <CardUser selectedUser={selectedUser} />
+                      ) : (
+                        <p>No hay un usuario seleccionado</p>
+                      )}
+                      <UserTable
+                        users={Array.isArray(users) ? users : []} 
+                        currentUsers={Array.isArray(currentUsers) ? currentUsers : []} 
+                        selectedUser={selectedUser ?? null} 
+                        setSelectedUser={setSelectedUser} 
+                      />
+
                     <div className="d-flex justify-content-center mt-3 gap-2" style={{ position: "relative" }}>
                       <Button
                         variant="primary"
