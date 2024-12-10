@@ -21,7 +21,7 @@ const ProductManagement = () => {
     const fetchProducts = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await fetch(`http://localhost:8080/catalogo?page=${currentPage}&pageSize=${productsPerPage}`, {
+            const response = await fetch(`http://localhost:8080/productos`, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -32,12 +32,12 @@ const ProductManagement = () => {
             if (!response.ok) throw new Error('Error al cargar los productos');
     
             const data = await response.json();
-    
-            // Verificar la estructura de los datos
+
             if (data && data.data && Array.isArray(data.data) && data.totalItems !== undefined) {
                 setProducts(data.data);
                 setTotalItems(data.totalItems); 
                 setTotalPages(Math.ceil(data.totalItems / productsPerPage)); 
+                console.log (data.data)
             } else {
                 throw new Error('Datos de productos no válidos');
             }

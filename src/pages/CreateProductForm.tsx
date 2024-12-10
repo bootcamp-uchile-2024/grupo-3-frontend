@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { CreateProductData } from '../interfaces/CreateProductData.ts';
 import fileTypeChecker from 'file-type-checker';
 import { Image, Form, Button, Row, Col, Container } from 'react-bootstrap';
-import '../styles/CreateProductFormStyles.css'
+import '../styles/CreateProductFormStyles.css';
+
 const CreateProduct: React.FC = () => {
+    const [, setProductCreated] = useState(false);
     const [producto, setProducto] = useState<CreateProductData>({
         SKU: '',
         nombre: '',
@@ -304,7 +306,7 @@ const CreateProduct: React.FC = () => {
                 if (!response.ok) throw new Error("Error en la solicitud");
 
                 const data = await response.json();
-
+                setProductCreated(true);
                 alert(`¡Felicidades! Nuevo producto creado con ID: ${data.id}`);
                 setProducto({
                     SKU: '',
@@ -353,7 +355,9 @@ const CreateProduct: React.FC = () => {
                     }
                 });
                 setImagePreview('');
-                console.log("Producto creado: ", productoData)
+                console.log("Producto creado: ", productoData);
+
+
             } catch (error) {
                 console.error("Error al crear el producto: ", error);
             }
@@ -364,284 +368,287 @@ const CreateProduct: React.FC = () => {
 
     return (
         <Container>
-            <Row>
-                <Col md={4}>
-                    <Form>
-                        <div>
-                            {/* Nombre del Producto */}
-                            <Form.Group controlId="nombre">
-                                <Form.Label>Nombre del Producto</Form.Label>
-                                <Form.Control
-                                    type="text"
-                                    name="nombre"
-                                    value={producto.nombre}
-                                    onChange={handleChange}
-                                    isInvalid={!!errores.nombre}
-                                    placeholder='Ingrese Nombre'
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errores.nombre}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-
-                            {/* Categoría */}
-                            <Form.Group controlId="idCategoria">
-                                <Form.Label>Categoría</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    name="idCategoria"
-                                    value={producto.idCategoria}
-                                    onChange={handleChange}
-                                    isInvalid={!!errores.idCategoria}
-                                >
-                                    {categories.map((category) => (
-                                        <option key={category.id} value={category.id}>
-                                            {category.name}
-                                        </option>
-                                    ))}
-                                </Form.Control>
-                                <Form.Control.Feedback type="invalid">
-                                    {errores.idCategoria}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-
-                            {/* Precio */}
-                            <Form.Group controlId="precio">
-                                <Form.Label>Precio</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    name="precio"
-                                    value={producto.precio}
-                                    onChange={handleChange}
-                                    isInvalid={!!errores.precio}
-                                    min={0}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errores.precio}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-
-                            {/* Stock */}
-                            <Form.Group controlId="stock">
-                                <Form.Label>Cantidad de Stock</Form.Label>
-                                <Form.Control
-                                    type="number"
-                                    name="stock"
-                                    value={producto.stock}
-                                    onChange={handleChange}
-                                    isInvalid={!!errores.cantidad}
-                                    min={0}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errores.cantidad}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-
-                            {/* Descripción */}
-                            <Form.Group controlId="descripcion">
-                                <Form.Label>Descripción del producto</Form.Label>
-                                <Form.Control
-                                    as="textarea"
-                                    name="descripcion"
-                                    value={producto.descripcion}
-                                    onChange={handleChange}
-                                    placeholder='Ingrese Descripción'
-                                    rows={5}
-                                    isInvalid={!!errores.descripcion}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errores.descripcion}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                        </div>
-                    </Form>
-                </Col>
-
-                <Col md={8}>
-                    <Form>
-                        <div>
-
-                            {/* Dimensiones */}
-                            <Row>
-                                <Col md={4}>
-                                    <Form.Group controlId="ancho">
-                                        <Form.Label>Ancho en cm.</Form.Label>
+                <Form>
+                    <Row>
+                        <Col md={4}>
+                            <Form>
+                                <div>
+                                    {/* Nombre del Producto */}
+                                    <Form.Group controlId="nombre">
+                                        <Form.Label>Nombre del Producto</Form.Label>
                                         <Form.Control
-                                            type="number"
-                                            name="ancho"
-                                            value={producto.ancho}
+                                            type="text"
+                                            name="nombre"
+                                            value={producto.nombre}
                                             onChange={handleChange}
-                                            min={0}
+                                            isInvalid={!!errores.nombre}
+                                            placeholder='Ingrese Nombre'
                                         />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errores.nombre}
+                                        </Form.Control.Feedback>
                                     </Form.Group>
-                                </Col>
-                                <Col md={4}>
-                                    <Form.Group controlId="alto">
-                                        <Form.Label>Alto en cm.</Form.Label>
-                                        <Form.Control
-                                            type="number"
-                                            name="alto"
-                                            value={producto.alto}
-                                            onChange={handleChange}
-                                            min={0}
-                                        />
-                                    </Form.Group>
-                                </Col>
-                                <Col md={4}>
-                                    <Form.Group controlId="largo">
-                                        <Form.Label>Largo en cm.</Form.Label>
-                                        <Form.Control
-                                            type="number"
-                                            name="largo"
-                                            value={producto.largo}
-                                            onChange={handleChange}
-                                            min={0}
-                                        />
-                                    </Form.Group>
-                                </Col>
-                            </Row>
-                            {errores.dimensiones && (
-                                <p className="Create-product-container-inputs-error">{errores.dimensiones}</p>
-                            )}
 
-                            {/* Peso */}
-                            <Row>
-                                <Col md={4}>
-                                    <Form.Group controlId="peso">
-                                        <Form.Label>Peso en grs.</Form.Label>
+                                    {/* Categoría */}
+                                    <Form.Group controlId="idCategoria">
+                                        <Form.Label>Categoría</Form.Label>
+                                        <Form.Control
+                                            as="select"
+                                            name="idCategoria"
+                                            value={producto.idCategoria}
+                                            onChange={handleChange}
+                                            isInvalid={!!errores.idCategoria}
+                                        >
+                                            {categories.map((category) => (
+                                                <option key={category.id} value={category.id}>
+                                                    {category.name}
+                                                </option>
+                                            ))}
+                                        </Form.Control>
+                                        <Form.Control.Feedback type="invalid">
+                                            {errores.idCategoria}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+
+                                    {/* Precio */}
+                                    <Form.Group controlId="precio">
+                                        <Form.Label>Precio</Form.Label>
                                         <Form.Control
                                             type="number"
-                                            name="peso"
-                                            value={producto.peso}
+                                            name="precio"
+                                            value={producto.precio}
                                             onChange={handleChange}
-                                            isInvalid={!!errores.peso}
+                                            isInvalid={!!errores.precio}
                                             min={0}
                                         />
                                         <Form.Control.Feedback type="invalid">
-                                            {errores.peso}
+                                            {errores.precio}
                                         </Form.Control.Feedback>
                                     </Form.Group>
-                                </Col>
 
-                                {/* Campos Condicionales */}
-                                {producto.idCategoria === 1 && ( // Mostrar campos de planta
-                                    <>
-                                        <Col md={4}>
-                                            <Form.Group controlId="planta.petFriendly">
-                                                <Form.Label>¿Es pet-friendly?:</Form.Label>
-                                                <Form.Control
-                                                    as="select"
-                                                    name="planta.petFriendly"
-                                                    value={producto.planta?.petFriendly ? "Sí" : "No"}  // Usamos "true" o "false" como strings
-                                                    onChange={handleChange}
-                                                >
-                                                    <option value="Sí">Sí</option>  {/* Usamos true como valor */}
-                                                    <option value="No">No</option>  {/* Usamos false como valor */}
-                                                </Form.Control>
-                                            </Form.Group>
-                                        </Col>
-                                        <Col md={4}>
-                                            <Form.Group controlId="ciclo">
-                                                <Form.Label>¿Tiene ciclo?</Form.Label>
-                                                <Form.Control
-                                                    as="select"
-                                                    name="planta.ciclo"
-                                                    value={producto.planta?.ciclo ? "Sí" : "No"}
-                                                    onChange={handleChange}
-                                                >
-                                                    <option value="Sí">Sí</option>
-                                                    <option value="No">No</option>
-                                                </Form.Control>
-                                            </Form.Group>
-                                        </Col>
-                                    </>
-                                )}
+                                    {/* Stock */}
+                                    <Form.Group controlId="stock">
+                                        <Form.Label>Cantidad de Stock</Form.Label>
+                                        <Form.Control
+                                            type="number"
+                                            name="stock"
+                                            value={producto.stock}
+                                            onChange={handleChange}
+                                            isInvalid={!!errores.cantidad}
+                                            min={0}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errores.cantidad}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
 
-                                {producto.idCategoria === 2 && ( // Mostrar campos de accesorios
-                                    <>
+                                    {/* Descripción */}
+                                    <Form.Group controlId="descripcion">
+                                        <Form.Label>Descripción del producto</Form.Label>
+                                        <Form.Control
+                                            as="textarea"
+                                            name="descripcion"
+                                            value={producto.descripcion}
+                                            onChange={handleChange}
+                                            placeholder='Ingrese Descripción'
+                                            rows={5}
+                                            isInvalid={!!errores.descripcion}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errores.descripcion}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                </div>
+                            </Form>
+                        </Col>
+
+                        <Col md={8}>
+                            <Form>
+                                <div>
+
+                                    {/* Dimensiones */}
+                                    <Row>
                                         <Col md={4}>
-                                            <Form.Group controlId="idTipoAccesorio">
-                                                <Form.Label>Tipo de Accesorio:</Form.Label>
+                                            <Form.Group controlId="ancho">
+                                                <Form.Label>Ancho en cm.</Form.Label>
                                                 <Form.Control
-                                                    type="text"
-                                                    name="material"
-                                                    value={producto.accesorio?.idTipoAccesorio}
+                                                    type="number"
+                                                    name="ancho"
+                                                    value={producto.ancho}
                                                     onChange={handleChange}
+                                                    min={0}
                                                 />
                                             </Form.Group>
                                         </Col>
-                                    </>
-                                )}
-
-                                {producto.idCategoria === 3 && ( // Mostrar campos de insumos
-                                    <>
                                         <Col md={4}>
-                                            <Form.Group controlId="tipoInsumo">
-                                                <Form.Label>Tipo de Insumo</Form.Label>
+                                            <Form.Group controlId="alto">
+                                                <Form.Label>Alto en cm.</Form.Label>
                                                 <Form.Control
-                                                    type="text"
-                                                    name="tipoInsumo"
-                                                    value={producto.insumo?.idTipoInsumo}
+                                                    type="number"
+                                                    name="alto"
+                                                    value={producto.alto}
                                                     onChange={handleChange}
+                                                    min={0}
                                                 />
                                             </Form.Group>
                                         </Col>
-                                    </>
-                                )}
-
-                                {producto.idCategoria === 4 && ( // Mostrar campos de maceteros
-                                    <>
                                         <Col md={4}>
-                                            <Form.Group controlId="materialMacetero">
-                                                <Form.Label>Material del Macetero:</Form.Label>
+                                            <Form.Group controlId="largo">
+                                                <Form.Label>Largo en cm.</Form.Label>
                                                 <Form.Control
-                                                    type="text"
-                                                    name="materialMacetero"
-                                                    value={producto.macetero?.material}
+                                                    type="number"
+                                                    name="largo"
+                                                    value={producto.largo}
                                                     onChange={handleChange}
+                                                    min={0}
                                                 />
                                             </Form.Group>
                                         </Col>
-                                    </>
-                                )}
-                            </Row>
+                                    </Row>
+                                    {errores.dimensiones && (
+                                        <p className="Create-product-container-inputs-error">{errores.dimensiones}</p>
+                                    )}
 
-                            {/* Imagen */}
-                            <Form.Group controlId="imagen">
-                                <Form.Label>Subir Imagen</Form.Label>
-                                <br/>
-                                {/* Previsualización */}
-                                {imagePreview ? (
-                                    <div className="mt-3">
-                                        <Image src={imagePreview} alt="Previsualización" className="small-preview" />
-                                    </div>
-                                ) : (
-                                    <span className="mt-3 material-symbols-outlined icono-tamano-personalizado" >
-                                        add_photo_alternate
-                                    </span>
-                                )}
-                                <Form.Control
-                                    type="file"
-                                    name="imagen"
-                                    onChange={handleFileUpload}
-                                    isInvalid={!!errores.imagen}
-                                />
-                                <Form.Control.Feedback type="invalid">
-                                    {errores.imagen}
-                                </Form.Control.Feedback>
-                            </Form.Group>
-                        </div>
-                    </Form>
-                </Col>
-            </Row >
-            <br />
-            <Button
-                type="button"
-                onClick={handleSubmit}
-                className="Create-product-container-button"
-            >
-                Crear Producto
-            </Button>
+                                    {/* Peso */}
+                                    <Row>
+                                        <Col md={4}>
+                                            <Form.Group controlId="peso">
+                                                <Form.Label>Peso en grs.</Form.Label>
+                                                <Form.Control
+                                                    type="number"
+                                                    name="peso"
+                                                    value={producto.peso}
+                                                    onChange={handleChange}
+                                                    isInvalid={!!errores.peso}
+                                                    min={0}
+                                                />
+                                                <Form.Control.Feedback type="invalid">
+                                                    {errores.peso}
+                                                </Form.Control.Feedback>
+                                            </Form.Group>
+                                        </Col>
+
+                                        {/* Campos Condicionales */}
+                                        {producto.idCategoria === 1 && ( // Mostrar campos de planta
+                                            <>
+                                                <Col md={4}>
+                                                    <Form.Group controlId="planta.petFriendly">
+                                                        <Form.Label>¿Es pet-friendly?</Form.Label>
+                                                        <Form.Control
+                                                            as="select"
+                                                            name="planta.petFriendly"
+                                                            value={producto.planta?.petFriendly ? "Sí" : "No"}  // Usamos "true" o "false" como strings
+                                                            onChange={handleChange}
+                                                        >
+                                                            <option value="Sí">Sí</option>  {/* Usamos true como valor */}
+                                                            <option value="No">No</option>  {/* Usamos false como valor */}
+                                                        </Form.Control>
+                                                    </Form.Group>
+                                                </Col>
+                                                <Col md={4}>
+                                                    <Form.Group controlId="ciclo">
+                                                        <Form.Label>¿Tiene ciclo?</Form.Label>
+                                                        <Form.Control
+                                                            as="select"
+                                                            name="planta.ciclo"
+                                                            value={producto.planta?.ciclo ? "Sí" : "No"}
+                                                            onChange={handleChange}
+                                                        >
+                                                            <option value="Sí">Sí</option>
+                                                            <option value="No">No</option>
+                                                        </Form.Control>
+                                                    </Form.Group>
+                                                </Col>
+                                            </>
+                                        )}
+
+                                        {producto.idCategoria === 2 && ( // Mostrar campos de accesorios
+                                            <>
+                                                <Col md={4}>
+                                                    <Form.Group controlId="idTipoAccesorio">
+                                                        <Form.Label>Tipo de Accesorio:</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            name="material"
+                                                            value={producto.accesorio?.idTipoAccesorio}
+                                                            onChange={handleChange}
+                                                        />
+                                                    </Form.Group>
+                                                </Col>
+                                            </>
+                                        )}
+
+                                        {producto.idCategoria === 3 && ( // Mostrar campos de insumos
+                                            <>
+                                                <Col md={4}>
+                                                    <Form.Group controlId="tipoInsumo">
+                                                        <Form.Label>Tipo de Insumo</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            name="tipoInsumo"
+                                                            value={producto.insumo?.idTipoInsumo}
+                                                            onChange={handleChange}
+                                                        />
+                                                    </Form.Group>
+                                                </Col>
+                                            </>
+                                        )}
+
+                                        {producto.idCategoria === 4 && ( // Mostrar campos de maceteros
+                                            <>
+                                                <Col md={4}>
+                                                    <Form.Group controlId="materialMacetero">
+                                                        <Form.Label>Material del Macetero:</Form.Label>
+                                                        <Form.Control
+                                                            type="text"
+                                                            name="materialMacetero"
+                                                            value={producto.macetero?.material}
+                                                            onChange={handleChange}
+                                                        />
+                                                    </Form.Group>
+                                                </Col>
+                                            </>
+                                        )}
+                                    </Row>
+
+                                    {/* Imagen */}
+                                    <Form.Group controlId="imagen">
+                                        <Form.Label>Subir Imagen</Form.Label>
+                                        <br />
+                                        {/* Previsualización */}
+                                        {imagePreview ? (
+                                            <div className="mt-3">
+                                                <Image src={imagePreview} alt="Previsualización" className="small-preview" />
+                                            </div>
+                                        ) : (
+                                            <span className="mt-3 material-symbols-outlined icono-tamano-personalizado" >
+                                                add_photo_alternate
+                                            </span>
+                                        )}
+                                        <Form.Control
+                                            type="file"
+                                            name="imagen"
+                                            onChange={handleFileUpload}
+                                            isInvalid={!!errores.imagen}
+                                        />
+                                        <Form.Control.Feedback type="invalid">
+                                            {errores.imagen}
+                                        </Form.Control.Feedback>
+                                    </Form.Group>
+                                </div>
+                            </Form>
+                        </Col>
+                    </Row >
+                    <br />
+                    <Button
+                        type="button"
+                        onClick={handleSubmit}
+                        className="Create-product-container-button"
+                    >
+                        Crear Producto
+                    </Button>
+
+                </Form>
         </Container >
     );
 };

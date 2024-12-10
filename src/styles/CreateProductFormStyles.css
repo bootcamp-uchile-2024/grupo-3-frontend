@@ -19,3 +19,19 @@
   margin-bottom: 10px;
   
 }
+
+.form-label {
+  font-weight: bolder!important;
+  color: #1A4756!important;
+}
+
+.form-control {
+  border-radius: 10px!important;
+  background-color: #F8FAFC!important;
+  border: none!important;
+  margin-bottom: 50px;
+}
+
+input#imagen.form-control{
+  border: 1px solid #1A4756!important;
+}
