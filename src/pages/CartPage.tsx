@@ -186,15 +186,15 @@ const CartPage: React.FC = () => {
     const initializeCart = async () => {
       console.log('Inicializando carrito...');
       const activeCartId = await fetchActiveCart();
-  
+
       if (activeCartId) {
         console.log(`Carrito activo detectado con ID ${activeCartId}.`);
         const savedCartItems = localStorage.getItem('__redux__cart__');
-  
+
         if (savedCartItems) {
           try {
             const parsedCart = JSON.parse(savedCartItems);
-  
+
             if (parsedCart && Array.isArray(parsedCart.productos)) {
               if (parsedCart.productos.length > 0) {
                 console.log('Sincronizando carrito desde el localStorage...');
@@ -216,14 +216,14 @@ const CartPage: React.FC = () => {
         }
         return;
       }
-  
+
       console.log('No hay carrito activo. Creando uno nuevo...');
       await createCart();
     };
-  
+
     initializeCart();
   }, [fetchActiveCart, createCart, dispatch]);
-  
+
 
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {
@@ -361,7 +361,7 @@ const CartPage: React.FC = () => {
 
   return (
     <Container className="cart-container">
-       <Row className="justify-content-center">
+      <Row className="justify-content-center">
         <Col md={5} className='me-5'>
           <div className="cart-header">
             <h4>Tu compra</h4>
@@ -392,11 +392,14 @@ const CartPage: React.FC = () => {
                       </Col>
                       <Col md={7}>
                         <h5 className="product-title mb-2">{item.nombre}</h5>
-                        <p className="price-text mb-1">Ahora ${item.precio.toLocaleString('es-CL')}</p>
+                        <div className="d-flex align-items-center gap-2">
+                          <p className="price-text-cart mb-1">Ahora ${item.precio.toLocaleString('es-CL')}</p>
+                          <span className="cart-price-badge">-20%</span>
+                        </div>
                         <p className="original-price text-muted">Normal ${item.precio}</p>
                         <div className="quantity-controls">
                           <Button
-                            className='btn-circle'
+                            className='btn-circle-cart'
                             size="sm"
                             onClick={() => handleDecrement(item.id)}
                             disabled={item.cantidad === 1}
@@ -405,7 +408,7 @@ const CartPage: React.FC = () => {
                           </Button>
                           <span className="mx-3">{item.cantidad}</span>
                           <Button
-                            className='btn-circle'
+                            className='btn-circle-cart'
                             size="sm"
                             onClick={() => handleIncrement(item.id)}
                           >

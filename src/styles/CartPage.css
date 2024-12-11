@@ -3,13 +3,6 @@
     margin-bottom: 40px;
   }
   
-  .product-image {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 4px;
-  }
-  
   .cart-item {
     border: none !important;
     background-color: #f8f9fa !important;
@@ -20,14 +13,11 @@
   
   .product-title {
     color: #1A4756;
-    font-size: 16px;
+    font-size: 24px;
+    line-height: 30px;
+    display: flex;
     font-weight: 500;
     margin-bottom: 8px;
-  }
-  
-  .price-text {
-    color: #1A4756;
-    font-weight: bold;
   }
   
   .original-price {
@@ -35,6 +25,14 @@
     color: #6c757d;
     text-decoration: line-through;
   }
+
+  .price-text-cart {
+    font-size: 21px;
+    color: #1A4756;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+}
   
   .quantity-controls {
     display: flex;
@@ -119,10 +117,11 @@
   }
   
   .product-image {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 4px;
+      width: 100%;
+      position: relative;
+      border-radius: 8px;
+      height: 231px;
+      object-fit: cover;
   }
   
   .modal-header {
@@ -213,9 +212,9 @@
     text-decoration: none;
   }
 
-  button.btn-circle {
-    width: 32px;
-    height: 32px!important;
+  button.btn-circle-cart {
+    width: 24px !important;
+    height: 31px !important;
     border-radius: 50%;
     background-color: #1A4756;
     color: white;
@@ -223,16 +222,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
-    cursor: pointer;
+    font-size: 16px;
     transition: background-color 0.2s ease;
   }
   
-  button.btn-circle:hover {
+  button.btn-circle-cart:hover {
     background-color: #153a47;
   }
   
-  button.btn-circle:disabled {
+  button.btn-circle-cart:disabled {
     background-color: #9CA3AF;
     cursor: not-allowed;
   }
@@ -241,5 +239,17 @@
     min-width: 20px;
     text-align: center;
   }
+
+  .cart-price-badge {
+    position: relative;
+    border-radius: 8px;
+    background-color: #d11111;
+    overflow: hidden;
+    padding: 2px;
+    box-sizing: border-box;
+    text-align: center;
+    font-size: 14px;
+    color: #fff;
+}
   
   
