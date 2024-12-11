@@ -55,10 +55,10 @@ const ProductManagement = () => {
     const handleSearchSubmit = () => {
         const product = products.find((prod) => prod.id === Number(searchId));
         if (product) {
-            setSelectedProduct(product); // Si se encuentra el producto, seleccionarlo
+            setSelectedProduct(product); 
         } else {
             alert('Producto no encontrado');
-            setSelectedProduct(null); // Si no se encuentra el producto, deseleccionarlo
+            setSelectedProduct(null); 
         }
     };
 

@@ -1,15 +1,15 @@
 interface Planta {
-  petFriendly: boolean;
-  ciclo: boolean;
-  especie: string;
-  idColor: number;
-  idFotoperiodo: number;
-  idTipoRiego: number;
-  idHabitoCrecimiento: number;
-  idTamano: number;
-  idToleranciaTemperatura: number;
-  idEntorno: number;
-  idIluminacion: number;
+  petFriendly?: boolean;
+  ciclo?: boolean;
+  especie?: string;
+  idColor?: number;
+  idFotoperiodo?: number;
+  idTipoRiego?: number;
+  idHabitoCrecimiento?: number;
+  idTamano?: number;
+  idToleranciaTemperatura?: number;
+  idEntorno?: number;
+  idIluminacion?: number;
 }
 
 interface Macetero {

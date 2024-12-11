@@ -73,16 +73,14 @@ const CreateProduct: React.FC = () => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         console.log(`Campo: ${name}, Valor seleccionado: ${value}`);
-        //planta.petfriendly = true °° false
-        // Si el campo es idCategoria, asegúrate de que se convierta a número
+    
         if (name === "idCategoria") {
             setProducto((prevProducto) => {
                 const categoriaId = parseInt(value, 10);
                 let newProducto = { ...prevProducto, [name]: categoriaId };
-
+    
                 // Limpiar los campos específicos de la categoría al cambiar
                 if (categoriaId === 1) { // Plantas
-
                     newProducto = {
                         ...newProducto,
                         planta: {
@@ -134,27 +132,42 @@ const CreateProduct: React.FC = () => {
         } else {
             // Procesar los demás campos (nombre, precio, etc.)
             const numericFields = ["precio", "stock", "ancho", "alto", "largo", "peso", "unidadesVendidas"];
-
-            const valueToSave =
-                (name === "habilitado" || name === "petFriendly" || name === "ciclo") // Para los campos booleanos
-                    ? value === "Sí" || value == "No" // Si es "Sí", se convierte a true, sino a false
-                    : numericFields.includes(name) // Si es un campo numérico
-                        ? (value === '' ? 0 : parseFloat(value)) // Si el campo es numérico, convertirlo a número, o 0 si está vacío
-                        : value; // Si no es ni booleano ni numérico, mantener el valor original
-
-
-            setProducto((prevProducto) => ({
-                ...prevProducto,
-                [name]: valueToSave,
-            }));
-
+            let valueToSave: string | boolean | number = value;  
+    
+            // Manejar campos booleanos (planta.petFriendly, planta.ciclo)
+            if (name === "planta.petFriendly" || name === "planta.ciclo") {
+                valueToSave = value === "Sí"; 
+            } 
+            // Manejar campos numéricos
+            else if (numericFields.includes(name)) {
+                valueToSave = (value === '' ? 0 : parseFloat(value)); 
+            }
+    
+            setProducto((Producto) => {
+                if (name.startsWith("planta.")) {
+                    const fieldName = name.split('.')[1];
+                    return {
+                        ...Producto,
+                        planta: {
+                            ...Producto.planta,
+                            [fieldName]: valueToSave, 
+                        },
+                    };
+                }
+    
+                return {
+                    ...Producto,
+                    [name]: valueToSave, 
+                };
+            });
+    
             setErrores((prev) => ({
                 ...prev,
                 [name]: '',
             }));
         }
     };
-
+    
     const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (!file) return;
@@ -537,7 +550,7 @@ const CreateProduct: React.FC = () => {
                                                         <Form.Control
                                                             as="select"
                                                             name="planta.petFriendly"
-                                                            value={producto.planta?.petFriendly ? "Sí" : "No"}  // Usamos "true" o "false" como strings
+                                                            value={producto.planta?.petFriendly ? "True" : "No"}  // Usamos "true" o "false" como strings
                                                             onChange={handleChange}
                                                         >
                                                             <option value="Sí">Sí</option>  {/* Usamos true como valor */}
