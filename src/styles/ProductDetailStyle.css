@@ -78,3 +78,27 @@ input[type="checkbox"]:checked {
   margin-top: 8%;
   margin-left: 10rem;
 }
+
+button.btn-circle {
+  width: 32px;
+  height: 32px!important;
+  border-radius: 50%;
+  background-color: #1A4756;
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+button.btn-circle:hover {
+  background-color: #153a47;
+}
+
+button.btn-circle:disabled {
+  background-color: #9CA3AF;
+  cursor: not-allowed;
+}

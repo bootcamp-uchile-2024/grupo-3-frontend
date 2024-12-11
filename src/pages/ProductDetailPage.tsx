@@ -182,9 +182,9 @@ export default function ProductDetailPage() {
                 {/* Controles de cantidad */}
                 <div className="d-flex align-items-center mb-3 mt-4 quantity-controls">
                   <span>Cantidad</span>
-                  <Button onClick={decrementQuantity} className="btn-primary small rounded-circle" style={{ width: '24px', height: '24px', padding: '0' }}>-</Button>
+                  <Button onClick={decrementQuantity} className="btn-circle">-</Button>
                   <span className="mx-2">{quantity}</span>
-                  <Button onClick={incrementQuantity} className="btn-primary small rounded-circle" style={{ width: '24px', height: '24px', padding: '0' }}>+</Button>
+                  <Button onClick={incrementQuantity} className="btn-circle">+</Button>
                 </div>
 
                 {/* Botones de acción */}

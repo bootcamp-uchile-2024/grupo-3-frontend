@@ -23,6 +23,11 @@
   padding: 30px 5px;
 }
 
+input.form-control {
+  border-radius: 8px;
+  background: var(--Surface-light, #F8FAFC)!important;
+}
+
 .form-label {
   font-size: 18px;
   font-weight: 500;

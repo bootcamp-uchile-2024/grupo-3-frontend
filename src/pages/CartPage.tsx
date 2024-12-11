@@ -396,7 +396,7 @@ const CartPage: React.FC = () => {
                         <p className="original-price text-muted">Normal ${item.precio}</p>
                         <div className="quantity-controls">
                           <Button
-                            variant="outline-secondary"
+                            className='btn-circle'
                             size="sm"
                             onClick={() => handleDecrement(item.id)}
                             disabled={item.cantidad === 1}
@@ -405,7 +405,7 @@ const CartPage: React.FC = () => {
                           </Button>
                           <span className="mx-3">{item.cantidad}</span>
                           <Button
-                            variant="outline-secondary"
+                            className='btn-circle'
                             size="sm"
                             onClick={() => handleIncrement(item.id)}
                           >

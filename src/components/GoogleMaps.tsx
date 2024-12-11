@@ -1,6 +1,6 @@
 const GoogleMapEmbed = () => {
   return (
-    <div style={{ textDecoration: "none", overflow: "hidden", maxWidth: "100%", width: "1326px", height: "280px", marginTop:"60px", marginBottom:"100px" }}>
+    <div style={{ textDecoration: "none", overflow: "hidden", maxWidth: "100%", width: "1326px", height: "280px", margin:"60px" }}>
       <div id="google-maps-canvas" style={{ height: "100%", width: "100%", maxWidth: "100%" }}>
         <iframe
           style={{ height: "100%", width: "100%", border: "0" }}
