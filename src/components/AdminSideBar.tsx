@@ -1,13 +1,13 @@
 import { Col, Button } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react'; // Importar useState para manejar el estado
+import { useEffect, useState } from 'react'; // Importar useState para manejar el estado
 import '../styles/AdminSideBarStyles.css'; // Asegúrate de importar el archivo CSS
 
 const AdminSideBar = () => {
   const navigate = useNavigate();
 
   // Estado para el botón seleccionado
-  const [selectedButton, setSelectedButton] = useState<string | null>(null);
+  const [selectedButton, setSelectedButtonAdminSideBar] = useState<string | null>(null);
 
   const buttons = [
     { text: 'Usuarios', icon: 'group', link: '/user-management' },
@@ -17,8 +17,16 @@ const AdminSideBar = () => {
     { text: 'Comunidad', icon: 'group_work' },
   ];
 
+  useEffect(() => {
+    const savedButton = localStorage.getItem('SelectedButtonAdminSideBar');
+    if (savedButton) {
+      setSelectedButtonAdminSideBar(savedButton); // Establecemos el botón guardado como seleccionado
+    }
+  }, []);
+
   const handleButtonClick = (text: string, link?: string) => {
-    setSelectedButton(text); 
+    setSelectedButtonAdminSideBar(text); 
+    localStorage.setItem('SelectedButtonAdminSideBar', text);
     if (link) navigate(link);
   };
 
@@ -33,7 +41,7 @@ const AdminSideBar = () => {
             onClick={() => handleButtonClick(text, link)}
           >
             <span className="material-symbols-outlined">{icon}</span>
-            <span>{text}</span>
+            <span className='textfontsidebar'>{text}</span>
           </Button>
         ))}
       </div>
