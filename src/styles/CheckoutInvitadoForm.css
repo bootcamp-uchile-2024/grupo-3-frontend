@@ -1,15 +1,14 @@
 .checkout-container {
-  max-width: 800px;
-  margin: 10rem auto 4rem;
-  padding: 2rem;
-  background-color: white;
+    max-width: 800px;
+    margin: 10rem auto 4rem;
+    padding: 2rem;
+    background-color: white;
   }
   
   .checkout-section {
     margin-bottom: 2rem;
     width: 600px;
     padding: 1rem;
-    background-color: #f8f9fa;
     border-radius: 8px;
   }
   

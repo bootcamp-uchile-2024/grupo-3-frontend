@@ -385,7 +385,7 @@ const CartPage: React.FC = () => {
                     <Row className="align-items-center row col-md-12">
                       <Col md={3}>
                         <img
-                          src={item.imagen || 'placeholder.jpg'}
+                          src={item.imagen || '/imagenes/productos'}
                           alt={item.nombre}
                           className="product-image img-fluid"
                         />
