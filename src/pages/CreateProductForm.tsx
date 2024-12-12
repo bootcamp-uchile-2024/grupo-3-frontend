@@ -553,8 +553,8 @@ const CreateProduct: React.FC = () => {
                                                             value={producto.planta?.petFriendly ? "True" : "No"}  // Usamos "true" o "false" como strings
                                                             onChange={handleChange}
                                                         >
-                                                            <option value="Sí">Sí</option>  {/* Usamos true como valor */}
-                                                            <option value="No">No</option>  {/* Usamos false como valor */}
+                                                            <option value="Sí">Sí</option>  
+                                                            <option value="No">No</option>  
                                                         </Form.Control>
                                                     </Form.Group>
                                                 </Col>
@@ -643,6 +643,7 @@ const CreateProduct: React.FC = () => {
                                             name="imagen"
                                             onChange={handleFileUpload}
                                             isInvalid={!!errores.imagen}
+                                            className='custom-file-input'
                                         />
                                         <Form.Control.Feedback type="invalid">
                                             {errores.imagen}

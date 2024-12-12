@@ -3,6 +3,7 @@
   height: auto;
   margin-bottom: 10px;
   border-radius: 5%;
+  border: 0.5px solid #1A4756;
 }
 
 .icono-tamano-personalizado {
@@ -17,21 +18,25 @@
   align-items: center;
   color: #1A4756;
   margin-bottom: 10px;
-  
 }
 
 .form-label {
   font-weight: bolder!important;
   color: #1A4756!important;
 }
-
 .form-control {
   border-radius: 10px!important;
-  background-color: #F8FAFC!important;
-  border: none!important;
-  margin-bottom: 50px;
+  border: none!important; 
 }
 
 input#imagen.form-control{
   border: 1px solid #1A4756!important;
+  color:#1A4756;
+  max-width: 550px;
+}
+
+input#imagen.custom-file-input::file-selector-button{
+  background-color: #D3DBD5;
+  color: #1A4756;
+  font-weight:500 ;
 }
