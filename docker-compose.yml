@@ -17,7 +17,9 @@ services:
     command: [ '-url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false', '-user=${DB_USERNAME}', '-password=${DB_PASSWORD}', '-connectRetries=60', 'migrate' ]
 
   cotiledon-prod:
-    image: nicolasf1/cotiledonapp:1.11.3
+    image: nicolasf1/cotiledonapp:1.11.4
+    volumes:
+      - ./imagenes/productos:/home/node/app/imagenes/productos
     depends_on:
       - database-prod
     environment:
@@ -30,6 +32,8 @@ services:
       - DB_DATABASE=${DB_DATABASE}
       - RUTA_ESTATICOS=${RUTA_ESTATICOS}
       - RUTA_FISICA=${RUTA_FISICA}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
+      - JWT_SECRET=${JWT_SECRET}
     ports:
       - '8080:${API_PORT}'
   frontend-prod:
