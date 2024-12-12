@@ -114,7 +114,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
                     Ingresar
                   </Button>
                   <Link to="/crear-usuario">
-                    <Button className="btn-outline-primary">
+                    <Button className="btn-registrar">
                       Registrarme
                     </Button>
                   </Link>

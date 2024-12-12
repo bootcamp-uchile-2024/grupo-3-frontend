@@ -68,3 +68,11 @@ input.form-control {
   align-items: center;
   gap: 24px;
 }
+
+.btn-registrar{
+  font-size: 1rem;
+  padding: 10px 55px !important;
+  color: #1A4756!important;
+  background-color: white!important;
+  border-color: #1A4756;
+}

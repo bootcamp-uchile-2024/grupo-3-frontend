@@ -13,9 +13,9 @@ const SearchBar = () => {
             aria-label="Busca tu planta" 
             className="search-input"
           />
-          <button type="button" className="camera-button">
+{/*           <button type="button" className="camera-button">
             <span className="material-symbols-outlined">photo_camera</span>
-          </button>
+          </button> */}
         </div>
       </div>
     </div>
