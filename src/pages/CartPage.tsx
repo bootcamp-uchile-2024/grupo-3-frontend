@@ -1,13 +1,17 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeFromCart, clearCart, updateQuantity, addToCart } from '../states/cartSlice';
+import { clearCart, updateQuantity} from '../states/cartSlice';
 import { RootState } from '../states/store';
 import { CartItem } from '../interfaces/CartItem';
-import { finalizePurchaseRequest } from '../endpoints/purchase';
 import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap';
 import '../styles/CartPage.css';
-
+import {
+  fetchActiveCart,
+  handleRemoveProductFromCart,
+  replaceCartProducts,
+  initializeCart
+} from '../utils/cartHelpers';
 
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -19,39 +23,18 @@ const CartPage: React.FC = () => {
   const [cartId, setCartId] = useState<number | null>(null);
   const [coupon, setCoupon] = useState<string>('');
   const [discount, setDiscount] = useState<number>(0);
-  const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
+  const [purchasedItems ] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const userId = 1;
+  const userId = 2;
 
   const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
 
-  const fetchActiveCart = useCallback(async (): Promise<number | null> => {
-    try {
-      console.log(`Verificando carrito activo para el usuario ${userId}`);
-      const response = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCartId(data.id);
-        console.log('Carrito activo encontrado:', data);
-        return data.id;
-      } else if (response.status === 404) {
-        console.log('No hay carrito activo para este usuario.');
-        setCartId(null);
-        return null;
-      } else {
-        throw new Error(`Error HTTP al verificar el carrito: ${response.status}`);
-      }
-    } catch (error: unknown) {
-      console.error(getErrorMessage(error));
-      return null;
-    }
-  }, [userId, setCartId, API_BASE_URL]);
-
+  const updateLocalStorage = (productos: CartItem[]) => {
+    localStorage.setItem('__redux__cart__', JSON.stringify({ productos }));
+    console.log('Carrito actualizado en localStorage:', productos);
+  };
+  
   const addProductToCart = async (cartId: number, productId: number, quantity: number) => {
     try {
       console.log(`Intentando agregar producto ${productId} al carrito ${cartId} con cantidad ${quantity}`);
@@ -63,17 +46,35 @@ const CartPage: React.FC = () => {
         },
         body: JSON.stringify({ productoId: productId, cantidadProducto: quantity }),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log('Respuesta del backend:', data);
-
+  
         if (data.producto.cantidad < quantity) {
           alert(`No hay suficiente stock para este producto. Disponible: ${data.producto.cantidad}.`);
           return;
         }
-
-        console.log('Producto agregado al carrito:', data);
+  
+        const newItem: CartItem = {
+          id: productId,
+          cantidad: quantity,
+          nombre: data.producto.nombre,
+          precio: data.producto.precio,
+          imagen: data.producto.imagen,
+          descripcion: data.producto.descripcion,
+          unidadesVendidas: data.producto.unidadesVendidas || 0,
+          puntuacion: data.producto.puntuacion || 0,
+          ancho: data.producto.ancho || 0,
+          alto: data.producto.alto || 0,
+          largo: data.producto.largo || 0, 
+          peso: data.producto.peso || 0, 
+        };
+  
+        const updatedCartItems = [...cartItems, newItem];
+        updateLocalStorage(updatedCartItems);
+  
+        console.log('Producto agregado al carrito:', newItem);
       } else {
         const errorData = await response.json();
         console.error('Error en la respuesta del servidor:', errorData);
@@ -85,145 +86,12 @@ const CartPage: React.FC = () => {
     }
   };
 
-  const createCart = useCallback(async () => {
-    try {
-      if (cartId) {
-        console.log(`Ya existe un carrito activo con ID ${cartId}. No se creará uno nuevo.`);
-        return;
-      }
-
-      console.log(`Creando un nuevo carrito para el usuario ${userId}`);
-      const response = await fetch(`${API_BASE_URL}/carro-compras/${userId}`, {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error al crear el carrito:', errorData);
-
-        if (response.status === 400) {
-          console.error('El servidor rechazó la creación del carrito (400).');
-          alert(errorData.message || 'No se pudo crear el carrito debido a un error en el servidor. Contacta soporte.');
-          return;
-        }
-
-        throw new Error(errorData.message || `Error HTTP al crear carrito: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setCartId(data.id);
-      console.log('Carrito creado con éxito:', data);
-    } catch (error: unknown) {
-      console.error('Error crítico al intentar crear un carrito:', getErrorMessage(error));
-      alert('Hubo un problema al crear el carrito. Inténtalo nuevamente más tarde.');
-    }
-  }, [cartId, userId, API_BASE_URL]);
-
-  const handleRemoveProductFromCart = async (productId: number) => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`,
-        {
-          method: 'DELETE',
-          headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        alert(errorData.message || 'Hubo un problema al eliminar el producto.');
-        return;
-      }
-
-      dispatch(removeFromCart(productId));
-      alert('El producto ha sido eliminado del carrito.');
-    } catch (error) {
-      console.error('Error al intentar eliminar el producto:', error);
-      alert('No se pudo eliminar el producto. Por favor, inténtalo nuevamente.');
-    }
-  };
-
-  const replaceCartProducts = async () => {
-    if (!cartId) {
-      console.error('No se puede actualizar el carrito porque no existe un ID de carrito.');
-      return;
-    }
-
-    try {
-      console.log(`Actualizando productos en el carrito con ID ${cartId}`);
-      const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
-        method: 'PUT',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productosCarro: cartItems.map((item) => ({
-            productoId: item.id,
-            cantidadProducto: item.cantidad,
-          })),
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Error HTTP: ${response.status}`);
-      }
-
-      console.log('Productos del carrito actualizados en el backend.');
-    } catch (error: unknown) {
-      console.error('Error al actualizar el carrito en el backend:', getErrorMessage(error));
-      throw error;
-    }
-  };
-
   useEffect(() => {
-    const initializeCart = async () => {
-      console.log('Inicializando carrito...');
-      const activeCartId = await fetchActiveCart();
-  
-      if (activeCartId) {
-        console.log(`Carrito activo detectado con ID ${activeCartId}.`);
-        const savedCartItems = localStorage.getItem('__redux__cart__');
-  
-        if (savedCartItems) {
-          try {
-            const parsedCart = JSON.parse(savedCartItems);
-  
-            if (parsedCart && Array.isArray(parsedCart.productos)) {
-              if (parsedCart.productos.length > 0) {
-                console.log('Sincronizando carrito desde el localStorage...');
-                dispatch(clearCart());
-                parsedCart.productos.forEach((item: CartItem) => {
-                  dispatch(addToCart(item));
-                });
-              } else {
-                console.log('El carrito está vacío en localStorage. No se sincronizará.');
-                dispatch(clearCart());
-                localStorage.removeItem('__redux__cart__');
-              }
-            } else {
-              console.warn('El carrito en localStorage tiene un formato inválido.');
-            }
-          } catch (error) {
-            console.error('Error al parsear los datos del carrito:', error);
-          }
-        }
-        return;
-      }
-  
-      console.log('No hay carrito activo. Creando uno nuevo...');
-      await createCart();
+    const initCart = async () => {
+      await initializeCart(userId, setCartId, dispatch);
     };
-  
-    initializeCart();
-  }, [fetchActiveCart, createCart, dispatch]);
-  
+    initCart();
+  }, [userId, dispatch, setCartId]);
 
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {
@@ -236,7 +104,8 @@ const CartPage: React.FC = () => {
 
   const handleIncrement = async (productId: number) => {
     if (!cartId) {
-      alert('No se ha inicializado el carrito.');
+      console.error('Error: cartId no está definido.');
+      alert('No se ha inicializado el carrito. Por favor, recarga la página.');
       return;
     }
 
@@ -260,72 +129,117 @@ const CartPage: React.FC = () => {
 
   const handleClearCart = async () => {
     if (!cartId) {
-      alert('No hay un carrito asociado para vaciar.');
-      return;
+        alert('No hay un carrito asociado para vaciar.');
+        return;
     }
 
     try {
-      console.log(`Vaciando carrito con ID ${cartId}`);
+        console.log(`Vaciando carrito con ID ${cartId}`);
 
-      const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
-        method: 'PUT',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ productosCarro: [] }),
-      });
+        const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
+            method: 'PUT',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productosCarro: [] }),
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error al vaciar el carrito:', errorData);
-        alert(`Error al vaciar el carrito: ${errorData.message || 'Error desconocido'}`);
-        return;
-      }
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error al vaciar el carrito:', errorData);
+            alert(`Error al vaciar el carrito: ${errorData.message || 'Error desconocido'}`);
+            return;
+        }
 
-      const data = await response.json();
-      console.log('Carrito vaciado en el backend:', data);
+        dispatch(clearCart());
+        localStorage.removeItem('__redux__cart__');
+        console.log('Estado actual del localStorage después de limpiar:', localStorage.getItem('__redux__cart__')); // Depuración
 
-      dispatch(clearCart());
-      alert('El carrito ha sido vaciado exitosamente.');
+        alert('El carrito ha sido vaciado exitosamente.');
     } catch (error) {
-      console.error('Error al intentar vaciar el carrito:', error);
-      alert('Hubo un problema al vaciar el carrito. Por favor, inténtalo nuevamente.');
+        console.error('Error al intentar vaciar el carrito:', error);
+        alert('Hubo un problema al vaciar el carrito. Por favor, inténtalo nuevamente.');
     }
-  };
+};
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setIsPurchaseCompleted(false);
   };
 
-  const handleFinalizePurchase = async () => {
+  const  handleFinalizePurchase = async () => {
+    if (!cartId || cartItems.length === 0) {
+        console.warn('El carrito está vacío o no tiene un cartId válido.');
+        alert('El carrito está vacío. No se puede finalizar la compra.');
+        return;
+    }
+
     setLoading(true);
-    setPurchasedItems(cartItems);
 
     try {
-      if (!cartId && cartItems.length > 0) {
-        console.log('No hay carrito activo. Creando uno nuevo.');
-        await createCart();
-      }
-      await replaceCartProducts();
-      const response = await finalizePurchaseRequest(cartItems);
-      if (response.statusCode === 200) {
-        console.log('Compra finalizada exitosamente.');
-        handleClearCart();
-        setIsPurchaseCompleted(true);
-      } else {
-        console.error('Error al finalizar la compra:', response.statusCode);
-        alert(`Error al finalizar la compra: Código ${response.statusCode}`);
-      }
-    } catch (e: unknown) {
-      console.error('Error al finalizar la compra:', getErrorMessage(e));
-      alert('Error al finalizar la compra. Por favor, inténtalo nuevamente.');
-    } finally {
-      setLoading(false);
-    }
-  };
+        console.log('Sincronizando productos antes de finalizar la compra...');
+        await replaceCartProducts(cartId, cartItems);
 
+        const payload = {
+            fechaCreacion: new Date().toISOString().split('T')[0],
+            idMedioPago: 1,
+            idEstado: 1,
+            idTipoDespacho: 1,
+            receptor: 'Usuario invitado',
+            fechaEntrega: new Date(new Date().setDate(new Date().getDate() + 3))
+                .toISOString()
+                .split('T')[0],
+            direccionEnvio: {
+                comuna: 'Por definir',
+                calle: 'Por definir',
+                numero: '123',
+                departamento: 'N/A',
+                referencia: 'Sin referencia',
+            },
+        };
+
+        console.log('Enviando datos al endpoint de finalizar compra:', payload);
+        const response = await fetch(`${API_BASE_URL}/pedidos/${userId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Error al finalizar la compra:', errorData);
+            alert(`Error al finalizar la compra: ${errorData.message || 'Error desconocido'}`);
+            return;
+        }
+
+        const data = await response.json();
+        console.log('Compra finalizada exitosamente:', data);
+
+        console.log('Limpiando carrito anterior en Redux y localStorage...');
+        dispatch(clearCart()); 
+        localStorage.removeItem('__redux__cart__'); 
+
+        console.log('Obteniendo nuevo carrito activo del backend...');
+        const newCartId = await fetchActiveCart(userId, setCartId);
+
+        if (newCartId) {
+            console.log(`Nuevo carrito activo sincronizado con ID ${newCartId}`);
+        } else {
+            console.warn('No se pudo sincronizar con un nuevo carrito activo.');
+        }
+
+        setIsPurchaseCompleted(true);
+        navigate('/success-page');
+    } catch (error) {
+        console.error('Error crítico al finalizar la compra:', error);
+        alert('Hubo un problema al finalizar la compra. Por favor, inténtalo nuevamente.');
+    } finally {
+        setLoading(false);
+    }
+};
+  
+  
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
     const existingItem = acc.find((i: CartItem) => i.id === item.id);
     if (existingItem) {
@@ -417,7 +331,8 @@ const CartPage: React.FC = () => {
                         <Button
                           variant="link"
                           className="text-danger"
-                          onClick={() => handleRemoveProductFromCart(item.id)}
+                          onClick={() => handleRemoveProductFromCart(cartId, item.id, dispatch)}
+
                         >
                           <span className="material-symbols-outlined">delete</span>
                         </Button>

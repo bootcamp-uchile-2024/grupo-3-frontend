@@ -1,36 +1,46 @@
 import { CartItem } from "../interfaces/CartItem";
-import { CartState } from "../states/cartSlice";
 
-export const finalizePurchaseRequest = async (cartData: CartItem[]) => {
-    const cartState: CartState = {
-        idUsuario:1,
-        productos: cartData
+export const finalizePurchaseRequest = async (
+    
+    cartItems: CartItem[],
+    userId: number
+) => {
+    if (cartItems.length === 0) {
+        throw new Error("El carrito está vacío. No se puede finalizar la compra.");
+    }
+
+    const payload = {
+        idUsuario: userId,
+        productos: cartItems.map((item) => ({
+            productoId: item.id,
+            cantidadProducto: item.cantidad,
+        })),
     };
 
-    
     try {
-        const response = await fetch('http://localhost:8080/carro-compras', {
+        const response = await fetch('http://localhost:8080/pedidos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'accept': '*/*'
-
+                Accept: '*/*',
             },
-            body: JSON.stringify(cartState),
+            body: JSON.stringify(payload),
         });
-        
-        console.log('Respuesta del servidor:', response); // Verifica la respuesta
-        
+
+        console.log('Respuesta del servidor:', response);
+
         const statusCode = response.status;
         if (!response.ok) {
-            throw new Error('Error en la finalización de la compra');
+            const errorData = await response.json();
+            console.error('Error del servidor:', errorData);
+            throw new Error(errorData.message || 'Error en la finalización de la compra');
         }
 
         const data = await response.json();
-        return {data, statusCode}; // Retorna la respuesta del servidor si es exitosa.
-    } 
-    catch (error) {
+        return { data, statusCode };
+    } catch (error) {
         console.error('Error en la finalización de la compra:', error);
-        throw error; // Lanza el error para manejarlo en el componente.
+        throw error;
     }
 };
+

@@ -7,7 +7,7 @@ const SuccessPage: React.FC = () => {
   const navigate = useNavigate();
 
   const handleContinueShopping = () => {
-    navigate('/'); // O la ruta que corresponda a tu tienda
+    navigate('/');
   };
 
   return (
