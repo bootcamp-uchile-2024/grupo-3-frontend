@@ -14,11 +14,17 @@ const ProductManagement = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [selectedProduct, setSelectedProduct] = useState<ProductAdmin | null>(null);
     const [, setError] = useState<string | null>(null);
+
+    // Filtros de búsqueda
     const [searchId, setSearchId] = useState<number | string>('');
+    const [searchName, setSearchName] = useState<string>('');
+    const [searchSKU, setSearchSKU] = useState<string>('');
+    const [searchCategory, setSearchCategory] = useState<number | string>('');
+
+    // Paginador
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 12;
 
-    // Manejo de paginación
     const pageCount = Math.ceil(products.length / itemsPerPage);
     const currentPageProducts = products.slice(
         (currentPage - 1) * itemsPerPage,
@@ -44,8 +50,6 @@ const ProductManagement = () => {
             if (!response.ok) throw new Error('Error al cargar los productos');
 
             const data = await response.json();
-            console.log("Datos recibidos:", data);
-
             if (Array.isArray(data)) {
                 setProducts(data);
             } else {
@@ -64,22 +68,57 @@ const ProductManagement = () => {
     }, [fetchProducts]);
 
     // Manejar el cambio de valor en el buscador
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = event.target.value;
-        setSearchId(value);
+    const handleSearchChange = (event: React.ChangeEvent<HTMLElement>, field: string) => {
+        const value = (event.target as HTMLInputElement).value;
+        switch (field) {
+            case 'id':
+                setSearchId(value);
+                break;
+            case 'name':
+                setSearchName(value);
+                break;
+            case 'sku':
+                setSearchSKU(value);
+                break;
+            case 'category':
+                setSearchCategory(value);
+                break;
+            default:
+                break;
+        }
     };
 
-    // Manejar la búsqueda de un producto por ID
+    // Manejar la búsqueda de un producto por múltiples filtros
     const handleSearchSubmit = () => {
-        const product = products.find((prod) => prod.id === Number(searchId));
-        if (product) {
-            setSelectedProduct(product);
+        const filteredProducts = products.filter((prod) => {
+            const matchId = searchId ? prod.id === Number(searchId) : true;
+            const matchName = searchName ? prod.nombre.toLowerCase().includes(searchName.toLowerCase()) : true;
+            const matchSKU = searchSKU ? prod.SKU.toLowerCase().includes(searchSKU.toLowerCase()) : true;
+            const matchCategory = searchCategory ? prod.categoria.id === Number(searchCategory) : true;
+            return matchId && matchName && matchSKU && matchCategory;
+        });
+
+        if (filteredProducts.length > 0) {
+            setSelectedProduct(filteredProducts[0]); // Seleccionamos el primer producto que coincida
         } else {
             alert('Producto no encontrado');
             setSelectedProduct(null);
         }
     };
 
+       // Cambiar la página cuando seleccionamos un producto
+       const handleProductSelect = (product: ProductAdmin | null) => {
+        setSelectedProduct(product);
+        if (product) {
+            const productIndex = products.findIndex((prod) => prod.id === product.id);
+            if (productIndex !== -1) {
+                const page = Math.floor(productIndex / itemsPerPage) + 1;
+                setCurrentPage(page); // Establece la página correcta
+            }
+        } else {
+            setCurrentPage(1); 
+        }
+    };
     // Eliminar un producto
     const handleDeleteProduct = async (productId: number) => {
         const confirmation = window.confirm(`¿Estás seguro de querer eliminar el producto ${productId}?`);
@@ -100,6 +139,29 @@ const ProductManagement = () => {
             console.log('Eliminación cancelada');
         }
     };
+    const resetSearchFilters = () => {
+        setSearchId('');
+        setSearchName('');
+        setSearchSKU('');
+        setSearchCategory('');
+        setSelectedProduct(null);
+    };
+
+    const isFieldDisabled = (field: string) => {
+        switch (field) {
+            case 'id':
+                return !!searchName || !!searchSKU || !!searchCategory;
+            case 'name':
+                return !!searchId || !!searchSKU || !!searchCategory;
+            case 'sku':
+                return !!searchId || !!searchName || !!searchCategory;
+            case 'category':
+                return !!searchId || !!searchName || !!searchSKU;
+            default:
+                return false;
+        }
+    };
+
 
     return (
         <Container fluid className="mt-4">
@@ -130,34 +192,75 @@ const ProductManagement = () => {
                                 ) : (
                                     <>
                                         <Row>
+                                            {/* Buscador por Nombre */}
+                                            <Col md={3}>
+                                                <Form.Label>Buscar por Nombre</Form.Label>
+                                                <Form className="d-flex">
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="Nombre"
+                                                        value={searchName}
+                                                        onChange={(e) => handleSearchChange(e, 'name')}
+                                                        disabled={isFieldDisabled('name')}
+                                                    />
+                                                </Form>
+                                            </Col>
+                                            {/* Buscador por Categoría */}
+                                            <Col md={3}>
+                                                <Form.Label>Buscar por Categoría</Form.Label>
+                                                <Form className="d-flex">
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="Categoría"
+                                                        value={searchCategory}
+                                                        onChange={(e) => handleSearchChange(e, 'category')}
+                                                        disabled={isFieldDisabled('category')}
+                                                    />
+                                                </Form>
+                                            </Col>
+                                            {/* Buscador por SKU */}
+                                            <Col md={3}>
+                                                <Form.Label>Buscar por SKU</Form.Label>
+                                                <Form className="d-flex">
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="SKU"
+                                                        value={searchSKU}
+                                                        onChange={(e) => handleSearchChange(e, 'sku')}
+                                                        disabled={isFieldDisabled('sku')}
+                                                    />
+                                                </Form>
+                                            </Col>
                                             {/* Buscador por ID */}
-                                            <Col md={2}>
+                                            <Col md={3}>
                                                 <Form.Label>Buscar por ID</Form.Label>
                                                 <Form className="d-flex">
                                                     <Form.Control
                                                         type="number"
                                                         placeholder="ID"
                                                         value={searchId}
-                                                        onChange={handleSearchChange}
+                                                        onChange={(e) => handleSearchChange(e, 'id')}
+                                                        disabled={isFieldDisabled('id')}
                                                     />
-                                                    <Button onClick={handleSearchSubmit} variant='outline-primary' className='botonbuscador'>
-                                                        <span className="material-symbols-outlined">
-                                                            search
-                                                        </span>
-                                                    </Button>
                                                 </Form>
                                             </Col>
-
-                                            <ProductTable
-                                                currentProducts={currentPageProducts}
-                                                selectedProduct={selectedProduct}
-                                                setSelectedProduct={setSelectedProduct}
-                                            />
+                                            <Col md={2}>
+                                                <Button onClick={handleSearchSubmit} variant="primary" className="botonbuscador">
+                                                    <div> Buscar
+                                                    </div>
+                                                </Button>
+                                            </Col>
                                         </Row>
+
+                                        <ProductTable
+                                            currentProducts={currentPageProducts}
+                                            selectedProduct={selectedProduct}
+                                            setSelectedProduct={handleProductSelect}
+                                        />
 
                                         {selectedProduct && (
                                             <div className="d-flex mt-3 gap-2">
-                                                <Button variant="btn btn-outline-primary" onClick={() => setSelectedProduct(null)}>
+                                                <Button variant="btn btn-outline-primary" onClick={resetSearchFilters}>
                                                     Cancelar
                                                 </Button>
                                                 <Button variant="primary" onClick={() => handleDeleteProduct(selectedProduct?.id ?? 0)}>
@@ -172,7 +275,7 @@ const ProductManagement = () => {
                                         )}
 
                                         {/* Paginación personalizada */}
-                                        <div className='d-flex justify-content-center w-100 mt-3'>
+                                        <div className="d-flex justify-content-center w-100 mt-3">
                                             <CustomPagination
                                                 currentPage={currentPage}
                                                 totalPages={pageCount}

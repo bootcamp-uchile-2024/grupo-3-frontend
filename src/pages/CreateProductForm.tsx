@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { CreateProductData } from '../interfaces/CreateProductData.ts';
 import fileTypeChecker from 'file-type-checker';
 import { Image, Form, Button, Row, Col, Container } from 'react-bootstrap';
 import '../styles/CreateProductFormStyles.css';
+import { SuccessModalProduct } from '../components/SuccesModalProduct.tsx';
 
 const CreateProduct: React.FC = () => {
     const [, setProductCreated] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement | null>(null); 
+    const [showModal, setShowModal] = useState<boolean>(false);
     const [producto, setProducto] = useState<CreateProductData>({
         SKU: '',
         nombre: '',
@@ -22,8 +25,8 @@ const CreateProduct: React.FC = () => {
         peso: 0,
         habilitado: true,
         planta: {
-            petFriendly: true,
-            ciclo: true,
+            petFriendly: false,
+            ciclo: false,
             especie: '',
             idColor: 1,
             idFotoperiodo: 1,
@@ -79,7 +82,6 @@ const CreateProduct: React.FC = () => {
                 const categoriaId = parseInt(value, 10);
                 let newProducto = { ...prevProducto, [name]: categoriaId };
     
-                // Limpiar los campos específicos de la categoría al cambiar
                 if (categoriaId === 1) { // Plantas
                     newProducto = {
                         ...newProducto,
@@ -267,6 +269,9 @@ const CreateProduct: React.FC = () => {
         return isValid;
     };
 
+    const handleShow = () => setShowModal(true);  
+  const handleClose = () => setShowModal(false); 
+
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         if (validate()) {
@@ -319,8 +324,9 @@ const CreateProduct: React.FC = () => {
                 if (!response.ok) throw new Error("Error en la solicitud");
 
                 const data = await response.json();
+                console.log (data)
                 setProductCreated(true);
-                alert(`¡Felicidades! Nuevo producto creado con ID: ${data.id}`);
+                handleShow();
                 setProducto({
                     SKU: '',
                     nombre: '',
@@ -338,7 +344,7 @@ const CreateProduct: React.FC = () => {
                     habilitado: true,
                     planta: {
                         petFriendly: false,
-                        ciclo: true,
+                        ciclo: false,
                         especie: '',
                         idColor: 1,
                         idFotoperiodo: 1,
@@ -370,6 +376,9 @@ const CreateProduct: React.FC = () => {
                 setImagePreview('');
                 console.log("Producto creado: ", productoData);
 
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = ''; // Restablecer el valor del input de archivo
+                  }
 
             } catch (error) {
                 console.error("Error al crear el producto: ", error);
@@ -627,7 +636,6 @@ const CreateProduct: React.FC = () => {
                                     {/* Imagen */}
                                     <Form.Group controlId="imagen">
                                         <Form.Label>Subir Imagen</Form.Label>
-                                        <br />
                                         {/* Previsualización */}
                                         {imagePreview ? (
                                             <div className="mt-3">
@@ -641,6 +649,7 @@ const CreateProduct: React.FC = () => {
                                         <Form.Control
                                             type="file"
                                             name="imagen"
+                                            ref={fileInputRef}
                                             onChange={handleFileUpload}
                                             isInvalid={!!errores.imagen}
                                             className='custom-file-input'
@@ -661,7 +670,7 @@ const CreateProduct: React.FC = () => {
                     >
                         Crear Producto
                     </Button>
-
+                    <SuccessModalProduct show={showModal} handleClose={handleClose} />
                 </Form>
         </Container >
     );

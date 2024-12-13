@@ -3,9 +3,9 @@ import { Table } from 'react-bootstrap';
 import { ProductAdmin } from '../interfaces/ProductAdmin';
 
 interface ProductTableProps {
-  currentProducts: ProductAdmin[];
-  selectedProduct: ProductAdmin | null;
-  setSelectedProduct: (product: ProductAdmin | null) => void;
+  currentProducts: ProductAdmin[]; // Productos filtrados por página
+  selectedProduct: ProductAdmin | null; // Producto actualmente seleccionado
+  setSelectedProduct: (product: ProductAdmin | null) => void; // Función para actualizar el producto seleccionado
 }
 
 const ProductTable: React.FC<ProductTableProps> = ({ currentProducts, selectedProduct, setSelectedProduct }) => {
@@ -31,7 +31,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ currentProducts, selectedPr
     product.puntuacion.toFixed(1),
   ]);
 
-  // Función para manejar la selección de un producto
+  // Función para manejar la selección o deselección de un producto
   const handleRowClick = (product: ProductAdmin) => {
     if (selectedProduct?.id === product.id) {
       // Si el producto ya está seleccionado, deseleccionarlo
@@ -77,7 +77,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ currentProducts, selectedPr
                 key={index}
                 onClick={() => handleRowClick(product)} // Manejar el clic en la fila
                 style={{
-                  backgroundColor: isSelected ? '#D3F9D8' : index % 2 === 0 ? '#FFFFFF' : '#BBB', // Resaltar la fila seleccionada
+                  backgroundColor: isSelected ? '#D3F9D8' : index % 2 === 0 ? '#FFFFFF' : '#F8F9FA', // Resaltar la fila seleccionada
                   cursor: 'pointer',
                 }}
               >
