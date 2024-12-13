@@ -7,41 +7,85 @@ const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localh
 export const initializeCart = async (
   userId: number,
   setCartId: (id: number | null) => void,
-  dispatch: any
+  dispatch: any,
+  cartId?: number // Usaremos este parámetro para buscar productos en el carrito
 ): Promise<void> => {
   try {
     console.log('Inicializando carrito...');
-    const activeCartId = await fetchActiveCart(userId, setCartId);
+
+    let activeCartId: number | null = cartId ?? null;
+
+    if (!activeCartId) {
+      console.log(`Buscando carrito activo para el usuario ${userId}...`);
+      const response = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
+
+      if (response.ok) {
+        const carritoData = await response.json();
+        if (carritoData?.id) {
+          activeCartId = carritoData.id;
+          setCartId(activeCartId);
+          console.log(`Carrito activo encontrado: ${activeCartId}`);
+        } else {
+          console.warn('No se encontró un carrito activo para este usuario.');
+        }
+      } else {
+        console.error('Error al buscar el carrito activo del usuario:', response.statusText);
+      }
+    }
 
     if (activeCartId) {
-      console.log(`Carrito activo detectado con ID ${activeCartId}.`);
-      const savedCartItems = localStorage.getItem('__redux__cart__');
+      console.log(`Intentando restaurar productos desde el carrito ${activeCartId}...`);
+      const response = await fetch(`${API_BASE_URL}/carro-compras/${activeCartId}`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      });
 
-      if (savedCartItems) {
-        console.log('Datos encontrados en localStorage:', savedCartItems); // Nuevo log
-        const parsedCart = JSON.parse(savedCartItems);
+      if (response.ok) {
+        const carritoData = await response.json();
 
-        if (parsedCart && Array.isArray(parsedCart.productos) && parsedCart.productos.length > 0) {
-          console.log('Sincronizando carrito desde el localStorage...');
-          dispatch(clearCart());
-          parsedCart.productos.forEach((item: CartItem) => {
-            console.log('Añadiendo producto desde localStorage:', item); // Nuevo log
-            dispatch(addToCart(item));
+        // Mapeamos los productos de carroProductos
+        const productos = carritoData.carroProductos?.map((item: any) => ({
+          id: item.producto.id,
+          nombre: item.producto.nombre,
+          cantidad: item.cantidadProducto,
+          precio: item.producto.precio,
+          descripcion: item.producto.descripcion,
+          imagen: item.producto.imagen,
+        }));
+
+        if (productos && productos.length > 0) {
+          console.log('Productos restaurados del carrito:', productos);
+          dispatch(clearCart()); // Limpia Redux antes de restaurar
+          productos.forEach((item: CartItem) => {
+            dispatch(addToCart(item)); // Agrega cada producto al estado
           });
         } else {
-          console.log('Carrito vacío en localStorage. Eliminando...');
-          localStorage.removeItem('__redux__cart__');
-          dispatch(clearCart());
+          console.warn('No se encontraron productos asociados al carrito.');
         }
+      } else {
+        console.error('Error al obtener productos del carrito:', response.statusText);
       }
     } else {
-      console.log('No hay carrito activo. Creando uno nuevo...');
-      await createCart(userId, setCartId, null);
+      console.log('Sincronizando carrito activo desde localStorage o backend...');
+      const savedCartItems = localStorage.getItem('__redux__cart__');
+      if (savedCartItems) {
+        const parsedCart = JSON.parse(savedCartItems);
+        if (parsedCart?.productos?.length > 0) {
+          dispatch(clearCart());
+          parsedCart.productos.forEach((item: CartItem) => {
+            dispatch(addToCart(item));
+          });
+        }
+      }
     }
   } catch (error) {
     console.error('Error crítico al inicializar el carrito:', error);
   }
 };
+
 
 
 export const fetchActiveCart = async (
@@ -50,7 +94,6 @@ export const fetchActiveCart = async (
 ): Promise<number | null> => {
   try {
     console.log(`Verificando carrito activo para el usuario ${userId}`);
-    
     const response = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
       method: 'GET',
       headers: { Accept: 'application/json' },
@@ -58,30 +101,22 @@ export const fetchActiveCart = async (
 
     if (response.ok) {
       const data = await response.json();
-
-      if (data && typeof data === 'object' && data.id) {
-        console.log('Carrito activo encontrado:', data);
+      if (data?.id) {
         setCartId(data.id);
         return data.id;
-      } else {
-        console.warn('El backend devolvió una respuesta inválida para el carrito activo:', data);
-        setCartId(null);
-        return null;
       }
     } else if (response.status === 404) {
-      console.log('No hay carrito activo para este usuario.');
-      setCartId(null);
-      return null;
-    } else {
-      console.error(`Error HTTP al verificar el carrito: ${response.status}`);
-      throw new Error(`Error HTTP: ${response.status}`);
+      console.log('No hay carrito activo. Verificando productos asociados al último pedido...');
+      return null; // Carrito no encontrado
     }
-  } catch (error: unknown) {
+    throw new Error(`Error HTTP: ${response.status}`);
+  } catch (error) {
     console.error('Error crítico al verificar el carrito activo:', error);
-    setCartId(null); // Asegurar que el estado refleje la ausencia de un carrito
+    setCartId(null);
     return null;
   }
 };
+
 
 
 export const createCart = async (

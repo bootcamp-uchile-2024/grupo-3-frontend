@@ -74,11 +74,10 @@ const CartPagePay: React.FC = () => {
 
   useEffect(() => {
     const initCart = async () => {
-      await initializeCart(userId, setCartId, dispatch);
+      await initializeCart(userId, setCartId, dispatch, pedidoId);
     };
     initCart();
-  }, [userId, dispatch, setCartId]);
-  
+  }, [userId, dispatch, setCartId, pedidoId]);
   
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {

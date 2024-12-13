@@ -1,6 +1,8 @@
 import { Middleware } from '@reduxjs/toolkit';
 import { clearCart, addToCart, removeFromCart, setCartId } from './cartSlice';
 
+let cartCleared = false; // Bandera para bloquear la sincronización después de clearCart
+
 const cartMiddleware: Middleware = (storeAPI) => (next) => async (action: any) => {
   next(action);
 
@@ -62,8 +64,29 @@ const cartMiddleware: Middleware = (storeAPI) => (next) => async (action: any) =
     }
   };
 
+  // Manejo de limpieza del carrito
+  if (action.type === clearCart.type) {
+    console.log('Limpieza del carrito detectada. Eliminando del localStorage...');
+    cartCleared = true;
+    localStorage.removeItem('__redux__cart__');
+    console.log('Carrito eliminado del localStorage.');
+
+    const activeCartId = await fetchActiveCart();
+    if (!activeCartId) {
+      console.log('Creando un nuevo carrito tras limpieza...');
+      await createCart();
+    }
+    return;
+  }
+
   // Sincronización del carrito
   if ([addToCart.type, removeFromCart.type].includes(action.type)) {
+    if (cartCleared) {
+      console.log('Sincronización bloqueada debido a limpieza del carrito.');
+      cartCleared = false; // Restablecer la bandera después de bloquear la sincronización
+      return;
+    }
+
     if (!cartId) {
       console.warn('cartId no está definido. Intentando obtener el carrito activo...');
       const activeCartId = await fetchActiveCart();
@@ -104,26 +127,10 @@ const cartMiddleware: Middleware = (storeAPI) => (next) => async (action: any) =
       console.error('Error crítico al sincronizar productos:', error);
     }
   }
-
-  // Manejo de limpieza del carrito
-  if (action.type === clearCart.type) {
-    console.log('Limpieza del carrito detectada. Obteniendo un nuevo cartId...');
-    try {
-      localStorage.removeItem('__redux__cart__');
-      console.log('Carrito eliminado del localStorage.');
-
-      const activeCartId = await fetchActiveCart();
-      if (!activeCartId) {
-        console.log('Creando un nuevo carrito tras limpieza...');
-        await createCart();
-      }
-    } catch (error) {
-      console.error('Error al manejar clearCart en el middleware:', error);
-    }
-  }
 };
 
 export default cartMiddleware;
+
 
 
 

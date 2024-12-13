@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import '../styles/CheckoutInvitadoForm.css';
-
+import { clearCart } from '../states/cartSlice';
 
 interface CheckoutInvitadoDTO {
   email: string;
@@ -21,6 +22,7 @@ interface CheckoutInvitadoDTO {
 
 const CheckoutInvitadoForm: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   
 
 
@@ -58,14 +60,12 @@ const CheckoutInvitadoForm: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const userId = 1; 
-
+    const userId = 2;
 
     if (!formData.email || !formData.nombre || !formData.telefono || !formData.quienRecibe) {
       alert('Por favor completa todos los campos obligatorios.');
       return;
     }
-
 
     const pedidoPayload = {
       fechaCreacion: new Date().toISOString().split('T')[0],
@@ -106,6 +106,12 @@ const CheckoutInvitadoForm: React.FC = () => {
       const data = await response.json();
       console.log('Pedido creado exitosamente:', data);
     
+      // Limpieza del carrito
+      console.log('Eliminando carrito de Redux y localStorage...');
+      dispatch(clearCart()); // Limpia el estado en Redux
+      localStorage.removeItem('__redux__cart__'); // Limpia el carrito del localStorage
+      console.log('Estado actual del localStorage:', localStorage.getItem('__redux__cart__')); // Verifica que esté vacío
+    
       navigate('/cart-page-pay', { state: { pedidoId: data.id, formData } });
     
     } catch (error) {
@@ -114,6 +120,7 @@ const CheckoutInvitadoForm: React.FC = () => {
     }
     
   };
+  
 
   return (
     <Container className="checkout-container">
