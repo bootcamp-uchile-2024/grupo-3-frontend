@@ -1,44 +1,93 @@
 .user-creation-container {
-    display: flex;
-    justify-content: center;
-    box-sizing: border-box;
-    margin-top: -4rem;
+  display: flex;
+  justify-content: center;
+  box-sizing: border-box;
+  margin-top: -4rem;
+  padding: 20px;
+  background: #fff;
 }
-  
-  .user-creation-form {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-  }
-  
-  .user-creation-form h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .user-creation-form div {
-    margin-bottom: 15px;
-  }
-  
-  .user-creation-form label {
-    display: block;
-    margin-bottom: 5px;
-  }
-  
-  .user-creation-form-input {
-    width: 100%; 
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box; 
-    font-size: 1rem; 
-  }
-  
-  .error {
-    color: red;
-    font-size: 0.9em;
-  }
-  
-  
+
+.user-creation-form {
+  background-color: white;
+  padding: 0;
+  border-radius: 8px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  width: 700px;
+}
+
+.form-title {
+  text-align: center;
+  margin-bottom: 10px;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+}
+
+.form-subtitle {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #1A4756;
+  font-weight: 500;
+}
+
+.section-title {
+  margin-bottom: 20px;
+  font-weight: 600;
+  margin-top: 40px;
+}
+
+.section-title-shipping {
+  margin-bottom: 20px;
+  font-weight: 600;
+  margin-top: 50px;
+}
+
+.form-label {
+  font-weight: bold;
+}
+
+.form-control-custom {
+  border-radius: 8px;
+  background: #F8FAFC;
+  height: 35px;
+}
+
+.form-select-custom {
+  border-radius: 8px;
+  background: #F8FAFC;
+  height: 40px;
+  text-align: center;
+}
+
+.date-input {
+  width: 95%;
+  height: 35px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #F8FAFC;
+  color: #555;
+}
+
+.region-select {
+  width: 95%;
+  height: 42px;
+  padding: 10px;
+  border-radius: 8px;
+  background: #F8FAFC;
+  border: 1px solid #CCC;
+  appearance: none;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-size: 15px;
+  color: #555;
+}
+
+.button-container {
+  margin-top: 1rem;
+}
+
+.error {
+  color: red;
+  font-size: 0.9em;
+}
