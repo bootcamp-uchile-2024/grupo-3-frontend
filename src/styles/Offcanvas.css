@@ -1,0 +1,21 @@
+.offcanvas {
+    width: 400px !important;
+  }
+  
+  .added-product img {
+    border-radius: 8px;
+  }
+  
+  .added-product h5 {
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+  }
+  
+  .added-product p {
+    color: #666;
+    font-size: 0.9rem;
+  }
+  
+  .added-product .btn {
+    padding: 10px;
+  }

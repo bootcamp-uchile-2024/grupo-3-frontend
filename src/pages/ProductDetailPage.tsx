@@ -1,12 +1,14 @@
 import '../styles/ProductDetailStyle.css';
+import '../styles/Offcanvas.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { productsCatalog } from '../interfaces/ProductsCatalog';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../states/cartSlice';
-import { Button, Card, Col, Container, Row, Form } from 'react-bootstrap';
+import { Button, Card, Col, Container, Row, Form, Offcanvas } from 'react-bootstrap';
 import { CartPlus, CaretDown } from 'react-bootstrap-icons';
+
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +20,7 @@ export default function ProductDetailPage() {
   const [isPickup, setIsPickup] = useState<boolean>(false);
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>('');
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -83,6 +86,7 @@ export default function ProductDetailPage() {
       largo: product.largo,
       peso: product.peso,
     }));
+    setShowOffcanvas(true);
   };
 
   const incrementQuantity = () => {
@@ -91,6 +95,7 @@ export default function ProductDetailPage() {
     } else {
       alert(`Solo hay ${product?.cantidad} unidades disponibles.`);
     }
+    return;
   };
 
   const decrementQuantity = () => quantity > 1 && setQuantity(prevQuantity => prevQuantity - 1);
@@ -112,6 +117,7 @@ export default function ProductDetailPage() {
 
   const handleSelectImage = (image: string) => setSelectedImage(image);
 
+
   return (
     <div className='contenedorsupremo'>
       <Container className="mt-5 mb-5 pt-5">
@@ -124,7 +130,7 @@ export default function ProductDetailPage() {
                     variant="top"
                     src={selectedImage || `https://placehold.co/454x608?text=${encodeURIComponent(product.nombre)}&font=roboto`}
                     alt={product.nombre}
-                    className="rounded img-fluid" 
+                    className="rounded img-fluid"
                   />
                 </Col>
                 <Col className="d-flex justify-content-center align-items-center">
@@ -284,6 +290,58 @@ export default function ProductDetailPage() {
             </Col>
           ))}
         </Row>
+        {/* Offcanvas */}
+        <Offcanvas
+          show={showOffcanvas}
+          onHide={() => setShowOffcanvas(false)}
+          placement="end"
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Producto agregado al carrito</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            {product && (
+              <div className="added-product">
+                <div className="d-flex align-items-center mb-3">
+                  <img
+                    src={product.imagen || `https://placehold.co/100x100?text=${encodeURIComponent(product.nombre)}`}
+                    alt={product.nombre}
+                    className="me-3"
+                    style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+                  />
+                  <div>
+                    <h5>{product.nombre}</h5>
+                    <p className="mb-0">Cantidad: {quantity}</p>
+                    <p className="mb-0">
+                      Precio: {new Intl.NumberFormat('es-CL', {
+                        style: 'currency',
+                        currency: 'CLP',
+                        minimumFractionDigits: 0,
+                      }).format(product.precio * quantity)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="d-flex gap-2 mt-4">
+                  <Button
+                    variant="outline-primary"
+                    className="w-50"
+                    onClick={() => setShowOffcanvas(false)}
+                  >
+                    Seguir comprando
+                  </Button>
+                  <Button
+                    variant="primary"
+                    className="w-50"
+                    onClick={() => navigate('/cart')}
+                  >
+                    Ver carrito
+                  </Button>
+                </div>
+              </div>
+            )}
+          </Offcanvas.Body>
+        </Offcanvas>
       </Container >
     </div>
   );
