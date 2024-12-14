@@ -8,7 +8,7 @@ export interface User {
     genero: string;
     rut: string;
     fechaNacimiento: string;
-    tipoUsuarioId: number;
-    tipoUsuario: string;
+    idRol: number;
+    rol: string;
     direccion?: string;
   }

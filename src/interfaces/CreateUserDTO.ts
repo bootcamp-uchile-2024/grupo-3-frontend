@@ -8,7 +8,7 @@ export interface CreateUserDTO {
     genero?: string;  
     rut: string;
     fechaNacimiento: string;
-    tipoUsuarioId: number;
+    idRol: number;
   }
   
   

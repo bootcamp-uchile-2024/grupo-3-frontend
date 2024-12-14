@@ -392,7 +392,7 @@ const UserManagement = () => {
                           <Form.Group>
                             <Form.Label>Tipo de Usuario</Form.Label>
                             <Form.Select
-                              value={editingUser?.tipoUsuarioId || ""}
+                              value={editingUser?.idRol || ""}
                               onChange={(e) =>
                                 setEditingUser((prev) =>
                                   prev

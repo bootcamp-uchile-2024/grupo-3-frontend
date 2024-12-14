@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/UserCreationForm.css';
 import { validateEmail, validatePassword } from '../utils/validators';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-
+// idTipoUsuario
 interface CreateUserDTO {
   nombre: string;
   apellido: string;
@@ -15,7 +15,7 @@ interface CreateUserDTO {
   genero: string;
   rut: string;
   fechaNacimiento: string;
-  tipoUsuarioId: number;
+  idRol: number;
   region?: string;
   comuna?: string;
   direccion?: string;
@@ -39,7 +39,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
     genero: '',
     rut: '',
     fechaNacimiento: '',
-    tipoUsuarioId: isAdmin ? 1 : 3,
+    idRol: isAdmin ? 1 : 3,
     region: '',
     comuna: '',
     direccion: ''
@@ -55,7 +55,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
     genero: '',
     rut: '',
     fechaNacimiento: '',
-    tipoUsuarioId: '',
+    idRol: '',
     confirmPassword: ''
   });
 
@@ -104,7 +104,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
       genero: formData.genero ? '' : 'El género es obligatorio',
       rut: formData.rut ? '' : 'El RUT es obligatorio',
       fechaNacimiento: formData.fechaNacimiento ? '' : 'La fecha de nacimiento es obligatoria',
-      tipoUsuarioId: isAdmin || formData.tipoUsuarioId === 3 ? '' : 'El tipo de usuario debe estar entre 1 y 4',
+      idRol: isAdmin || formData.idRol === 3 ? '' : 'El tipo de usuario debe estar entre 1 y 4',
     };
 
     setErrors(newErrors);
@@ -123,7 +123,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
     if (validate()) {
       const userData: CreateUserDTO = {
         ...formData,
-        tipoUsuarioId: isAdmin ? formData.tipoUsuarioId : 3,
+        idRol: isAdmin ? formData.idRol : 3,
       };
 
       setIsSubmitting(true);
@@ -153,7 +153,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
           genero: '',
           rut: '',
           fechaNacimiento: '',
-          tipoUsuarioId: isAdmin ? 1 : 3,
+          idRol: isAdmin ? 1 : 3,
           region: '',
           comuna: '',
           direccion: ''
