@@ -290,58 +290,65 @@ export default function ProductDetailPage() {
             </Col>
           ))}
         </Row>
-        {/* Offcanvas */}
-        <Offcanvas
-          show={showOffcanvas}
-          onHide={() => setShowOffcanvas(false)}
-          placement="end"
-        >
-          <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Producto agregado al carrito</Offcanvas.Title>
-          </Offcanvas.Header>
-          <Offcanvas.Body>
-            {product && (
-              <div className="added-product">
-                <div className="d-flex align-items-center mb-3">
-                  <img
-                    src={product.imagen || `https://placehold.co/100x100?text=${encodeURIComponent(product.nombre)}`}
-                    alt={product.nombre}
-                    className="me-3"
-                    style={{ width: '100px', height: '100px', objectFit: 'cover' }}
-                  />
-                  <div>
-                    <h5>{product.nombre}</h5>
-                    <p className="mb-0">Cantidad: {quantity}</p>
-                    <p className="mb-0">
-                      Precio: {new Intl.NumberFormat('es-CL', {
-                        style: 'currency',
-                        currency: 'CLP',
-                        minimumFractionDigits: 0,
-                      }).format(product.precio * quantity)}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="d-flex gap-2 mt-4">
-                  <Button
-                    variant="outline-primary"
-                    className="w-50"
-                    onClick={() => setShowOffcanvas(false)}
-                  >
-                    Seguir comprando
-                  </Button>
-                  <Button
-                    variant="primary"
-                    className="w-50"
-                    onClick={() => navigate('/cart')}
-                  >
-                    Ver carrito
-                  </Button>
-                </div>
-              </div>
-            )}
-          </Offcanvas.Body>
-        </Offcanvas>
+        <Offcanvas 
+  show={showOffcanvas} 
+  onHide={() => setShowOffcanvas(false)} 
+  placement="end"
+>
+  <Offcanvas.Header closeButton>
+    <Offcanvas.Title>Mi Carrito de compras</Offcanvas.Title>
+  </Offcanvas.Header>
+  <Offcanvas.Body>
+    {product && (
+      <div className="cart-item-card">
+        <img 
+          src={product.imagen || `https://placehold.co/100x100?text=${product.nombre}`} 
+          alt={product.nombre}
+          className="cart-item-image"
+        />
+        <div className="cart-item-details">
+          <h5>{product.nombre}</h5>
+          <div className="cart-item-price">
+            Ahora ${product.precio.toLocaleString('es-CL')}
+            <span className="cart-item-discount">35%</span>
+          </div>
+          <div className="cart-item-original-price">
+            Normal ${(product.precio * 1.35).toLocaleString('es-CL')}
+          </div>
+          <div className="cart-quantity-controls">
+            <button className="btn-circle">-</button>
+            <span>{quantity}</span>
+            <button className="btn-circle">+</button>
+          </div>
+        </div>
+        <button className="delete-button">
+          <span className="material-symbols-outlined">close</span>
+        </button>
+      </div>
+    )}
+    
+    <div className="cart-total">
+      <div className="d-flex justify-content-between">
+        <span>Total a pagar:</span>
+        <span>${(product?.precio || 0).toLocaleString('es-CL')}</span>
+      </div>
+    </div>
+  </Offcanvas.Body>
+  <div className="offcanvas-footer">
+    <button 
+      className="btn-go-to-cart"
+      onClick={() => navigate('/cart')}
+    >
+      Ir al carrito de compras
+    </button>
+    <button 
+      className="btn-continue-shopping"
+      onClick={() => setShowOffcanvas(false)}
+    >
+      Sigue comprando
+    </button>
+  </div>
+</Offcanvas>
       </Container >
     </div>
   );

@@ -84,7 +84,7 @@ button.btn-circle {
   height: 32px!important;
   border-radius: 50%;
   background-color: #1A4756;
-  color: white;
+  color: white!important;
   border: none;
   display: flex;
   align-items: center;
