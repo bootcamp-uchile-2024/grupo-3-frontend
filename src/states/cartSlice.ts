@@ -9,26 +9,37 @@ export interface CartState {
 const loadCartFromLocalStorage = (): CartState => {
   try {
     const savedCart = localStorage.getItem('__redux__cart__');
-    console.log('Cargando desde el localStorage:', savedCart);
     if (!savedCart) {
+      console.log('No se encontró carrito en LocalStorage.');
       return { idUsuario: 1, productos: [] };
     }
 
     const parsedCart = JSON.parse(savedCart);
-    if (parsedCart && typeof parsedCart === 'object' && 'idUsuario' in parsedCart && 'productos' in parsedCart) {
+    if (
+      parsedCart &&
+      typeof parsedCart === 'object' &&
+      'idUsuario' in parsedCart &&
+      'productos' in parsedCart &&
+      Array.isArray(parsedCart.productos)
+    ) {
+      console.log('Carrito cargado desde LocalStorage:', parsedCart);
       return parsedCart;
     }
 
+    console.warn('Formato inválido en el carrito de LocalStorage.');
     return { idUsuario: 1, productos: [] };
   } catch (error) {
-    console.error('Error al cargar el carrito desde el Local Storage:', error);
+    console.error('Error al cargar el carrito desde el LocalStorage:', error);
     return { idUsuario: 1, productos: [] };
   }
 };
 
-
 const saveCartToLocalStorage = (state: CartState) => {
-  console.log('Estado actual del carrito antes de guardar:', state);
+  if (state.productos.length === 0) {
+    console.log('Carrito vacío: no se guarda en el LocalStorage automáticamente.');
+    return;
+  }
+
   try {
     const cleanState = JSON.parse(JSON.stringify(state));
     localStorage.setItem('__redux__cart__', JSON.stringify(cleanState));
@@ -53,7 +64,6 @@ const cartSlice = createSlice({
       }
       saveCartToLocalStorage(state); 
     },
-    
 
     removeFromCart(state, action: PayloadAction<number>) {
       state.productos = state.productos.filter(item => item.id !== action.payload);
@@ -63,16 +73,8 @@ const cartSlice = createSlice({
     clearCart(state) {
       console.log('Limpiando el carrito en Redux...');
       state.productos = [];
-      console.log('Estado en Redux después de limpiar:', state);
-      
-      console.log('Eliminando carrito del LocalStorage...');
-      localStorage.removeItem('__redux__cart__');
-      console.log('LocalStorage después de limpiar:', localStorage.getItem('__redux__cart__'));
     },
     
-    
-    
-
     updateQuantity: (state, action: PayloadAction<{ id: number; cantidad: number }>) => {
       const { id, cantidad } = action.payload;
       const item = state.productos.find((item) => item.id === id);
@@ -86,15 +88,16 @@ const cartSlice = createSlice({
           state.productos = state.productos.filter((product) => product.id !== id);
         }
     
-        saveCartToLocalStorage(state);
-        console.log('LocalStorage actualizado después de modificar cantidad.');
+        if (state.productos.length > 0) {
+          saveCartToLocalStorage(state);
+          console.log('LocalStorage actualizado después de modificar cantidad.');
+        } else {
+          console.log('El carrito está vacío, pero el LocalStorage no será limpiado automáticamente.');
+        }
       } else {
         console.error(`Producto ${id} no encontrado en Redux para actualizar cantidad.`);
       }
     },
-    
-    
-    
     
   },
 });

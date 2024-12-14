@@ -9,7 +9,13 @@ const store = configureStore({
   },
 });
 
-(window as any).store = store;
+declare global {
+  interface Window {
+    store: typeof store;
+  }
+}
+
+window.store = store;
 
 export type RootState = ReturnType<typeof store.getState>;
 export default store;

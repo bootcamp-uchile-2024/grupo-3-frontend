@@ -24,11 +24,11 @@ const CartPagePay: React.FC = () => {
 
   const userId = 1;
 
-  if (!formData || !pedidoId) {
+  if (!formData || !cartItems || cartItems.length === 0) {
     console.error('No se encontraron datos para la página de pago.');
-    return <p>Error: No hay datos disponibles para finalizar el pago.</p>;
   }
-
+  
+  
   console.log('Datos recibidos en CartPagePay:', formData, pedidoId);
 
   const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
@@ -40,7 +40,7 @@ const CartPagePay: React.FC = () => {
         method: 'GET',
         headers: { Accept: 'application/json' },
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         setCartId(data.id);
@@ -54,10 +54,11 @@ const CartPagePay: React.FC = () => {
         throw new Error(`Error HTTP al verificar el carrito: ${response.status}`);
       }
     } catch (error: unknown) {
-      console.error(getErrorMessage(error));
+      console.error('Error al verificar el carrito activo:', getErrorMessage(error));
       return null;
     }
   }, [userId, setCartId, API_BASE_URL]);
+  
 
   const addProductToCart = async (cartId: number, productId: number, quantity: number) => {
     try {
@@ -160,7 +161,7 @@ const CartPagePay: React.FC = () => {
       console.error('No se puede actualizar el carrito porque no existe un ID de carrito.');
       return;
     }
-
+  
     try {
       console.log(`Actualizando productos en el carrito con ID ${cartId}`);
       const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
@@ -176,34 +177,35 @@ const CartPagePay: React.FC = () => {
           })),
         }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || `Error HTTP: ${response.status}`);
       }
-
+  
       console.log('Productos del carrito actualizados en el backend.');
     } catch (error: unknown) {
       console.error('Error al actualizar el carrito en el backend:', getErrorMessage(error));
       throw error;
     }
   };
+  
 
   useEffect(() => {
     const initializeCart = async () => {
       const activeCartId = await fetchActiveCart();
-
+  
       if (activeCartId) {
         console.log(`Carrito activo detectado con ID ${activeCartId}. No se creará un nuevo carrito.`);
-
+  
         const savedCartItems = localStorage.getItem('__redux__cart__');
         if (savedCartItems) {
           try {
             const parsedCart = JSON.parse(savedCartItems);
-
+  
             if (parsedCart && Array.isArray(parsedCart.productos)) {
               dispatch(clearCart());
-
+  
               parsedCart.productos.forEach((item: CartItem) => {
                 dispatch(addToCart(item));
               });
@@ -216,13 +218,14 @@ const CartPagePay: React.FC = () => {
         }
         return;
       }
-
+  
       console.log('No hay carrito activo. Creando uno nuevo...');
       await createCart();
     };
-
+  
     initializeCart();
   }, [fetchActiveCart, createCart, dispatch]);
+  
 
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {
@@ -312,7 +315,7 @@ const CartPagePay: React.FC = () => {
         fechaCreacion: new Date().toISOString().split('T')[0],
         idMedioPago: 1,
         idEstado: 1,
-        idTipoDespacho: 1,
+        idTipoDespacho: formData.formaEnvio === 'envio' ? 1 : 2,
         receptor: formData.quienRecibe,
         fechaEntrega: new Date(new Date().setDate(new Date().getDate() + 3))
           .toISOString()
@@ -365,7 +368,6 @@ const CartPagePay: React.FC = () => {
     }
   };
 
-  
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
     const existingItem = acc.find((i: CartItem) => i.id === item.id);
     if (existingItem) {
@@ -396,8 +398,12 @@ const CartPagePay: React.FC = () => {
   };
 
   const handleNavigateToCheckout = (): void => {
+    console.log('Limpiando localStorage antes de navegar a la página de éxito.');
+    dispatch(clearCart());
+    localStorage.removeItem('__redux__cart__');
     navigate('/success-page');
   };
+  
 
   return (
     <Container className="cart-container">

@@ -61,87 +61,22 @@ const CheckoutInvitadoForm: React.FC = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    const userId = 1; 
-    const cartId = 2; 
-
+  
     if (!formData.email || !formData.nombre || !formData.telefono || !formData.quienRecibe) {
       alert('Por favor completa todos los campos obligatorios.');
       return;
     }
-
-    const cartPayload = {
-      productosCarro: cartItems.map((item: CartItem) => ({
-        productoId: item.id,
-        cantidadProducto: item.cantidad,
-      })),
-    };
-
-    const pedidoPayload = {
-      fechaCreacion: new Date().toISOString().split('T')[0],
-      idMedioPago: 1,
-      idEstado: 1,
-      idTipoDespacho: formData.formaEnvio === 'envio' ? 1 : 2,
-      receptor: formData.quienRecibe,
-      fechaEntrega: new Date(new Date().setDate(new Date().getDate() + 3))
-        .toISOString()
-        .split('T')[0],
-      direccionEnvio: {
-        comuna: formData.comuna,
-        calle: formData.direccion,
-        numero: '03010',
-        departamento: '1215',
-        referencia: 'Junto al supermercado',
-      },
-    };
-
-    try {
-      console.log('Sincronizando carrito con el backend:', cartPayload);
-      const cartResponse = await fetch(`http://localhost:8080/carro-compras/replaceProductos/${cartId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(cartPayload),
-      });
-
-      if (!cartResponse.ok) {
-        const cartError = await cartResponse.json();
-        console.error('Error al sincronizar el carrito:', cartError);
-        alert(`Error al sincronizar el carrito: ${cartError.message || 'Error desconocido'}`);
-        return;
-      }
-
-      console.log('Carrito sincronizado correctamente.');
-
-      console.log('Enviando datos al endpoint de finalizar compra:', pedidoPayload);
-      const response = await fetch(`http://localhost:8080/pedidos/${userId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(pedidoPayload),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error al finalizar la compra:', errorData);
-        alert(`Error al finalizar la compra: ${errorData.message || 'Error desconocido'}`);
-        return;
-      }
-
-      const data = await response.json();
-      console.log('Pedido creado exitosamente:', data);
-
-      navigate('/cart-page-pay', { state: { pedidoId: data.id, formData } });
-
-    } catch (error) {
-      console.error('Error crítico al procesar el pedido:', error);
-      alert('Hubo un problema al procesar tu pedido. Por favor, inténtalo nuevamente.');
-    }
+    console.log('Datos preparados para enviar a CartPagePay:', {
+      formData,
+      cartItems,
+    });
+    
+    console.log('Checkout Data:', { formData, cartItems });
+    navigate('/cart-page-pay', { state: { formData, cartItems } });
   };
+  
 
   return (
     <Container className="checkout-container">
@@ -188,12 +123,6 @@ const CheckoutInvitadoForm: React.FC = () => {
               onChange={handleInputChange}
             />
           </Form.Group>
-
-          <Form.Check
-            type="checkbox"
-            label="¿Quieres Usar Una Dirección Guardada?"
-            className="mb-3"
-          />
 
           <Row>
             <Col md={6}>
@@ -328,18 +257,6 @@ const CheckoutInvitadoForm: React.FC = () => {
               onChange={handleInputChange}
             />
           </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Tipo de recibo</Form.Label>
-            <Form.Select
-              name="tipoRecibo"
-              value={formData.tipoRecibo}
-              onChange={handleInputChange}
-            >
-              <option value="boleto">Boleta</option>
-              <option value="boleto">Factura</option>
-            </Form.Select>
-          </Form.Group>
         </section>
 
         <div className="button-container">
@@ -356,3 +273,4 @@ const CheckoutInvitadoForm: React.FC = () => {
 };
 
 export default CheckoutInvitadoForm;
+

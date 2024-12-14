@@ -77,7 +77,7 @@ const CartPage: React.FC = () => {
       } else {
         const errorData = await response.json();
         console.error('Error en la respuesta del servidor:', errorData);
-        throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+        throw new Error(`errorData.message || Error HTTP: ${response.status}`);
       }
     } catch (error: unknown) {
       console.error('Error al agregar producto al carrito:', getErrorMessage(error));
@@ -108,7 +108,7 @@ const CartPage: React.FC = () => {
           return;
         }
 
-        throw new Error(errorData.message || `Error HTTP al crear carrito: ${response.status}`);
+        throw new Error(`errorData.message || Error HTTP al crear carrito: ${response.status}`);
       }
 
       const data = await response.json();
@@ -126,8 +126,8 @@ const CartPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`,
+      const response = await fetch(`
+        ${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`,
         {
           method: 'DELETE',
           headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
@@ -171,8 +171,7 @@ const CartPage: React.FC = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Error HTTP: ${response.status}`);
+        throw new Error(`errorData.message || Error HTTP: ${response.status}`);
       }
 
       console.log('Productos del carrito actualizados en el backend.');
@@ -184,47 +183,39 @@ const CartPage: React.FC = () => {
 
   useEffect(() => {
     const initializeCart = async () => {
-      console.log('Inicializando carrito...');
       const activeCartId = await fetchActiveCart();
-
+  
       if (activeCartId) {
-        console.log(`Carrito activo detectado con ID ${activeCartId}.`);
+        console.log(`Carrito activo detectado con ID ${activeCartId}. No se creará uno nuevo.`);
         const savedCartItems = localStorage.getItem('__redux__cart__');
-
         if (savedCartItems) {
           try {
             const parsedCart = JSON.parse(savedCartItems);
-
+  
             if (parsedCart && Array.isArray(parsedCart.productos)) {
-              if (parsedCart.productos.length > 0) {
-                console.log('Sincronizando carrito desde el localStorage...');
-                dispatch(clearCart());
-                parsedCart.productos.forEach((item: CartItem) => {
-                  dispatch(addToCart(item));
-                });
-              } else {
-                console.log('El carrito está vacío en localStorage. No se sincronizará.');
-                dispatch(clearCart());
-                localStorage.removeItem('__redux__cart__');
-              }
+              dispatch(clearCart());
+  
+              parsedCart.productos.forEach((item: CartItem) => {
+                dispatch(addToCart(item));
+              });
             } else {
-              console.warn('El carrito en localStorage tiene un formato inválido.');
+              console.warn('El contenido de productos no es un array:', parsedCart.productos);
             }
           } catch (error) {
-            console.error('Error al parsear los datos del carrito:', error);
+            console.error('Error al parsear los datos del carrito desde localStorage:', error);
           }
         }
         return;
       }
-
+  
       console.log('No hay carrito activo. Creando uno nuevo...');
       await createCart();
     };
-
+  
     initializeCart();
   }, [fetchActiveCart, createCart, dispatch]);
-
-
+  
+  
   const handleApplyCoupon = () => {
     if (coupon === 'bootcamp2024') {
       setDiscount(0.1);
@@ -263,10 +254,10 @@ const CartPage: React.FC = () => {
       alert('No hay un carrito asociado para vaciar.');
       return;
     }
-
+  
     try {
       console.log(`Vaciando carrito con ID ${cartId}`);
-
+  
       const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
         method: 'PUT',
         headers: {
@@ -275,24 +266,28 @@ const CartPage: React.FC = () => {
         },
         body: JSON.stringify({ productosCarro: [] }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Error al vaciar el carrito:', errorData);
         alert(`Error al vaciar el carrito: ${errorData.message || 'Error desconocido'}`);
         return;
       }
-
+  
       const data = await response.json();
       console.log('Carrito vaciado en el backend:', data);
-
+  
       dispatch(clearCart());
+  
+      localStorage.removeItem('__redux__cart__');
+  
       alert('El carrito ha sido vaciado exitosamente.');
     } catch (error) {
       console.error('Error al intentar vaciar el carrito:', error);
       alert('Hubo un problema al vaciar el carrito. Por favor, inténtalo nuevamente.');
     }
   };
+  
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -596,6 +591,3 @@ const CartPage: React.FC = () => {
 };
 
 export default CartPage;
-
-
-
