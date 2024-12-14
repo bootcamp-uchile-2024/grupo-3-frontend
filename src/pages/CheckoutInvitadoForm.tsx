@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-import { useSelector } from 'react-redux'; 
-import { RootState } from '../states/store';
 import '../styles/CheckoutInvitadoForm.css';
+import { clearCart } from '../states/cartSlice';
 
 interface CheckoutInvitadoDTO {
   email: string;
@@ -20,15 +20,9 @@ interface CheckoutInvitadoDTO {
   aceptaTerminos: boolean;
 }
 
-interface CartItem {
-  id: number;
-  cantidad: number;
-}
-
 const CheckoutInvitadoForm: React.FC = () => {
   const navigate = useNavigate();
-
-  const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState<CheckoutInvitadoDTO>({
     email: '',
@@ -61,22 +55,65 @@ const CheckoutInvitadoForm: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
+    const userId = 1;
+
     if (!formData.email || !formData.nombre || !formData.telefono || !formData.quienRecibe) {
       alert('Por favor completa todos los campos obligatorios.');
       return;
     }
-    console.log('Datos preparados para enviar a CartPagePay:', {
-      formData,
-      cartItems,
-    });
-    
-    console.log('Checkout Data:', { formData, cartItems });
-    navigate('/cart-page-pay', { state: { formData, cartItems } });
+
+    const pedidoPayload = {
+      fechaCreacion: new Date().toISOString().split('T')[0],
+      idMedioPago: 1,
+      idEstado: 1,
+      idTipoDespacho: formData.formaEnvio === 'envio' ? 1 : 2,
+      receptor: formData.quienRecibe,
+      fechaEntrega: new Date(new Date().setDate(new Date().getDate() + 3))
+        .toISOString()
+        .split('T')[0],
+      direccionEnvio: {
+        comuna: formData.comuna,
+        calle: formData.direccion,
+        numero: '03010',
+        departamento: '1215',
+        referencia: 'Junto al supermercado',
+      },
+    };
+
+    try {
+      console.log('Enviando datos al endpoint de finalizar compra:', pedidoPayload);
+
+      const response = await fetch(`http://localhost:8080/pedidos/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pedidoPayload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error al finalizar la compra:', errorData);
+        alert(`Error al finalizar la compra: ${errorData.message || 'Error desconocido'}`);
+        return;
+      }
+
+      const data = await response.json();
+      console.log('Pedido creado exitosamente:', data);
+
+      console.log('Eliminando carrito de Redux...');
+      dispatch(clearCart());
+
+      navigate('/cart-page-pay', { state: { pedidoId: data.id, formData } });
+
+    } catch (error) {
+      console.error('Error crítico al procesar el pedido:', error);
+      alert('Hubo un problema al procesar tu pedido. Por favor, inténtalo nuevamente.');
+    }
   };
-  
 
   return (
     <Container className="checkout-container">
@@ -123,6 +160,12 @@ const CheckoutInvitadoForm: React.FC = () => {
               onChange={handleInputChange}
             />
           </Form.Group>
+
+          <Form.Check
+            type="checkbox"
+            label="¿Quieres Usar Una Dirección Guardada?"
+            className="mb-3"
+          />
 
           <Row>
             <Col md={6}>
@@ -257,6 +300,18 @@ const CheckoutInvitadoForm: React.FC = () => {
               onChange={handleInputChange}
             />
           </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Tipo de recibo</Form.Label>
+            <Form.Select
+              name="tipoRecibo"
+              value={formData.tipoRecibo}
+              onChange={handleInputChange}
+            >
+              <option value="boleto">Boleta</option>
+              <option value="boleto">Factura</option>
+            </Form.Select>
+          </Form.Group>
         </section>
 
         <div className="button-container">
@@ -273,4 +328,5 @@ const CheckoutInvitadoForm: React.FC = () => {
 };
 
 export default CheckoutInvitadoForm;
+
 

@@ -124,24 +124,23 @@ const CartPage: React.FC = () => {
     if (!window.confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
       return;
     }
-
+  
     try {
-      const response = await fetch(`
-        ${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`,
-        {
-          method: 'DELETE',
-          headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-        }
-      );
-
+      const response = await fetch(`${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`, {
+        method: 'DELETE',
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      });
+  
       if (!response.ok) {
         const errorData = await response.json();
         alert(errorData.message || 'Hubo un problema al eliminar el producto.');
         return;
       }
-
+  
       dispatch(removeFromCart(productId));
       alert('El producto ha sido eliminado del carrito.');
+  
+      await replaceCartProducts();
     } catch (error) {
       console.error('Error al intentar eliminar el producto:', error);
       alert('No se pudo eliminar el producto. Por favor, inténtalo nuevamente.');
@@ -230,23 +229,27 @@ const CartPage: React.FC = () => {
       alert('No se ha inicializado el carrito.');
       return;
     }
-
+  
     const product = cartItems.find((item) => item.id === productId);
     if (product) {
       try {
         const newQuantity = product.cantidad + 1;
-
+  
         await addProductToCart(cartId, productId, newQuantity);
-
+  
         dispatch(updateQuantity({ id: productId, cantidad: 1 }));
+        
+        await replaceCartProducts();
       } catch (_error) {
         alert('Error al intentar incrementar el producto. Por favor, inténtalo nuevamente.');
       }
     }
   };
 
-  const handleDecrement = (productId: number) => {
+  const handleDecrement = async (productId: number) => {
     dispatch(updateQuantity({ id: productId, cantidad: -1 }));
+  
+    await replaceCartProducts();
   };
 
   const handleClearCart = async () => {
@@ -350,9 +353,23 @@ const CartPage: React.FC = () => {
     return 'Error inesperado.';
   };
 
-  const handleNavigateToCheckout = (): void => {
-    navigate('/login-checkout');
+  const handleNavigateToCheckout = async (): Promise<void> => {
+    if (!cartId) {
+      alert('No se ha inicializado el carrito.');
+      return;
+    }
+  
+    try {
+      console.log('Verificando sincronización del carrito...');
+      await replaceCartProducts();
+  
+      navigate('/login-checkout');
+    } catch (error) {
+      console.error('Error al sincronizar el carrito antes de navegar:', error);
+      alert('Hubo un problema al procesar tu carrito. Por favor, inténtalo nuevamente.');
+    }
   };
+  
 
   return (
     <Container className="cart-container">
