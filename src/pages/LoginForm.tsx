@@ -87,7 +87,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
           <Card className="login-card">
             <h2 className="login-title">Iniciar sesión</h2>
             <Form className='login-form' onSubmit={handleSubmit}>
-            <Form.Label>Correo electrónico</Form.Label>
+            <Form.Label>Correo electrónico o Usuario</Form.Label>
               <Form.Control
                 type="text"
                 name="username"
