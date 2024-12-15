@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import '../styles/CheckoutInvitadoForm.css';
 import { clearCart } from '../states/cartSlice';
+import regionesComunas from '../utils/regionesComunas';
 
 interface CheckoutInvitadoDTO {
   email: string;
@@ -39,9 +40,21 @@ const CheckoutInvitadoForm: React.FC = () => {
     aceptaTerminos: false,
   });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const [availableComunas, setAvailableComunas] = useState<string[]>([]);
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value, type } = e.target;
-    if (type === 'checkbox') {
+
+    if (name === 'region') {
+      setAvailableComunas(regionesComunas[value] || []);
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+        comuna: '',
+      }));
+    } else if (type === 'checkbox') {
       const target = e.target as HTMLInputElement;
       setFormData((prev) => ({
         ...prev,
@@ -108,7 +121,6 @@ const CheckoutInvitadoForm: React.FC = () => {
       dispatch(clearCart());
 
       navigate('/cart-page-pay', { state: { pedidoId: data.id, formData } });
-
     } catch (error) {
       console.error('Error crítico al procesar el pedido:', error);
       alert('Hubo un problema al procesar tu pedido. Por favor, inténtalo nuevamente.');
@@ -263,7 +275,12 @@ const CheckoutInvitadoForm: React.FC = () => {
                   value={formData.region}
                   onChange={handleInputChange}
                 >
-                  <option>Metropolitana</option>
+                  <option value="">Seleccione una región</option>
+                  {Object.keys(regionesComunas).map((region) => (
+                    <option key={region} value={region}>
+                      {region}
+                    </option>
+                  ))}
                 </Form.Select>
               </Form.Group>
             </Col>
@@ -274,8 +291,14 @@ const CheckoutInvitadoForm: React.FC = () => {
                   name="comuna"
                   value={formData.comuna}
                   onChange={handleInputChange}
+                  disabled={!formData.region}
                 >
-                  <option>Maipu</option>
+                  <option value="">Seleccione una comuna</option>
+                  {availableComunas.map((comuna) => (
+                    <option key={comuna} value={comuna}>
+                      {comuna}
+                    </option>
+                  ))}
                 </Form.Select>
               </Form.Group>
             </Col>

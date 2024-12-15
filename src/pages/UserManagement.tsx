@@ -83,44 +83,63 @@ const UserManagement = () => {
 
   const handleModifyClick = () => {
     if (selectedUser) {
-      setEditingUser({ ...selectedUser });
+      const fechaOriginal = selectedUser.fechaNacimiento || "";
+      const formattedFechaNacimiento = fechaOriginal.includes("T")
+        ? fechaOriginal.split("T")[0] 
+        : fechaOriginal; 
+  
+      setEditingUser({
+        ...selectedUser,
+        fechaNacimiento: formattedFechaNacimiento,
+      });
     }
   };
-
 
   const handleUpdateUser = async () => {
     if (!editingUser) return;
-
+  
+    const requestBody = {
+      contrasena: "defaultPassword123",
+      nombre: editingUser.nombre,
+      apellido: editingUser.apellido,
+      nombreUsuario: editingUser.nombreUsuario,
+      email: editingUser.email,
+      telefono: editingUser.telefono,
+      genero: editingUser.genero,
+      rut: editingUser.rut,
+      fechaNacimiento: editingUser.fechaNacimiento,
+      idRol: editingUser.idRol, 
+    };
+  
     try {
-      const response = await fetch(
-        `http://localhost:8080/usuarios/${editingUser.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(editingUser),
-        }
-      );
-
+      const response = await fetch(`http://localhost:8080/usuarios/${editingUser.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody), 
+      });
+  
       if (!response.ok) {
-        throw new Error("Error al actualizar el usuario");
+        const errorData = await response.json();
+        throw new Error(`Error al actualizar el usuario: ${response.status} - ${errorData.message || "Error desconocido"}`);
       }
-
-      console.log("Usuario actualizado");
-      fetchUsers();
+  
+      console.log("Usuario actualizado correctamente");
+  
+      fetchUsers(); 
       setEditingUser(null);
-      setError("");
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);
-      setError("Error al actualizar el usuario");
+      setError("Error al actualizar el usuario. Verifica los datos.");
     }
   };
-
+  
   const handleSaveChangesClick = () => {
     setModalAction("modify");
     setShowModal(true);
   };
+  
 
   const handleDeleteUserClick = () => {
     setModalAction("delete");
@@ -135,10 +154,11 @@ const UserManagement = () => {
     if (modalAction === "modify") {
       handleUpdateUser();
     } else if (modalAction === "delete" && selectedUser) {
-      deleteUser(selectedUser.id);
+      deleteUser(selectedUser.id); 
     }
     setShowModal(false);
   };
+  
 
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
@@ -164,8 +184,7 @@ const UserManagement = () => {
       console.error("No hay un usuario seleccionado para modificar.");
     }
   };
-// 
-// currentUsers
+
   return (
     <Container fluid className="mt-4" style={{}}>
        <Col md={12}>
@@ -245,214 +264,217 @@ const UserManagement = () => {
               </Modal>
 
               <Tab eventKey="modificarUsuario" title="Modificar Usuario">
-                {loading ? (
-                  <Spinner animation="border" variant="primary" />
-                ) : editingUser ? (
-                  <>
-                    {editingUser && <CardUser selectedUser={editingUser} />}
-                    <Form>
-                      <Row>
-                        <Col>
-                          <Form.Group>
-                            <Form.Label>Nombre</Form.Label>
-                            <Form.Control
-                              type="text"
-                              value={editingUser.nombre}
-                              onChange={(e) =>
-                                setEditingUser((prev) =>
-                                  prev ? { ...prev, nombre: e.target.value } : null
-                                )
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col>
-                          <Form.Group>
-                            <Form.Label>Apellido</Form.Label>
-                            <Form.Control
-                              type="text"
-                              value={editingUser.apellido}
-                              onChange={(e) =>
-                                setEditingUser((prev) =>
-                                  prev ? { ...prev, apellido: e.target.value } : null
-                                )
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row className="mt-3">
-                        <Col>
-                          <Form.Group>
-                            <Form.Label>Correo Electrónico</Form.Label>
-                            <Form.Control
-                              type="email"
-                              value={editingUser.email}
-                              onChange={(e) =>
-                                setEditingUser((prev) =>
-                                  prev ? { ...prev, email: e.target.value } : null
-                                )
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col>
-                          <Form.Group>
-                            <Form.Label>Teléfono</Form.Label>
-                            <Form.Control
-                              type="text"
-                              value={editingUser.telefono}
-                              onChange={(e) =>
-                                setEditingUser((prev) =>
-                                  prev ? { ...prev, telefono: e.target.value } : null
-                                )
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row className="mt-3">
-                        <Col>
-                          <Form.Group>
-                            <Form.Label>Nombre de Usuario</Form.Label>
-                            <Form.Control
-                              type="text"
-                              value={editingUser.nombreUsuario}
-                              onChange={(e) =>
-                                setEditingUser((prev) =>
-                                  prev ? { ...prev, nombreUsuario: e.target.value } : null
-                                )
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col>
-                          <Form.Group>
-                            <Form.Label>Género</Form.Label>
-                            <Form.Control
-                              type="text"
-                              value={editingUser.genero}
-                              onChange={(e) =>
-                                setEditingUser((prev) =>
-                                  prev ? { ...prev, genero: e.target.value } : null
-                                )
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row className="mt-3">
-                        <Col>
-                          <Form.Group>
-                            <Form.Label>RUT</Form.Label>
-                            <Form.Control
-                              type="text"
-                              value={editingUser.rut}
-                              onChange={(e) =>
-                                setEditingUser((prev) =>
-                                  prev ? { ...prev, rut: e.target.value } : null
-                                )
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col>
-                          <Form.Group>
-                            <Form.Label>Fecha de Nacimiento</Form.Label>
-                            <Form.Control
-                              type="date"
-                              value={editingUser.fechaNacimiento}
-                              onChange={(e) =>
-                                setEditingUser((prev) =>
-                                  prev
-                                    ? { ...prev, fechaNacimiento: e.target.value }
-                                    : null
-                                )
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row className="mt-3">
-                        <Col>
-                          <Form.Group>
-                            <Form.Label>Dirección</Form.Label>
-                            <Form.Control
-                              type="text"
-                              value={editingUser.direccion || ""}
-                              onChange={(e) =>
-                                setEditingUser((prev) =>
-                                  prev ? { ...prev, direccion: e.target.value } : null
-                                )
-                              }
-                            />
-                          </Form.Group>
-                        </Col>
-                        <Col>
-                          <Form.Group>
-                            <Form.Label>Tipo de Usuario</Form.Label>
-                            <Form.Select
-                              value={editingUser?.idRol || ""}
-                              onChange={(e) =>
-                                setEditingUser((prev) =>
-                                  prev
-                                    ? { ...prev, tipoUsuarioId: parseInt(e.target.value, 10) || 0 }
-                                    : null
-                                )
-                              }
-                            >
-                              <option value="">Seleccione un tipo de usuario</option>
-                              {userRoles.map((role) => (
-                                <option key={role.id} value={role.id}>
-                                  {role.name}
-                                </option>
-                              ))}
-                            </Form.Select>
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                    </Form>
-                    <div className="d-flex justify-content-center mt-3 gap-2">
-                      <Button variant="secondary" onClick={() => setEditingUser(null)}>
-                        Cancelar
-                      </Button>
-                      <Button variant="success" onClick={handleSaveChangesClick}>
-                        Guardar Cambios
-                      </Button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {selectedUser ? (
+                  {loading ? (
+                    <Spinner animation="border" variant="primary" />
+                  ) : editingUser ? (
+                    <>
+                      {editingUser && <CardUser selectedUser={editingUser} />}
+                      <Form>
+                        <Row>
+                          <Col>
+                            <Form.Group>
+                              <Form.Label>Nombre</Form.Label>
+                              <Form.Control
+                                type="text"
+                                value={editingUser.nombre}
+                                onChange={(e) =>
+                                  setEditingUser((prev) =>
+                                    prev ? { ...prev, nombre: e.target.value } : null
+                                  )
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                          <Col>
+                            <Form.Group>
+                              <Form.Label>Apellido</Form.Label>
+                              <Form.Control
+                                type="text"
+                                value={editingUser.apellido}
+                                onChange={(e) =>
+                                  setEditingUser((prev) =>
+                                    prev ? { ...prev, apellido: e.target.value } : null
+                                  )
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                        </Row>
+                        <Row className="mt-3">
+                          <Col>
+                            <Form.Group>
+                              <Form.Label>Correo Electrónico</Form.Label>
+                              <Form.Control
+                                type="email"
+                                value={editingUser.email}
+                                onChange={(e) =>
+                                  setEditingUser((prev) =>
+                                    prev ? { ...prev, email: e.target.value } : null
+                                  )
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                          <Col>
+                            <Form.Group>
+                              <Form.Label>Teléfono</Form.Label>
+                              <Form.Control
+                                type="text"
+                                value={editingUser.telefono}
+                                onChange={(e) =>
+                                  setEditingUser((prev) =>
+                                    prev ? { ...prev, telefono: e.target.value } : null
+                                  )
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                        </Row>
+                        <Row className="mt-3">
+                          <Col>
+                            <Form.Group>
+                              <Form.Label>Nombre de Usuario</Form.Label>
+                              <Form.Control
+                                type="text"
+                                value={editingUser.nombreUsuario}
+                                onChange={(e) =>
+                                  setEditingUser((prev) =>
+                                    prev ? { ...prev, nombreUsuario: e.target.value } : null
+                                  )
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                          <Col>
+                            <Form.Group>
+                              <Form.Label>Género</Form.Label>
+                              <Form.Control
+                                type="text"
+                                value={editingUser.genero}
+                                onChange={(e) =>
+                                  setEditingUser((prev) =>
+                                    prev ? { ...prev, genero: e.target.value } : null
+                                  )
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                        </Row>
+                        <Row className="mt-3">
+                          <Col>
+                            <Form.Group>
+                              <Form.Label>RUT</Form.Label>
+                              <Form.Control
+                                type="text"
+                                value={editingUser.rut}
+                                onChange={(e) =>
+                                  setEditingUser((prev) =>
+                                    prev ? { ...prev, rut: e.target.value } : null
+                                  )
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                          <Col>
+                            <Form.Group>
+                              <Form.Label>Fecha de Nacimiento</Form.Label>
+                              <Form.Control
+                                type="date" 
+                                value={editingUser.fechaNacimiento || ""} 
+                                onChange={(e) =>
+                                  setEditingUser((prev) =>
+                                    prev
+                                      ? {
+                                          ...prev,
+                                          fechaNacimiento: e.target.value, 
+                                        }
+                                      : null
+                                  )
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                        </Row>
+                        <Row className="mt-3">
+                          <Col>
+                            <Form.Group>
+                              <Form.Label>Dirección</Form.Label>
+                              <Form.Control
+                                type="text"
+                                value={editingUser.direccion || ""}
+                                onChange={(e) =>
+                                  setEditingUser((prev) =>
+                                    prev ? { ...prev, direccion: e.target.value } : null
+                                  )
+                                }
+                              />
+                            </Form.Group>
+                          </Col>
+                          <Col>
+                            <Form.Group>
+                              <Form.Label>Tipo de Usuario</Form.Label>
+                              <Form.Select
+                                value={editingUser?.idRol || ""}
+                                onChange={(e) =>
+                                  setEditingUser((prev) =>
+                                    prev
+                                      ? { ...prev, tipoUsuarioId: parseInt(e.target.value, 10) || 0 }
+                                      : null
+                                  )
+                                }
+                              >
+                                <option value="">Seleccione un tipo de usuario</option>
+                                {userRoles.map((role) => (
+                                  <option key={role.id} value={role.id}>
+                                    {role.name}
+                                  </option>
+                                ))}
+                              </Form.Select>
+                            </Form.Group>
+                          </Col>
+                        </Row>
+                      </Form>
+                      <div className="d-flex justify-content-center mt-3 gap-2">
+                        <Button variant="secondary" onClick={() => setEditingUser(null)}>
+                          Cancelar
+                        </Button>
+                        <Button variant="success" onClick={handleSaveChangesClick}>
+                          Guardar Cambios
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {selectedUser ? (
                         <CardUser selectedUser={selectedUser} />
                       ) : (
                         <p>No hay un usuario seleccionado</p>
                       )}
                       <UserTable
-                        users={Array.isArray(users) ? users : []} 
-                        currentUsers={Array.isArray(currentUsers) ? currentUsers : []} 
-                        selectedUser={selectedUser ?? null} 
-                        setSelectedUser={setSelectedUser} 
+                        users={Array.isArray(users) ? users : []}
+                        currentUsers={Array.isArray(currentUsers) ? currentUsers : []}
+                        selectedUser={selectedUser ?? null}
+                        setSelectedUser={setSelectedUser}
                       />
+                      <div className="d-flex justify-content-center mt-3 gap-2" style={{ position: "relative" }}>
+                        <Button
+                          variant="primary"
+                          onClick={handleModifyClick}
+                          disabled={!selectedUser}
+                          className="btn-modify-position"
+                        >
+                          Modificar
+                        </Button>
+                      </div>
+                    </>
+                  )}
+                  <CustomPagination
+                    currentPage={currentPage}
+                    totalPages={Math.ceil(users.length / usersPerPage)}
+                    paginate={paginate}
+                  />
+                </Tab>
 
-                    <div className="d-flex justify-content-center mt-3 gap-2" style={{ position: "relative" }}>
-                      <Button
-                        variant="primary"
-                        onClick={handleModifyClick}
-                        disabled={!selectedUser}
-                        className="btn-modify-position"
-                      >
-                        Modificar
-                      </Button>
-                    </div>
-                  </>
-                )}
-                <CustomPagination
-                  currentPage={currentPage}
-                  totalPages={Math.ceil(users.length / usersPerPage)}
-                  paginate={paginate}
-                />
-              </Tab>
             </Tabs>
           </div>
         </Col>
@@ -460,53 +482,60 @@ const UserManagement = () => {
 
       {/* Modal Dinámico */}
 
-      <Modal show={showModal} onHide={handleCloseModal} centered style={{ padding: '32px 41px 24px 41px' }}>
-        <Modal.Header closeButton style={{ borderBottom: "none", textAlign: "center", alignSelf: 'stretch' }}>
-          <Modal.Title
-            style={{
-              color: "var(--Color1, #1A4756)",
-              fontFamily: "Quicksand",
-              fontSize: "24px",
-              fontStyle: "normal",
-              fontWeight: '700',
-              lineHeight: "30px",
-            }}
-          >
-            ¿Está Seguro de Modificar el Usuario?
-          </Modal.Title>
-        </Modal.Header>
+      <Modal
+  show={showModal}
+  onHide={handleCloseModal}
+  centered
+  style={{ padding: "32px 41px 24px 41px" }}
+>
+  <Modal.Header
+    closeButton
+    style={{ borderBottom: "none", textAlign: "center", alignSelf: "stretch" }}
+  >
+    <Modal.Title
+      style={{
+        color: "var(--Color1, #1A4756)",
+        fontFamily: "Quicksand",
+        fontSize: "24px",
+        fontStyle: "normal",
+        fontWeight: "700",
+        lineHeight: "30px",
+      }}
+    >
+      ¿Está Seguro de Modificar el Usuario?
+    </Modal.Title>
+  </Modal.Header>
+  <Modal.Body
+    style={{
+      textAlign: "center",
+      color: "var(--Color1, #1A4756)",
+      fontFamily: "Quicksand",
+      fontSize: "18px",
+      fontStyle: "normal",
+      fontWeight: 700,
+      lineHeight: "22px",
+    }}
+  >
+    <p>Esta acción no podrá deshacerse</p>
+  </Modal.Body>
+  <Modal.Footer style={{ borderTop: "none" }}>
+    <Button
+      variant="success"
+      onClick={handleConfirmSaveChanges}
+      style={{ backgroundColor: "#1A4756", color: "#fff" }}
+    >
+      Modificar
+    </Button>
+    <Button
+      variant="secondary"
+      onClick={handleCloseModal}
+      style={{ color: "#1A4756", backgroundColor: "#fff" }}
+    >
+      Cancelar
+    </Button>
+  </Modal.Footer>
+</Modal>
 
-        <Modal.Body
-          style={{
-            textAlign: "center",
-            color: "var(--Color1, #1A4756)",
-            fontFamily: "Quicksand",
-            fontSize: "18px",
-            fontStyle: "normal",
-            fontWeight: 700,
-            lineHeight: "22px",
-          }}
-        >
-          <p>Esta acción no podrá deshacerse</p>
-        </Modal.Body>
-
-        <Modal.Footer style={{ borderTop: "none" }}>
-          <Button
-            variant="success"
-            onClick={handleConfirmSaveChanges}
-            style={{ backgroundColor: "#1A4756", color: "#fff" }}
-          >
-            Modificar
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={handleCloseModal}
-            style={{ color: "#1A4756", backgroundColor: "#fff" }}
-          >
-            Cancelar
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </Container>
   );
 };
