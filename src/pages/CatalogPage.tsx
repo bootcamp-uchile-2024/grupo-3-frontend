@@ -91,7 +91,7 @@ const CatalogPage: React.FC = () => {
     }
   };
 
-  // Agregar al carrito
+
   const handleAddToCart = (product: productsCatalog) => {
     const quantity = quantities[product.id] || 1;
     const currentCartQuantity = cart.reduce((total, item) => {
@@ -100,19 +100,23 @@ const CatalogPage: React.FC = () => {
       }
       return total;
     }, 0);
-
-    if (currentCartQuantity + quantity > product.cantidad) {
+  
+    if (currentCartQuantity + quantity > product.stock) {
       setErrorMessages((prevMessages) => ({
         ...prevMessages,
-        [product.id]: `Stock de ${product.cantidad} unidades.`,
+        [product.id]: `Stock de ${product.stock} unidades.`,
       }));
       return;
     }
+  
+    const imagePath = product.imagenes?.[0]?.ruta ?? '/estaticos/default-image.jpg';
+    console.log(`Agregando al carrito: ${product.nombre}, Imagen: ${imagePath}`); 
+  
     dispatch(addToCart({
       id: product.id,
       nombre: product.nombre,
       precio: product.precio,
-      imagen: product.imagen,
+      imagen: imagePath,
       descripcion: product.descripcion,
       cantidad: quantity,
       unidadesVendidas: product.unidadesVendidas,
@@ -236,12 +240,13 @@ const CatalogPage: React.FC = () => {
                   <Col key={product.id}>
                     <Card>
                       <Link to={`/catalogo/producto/${product.id}`}>
-                        <Card.Img
-                          variant="top"
-                          src={`https://placehold.co/210x270?text=${encodeURIComponent(product.nombre)}&font=roboto`}
-                          alt={product.nombre}
-                          className="card-products-container rounded"
-                        />
+                      <Card.Img
+                        variant="top"
+                        src={product.imagenes && product.imagenes.length > 0 ? product.imagenes[0].ruta : '/estaticos/default-image.jpg'}
+                        alt={product.nombre}
+                        className="card-products-container"
+                      />
+
                       </Link>
                       <Card.Body className="text-start">
                         <div className='contenedordeTituloyDescripcion'>

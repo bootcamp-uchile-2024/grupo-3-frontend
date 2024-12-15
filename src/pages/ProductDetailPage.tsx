@@ -67,8 +67,8 @@ export default function ProductDetailPage() {
   }
 
   const handleAddToCart = (product: productsCatalog) => {
-    if (quantity > product.cantidad) {
-      alert(`Solo hay ${product.cantidad} unidades disponibles.`);
+    if (quantity > product.stock) {
+      alert(`Solo hay ${product.stock} unidades disponibles.`);
       return;
     }
 
@@ -76,7 +76,7 @@ export default function ProductDetailPage() {
       id: product.id,
       nombre: product.nombre,
       precio: product.precio,
-      imagen: product.imagen,
+      imagen: product.imagenes && product.imagenes.length > 0 ? product.imagenes[0].ruta : '/estaticos/default-image.jpg',
       descripcion: product.descripcion,
       cantidad: quantity,
       unidadesVendidas: product.unidadesVendidas,
@@ -90,10 +90,10 @@ export default function ProductDetailPage() {
   };
 
   const incrementQuantity = () => {
-    if (quantity < (product?.cantidad || 0)) {
+    if (quantity < (product?.stock || 0)) {
       setQuantity(prevQuantity => prevQuantity + 1);
     } else {
-      alert(`Solo hay ${product?.cantidad} unidades disponibles.`);
+      alert(`Solo hay ${product?.stock} unidades disponibles.`);
     }
     return;
   };
@@ -302,7 +302,7 @@ export default function ProductDetailPage() {
     {product && (
       <div className="cart-item-card">
         <img 
-          src={product.imagen || `https://placehold.co/100x100?text=${product.nombre}`} 
+          src={product.imagenes && product.imagenes.length > 0 ? product.imagenes[0].ruta : '/estaticos/default-image.jpg'} 
           alt={product.nombre}
           className="cart-item-image"
         />

@@ -18,13 +18,14 @@ const CartPage: React.FC = () => {
   const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false);
   const [cartId, setCartId] = useState<number | null>(null);
   const [coupon, setCoupon] = useState<string>('');
-  const [discount, setDiscount] = useState<number>(0);
   const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const userId = 1;
 
+
   const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
+  
 
   const fetchActiveCart = useCallback(async (): Promise<number | null> => {
     try {
@@ -125,27 +126,46 @@ const CartPage: React.FC = () => {
       return;
     }
   
+    if (!cartId) {
+      alert('El carrito no está inicializado correctamente.');
+      return;
+    }
+  
+    const productExists = cartItems.some(item => item.id === productId);
+    if (!productExists) {
+      alert('El producto no existe en el carrito.');
+      return;
+    }
+  
     try {
+      console.log(`Eliminando producto ID: ${productId} del carrito ID: ${cartId}`);
+      
       const response = await fetch(`${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`, {
         method: 'DELETE',
-        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+        headers: { Accept: 'application/json' },
       });
   
       if (!response.ok) {
-        const errorData = await response.json();
-        alert(errorData.message || 'Hubo un problema al eliminar el producto.');
+        let errorMessage = 'Hubo un problema al eliminar el producto.';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+          console.error('Error al parsear la respuesta de error:', e);
+        }
+        alert(errorMessage);
         return;
       }
   
       dispatch(removeFromCart(productId));
       alert('El producto ha sido eliminado del carrito.');
-  
-      await replaceCartProducts();
+
     } catch (error) {
       console.error('Error al intentar eliminar el producto:', error);
       alert('No se pudo eliminar el producto. Por favor, inténtalo nuevamente.');
     }
   };
+  
 
   const replaceCartProducts = async () => {
     if (!cartId) {
@@ -185,25 +205,30 @@ const CartPage: React.FC = () => {
       const activeCartId = await fetchActiveCart();
   
       if (activeCartId) {
-        console.log(`Carrito activo detectado con ID ${activeCartId}. No se creará uno nuevo.`);
-        const savedCartItems = localStorage.getItem('__redux__cart__');
-        if (savedCartItems) {
-          try {
-            const parsedCart = JSON.parse(savedCartItems);
+        console.log(`Carrito activo detectado con ID ${activeCartId}. Cargando productos desde el backend.`);
+        
+        try {
+          const response = await fetch(`${API_BASE_URL}/carro-compras/${activeCartId}/productos`, {
+            method: 'GET',
+            headers: { Accept: 'application/json' },
+          });
   
-            if (parsedCart && Array.isArray(parsedCart.productos)) {
-              dispatch(clearCart());
+          if (response.ok) {
+            const data = await response.json();
+            console.log('Productos del carrito cargados desde el backend:', data);
   
-              parsedCart.productos.forEach((item: CartItem) => {
-                dispatch(addToCart(item));
-              });
-            } else {
-              console.warn('El contenido de productos no es un array:', parsedCart.productos);
-            }
-          } catch (error) {
-            console.error('Error al parsear los datos del carrito desde localStorage:', error);
+            dispatch(clearCart());
+            
+            data.productos.forEach((item: CartItem) => {
+              dispatch(addToCart(item));
+            });
+          } else {
+            console.warn('No se pudieron cargar los productos del carrito desde el backend.');
           }
+        } catch (error) {
+          console.error('Error al cargar los productos del carrito desde el backend:', error);
         }
+  
         return;
       }
   
@@ -212,17 +237,8 @@ const CartPage: React.FC = () => {
     };
   
     initializeCart();
-  }, [fetchActiveCart, createCart, dispatch]);
+  }, [fetchActiveCart, createCart, dispatch, API_BASE_URL]);
   
-  
-  const handleApplyCoupon = () => {
-    if (coupon === 'bootcamp2024') {
-      setDiscount(0.1);
-    } else {
-      alert('Cupón inválido.');
-      setDiscount(0);
-    }
-  };
 
   const handleIncrement = async (productId: number) => {
     if (!cartId) {
@@ -334,11 +350,12 @@ const CartPage: React.FC = () => {
     return acc;
   }, []);
 
-  const total = groupedItems.reduce((acc: number, item: CartItem) => {
-    return acc + item.precio * item.cantidad;
-  }, 0);
+const total = groupedItems.reduce((acc: number, item: CartItem) => {
+  return acc + item.precio * item.cantidad;
+}, 0);
 
-  const discountedTotal = total * (1 - discount);
+const discountedTotal = total * 0.8;
+
 
   const formattedTotal = new Intl.NumberFormat('es-CL', {
     style: 'decimal',
@@ -391,60 +408,67 @@ const CartPage: React.FC = () => {
             <p>El carrito está vacío.</p>
           ) : (
             <div className="products-scroll-container">
-              <ListGroup className="mb-4">
-                {groupedItems.map((item: CartItem) => (
-                  <ListGroup.Item key={item.id} className="cart-item">
-                    <Row className="align-items-center row col-md-12">
-                      <Col md={3}>
-                        <img
-                          src={item.imagen || '/imagenes/productos'}
-                          alt={item.nombre}
-                          className="product-image img-fluid"
-                        />
-                      </Col>
-                      <Col md={7}>
-                        <h5 className="product-title mb-2">{item.nombre}</h5>
-                        <div className="d-flex align-items-center gap-2">
-                          <p className="price-text-cart mb-1">Ahora ${item.precio.toLocaleString('es-CL')}</p>
-                          <span className="cart-price-badge">-20%</span>
-                        </div>
-                        <p className="original-price text-muted">Normal ${item.precio}</p>
-                        <div className="quantity-controls">
-                          <Button
-                            className='btn-circle-cart'
-                            size="sm"
-                            onClick={() => handleDecrement(item.id)}
-                            disabled={item.cantidad === 1}
-                          >
-                            -
-                          </Button>
-                          <span className="mx-3">{item.cantidad}</span>
-                          <Button
-                            className='btn-circle-cart'
-                            size="sm"
-                            onClick={() => handleIncrement(item.id)}
-                          >
-                            +
-                          </Button>
-                        </div>
-                      </Col>
-                      <Col md={1}>
+             <ListGroup className="mb-4">
+              {groupedItems.map((item: CartItem) => (
+                <ListGroup.Item key={item.id} className="cart-item">
+                  <Row className="align-items-center">
+                    <Col md={3}>
+                      <img
+                        src={item.imagen || '/estaticos/default-image.jpg'}
+                        alt={item.nombre}
+                        className="product-image img-fluid"
+                      />
+                    </Col>
+                    <Col md={7}>
+                      <h5 className="product-title mb-2">{item.nombre}</h5>
+                      <div className="d-flex align-items-center gap-2">
+                        <p className="price-text-cart mb-1">
+                          Ahora ${ (item.precio * 0.8).toLocaleString('es-CL') }
+                        </p>
+                        <span className="cart-price-badge">-20%</span>
+                      </div>
+                      <p className="original-price text-muted">
+                        Normal ${item.precio.toLocaleString('es-CL')}
+                      </p>
+                      <div className="quantity-controls">
                         <Button
-                          variant="link"
-                          className="text-danger"
-                          onClick={() => handleRemoveProductFromCart(item.id)}
+                          className='btn-circle-cart'
+                          size="sm"
+                          onClick={() => handleDecrement(item.id)}
+                          disabled={item.cantidad === 1}
                         >
-                          <span className="material-symbols-outlined">delete</span>
+                          -
                         </Button>
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
-                ))}
-              </ListGroup>
+                        <span className="mx-3">{item.cantidad}</span>
+                        <Button
+                          className='btn-circle-cart'
+                          size="sm"
+                          onClick={() => handleIncrement(item.id)}
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </Col>
+                    <Col md={2} className="d-flex justify-content-center">
+                      <Button
+                        variant="link"
+                        className="text-danger"
+                        onClick={() => handleRemoveProductFromCart(item.id)}
+                      >
+                        <span className="material-symbols-outlined">delete</span>
+                      </Button>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+              ))}
+            </ListGroup>
+
+
             </div>
           )}
         </Col>
 
+     
         <Col md={5} className='mt-5'>
           <Card className="summary-card">
             <Card.Body>
@@ -452,11 +476,11 @@ const CartPage: React.FC = () => {
               <ListGroup variant="flush" className="mb-3">
                 <ListGroup.Item className="d-flex justify-content-between">
                   <span>Costos de tus productos</span>
-                  <span>${total}</span>
+                  <span>${total.toLocaleString('es-CL')}</span>
                 </ListGroup.Item>
                 <ListGroup.Item className="d-flex justify-content-between">
                   <span>Descuentos</span>
-                  <span>-${(total * discount).toLocaleString('es-CL')}</span>
+                  <span>-${(total * 0.2).toLocaleString('es-CL')}</span>
                 </ListGroup.Item>
                 <ListGroup.Item className="d-flex justify-content-between">
                   <span>Envío</span>
@@ -464,12 +488,14 @@ const CartPage: React.FC = () => {
                 </ListGroup.Item>
                 <ListGroup.Item className="d-flex justify-content-between total-row">
                   <strong>Total</strong>
-                  <strong>${formattedTotal}</strong>
+                  <strong>${(total * 0.8).toLocaleString('es-CL')}</strong>
                 </ListGroup.Item>
               </ListGroup>
             </Card.Body>
           </Card>
         </Col>
+
+
       </Row>
       <Row>
         <Col md={12} className="d-flex justify-content-between mt-4">
@@ -523,7 +549,7 @@ const CartPage: React.FC = () => {
                   </div>
                 </>
               ) : (
-                // Vista de carrito/resumen de compra
+                // Vista de carrito/resumen de compra 
                 <>
                   <div className="modal-header">
                     <h5 className="modal-title">Mi Carrito de compras</h5>
@@ -569,10 +595,7 @@ const CartPage: React.FC = () => {
                           onChange={(e) => setCoupon(e.target.value)}
                           placeholder="Ingresa tu cupón"
                           className="form-control"
-                        />
-                        <button className="btn btn-secondary" onClick={handleApplyCoupon}>
-                          Aplicar
-                        </button>
+                        />                      
                       </div>
                     </div>
 

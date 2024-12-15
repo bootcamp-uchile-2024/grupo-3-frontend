@@ -251,5 +251,12 @@
     font-size: 14px;
     color: #fff;
 }
-  
-  
+
+.cart-product-image {
+  width: 211px;                /* Ancho fijo */
+  height: 231px;               /* Alto fijo */
+  flex-shrink: 0;              /* Evita que el contenedor se reduzca */
+  border-radius: 16px;         /* Bordes redondeados */
+  object-fit: cover;           /* Ajusta la imagen para cubrir el contenedor sin distorsión */
+  background-color: lightgray; /* Color de fondo en caso de que la imagen no cargue */
+}

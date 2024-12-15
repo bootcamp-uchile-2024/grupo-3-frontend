@@ -21,6 +21,10 @@ export interface Planta {
   tipoRiego: string;
 }
 
+export interface Imagen {
+  ruta: string;
+}
+
 export interface productsCatalog {
   id: number;
   SKU: string;
@@ -28,8 +32,8 @@ export interface productsCatalog {
   idCategoria: number;
   precio: number;
   descripcion: string;
-  imagen: string;
-  cantidad: number;
+  //imagen: string;
+  stock: number; //** */
   unidadesVendidas: number;
   puntuacion: number;
   ancho: number;
@@ -37,5 +41,7 @@ export interface productsCatalog {
   largo: number;
   peso: number;
   categoria: Categoria;
-  planta: Planta;      
+  planta: Planta;
+  imagenes: Imagen[];      
 }
+
