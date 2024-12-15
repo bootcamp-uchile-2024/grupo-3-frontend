@@ -25,12 +25,6 @@ const CartPagePay: React.FC = () => {
 
   const userId = 1;
 
-  if (!formData || !pedidoId) {
-    console.error('No se encontraron datos para la página de pago.');
-    return <p>Error: No hay datos disponibles para finalizar el pago.</p>;
-  }
-
-  console.log('Datos recibidos en CartPagePay:', formData, pedidoId);
 
   const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
 
@@ -233,6 +227,13 @@ const CartPagePay: React.FC = () => {
       setDiscount(0);
     }
   };
+
+  if (!formData || !pedidoId) {
+    console.error('No se encontraron datos para la página de pago.');
+    return <p>Error: No hay datos disponibles para finalizar el pago.</p>;
+  }
+
+  console.log('Datos recibidos en CartPagePay:', formData, pedidoId);
 
   const handleIncrement = async (productId: number) => {
     if (!cartId) {

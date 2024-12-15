@@ -162,7 +162,7 @@ const CardUser: React.FC<CardUserProps> = ({ selectedUser }) => {
                 </clipPath>
               </defs>
             </svg>
-            {selectedUser.tipoUsuario}
+            {selectedUser.rol}
           </div>
         </div>
       </div>
