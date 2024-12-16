@@ -9,6 +9,8 @@ export interface CreateUserDTO {
     rut: string;
     fechaNacimiento: string;
     idRol?: number | null;
+    direccion?: string;
+
   }
   
   

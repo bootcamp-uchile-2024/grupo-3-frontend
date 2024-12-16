@@ -50,9 +50,10 @@ const UserManagement = () => {
       if (!Array.isArray(responseData.data)) {
         console.error("El campo 'data' no es un array:", responseData.data);
       }
-
+  
       const data: User[] = Array.isArray(responseData.data) ? responseData.data : [];
       setUsers(data);
+      console.log("Usuarios actualizados en el estado:", data);
     } catch (error) {
       console.error("Error:", error);
       setError("Error al obtener los usuarios");
@@ -60,6 +61,9 @@ const UserManagement = () => {
       setLoading(false);
     }
   };
+  
+  
+  
 
   const deleteUser = async (userId: number) => {
     try {
@@ -85,35 +89,50 @@ const UserManagement = () => {
     if (selectedUser) {
       const fechaOriginal = selectedUser.fechaNacimiento || "";
       const formattedFechaNacimiento = fechaOriginal.includes("T")
-        ? fechaOriginal.split("T")[0] 
-        : fechaOriginal; 
+        ? fechaOriginal.split("T")[0]
+        : fechaOriginal;
+  
+      console.log("Fecha formateada:", formattedFechaNacimiento); 
   
       setEditingUser({
         ...selectedUser,
         fechaNacimiento: formattedFechaNacimiento,
+        idRol: selectedUser.idRol, 
       });
+      setModalAction("modify"); 
+
     }
   };
-
+  
+  
+  
   const handleUpdateUser = async () => {
+    console.log("handleUpdateUser llamada");
     if (!editingUser) return;
+  
+    if (editingUser.idRol === null || editingUser.idRol === undefined) {
+      console.error("idRol no está definido para el usuario que se va a actualizar.");
+      setError("El rol del usuario es obligatorio.");
+      return;
+    }
   
     const formattedFechaNacimiento = editingUser.fechaNacimiento?.split("T")[0] || "";
   
     const requestBody = {
-     
       nombre: editingUser.nombre,
       apellido: editingUser.apellido,
-      contrasena: "defaultPassword123", 
+      contrasena: "defaultPassword123",
       nombreUsuario: editingUser.nombreUsuario,
       email: editingUser.email,
       telefono: editingUser.telefono,
       genero: editingUser.genero,
       rut: editingUser.rut,
-      fechaNacimiento: formattedFechaNacimiento, 
-      idRol: editingUser.idRol || null, 
+      fechaNacimiento: formattedFechaNacimiento,
+      idRol: editingUser.idRol, 
     };
-    console.log("requestBody", requestBody)
+  
+    console.log("requestBody preparado:", requestBody);
+  
     try {
       const response = await fetch(`http://localhost:8080/usuarios/${editingUser.id}`, {
         method: "PUT",
@@ -123,12 +142,11 @@ const UserManagement = () => {
         body: JSON.stringify(requestBody),
       });
   
-      const result = await response.json(); 
-      console.log("response", result);
-
+      const result = await response.json();
+      console.log("response:", result);
+  
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Error al actualizar el usuario: ${response.status} - ${errorData.message || "Error desconocido"}`);
+        throw new Error(`Error al actualizar el usuario: ${response.status} - ${result.message || "Error desconocido"}`);
       }
   
       console.log("Usuario actualizado correctamente");
@@ -141,17 +159,18 @@ const UserManagement = () => {
   };
   
   
+  
   const handleSaveChangesClick = () => {
-    if (!selectedUser) {
+    if (!editingUser) {
       console.error("No hay un usuario seleccionado para modificar.");
-      return; 
+      return;
     }
-    setEditingUser({ ...selectedUser }); 
-    setModalAction("modify"); 
-    setShowModal(true); 
+    setModalAction("modify");
+    setShowModal(true);
   };
   
-
+  
+  
   const handleDeleteUserClick = () => {
     if (!selectedUser) {
       console.error("No hay un usuario seleccionado para eliminar.");
@@ -166,13 +185,16 @@ const UserManagement = () => {
   };
 
   const handleConfirmAction = () => {
+    console.log(`Confirmando acción: ${modalAction}`);
     if (modalAction === "delete" && selectedUser) {
-      deleteUser(selectedUser.id); 
+      deleteUser(selectedUser.id);
     } else if (modalAction === "modify") {
       handleUpdateUser();
     }
-    setShowModal(false); 
+    setShowModal(false);
   };
+  
+  
   
   const indexOfLastUser = currentPage * usersPerPage;
   const indexOfFirstUser = indexOfLastUser - usersPerPage;
@@ -388,23 +410,26 @@ const UserManagement = () => {
                           </Form.Group>
                         </Col>
                         <Col>
-                          <Form.Group>
-                            <Form.Label>Fecha de Nacimiento</Form.Label>
-                            <Form.Control
-                              type="date"
-                              value={editingUser.fechaNacimiento || ""}
-                              onChange={(e) =>
-                                setEditingUser((prev) =>
-                                  prev
-                                    ? {
-                                        ...prev,
-                                        fechaNacimiento: e.target.value,
-                                      }
-                                    : null
-                                )
+                        <Form.Group controlId="formFechaNacimiento">
+                          <Form.Label>Fecha de Nacimiento</Form.Label>
+                          <Form.Control
+                            type="date"
+                            value={editingUser?.fechaNacimiento || ""}
+                            onChange={(e) => {
+                              if (editingUser) {
+                                setEditingUser({
+                                  ...editingUser,
+                                  fechaNacimiento: e.target.value,
+                                });
+                              } else {
+                                console.error("No hay un usuario seleccionado para actualizar la fecha de nacimiento.");
                               }
-                            />
-                          </Form.Group>
+                            }}
+                            required
+                          />
+                        </Form.Group>
+
+
                         </Col>
                       </Row>
                       <Row className="mt-3">
@@ -425,29 +450,32 @@ const UserManagement = () => {
                           </Form.Group>
                         </Col>
                         <Col>
-                          <Form.Group>
-                            <Form.Label>Tipo de Usuario</Form.Label>
-                            <Form.Select
-                              value={editingUser?.idRol || ""}
-                              onChange={(e) =>
-                                setEditingUser((prev) =>
-                                  prev
-                                    ? {
-                                        ...prev,
-                                        idRol: parseInt(e.target.value, 10),
-                                      }
-                                    : null
-                                )
+                        <Form.Group>
+                          <Form.Label>Tipo de Usuario</Form.Label>
+                          <Form.Select
+                            value={editingUser?.idRol || ""}
+                            onChange={(e) => {
+                              const newIdRol = parseInt(e.target.value, 10);
+                              console.log("Nuevo idRol seleccionado:", newIdRol); // Verificación
+                              if (editingUser) {
+                                setEditingUser({
+                                  ...editingUser,
+                                  idRol: newIdRol,
+                                });
                               }
-                            >
-                              <option value="">Seleccione un tipo de usuario</option>
-                              {userRoles.map((role) => (
-                                <option key={role.idRol} value={role.idRol}>
-                                  {role.name}
-                                </option>
-                              ))}
-                            </Form.Select>
-                          </Form.Group>
+                            }}
+                            required
+                          >
+                            <option value="">Seleccione un tipo de usuario</option>
+                            {userRoles.map((role) => (
+                              <option key={role.idRol} value={role.idRol}>
+                                {role.name}
+                              </option>
+                            ))}
+                          </Form.Select>
+
+                        </Form.Group>
+
                         </Col>
                       </Row>
                     </Form>
@@ -524,22 +552,20 @@ const UserManagement = () => {
         <Modal.Body>
           <p>
             {modalAction === "modify"
-              ? "Esta acción no podrá deshacerse"
+              ? "Por favor confirme si desea actualizar información"
               : "Esta acción no podrá deshacerse y el usuario será eliminado permanentemente."}
           </p>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            variant={modalAction === "modify" ? "success" : "danger"}
-            onClick={handleConfirmAction}
-          >
-            {modalAction === "modify" ? "Modificar" : "Eliminar"}
-          </Button>
           <Button variant="secondary" onClick={handleCloseModal}>
             Cancelar
           </Button>
+            <Button variant="primary" onClick={handleConfirmAction}>
+                {modalAction === "modify" ? "Modificar" : "Eliminar"}
+            </Button>
         </Modal.Footer>
       </Modal>
+
     </Container>
   );
   

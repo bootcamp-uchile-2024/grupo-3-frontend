@@ -77,43 +77,45 @@ const UserTable: React.FC<UserTableProps> = ({
               onClick={() => setSelectedUser(user)}
               style={{
                 cursor: 'pointer',
-                backgroundColor: selectedUser?.id === user.id 
-                  ? '#6F8F75' 
-                  : index % 2 === 0 
-                    ? '#FFFFFF !important' 
-                    : '#BBB !important', 
+                backgroundColor:
+                  selectedUser?.id === user.id
+                    ? '#6F8F75' 
+                    : index % 2 === 0
+                    ? '#FFFFFF' 
+                    : '#BBB',    
                 transition: 'background-color 0.3s ease',
               }}
-              >
-                {[
-                  user.id,
-                  user.nombre,
-                  user.apellido,
-                  user.nombreUsuario,
-                  user.email,
-                  user.rut,
-                  new Date(user.fechaNacimiento).toLocaleDateString('es-ES'),
-                  user.telefono,
-                  user.genero,
-                  user.direccion || 'No especificada',
-                ].map((value, idx) => (
-                  <td
-                    key={idx}
-                    style={{
-                      borderTop: '1px solid #BBB',
-                      textAlign: 'center',
-                      padding: '8px',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {value}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
+            >
+              {[
+                user.id,
+                user.nombre,
+                user.apellido,
+                user.nombreUsuario,
+                user.email,
+                user.rut,
+                new Date(user.fechaNacimiento).toLocaleDateString('es-ES'),
+                user.telefono,
+                user.genero,
+                user.direccion || 'No especificada',
+              ].map((value, idx) => (
+                <td
+                  key={idx}
+                  style={{
+                    borderTop: '1px solid #BBB',
+                    textAlign: 'center',
+                    padding: '8px',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {value}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+
       </Table>
       {/* Botones de acción */}
       {selectedUser && (onUserAction || onEditAction) && (

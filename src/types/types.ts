@@ -4,12 +4,12 @@ export interface User {
   apellido: string;
   nombreUsuario: string;
   email: string;
-  telefono: string;
+  fechaNacimiento: string;
   genero: string;
   rut: string;
-  fechaNacimiento: string;
+  telefono: string;
+  direccion: string;
   idRol: number;
-  rol: string;
-  direccion?: string;
-  contrasena?: string;
+  rol?: string; 
+  direcciones?: any[]; 
 }
