@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../styles/UserCreationForm.css';
 import { validateEmail, validatePassword } from '../utils/validators';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
-// idTipoUsuario
+
 interface CreateUserDTO {
   nombre: string;
   apellido: string;
@@ -16,9 +16,6 @@ interface CreateUserDTO {
   rut: string;
   fechaNacimiento: string;
   idRol: number;
-  region?: string;
-  comuna?: string;
-  direccion?: string;
 }
 
 type UserCreationFormProps = {
@@ -39,10 +36,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
     genero: '',
     rut: '',
     fechaNacimiento: '',
-    idRol: isAdmin ? 1 : 3,
-    region: '',
-    comuna: '',
-    direccion: ''
+    idRol: 3
   });
 
   const [errors, setErrors] = useState({
@@ -58,27 +52,11 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
     idRol: '',
     confirmPassword: ''
   });
-
-  const [regiones] = useState([
-    "Metropolitana",
-    "Valparaíso",
-    "O'Higgins",
-    // ... otras regiones
-  ]);
-
-  const [comunas, setComunas] = useState<string[]>([]);
+ 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
 
-  useEffect(() => {
-    if (formData.region === "Metropolitana") {
-      setComunas(["Maipú", "Santiago", "Providencia", "Las Condes"]);
-    } else if (formData.region === "Valparaíso") {
-      setComunas(["Viña del Mar", "Valparaíso", "Concón"]);
-    }
-    // ... lógica para otras regiones
-  }, [formData.region]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -154,9 +132,6 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
           rut: '',
           fechaNacimiento: '',
           idRol: isAdmin ? 1 : 3,
-          region: '',
-          comuna: '',
-          direccion: ''
         });
         setConfirmPassword('');
         setAcceptTerms(false);
@@ -347,45 +322,26 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
           </Form.Control.Feedback>
         </Form.Group>
 
-        <h3 className="section-title">Información de despacho</h3>
-        
-        <div className="address-selects">
-          <Form.Select
-            name="region"
-            value={formData.region}
-            onChange={handleSelectChange}
-            className="form-select-custom"
-          >
-            <option value="">Región</option>
-            {regiones.map(region => (
-              <option key={region} value={region}>{region}</option>
-            ))}
-          </Form.Select>
-
-          <Form.Select
-            name="comuna"
-            value={formData.comuna}
-            onChange={handleSelectChange}
-            className="form-select-custom"
-            disabled={!formData.region}
-          >
-            <option value="">Comuna</option>
-            {comunas.map(comuna => (
-              <option key={comuna} value={comuna}>{comuna}</option>
-            ))}
-          </Form.Select>
-        </div>
-
         <Form.Group>
-          <Form.Label className="required-field">Dirección</Form.Label>
-          <Form.Control
-            name="direccion"
-            placeholder="Dirección/Número/Piso"
-            value={formData.direccion}
-            onChange={handleInputChange}
-            className="form-control-custom"
-          />
-        </Form.Group>
+            <Form.Label>Tipo de Usuario</Form.Label>
+            <Form.Select
+              name="idRol"
+              value={formData.idRol}
+              onChange={handleSelectChange}
+              className="form-select-custom"
+              isInvalid={!!errors.idRol}
+            >
+              <option value="">Selecciona un rol</option>
+              <option value="1">Super Admin</option>
+              <option value="2">Admin</option>
+              <option value="3">Cliente</option>
+              <option value="4">Visitante</option>
+            </Form.Select>
+            <Form.Control.Feedback type="invalid">
+              {errors.idRol}
+            </Form.Control.Feedback>
+          </Form.Group>
+        
 
         <div className="terms-checkbox">
           <Form.Check

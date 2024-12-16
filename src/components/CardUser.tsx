@@ -17,7 +17,7 @@ const CardUser: React.FC<CardUserProps> = ({ selectedUser }) => {
       display: 'flex',
       width: '581px',
       height: '269px',
-      padding: '35px 64px', // Padding uniforme en todas las direcciones
+      padding: '35px 64px', 
       flexDirection: 'column',
       alignItems: 'flex-start',
       gap: '10px',
