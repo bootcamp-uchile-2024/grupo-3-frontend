@@ -1,10 +1,11 @@
 import '../styles/CatalogStyles.css'
+import '../styles/Offcanvas.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { productsCatalog } from '../interfaces/ProductsCatalog';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../states/cartSlice';
-import { Pagination, Card, Button, Row, Col, Container } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Pagination, Card, Button, Row, Col, Container, Offcanvas } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
 import SidebarFilters from '../components/SidebarFilters';
 import SortFilters from '../components/SortFiltersCatalog';
 import { useSelector } from 'react-redux';
@@ -22,6 +23,9 @@ const CatalogPage: React.FC = () => {
   const dispatch = useDispatch();
   const [errorMessages, setErrorMessages] = useState<{ [key: number]: string }>({});
   const cart = useSelector((state: RootState) => state.cart.productos);
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const navigate = useNavigate();
+  const [selectedProduct, setSelectedProduct] = useState<productsCatalog | null>(null);
 
   // Función para truncar el texto y añadir "..." al final si es necesario
   const truncateText = (text: string, limit: number) => {
@@ -126,6 +130,10 @@ const CatalogPage: React.FC = () => {
       largo: product.largo,
       peso: product.peso,
     }));
+
+    setSelectedProduct(product); 
+    setShowOffcanvas(true); 
+
     setErrorMessages((prevMessages) => ({
       ...prevMessages,
       [product.id]: '',
@@ -350,6 +358,68 @@ const CatalogPage: React.FC = () => {
             </Row>
           </Col>
         </Row>
+        {/* Offcanvas */}
+<Offcanvas 
+  show={showOffcanvas} 
+  onHide={() => setShowOffcanvas(false)} 
+  placement="end"
+>
+  <Offcanvas.Header closeButton>
+    <Offcanvas.Title>Mi Carrito de compras</Offcanvas.Title>
+  </Offcanvas.Header>
+  <Offcanvas.Body>
+    {selectedProduct && (
+      <div className="cart-item-card">
+        <img 
+          src={selectedProduct.imagenes && selectedProduct.imagenes.length > 0 
+            ? selectedProduct.imagenes[0].ruta 
+            : '/estaticos/default-image.jpg'} 
+          alt={selectedProduct.nombre}
+          className="cart-item-image"
+        />
+        <div className="cart-item-details">
+          <h5>{selectedProduct.nombre}</h5>
+          <div className="cart-item-price">
+            Ahora ${selectedProduct.precio.toLocaleString('es-CL')}
+            <span className="cart-item-discount">35%</span>
+          </div>
+          <div className="cart-item-original-price">
+            Normal ${(selectedProduct.precio * 1.35).toLocaleString('es-CL')}
+          </div>
+          <div className="cart-quantity-controls">
+            <button className="btn-circle">-</button>
+            <span>{quantities[selectedProduct.id] || 1}</span>
+            <button className="btn-circle">+</button>
+          </div>
+        </div>
+        <button className="delete-button">
+          <span className="material-symbols-outlined">close</span>
+        </button>
+      </div>
+    )}
+    
+    <div className="cart-total">
+      <div className="d-flex justify-content-between">
+        <span>Total a pagar:</span>
+        <span>${((selectedProduct?.precio || 0) * (quantities[selectedProduct?.id || 0] || 1)).toLocaleString('es-CL')}</span>
+      </div>
+    </div>
+  </Offcanvas.Body>
+  <div className="offcanvas-footer">
+    <button 
+      className="btn-go-to-cart"
+      onClick={() => navigate('/cart')}
+    >
+      Ir al carrito de compras
+    </button>
+    <button 
+      className="btn-continue-shopping"
+      onClick={() => setShowOffcanvas(false)}
+    >
+      Sigue comprando
+    </button>
+  </div>
+</Offcanvas>
       </Container>
     </>
   );

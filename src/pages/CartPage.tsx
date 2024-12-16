@@ -412,14 +412,21 @@ const discountedTotal = total * 0.8;
               {groupedItems.map((item: CartItem) => (
                 <ListGroup.Item key={item.id} className="cart-item">
                   <Row className="align-items-center">
-                    <Col md={3}>
+                    <Col md={6}>
                       <img
                         src={item.imagen || '/estaticos/default-image.jpg'}
                         alt={item.nombre}
                         className="product-image img-fluid"
                       />
                     </Col>
-                    <Col md={7}>
+                    <Col md={6}>
+                    <Button
+                        variant="link"
+                        className="button-delete"
+                        onClick={() => handleRemoveProductFromCart(item.id)}
+                      >
+                        <span className="material-symbols-outlined">delete</span>
+                      </Button>
                       <h5 className="product-title mb-2">{item.nombre}</h5>
                       <div className="d-flex align-items-center gap-2">
                         <p className="price-text-cart mb-1">
@@ -448,15 +455,6 @@ const discountedTotal = total * 0.8;
                           +
                         </Button>
                       </div>
-                    </Col>
-                    <Col md={2} className="d-flex justify-content-center">
-                      <Button
-                        variant="link"
-                        className="text-danger"
-                        onClick={() => handleRemoveProductFromCart(item.id)}
-                      >
-                        <span className="material-symbols-outlined">delete</span>
-                      </Button>
                     </Col>
                   </Row>
                 </ListGroup.Item>

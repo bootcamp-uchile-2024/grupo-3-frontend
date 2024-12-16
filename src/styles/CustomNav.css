@@ -37,18 +37,30 @@
   }
 
   .nav-link.login-link {
-    margin: 0 0 0 -2rem !important;
+    margin: 0 0 0 -1rem !important;
   }
 
   .nav-link.cart-link {
     margin: 0.2rem 0 0 0 !important;
   }
+
+  a#user-dropdown {
+    color: white !important;
+    font-size: 18px !important;
+    position: relative;
+    top: 0.7rem;
+    left: 0rem;
+  }
   
   .nav-dropdown .dropdown-toggle, .nav-link {
     color: #1a4756!important;
     font-size: 22px!important;
-    margin: 8.5rem 0 0 0 !important;
   }
+
+  .navbar-expand .navbar-nav {
+    flex-direction: row;
+    margin-top: 8.4rem;
+}
   
   .nav-dropdown .dropdown-menu {
     border-radius: 8px;
