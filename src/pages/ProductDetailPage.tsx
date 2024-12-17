@@ -36,11 +36,10 @@ export default function ProductDetailPage() {
         const productJson = await response.json();
         setProduct(productJson);
 
-        // Inicializar selectedImage con la primera imagen del producto
         if (productJson.imagenes && productJson.imagenes.length > 0) {
           setSelectedImage(productJson.imagenes[0].ruta);
         } else {
-          setSelectedImage('/estaticos/default-image.jpg'); // Ruta de la imagen por defecto
+          setSelectedImage('/estaticos/default-image.jpg'); 
         }
       } catch (error) {
         setError('Hubo un error al obtener el producto');
