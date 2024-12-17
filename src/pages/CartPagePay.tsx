@@ -126,8 +126,17 @@ const CartPagePay: React.FC = () => {
     if (!window.confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
       return;
     }
-
+  
+    if (!cartId) {
+      alert('El carrito no está inicializado correctamente.');
+      return;
+    }
+  
     try {
+      console.log(`Sincronizando carrito con ID: ${cartId} antes de eliminar producto`);
+      await replaceCartProducts();
+  
+      console.log(`Eliminando producto ID: ${productId} del carrito ID: ${cartId}`);
       const response = await fetch(
         `${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`,
         {
@@ -135,13 +144,13 @@ const CartPagePay: React.FC = () => {
           headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
         }
       );
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         alert(errorData.message || 'Hubo un problema al eliminar el producto.');
         return;
       }
-
+  
       dispatch(removeFromCart(productId));
       alert('El producto ha sido eliminado del carrito.');
     } catch (error) {
@@ -149,6 +158,7 @@ const CartPagePay: React.FC = () => {
       alert('No se pudo eliminar el producto. Por favor, inténtalo nuevamente.');
     }
   };
+  
 
   const replaceCartProducts = async () => {
     if (!cartId) {
@@ -431,53 +441,58 @@ const CartPagePay: React.FC = () => {
               <ListGroup className="mb-4">
                 {groupedItems.map((item: CartItem) => (
                   <ListGroup.Item key={item.id} className="cart-item">
-                  <Row className="align-items-center row col-md-12">
-                    <Col md={3}>
-                      <img src={item.imagen || 'placeholder.jpg'} alt={item.nombre} className="product-image img-fluid" />
-                    </Col>
-                    <Col md={7}>
-                      <h5 className="product-title mb-2">{item.nombre}</h5>
-                      {/* Precio con descuento */}
-                      <p className="price-text mb-1">
-                        Ahora ${((item.precio * 0.8).toLocaleString('es-CL'))}
-                      </p>
-                      {/* Precio original tachado */}
-                      <p className="original-price text-muted">
-                        <del>Normal ${item.precio.toLocaleString('es-CL')}</del>
-                      </p>
-                      <div className="quantity-controls">
+                    <Row className="align-items-center row col-md-12">
+                      <Col md={3}>
+                        <img
+                          src={item.imagen || 'placeholder.jpg'}
+                          alt={item.nombre}
+                          className="product-image img-fluid"
+                        />
+                      </Col>
+                      <Col md={7}>
+                        <h5 className="product-title mb-2">{item.nombre}</h5>
+                        {/* Precio con descuento y badge */}
+                        <p className="price-text-cart mb-1">
+                          Ahora ${((item.precio * 0.8).toLocaleString('es-CL'))}
+                          <span className="cart-price-badge ms-2">-20%</span>
+                        </p>
+                        {/* Precio original tachado */}
+                        <p className="original-price text-muted">
+                          <del>Normal ${item.precio.toLocaleString('es-CL')}</del>
+                        </p>
+                        <div className="quantity-controls">
+                          <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            onClick={() => handleDecrement(item.id)}
+                            disabled={item.cantidad === 1}
+                          >
+                            -
+                          </Button>
+                          <span className="mx-3">{item.cantidad}</span>
+                          <Button
+                            variant="outline-secondary"
+                            size="sm"
+                            onClick={() => handleIncrement(item.id)}
+                          >
+                            +
+                          </Button>
+                        </div>
+                      </Col>
+                      <Col md={1} className="">
                         <Button
-                          variant="outline-secondary"
-                          size="sm"
-                          onClick={() => handleDecrement(item.id)}
-                          disabled={item.cantidad === 1}
+                          variant="link"
+                          className="text-danger"
+                          onClick={() => handleRemoveProductFromCart(item.id)}
                         >
-                          -
+                          Eliminar
                         </Button>
-                        <span className="mx-3">{item.cantidad}</span>
-                        <Button
-                          variant="outline-secondary"
-                          size="sm"
-                          onClick={() => handleIncrement(item.id)}
-                        >
-                          +
-                        </Button>
-                      </div>
-                    </Col>
-                    <Col md={1} className="">
-                      <Button
-                        variant="link"
-                        className="text-danger"
-                        onClick={() => handleRemoveProductFromCart(item.id)}
-                      >
-                        Eliminar
-                      </Button>
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-                
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
                 ))}
               </ListGroup>
+
             </>
           )}
         </Col>
@@ -575,7 +590,7 @@ const CartPagePay: React.FC = () => {
           <div className="modal-dialog">
             <div className="modal-content">
               {isPurchaseCompleted ? (
-                // Vista de compra completada
+  
                 <>
                   <div className="modal-header">
                     <h5 className="modal-title">Tu compra ha sido finalizada con éxito</h5>
