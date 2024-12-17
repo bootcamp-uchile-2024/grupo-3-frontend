@@ -10,13 +10,13 @@ import SidebarFilters from '../components/SidebarFilters';
 import SortFilters from '../components/SortFiltersCatalog';
 import { useSelector } from 'react-redux';
 import { RootState } from '../states/store';
+import { CatalogFilters } from '../interfaces/CatalogFilters';
 
 const CatalogPage: React.FC = () => {
   const [products, setProducts] = useState<productsCatalog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [quantities,] = useState<{ [key: number]: number }>({});
-  const [userRole, setUserRole] = useState<string[] | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState(12);
@@ -26,8 +26,20 @@ const CatalogPage: React.FC = () => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState<productsCatalog | null>(null);
-
-  // Función para truncar el texto y añadir "..." al final si es necesario
+  const [filters, setFilters] = useState<CatalogFilters>({
+    petFriendly: undefined,
+    puntuacion: 0,
+    maxPrecio: 10000,
+    minPrecio: 1000,
+    planta: {
+    idToleranciaTemperatura: 0,
+    idIluminacion: 0,
+    idTipoRiego: 0,
+    },
+    ordenarPor: undefined,
+    orden: undefined,
+  });
+  
   const truncateText = (text: string, limit: number) => {
     if (text.length > limit) {
       return text.substring(0, limit) + "...";
@@ -39,18 +51,30 @@ const CatalogPage: React.FC = () => {
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8080/catalogo?page=${currentPage}&pageSize=${pageSize}`, {
+      const queryParams = new URLSearchParams({
+        page: currentPage.toString(),
+        pageSize: pageSize.toString(),
+        minPrecio: filters.minPrecio.toString(),
+        maxPrecio: filters.maxPrecio.toString(),
+        puntuacion: filters.puntuacion.toString()|| '',
+        petFriendly: filters.petFriendly ? 'true' : 'false',
+        idToleranciaTemperatura: filters.planta.idToleranciaTemperatura.toString(),
+        idIluminacion: filters.planta.idIluminacion.toString(),
+        idTipoRiego: filters.planta.idTipoRiego.toString(),
+      });
+  
+      const response = await fetch(`http://localhost:8080/catalogo?${queryParams}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
       });
-
+  
       if (!response.ok) throw new Error('Error al cargar los productos');
-
+  
       const data = await response.json();
-
+  
       if (Array.isArray(data.data)) {
         setProducts(data.data);
         setTotalPages(Math.ceil(data.totalItems / pageSize));
@@ -60,41 +84,13 @@ const CatalogPage: React.FC = () => {
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Ha ocurrido un error desconocido');
     } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 500);
+      setLoading(false);
     }
-  }, [currentPage, pageSize]);
+  }, [currentPage, pageSize, filters]);  
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (user && Array.isArray(user.roles)) {
-      setUserRole(user.roles);
-    }
     fetchProducts();
-  }, [currentPage, pageSize, fetchProducts]);
-
-
-  const deleteProduct = async (productId: number) => {
-    const confirmation = window.confirm(`¿Estás seguro de querer eliminar el producto ${productId}?`);
-    if (confirmation) {
-      try {
-        const response = await fetch(`http://localhost:8080/productos/${productId}`, {
-          method: 'DELETE',
-        });
-        if (!response.ok) {
-          throw new Error('Error al eliminar el producto');
-        }
-        alert(`Eliminaste exitosamente el producto: ${productId}`);
-        fetchProducts();
-      } catch (error) {
-        console.error('Error al eliminar el producto:', error);
-      }
-    } else {
-      console.log('Eliminación cancelada');
-    }
-  };
-
+  }, [filters, currentPage, pageSize, fetchProducts]);  
 
   const handleAddToCart = (product: productsCatalog) => {
     const quantity = quantities[product.id] || 1;
@@ -223,10 +219,11 @@ const CatalogPage: React.FC = () => {
       </div>
     );
   }
-
-  if (error) return <p>Error: {error}</p>;
-
+  const handleFilterChange = (newFilters: CatalogFilters) => {
+    setFilters(newFilters);
+  };
   
+  if (error) return <p>Error: {error}</p>;  
 
   return (
     <>
@@ -238,9 +235,7 @@ const CatalogPage: React.FC = () => {
         <Row>
 
           <Col xs={12} sm={3} className="sidebar-filters">
-            <SidebarFilters onFilterChange={function (/*any*/): void {
-              throw new Error('Function not implemented.');
-            }} />
+            <SidebarFilters onFilterChange={handleFilterChange}/>
           </Col>
 
           <Col xs={12} sm={9}>
@@ -300,19 +295,6 @@ const CatalogPage: React.FC = () => {
                           )}
                         </div>
 
-                        {/* Acciones del administrador */}
-                        {userRole && userRole.includes('admin-1') && (
-                          <div className="mt-2">
-                            <Button variant="danger" size="sm" onClick={() => deleteProduct(product.id)}>
-                              Eliminar
-                            </Button>
-                            <Link to={`/editar-producto/${product.id}`}>
-                              <Button variant="warning" size="sm" className="ms-2">
-                                Editar
-                              </Button>
-                            </Link>
-                          </div>
-                        )}
                       </Card.Body>
                     </Card>
                   </Col>
