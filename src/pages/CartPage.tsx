@@ -131,15 +131,11 @@ const CartPage: React.FC = () => {
       return;
     }
   
-    const productExists = cartItems.some(item => item.id === productId);
-    if (!productExists) {
-      alert('El producto no existe en el carrito.');
-      return;
-    }
-  
     try {
+      console.log(`Sincronizando carrito con ID: ${cartId}`);
+      await replaceCartProducts();
+  
       console.log(`Eliminando producto ID: ${productId} del carrito ID: ${cartId}`);
-      
       const response = await fetch(`${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`, {
         method: 'DELETE',
         headers: { Accept: 'application/json' },
@@ -159,12 +155,12 @@ const CartPage: React.FC = () => {
   
       dispatch(removeFromCart(productId));
       alert('El producto ha sido eliminado del carrito.');
-
     } catch (error) {
-      console.error('Error al intentar eliminar el producto:', error);
-      alert('No se pudo eliminar el producto. Por favor, inténtalo nuevamente.');
+      console.error('Error al intentar sincronizar y eliminar el producto:', error);
+      alert('No se pudo sincronizar y eliminar el producto. Inténtalo nuevamente.');
     }
   };
+  
   
 
   const replaceCartProducts = async () => {

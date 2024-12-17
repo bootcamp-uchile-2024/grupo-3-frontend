@@ -19,7 +19,7 @@ const CartPagePay: React.FC = () => {
   const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false);
   const [cartId, setCartId] = useState<number | null>(null);
   const [coupon, setCoupon] = useState<string>('');
-  const [discount, setDiscount] = useState<number>(0);
+  const [discount, setDiscount] = useState<number>(0.2);
   const [purchasedItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -431,44 +431,51 @@ const CartPagePay: React.FC = () => {
               <ListGroup className="mb-4">
                 {groupedItems.map((item: CartItem) => (
                   <ListGroup.Item key={item.id} className="cart-item">
-                    <Row className="align-items-center row col-md-12">
-                      <Col md={3}>
-                        <img src={item.imagen || 'placeholder.jpg'} alt={item.nombre} className="product-image img-fluid" />
-                      </Col>
-                      <Col md={7}>
-                        <h5 className="product-title mb-2">{item.nombre}</h5>
-                        <p className="price-text mb-1">Ahora ${item.precio.toLocaleString('es-CL')}</p>
-                        <p className="original-price text-muted">Normal ${item.precio}</p>
-                        <div className="quantity-controls">
-                          <Button
-                            variant="outline-secondary"
-                            size="sm"
-                            onClick={() => handleDecrement(item.id)}
-                            disabled={item.cantidad === 1}
-                          >
-                            -
-                          </Button>
-                          <span className="mx-3">{item.cantidad}</span>
-                          <Button
-                            variant="outline-secondary"
-                            size="sm"
-                            onClick={() => handleIncrement(item.id)}
-                          >
-                            +
-                          </Button>
-                        </div>
-                      </Col>
-                      <Col md={1} className="">
+                  <Row className="align-items-center row col-md-12">
+                    <Col md={3}>
+                      <img src={item.imagen || 'placeholder.jpg'} alt={item.nombre} className="product-image img-fluid" />
+                    </Col>
+                    <Col md={7}>
+                      <h5 className="product-title mb-2">{item.nombre}</h5>
+                      {/* Precio con descuento */}
+                      <p className="price-text mb-1">
+                        Ahora ${((item.precio * 0.8).toLocaleString('es-CL'))}
+                      </p>
+                      {/* Precio original tachado */}
+                      <p className="original-price text-muted">
+                        <del>Normal ${item.precio.toLocaleString('es-CL')}</del>
+                      </p>
+                      <div className="quantity-controls">
                         <Button
-                          variant="link"
-                          className="text-danger"
-                          onClick={() => handleRemoveProductFromCart(item.id)}
+                          variant="outline-secondary"
+                          size="sm"
+                          onClick={() => handleDecrement(item.id)}
+                          disabled={item.cantidad === 1}
                         >
-                          Eliminar
+                          -
                         </Button>
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
+                        <span className="mx-3">{item.cantidad}</span>
+                        <Button
+                          variant="outline-secondary"
+                          size="sm"
+                          onClick={() => handleIncrement(item.id)}
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </Col>
+                    <Col md={1} className="">
+                      <Button
+                        variant="link"
+                        className="text-danger"
+                        onClick={() => handleRemoveProductFromCart(item.id)}
+                      >
+                        Eliminar
+                      </Button>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+                
                 ))}
               </ListGroup>
             </>
@@ -480,18 +487,19 @@ const CartPagePay: React.FC = () => {
             <Card.Body>
               <Card.Title>Resumen de mi compra</Card.Title>
               <ListGroup variant="flush" className="mb-3">
-                <ListGroup.Item className="d-flex justify-content-between">
-                  <span>Costos de tus productos</span>
-                  <span>${total}</span>
-                </ListGroup.Item>
-                <ListGroup.Item className="d-flex justify-content-between">
-                  <span>Descuentos</span>
-                  <span>-${(total * discount).toLocaleString('es-CL')}</span>
-                </ListGroup.Item>
-                <ListGroup.Item className="d-flex justify-content-between">
-                  <span>Envío</span>
-                  <span>$0</span>
-                </ListGroup.Item>
+              <ListGroup.Item className="d-flex justify-content-between">
+                <span>Costos de tus productos</span>
+                <span>${total.toLocaleString('es-CL')}</span>
+              </ListGroup.Item>
+              <ListGroup.Item className="d-flex justify-content-between">
+                <span>Descuentos</span>
+                <span>-${(total * 0.2).toLocaleString('es-CL')}</span>
+              </ListGroup.Item>
+              <ListGroup.Item className="d-flex justify-content-between total-row">
+                <strong>Total</strong>
+                <strong>${(total * 0.8).toLocaleString('es-CL')}</strong>
+              </ListGroup.Item>
+
                 <ListGroup.Item className="d-flex justify-content-between total-row">
                   <strong>Total</strong>
                   <strong>${formattedTotal}</strong>
