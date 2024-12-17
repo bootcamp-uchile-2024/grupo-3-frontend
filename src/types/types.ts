@@ -10,6 +10,6 @@ export interface User {
   telefono: string;
   direccion: string;
   idRol: number;
-  rol?: string; 
-  direcciones?: any[]; 
+  rol?: string;
+  direcciones?: string[]; 
 }

@@ -48,7 +48,8 @@ const UserManagement = () => {
     }
   
     fetchUsers();
-  }, []);
+  }, [users]); 
+  
   
 
   const handleSetSelectedUser = (user: User | null) => {
