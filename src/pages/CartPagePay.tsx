@@ -18,10 +18,29 @@ const CartPagePay: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false);
   const [cartId, setCartId] = useState<number | null>(null);
-  const [coupon, setCoupon] = useState<string>('');
-  const [discount, setDiscount] = useState<number>(0.2);
+  const [discount ] = useState<number>(0.2);
   const [purchasedItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [coupon, setCoupon] = useState<string>(''); 
+  const [couponDiscount, setCouponDiscount] = useState<number>(0);
+
+  const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
+    const existingItem = acc.find((i: CartItem) => i.id === item.id);
+    if (existingItem) {
+      existingItem.cantidad += item.cantidad;
+    } else {
+      acc.push({ ...item });
+    }
+    return acc;
+  }, []);
+
+  // Cálculos de totales
+  const total = groupedItems.reduce((acc: number, item: CartItem) => {
+    return acc + item.precio * item.cantidad;
+  }, 0);
+
+  const totalWithBaseDiscount = total * 0.8; 
+  const totalWithCoupon = totalWithBaseDiscount * (1 - couponDiscount); 
 
   const userId = 1;
 
@@ -230,13 +249,16 @@ const CartPagePay: React.FC = () => {
   }, [fetchActiveCart, createCart, dispatch]);
 
   const handleApplyCoupon = () => {
-    if (coupon === 'bootcamp2024') {
-      setDiscount(0.1);
+    if (coupon.trim() === 'bootcamp2024') {
+      setCouponDiscount(0.05); 
+      alert('¡Cupón aplicado con éxito! Se ha descontado un 5% adicional.');
     } else {
-      alert('Cupón inválido.');
-      setDiscount(0);
+      setCouponDiscount(0); 
+      alert('Cupón inválido. Inténtalo nuevamente.');
     }
   };
+  
+  
 
   if (!formData || !pedidoId) {
     console.error('No se encontraron datos para la página de pago.');
@@ -392,19 +414,6 @@ const CartPagePay: React.FC = () => {
     }
   };
   
-  const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
-    const existingItem = acc.find((i: CartItem) => i.id === item.id);
-    if (existingItem) {
-      existingItem.cantidad += item.cantidad;
-    } else {
-      acc.push({ ...item });
-    }
-    return acc;
-  }, []);
-
-  const total = groupedItems.reduce((acc: number, item: CartItem) => {
-    return acc + item.precio * item.cantidad;
-  }, 0);
 
   const discountedTotal = total * (1 - discount);
 
@@ -498,10 +507,10 @@ const CartPagePay: React.FC = () => {
         </Col>
 
         <Col md={6} className='mt-5'>
-          <Card className="summary-card">
-            <Card.Body>
-              <Card.Title>Resumen de mi compra</Card.Title>
-              <ListGroup variant="flush" className="mb-3">
+        <Card className="summary-card">
+          <Card.Body>
+            <Card.Title>Resumen de mi compra</Card.Title>
+            <ListGroup variant="flush" className="mb-3">
               <ListGroup.Item className="d-flex justify-content-between">
                 <span>Costos de tus productos</span>
                 <span>${total.toLocaleString('es-CL')}</span>
@@ -510,18 +519,21 @@ const CartPagePay: React.FC = () => {
                 <span>Descuentos</span>
                 <span>-${(total * 0.2).toLocaleString('es-CL')}</span>
               </ListGroup.Item>
+              {couponDiscount > 0 && (
+                <ListGroup.Item className="d-flex justify-content-between">
+                  <span>Cupón (5%)</span>
+                  <span>-${(totalWithBaseDiscount * 0.05).toLocaleString('es-CL')}</span>
+                </ListGroup.Item>
+              )}
               <ListGroup.Item className="d-flex justify-content-between total-row">
                 <strong>Total</strong>
-                <strong>${(total * 0.8).toLocaleString('es-CL')}</strong>
+                <strong>${totalWithCoupon.toLocaleString('es-CL')}</strong>
               </ListGroup.Item>
+            </ListGroup>
+          </Card.Body>
+        </Card>
 
-                <ListGroup.Item className="d-flex justify-content-between total-row">
-                  <strong>Total</strong>
-                  <strong>${formattedTotal}</strong>
-                </ListGroup.Item>
-              </ListGroup>
-            </Card.Body>
-          </Card>
+
         </Col>
       </Row>
       <Col md={6} className='mt-4'>
@@ -533,15 +545,20 @@ const CartPagePay: React.FC = () => {
             <Form.Control
               type="text"
               placeholder="Código de descuento"
+              value={coupon}
+              onChange={(e) => setCoupon(e.target.value)}
               className="mb-2"
             />
             <Button 
               variant="dark" 
               className="w-100"
               style={{ backgroundColor: '#1A4756' }}
+              onClick={handleApplyCoupon}
             >
               Aplicar
             </Button>
+
+
           </div>
 
           {/* Sección de método de pago */}
