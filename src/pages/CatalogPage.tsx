@@ -226,6 +226,8 @@ const CatalogPage: React.FC = () => {
 
   if (error) return <p>Error: {error}</p>;
 
+  
+
   return (
     <>
       <div className="catalog-banner">
@@ -248,6 +250,7 @@ const CatalogPage: React.FC = () => {
                   <Col key={product.id}>
                     <Card>
                       <Link to={`/catalogo/producto/${product.id}`}>
+                      
                       <Card.Img
                         variant="top"
                         src={product.imagenes && product.imagenes.length > 0 ? product.imagenes[0].ruta : '/estaticos/default-image.jpg'}

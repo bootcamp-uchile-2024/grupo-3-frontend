@@ -9,7 +9,6 @@ import { addToCart } from '../states/cartSlice';
 import { Button, Card, Col, Container, Row, Form, Offcanvas } from 'react-bootstrap';
 import { CartPlus, CaretDown } from 'react-bootstrap-icons';
 
-
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<productsCatalog | null>(null);
@@ -36,9 +35,16 @@ export default function ProductDetailPage() {
         }
         const productJson = await response.json();
         setProduct(productJson);
+
+        // Inicializar selectedImage con la primera imagen del producto
+        if (productJson.imagenes && productJson.imagenes.length > 0) {
+          setSelectedImage(productJson.imagenes[0].ruta);
+        } else {
+          setSelectedImage('/estaticos/default-image.jpg'); // Ruta de la imagen por defecto
+        }
       } catch (error) {
         setError('Hubo un error al obtener el producto');
-        console.log(error)
+        console.log(error);
       } finally {
         setLoading(false);
       }
@@ -76,7 +82,7 @@ export default function ProductDetailPage() {
       id: product.id,
       nombre: product.nombre,
       precio: product.precio,
-      imagen: product.imagenes && product.imagenes.length > 0 ? product.imagenes[0].ruta : '/estaticos/default-image.jpg',
+      imagen: selectedImage || '/estaticos/default-image.jpg',
       descripcion: product.descripcion,
       cantidad: quantity,
       unidadesVendidas: product.unidadesVendidas,
@@ -95,7 +101,6 @@ export default function ProductDetailPage() {
     } else {
       alert(`Solo hay ${product?.stock} unidades disponibles.`);
     }
-    return;
   };
 
   const decrementQuantity = () => quantity > 1 && setQuantity(prevQuantity => prevQuantity - 1);
@@ -117,7 +122,6 @@ export default function ProductDetailPage() {
 
   const handleSelectImage = (image: string) => setSelectedImage(image);
 
-
   return (
     <div className='contenedorsupremo'>
       <Container className="mt-5 mb-5 pt-5">
@@ -128,7 +132,7 @@ export default function ProductDetailPage() {
                 <Col md={10}>
                   <Card.Img
                     variant="top"
-                    src={selectedImage || `https://placehold.co/454x608?text=${encodeURIComponent(product.nombre)}&font=roboto`}
+                    src={selectedImage}
                     alt={product.nombre}
                     className="rounded img-fluid"
                   />
@@ -141,17 +145,29 @@ export default function ProductDetailPage() {
               </Row>
               <Row className="mt-5">
                 <div className="image-thumbnails d-flex flex-wrap gap-3">
-                  {[1, 2, 3, 4].map((index) => (
-                    <Col>
+                  {product.imagenes && product.imagenes.length > 0 ? (
+                    product.imagenes.map((img, index) => (
+                      <Col key={index} xs={3} sm={2}>
+                        <img
+                          src={img.ruta}
+                          alt={`${product.nombre} - Imagen ${index + 1}`}
+                          className={`thumbnail-img rounded img-fluid ${selectedImage === img.ruta ? 'selected-thumbnail' : ''}`}
+                          onClick={() => handleSelectImage(img.ruta)}
+                          style={{ cursor: 'pointer', width: '100%', height: 'auto' }}
+                        />
+                      </Col>
+                    ))
+                  ) : (
+                    <Col xs={3} sm={2}>
                       <img
-                        src={`https://placehold.co/95x128?text=Imagen+${index}`}
-                        alt={`Imagen ${index}`}
+                        src="/estaticos/default-image.jpg"
+                        alt="Imagen por defecto"
                         className="thumbnail-img rounded img-fluid"
-                        onClick={() => handleSelectImage(`https://placehold.co/454x608?text=Imagen+${index}`)}
+                        onClick={() => setSelectedImage('/estaticos/default-image.jpg')}
                         style={{ cursor: 'pointer', width: '100%', height: 'auto' }}
                       />
                     </Col>
-                  ))}
+                  )}
                 </div>
               </Row>
             </Col>
@@ -291,65 +307,66 @@ export default function ProductDetailPage() {
           ))}
         </Row>
         <Offcanvas 
-  show={showOffcanvas} 
-  onHide={() => setShowOffcanvas(false)} 
-  placement="end"
->
-  <Offcanvas.Header closeButton>
-    <Offcanvas.Title>Mi Carrito de compras</Offcanvas.Title>
-  </Offcanvas.Header>
-  <Offcanvas.Body>
-    {product && (
-      <div className="cart-item-card">
-        <img 
-          src={product.imagenes && product.imagenes.length > 0 ? product.imagenes[0].ruta : '/estaticos/default-image.jpg'} 
-          alt={product.nombre}
-          className="cart-item-image"
-        />
-        <div className="cart-item-details">
-          <h5>{product.nombre}</h5>
-          <div className="cart-item-price">
-            Ahora ${product.precio.toLocaleString('es-CL')}
-            <span className="cart-item-discount">35%</span>
+          show={showOffcanvas} 
+          onHide={() => setShowOffcanvas(false)} 
+          placement="end"
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Mi Carrito de compras</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            {product && (
+              <div className="cart-item-card">
+                <img 
+                  src={selectedImage || '/estaticos/default-image.jpg'} 
+                  alt={product.nombre}
+                  className="cart-item-image"
+                />
+                <div className="cart-item-details">
+                  <h5>{product.nombre}</h5>
+                  <div className="cart-item-price">
+                    Ahora ${product.precio.toLocaleString('es-CL')}
+                    <span className="cart-item-discount">35%</span>
+                  </div>
+                  <div className="cart-item-original-price">
+                    Normal ${(product.precio * 1.35).toLocaleString('es-CL')}
+                  </div>
+                  <div className="cart-quantity-controls">
+                    <button className="btn-circle">-</button>
+                    <span>{quantity}</span>
+                    <button className="btn-circle">+</button>
+                  </div>
+                </div>
+                <button className="delete-button">
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+            )}
+            
+            <div className="cart-total">
+              <div className="d-flex justify-content-between">
+                <span>Total a pagar:</span>
+                <span>${(product?.precio || 0).toLocaleString('es-CL')}</span>
+              </div>
+            </div>
+          </Offcanvas.Body>
+          <div className="offcanvas-footer">
+            <button 
+              className="btn-go-to-cart"
+              onClick={() => navigate('/cart')}
+            >
+              Ir al carrito de compras
+            </button>
+            <button 
+              className="btn-continue-shopping"
+              onClick={() => setShowOffcanvas(false)}
+            >
+              Sigue comprando
+            </button>
           </div>
-          <div className="cart-item-original-price">
-            Normal ${(product.precio * 1.35).toLocaleString('es-CL')}
-          </div>
-          <div className="cart-quantity-controls">
-            <button className="btn-circle">-</button>
-            <span>{quantity}</span>
-            <button className="btn-circle">+</button>
-          </div>
-        </div>
-        <button className="delete-button">
-          <span className="material-symbols-outlined">close</span>
-        </button>
-      </div>
-    )}
-    
-    <div className="cart-total">
-      <div className="d-flex justify-content-between">
-        <span>Total a pagar:</span>
-        <span>${(product?.precio || 0).toLocaleString('es-CL')}</span>
-      </div>
-    </div>
-  </Offcanvas.Body>
-  <div className="offcanvas-footer">
-    <button 
-      className="btn-go-to-cart"
-      onClick={() => navigate('/cart')}
-    >
-      Ir al carrito de compras
-    </button>
-    <button 
-      className="btn-continue-shopping"
-      onClick={() => setShowOffcanvas(false)}
-    >
-      Sigue comprando
-    </button>
-  </div>
-</Offcanvas>
+        </Offcanvas>
       </Container >
     </div>
   );
 }
+
