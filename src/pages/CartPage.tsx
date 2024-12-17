@@ -64,27 +64,22 @@ const CartPage: React.FC = () => {
         },
         body: JSON.stringify({ productoId: productId, cantidadProducto: quantity }),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
-        console.log('Respuesta del backend:', data);
-
-        if (data.producto.cantidad < quantity) {
-          alert(`No hay suficiente stock para este producto. Disponible: ${data.producto.cantidad}.`);
-          return;
-        }
-
         console.log('Producto agregado al carrito:', data);
+  
+        await replaceCartProducts();
+  
       } else {
-        const errorData = await response.json();
-        console.error('Error en la respuesta del servidor:', errorData);
-        throw new Error(`errorData.message || Error HTTP: ${response.status}`);
+        console.error('Error en la respuesta del servidor:', await response.json());
+        throw new Error(`Error HTTP: ${response.status}`);
       }
     } catch (error: unknown) {
-      console.error('Error al agregar producto al carrito:', getErrorMessage(error));
-      alert('Hubo un problema al agregar el producto al carrito. Inténtalo nuevamente.');
+      console.error('Error al agregar producto al carrito:', error);
     }
   };
+  
 
   const createCart = useCallback(async () => {
     if (cartId) {
@@ -192,11 +187,22 @@ const CartPage: React.FC = () => {
     const initializeCart = async () => {
       try {
         const activeCartId = await fetchActiveCart();
-    
+  
         if (activeCartId) {
-          console.log(`Carrito activo detectado con ID ${activeCartId}. Cargando productos.`);
+          console.log(`Carrito activo detectado con ID ${activeCartId}.`);
           setCartId(activeCartId);
-          await loadCartProducts(activeCartId);
+  
+          const response = await fetch(`${API_BASE_URL}/carro-compras/${activeCartId}`);
+          if (response.ok) {
+            const cartData = await response.json();
+  
+            if (cartData.carroProductos && cartData.carroProductos.length > 0) {
+              console.log('Cargando productos del carrito.');
+              await loadCartProducts(activeCartId);
+            } else {
+              console.log('El carrito está vacío.');
+            }
+          }
         } else {
           console.log('No hay carrito activo. Creando uno nuevo...');
           await createCart();
@@ -205,18 +211,18 @@ const CartPage: React.FC = () => {
         console.error('Error al inicializar el carrito:', error);
       }
     };
-    
+  
     const loadCartProducts = async (cartId: number) => {
       try {
         const response = await fetch(`${API_BASE_URL}/carro-compras/${cartId}/productos`, {
           method: 'GET',
           headers: { Accept: 'application/json' },
         });
-    
+  
         if (response.ok) {
           const data = await response.json();
           console.log('Productos cargados del carrito:', data);
-    
+  
           dispatch(clearCart());
           data.productos.forEach((item: CartItem) => {
             dispatch(addToCart(item));
@@ -228,11 +234,10 @@ const CartPage: React.FC = () => {
         console.error('Error al cargar productos del carrito:', error);
       }
     };
-    
-    
   
     initializeCart();
   }, [fetchActiveCart, createCart, dispatch, API_BASE_URL]);
+  
   
 
   const handleIncrement = async (productId: number) => {
