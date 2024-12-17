@@ -16,5 +16,6 @@ export interface CartItem {
   alto: number;
   largo: number;
   peso: number;
+  stock?: number;
 }
   

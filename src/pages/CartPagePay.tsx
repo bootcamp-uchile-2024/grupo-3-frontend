@@ -491,10 +491,10 @@ const CartPagePay: React.FC = () => {
                       <Col md={1} className="">
                         <Button
                           variant="link"
-                          className="text-danger"
+                          className="button-delete"
                           onClick={() => handleRemoveProductFromCart(item.id)}
                         >
-                          Eliminar
+                        <span className="material-symbols-outlined">delete</span>
                         </Button>
                       </Col>
                     </Row>

@@ -499,9 +499,15 @@ const discountedTotal = total * 0.8;
             </Button>
           </Col>
           <Col md={5}>
-            <Button className='bt go-button float-end' variant="primary" onClick={handleNavigateToCheckout}>
-              Finalizar la compra
-            </Button>
+          <Button
+            className='bt go-button float-end'
+            variant="primary"
+            onClick={handleNavigateToCheckout}
+            disabled={groupedItems.length === 0} 
+          >
+            Finalizar la compra
+          </Button>
+
           </Col>
         </Col>
       </Row>

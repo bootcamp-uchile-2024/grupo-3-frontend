@@ -16,7 +16,7 @@ const CatalogPage: React.FC = () => {
   const [products, setProducts] = useState<productsCatalog[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [quantities,] = useState<{ [key: number]: number }>({});
+  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [pageSize, setPageSize] = useState(12);
@@ -93,15 +93,11 @@ const CatalogPage: React.FC = () => {
   }, [filters, currentPage, pageSize, fetchProducts]);  
 
   const handleAddToCart = (product: productsCatalog) => {
-    const quantity = quantities[product.id] || 1;
-    const currentCartQuantity = cart.reduce((total, item) => {
-      if (item.id === product.id) {
-        total += item.cantidad;
-      }
-      return total;
-    }, 0);
+    const productId = product.id;
+    const existingCartItem = cart.find((item) => item.id === productId);
+    const quantity = existingCartItem ? existingCartItem.cantidad : 1;
   
-    if (currentCartQuantity + quantity > product.stock) {
+    if (quantity > product.stock) {
       setErrorMessages((prevMessages) => ({
         ...prevMessages,
         [product.id]: `Stock de ${product.stock} unidades.`,
@@ -110,31 +106,33 @@ const CatalogPage: React.FC = () => {
     }
   
     const imagePath = product.imagenes?.[0]?.ruta ?? '/estaticos/default-image.jpg';
-    console.log(`Agregando al carrito: ${product.nombre}, Imagen: ${imagePath}`); 
   
-    dispatch(addToCart({
-      id: product.id,
-      nombre: product.nombre,
-      precio: product.precio,
-      imagen: imagePath,
-      descripcion: product.descripcion,
-      cantidad: quantity,
-      unidadesVendidas: product.unidadesVendidas,
-      puntuacion: product.puntuacion,
-      ancho: product.ancho,
-      alto: product.alto,
-      largo: product.largo,
-      peso: product.peso,
-    }));
-
-    setSelectedProduct(product); 
-    setShowOffcanvas(true); 
-
+    dispatch(
+      addToCart({
+        id: product.id,
+        nombre: product.nombre,
+        precio: product.precio,
+        imagen: imagePath,
+        descripcion: product.descripcion,
+        cantidad: quantity,
+        unidadesVendidas: product.unidadesVendidas,
+        puntuacion: product.puntuacion,
+        ancho: product.ancho,
+        alto: product.alto,
+        largo: product.largo,
+        peso: product.peso,
+        stock: product.stock,
+      })
+    );
+  
+    setSelectedProduct(product);
+    setShowOffcanvas(true);
     setErrorMessages((prevMessages) => ({
       ...prevMessages,
       [product.id]: '',
     }));
   };
+  
 
   // Cambiar página de la paginación
   const handlePageChange = (page: number) => {
@@ -206,7 +204,6 @@ const CatalogPage: React.FC = () => {
     return items;
   };
 
-  // Cambiar cantidad de productos por página
   const handlePageSizeChange = (size: number) => {
     setPageSize(size);
     setCurrentPage(1);
@@ -223,7 +220,83 @@ const CatalogPage: React.FC = () => {
     setFilters(newFilters);
   };
   
-  if (error) return <p>Error: {error}</p>;  
+  if (error) return <p>Error: {error}</p>;
+
+  const handleIncrementQuantity = (product: productsCatalog) => {
+    const productId = product.id;
+    const currentQuantity = quantities[productId] || 1;
+  
+    if (currentQuantity >= product.stock) {
+      alert(`No puedes agregar más de ${product.stock} unidades.`);
+      return;
+    }
+  
+    const newQuantity = currentQuantity + 1;
+  
+    setQuantities((prev) => ({
+      ...prev,
+      [productId]: newQuantity,
+    }));
+  
+    dispatch(
+      addToCart({
+        id: product.id,
+        nombre: product.nombre,
+        precio: product.precio,
+        imagen: product.imagenes?.[0]?.ruta || '/estaticos/default-image.jpg',
+        descripcion: product.descripcion,
+        cantidad: 1,
+        stock: product.stock,
+        unidadesVendidas: product.unidadesVendidas,
+        puntuacion: product.puntuacion,
+        ancho: product.ancho,
+        alto: product.alto,
+        largo: product.largo,
+        peso: product.peso,
+      })
+    );
+  };
+  
+  
+  const handleDecrementQuantity = (product: productsCatalog) => {
+    const productId = product.id;
+    const currentQuantity = quantities[productId] || 1;
+  
+    if (currentQuantity <= 1) {
+      alert(`No puedes reducir más la cantidad.`);
+      return;
+    }
+  
+    const newQuantity = currentQuantity - 1;
+  
+    setQuantities((prev) => ({
+      ...prev,
+      [productId]: newQuantity,
+    }));
+  
+    dispatch(
+      addToCart({
+        id: product.id,
+        nombre: product.nombre,
+        precio: product.precio,
+        imagen: product.imagenes?.[0]?.ruta || '/estaticos/default-image.jpg',
+        descripcion: product.descripcion,
+        cantidad: -1,
+        stock: product.stock,
+        unidadesVendidas: product.unidadesVendidas,
+        puntuacion: product.puntuacion,
+        ancho: product.ancho,
+        alto: product.alto,
+        largo: product.largo,
+        peso: product.peso,
+      })
+    );
+  };
+  
+  
+  
+  
+
 
   return (
     <>
@@ -372,10 +445,21 @@ const CatalogPage: React.FC = () => {
             Normal ${(selectedProduct.precio * 1.35).toLocaleString('es-CL')}
           </div>
           <div className="cart-quantity-controls">
-            <button className="btn-circle">-</button>
-            <span>{quantities[selectedProduct.id] || 1}</span>
-            <button className="btn-circle">+</button>
+            <button
+              className="btn-circle"
+              onClick={() => handleDecrementQuantity(selectedProduct!)}
+            >
+              -
+            </button>
+            <span>{quantities[selectedProduct?.id || 0] || 1}</span>
+            <button
+              className="btn-circle"
+              onClick={() => handleIncrementQuantity(selectedProduct!)}
+            >
+              +
+            </button>
           </div>
+
         </div>
         <button className="delete-button">
           <span className="material-symbols-outlined">close</span>

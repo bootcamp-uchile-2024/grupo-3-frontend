@@ -36,8 +36,33 @@ const UserManagement = () => {
     if (user && user.roles && user.roles.includes("admin-1")) {
       setIsAdmin(true);
     }
+  
+    const savedUser = JSON.parse(localStorage.getItem("selectedUser") || "null");
+    if (savedUser) {
+      const existsInUsers = users.find((u) => u.id === savedUser.id);
+      if (existsInUsers) {
+        setSelectedUser(savedUser);
+      } else {
+        localStorage.removeItem("selectedUser");
+      }
+    }
+  
     fetchUsers();
   }, []);
+  
+
+  const handleSetSelectedUser = (user: User | null) => {
+    if (user?.id === selectedUser?.id) return;
+    setSelectedUser(user);
+    if (user) {
+      localStorage.setItem("selectedUser", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("selectedUser");
+    }
+  };
+  
+  
+  
 
   const fetchUsers = async () => {
     try {
@@ -248,10 +273,9 @@ const UserManagement = () => {
                       />
                     )}
                     <UserTable
-                      users={Array.isArray(users) ? users : []}
-                      currentUsers={Array.isArray(currentUsers) ? currentUsers : []}
-                      selectedUser={selectedUser ?? null}
-                      setSelectedUser={setSelectedUser}
+                      currentUsers={currentUsers}
+                      selectedUser={selectedUser}
+                      setSelectedUser={handleSetSelectedUser}
                     />
   
                     {selectedUser && (
@@ -495,13 +519,10 @@ const UserManagement = () => {
                       <p>No hay un usuario seleccionado</p>
                     )}
                     <UserTable
-                      users={Array.isArray(users) ? users : []}
-                      currentUsers={
-                        Array.isArray(currentUsers) ? currentUsers : []
-                      }
-                      selectedUser={selectedUser ?? null}
-                      setSelectedUser={setSelectedUser}
-                    />
+                      currentUsers={currentUsers}
+                      selectedUser={selectedUser}
+                      setSelectedUser={handleSetSelectedUser}
+            />
                     <div
                       className="d-flex justify-content-center mt-3 gap-2"
                       style={{ position: "relative" }}

@@ -1,12 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Table, Button } from 'react-bootstrap';
 import { User } from '../types/types';
 
 interface UserTableProps {
-  users: User[];
   currentUsers: User[];
   selectedUser: User | null;
-  setSelectedUser: React.Dispatch<React.SetStateAction<User | null>>;
+  setSelectedUser: (user: User | null) => void;
   onUserAction?: (userId: number) => void;
   onEditAction?: (user: User) => void;
 }
@@ -18,54 +17,57 @@ const UserTable: React.FC<UserTableProps> = ({
   onUserAction,
   onEditAction,
 }) => {
+  useEffect(() => {
+    const savedUserId = localStorage.getItem('selectedUserId');
+    if (savedUserId) {
+      const user = currentUsers.find((u) => u.id === parseInt(savedUserId));
+      if (user) {
+        setSelectedUser(user);
+      }
+    }
+  }, [currentUsers, setSelectedUser]);
+
+  const handleRowClick = (user: User) => {
+    setSelectedUser(user);
+    localStorage.setItem('selectedUserId', user.id.toString());
+  };
+
   return (
     <div
       style={{
         display: 'flex',
-        width: '1072px',
+        width: '100%',
         flexDirection: 'column',
         alignItems: 'flex-start',
       }}
     >
-      <Table
-        responsive
-        hover
-        style={{
-          borderCollapse: 'collapse',
-          tableLayout: 'fixed',
-          width: '100%', 
-          marginTop: '76px', 
-        }}
-      >
+      <Table responsive hover>
         <thead>
           <tr>
             {[
-              { header: 'ID', width: '5%' },
-              { header: 'Nombre', width: '15%' },
-              { header: 'Apellido', width: '15%' },
-              { header: 'Nombre Usuario', width: '15%' },
-              { header: 'Email', width: '20%' },
-              { header: 'Rut', width: '10%' },
-              { header: 'Fecha Nacimiento', width: '10%' },
-              { header: 'Teléfono', width: '10%' },
-              { header: 'Género', width: '10%' },
-              { header: 'Dirección', width: '20%' },
-            ].map((col, index) => (
+              'ID',
+              'Nombre',
+              'Apellido',
+              'Nombre Usuario',
+              'Email',
+              'Rut',
+              'Fecha Nacimiento',
+              'Teléfono',
+              'Género',
+              'Dirección',
+            ].map((header, index) => (
               <th
                 key={index}
                 style={{
-                  fontFamily: 'Quicksand',
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  lineHeight: '13px',
-                  color: '#000',
                   textAlign: 'center',
-                  borderBottom: '1px solid #BBB',
                   background: '#DCE2D3',
-                  width: col.width, 
+                  borderBottom: '1px solid #BBB',
+                  fontWeight: 'bold',
+                  fontSize: '14px',
+                  color: '#000',
                 }}
               >
-                {col.header}
+                {header}
               </th>
             ))}
           </tr>
@@ -74,15 +76,15 @@ const UserTable: React.FC<UserTableProps> = ({
           {currentUsers.map((user, index) => (
             <tr
               key={user.id}
-              onClick={() => setSelectedUser(user)}
+              onClick={() => handleRowClick(user)} // Actualiza el usuario seleccionado
               style={{
                 cursor: 'pointer',
                 backgroundColor:
                   selectedUser?.id === user.id
-                    ? '#6F8F75' 
+                    ? '#6F8F75' // Color verde si está seleccionado
                     : index % 2 === 0
-                    ? '#FFFFFF' 
-                    : '#BBB',    
+                    ? '#FFFFFF'
+                    : '#F2F2F2', // Color alterno para filas impares
                 transition: 'background-color 0.3s ease',
               }}
             >
@@ -101,12 +103,12 @@ const UserTable: React.FC<UserTableProps> = ({
                 <td
                   key={idx}
                   style={{
-                    borderTop: '1px solid #BBB',
                     textAlign: 'center',
+                    borderTop: '1px solid #DDD',
                     padding: '8px',
                     overflow: 'hidden',
-                    textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
+                    textOverflow: 'ellipsis',
                   }}
                 >
                   {value}
@@ -115,16 +117,12 @@ const UserTable: React.FC<UserTableProps> = ({
             </tr>
           ))}
         </tbody>
-
       </Table>
       {/* Botones de acción */}
       {selectedUser && (onUserAction || onEditAction) && (
         <div className="d-flex justify-content-center mt-3 gap-2">
           {onUserAction && (
-            <Button
-              variant="danger"
-              onClick={() => onUserAction(selectedUser.id)}
-            >
+            <Button variant="danger" onClick={() => onUserAction(selectedUser.id)}>
               Eliminar
             </Button>
           )}
@@ -135,4 +133,5 @@ const UserTable: React.FC<UserTableProps> = ({
 };
 
 export default UserTable;
+
 
