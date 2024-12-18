@@ -32,14 +32,17 @@ const CatalogPage: React.FC = () => {
     maxPrecio: 10000,
     minPrecio: 1000,
     planta: {
-    idToleranciaTemperatura: 0,
-    idIluminacion: 0,
-    idTipoRiego: 0,
+      idToleranciaTemperatura: 0,
+      idIluminacion: 0,
+      idTipoRiego: 0,
+      idTamano: 0,
     },
     ordenarPor: undefined,
     orden: undefined,
+    page: 1,
+    pageSize: 12,
   });
-  
+
   const truncateText = (text: string, limit: number) => {
     if (text.length > limit) {
       return text.substring(0, limit) + "...";
@@ -51,18 +54,25 @@ const CatalogPage: React.FC = () => {
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
-      const queryParams = new URLSearchParams({
-        page: currentPage.toString(),
-        pageSize: pageSize.toString(),
-        minPrecio: filters.minPrecio.toString(),
-        maxPrecio: filters.maxPrecio.toString(),
-        puntuacion: filters.puntuacion.toString()|| '',
-        petFriendly: filters.petFriendly ? 'true' : 'false',
-        idToleranciaTemperatura: filters.planta.idToleranciaTemperatura.toString(),
-        idIluminacion: filters.planta.idIluminacion.toString(),
-        idTipoRiego: filters.planta.idTipoRiego.toString(),
-      });
-  
+      const queryParams = new URLSearchParams();
+
+      if (filters.minPrecio && filters.minPrecio !== 1000) queryParams.append('minPrecio', filters.minPrecio.toString());
+      if (filters.maxPrecio && filters.maxPrecio !== 10000) queryParams.append('maxPrecio', filters.maxPrecio.toString());
+      if (filters.puntuacion !== 0) queryParams.append('puntuacion', filters.puntuacion.toString());
+      if (filters.petFriendly !== undefined) queryParams.append('petFriendly', filters.petFriendly ? 'true' : 'false');
+      if (filters.planta?.idToleranciaTemperatura && filters.planta?.idToleranciaTemperatura!== 0) queryParams.append('idToleranciaTemperatura', filters.planta.idToleranciaTemperatura.toString());
+      if (filters.planta?.idIluminacion && filters.planta?.idIluminacion!== 0) queryParams.append('idIluminacion', filters.planta.idIluminacion.toString());
+      if (filters.planta?.idTipoRiego&& filters.planta?.idTipoRiego !== 0) queryParams.append('idTipoRiego', filters.planta.idTipoRiego.toString());
+      if (filters.planta?.idTamano && filters.planta.idTamano !== 0) {
+        queryParams.append('sizePlant', filters.planta.idTamano.toString());
+      }
+      if (filters.ordenarPor) queryParams.append('ordenarPor', filters.ordenarPor);
+      if (filters.orden) queryParams.append('orden', filters.orden);
+      
+      queryParams.append('page', currentPage.toString());
+      queryParams.append('pageSize', pageSize.toString());
+      console.log('Query Params:', queryParams.toString());
+
       const response = await fetch(`http://localhost:8080/catalogo?${queryParams}`, {
         method: 'GET',
         headers: {
@@ -70,11 +80,11 @@ const CatalogPage: React.FC = () => {
           'Content-Type': 'application/json',
         },
       });
-  
+
       if (!response.ok) throw new Error('Error al cargar los productos');
-  
+
       const data = await response.json();
-  
+
       if (Array.isArray(data.data)) {
         setProducts(data.data);
         setTotalPages(Math.ceil(data.totalItems / pageSize));
@@ -86,17 +96,17 @@ const CatalogPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, pageSize, filters]);  
+  }, [currentPage, pageSize, filters]);
 
   useEffect(() => {
     fetchProducts();
-  }, [filters, currentPage, pageSize, fetchProducts]);  
+  }, [filters, currentPage, pageSize, fetchProducts]);
 
   const handleAddToCart = (product: productsCatalog) => {
     const productId = product.id;
     const existingCartItem = cart.find((item) => item.id === productId);
     const quantity = existingCartItem ? existingCartItem.cantidad : 1;
-  
+
     if (quantity > product.stock) {
       setErrorMessages((prevMessages) => ({
         ...prevMessages,
@@ -104,9 +114,9 @@ const CatalogPage: React.FC = () => {
       }));
       return;
     }
-  
+
     const imagePath = product.imagenes?.[0]?.ruta ?? '/estaticos/default-image.jpg';
-  
+
     dispatch(
       addToCart({
         id: product.id,
@@ -124,7 +134,7 @@ const CatalogPage: React.FC = () => {
         stock: product.stock,
       })
     );
-  
+
     setSelectedProduct(product);
     setShowOffcanvas(true);
     setErrorMessages((prevMessages) => ({
@@ -132,7 +142,7 @@ const CatalogPage: React.FC = () => {
       [product.id]: '',
     }));
   };
-  
+
 
   // Cambiar página de la paginación
   const handlePageChange = (page: number) => {
@@ -219,25 +229,25 @@ const CatalogPage: React.FC = () => {
   const handleFilterChange = (newFilters: CatalogFilters) => {
     setFilters(newFilters);
   };
-  
+
   if (error) return <p>Error: {error}</p>;
 
   const handleIncrementQuantity = (product: productsCatalog) => {
     const productId = product.id;
     const currentQuantity = quantities[productId] || 1;
-  
+
     if (currentQuantity >= product.stock) {
       alert(`No puedes agregar más de ${product.stock} unidades.`);
       return;
     }
-  
+
     const newQuantity = currentQuantity + 1;
-  
+
     setQuantities((prev) => ({
       ...prev,
       [productId]: newQuantity,
     }));
-  
+
     dispatch(
       addToCart({
         id: product.id,
@@ -256,24 +266,24 @@ const CatalogPage: React.FC = () => {
       })
     );
   };
-  
-  
+
+
   const handleDecrementQuantity = (product: productsCatalog) => {
     const productId = product.id;
     const currentQuantity = quantities[productId] || 1;
-  
+
     if (currentQuantity <= 1) {
       alert(`No puedes reducir más la cantidad.`);
       return;
     }
-  
+
     const newQuantity = currentQuantity - 1;
-  
+
     setQuantities((prev) => ({
       ...prev,
       [productId]: newQuantity,
     }));
-  
+
     dispatch(
       addToCart({
         id: product.id,
@@ -292,11 +302,6 @@ const CatalogPage: React.FC = () => {
       })
     );
   };
-  
-  
-  
-  
-
 
   return (
     <>
@@ -308,7 +313,7 @@ const CatalogPage: React.FC = () => {
         <Row>
 
           <Col xs={12} sm={3} className="sidebar-filters">
-            <SidebarFilters onFilterChange={handleFilterChange}/>
+            <SidebarFilters onFilterChange={handleFilterChange} />
           </Col>
 
           <Col xs={12} sm={9}>
@@ -318,13 +323,13 @@ const CatalogPage: React.FC = () => {
                   <Col key={product.id}>
                     <Card>
                       <Link to={`/catalogo/producto/${product.id}`}>
-                      
-                      <Card.Img
-                        variant="top"
-                        src={product.imagenes && product.imagenes.length > 0 ? product.imagenes[0].ruta : '/estaticos/default-image.jpg'}
-                        alt={product.nombre}
-                        className="card-products-container"
-                      />
+
+                        <Card.Img
+                          variant="top"
+                          src={product.imagenes && product.imagenes.length > 0 ? product.imagenes[0].ruta : '/estaticos/default-image.jpg'}
+                          alt={product.nombre}
+                          className="card-products-container"
+                        />
 
                       </Link>
                       <Card.Body className="text-start">
@@ -417,78 +422,78 @@ const CatalogPage: React.FC = () => {
           </Col>
         </Row>
         {/* Offcanvas */}
-<Offcanvas 
-  show={showOffcanvas} 
-  onHide={() => setShowOffcanvas(false)} 
-  placement="end"
->
-  <Offcanvas.Header closeButton>
-    <Offcanvas.Title>Mi Carrito de compras</Offcanvas.Title>
-  </Offcanvas.Header>
-  <Offcanvas.Body>
-    {selectedProduct && (
-      <div className="cart-item-card">
-        <img 
-          src={selectedProduct.imagenes && selectedProduct.imagenes.length > 0 
-            ? selectedProduct.imagenes[0].ruta 
-            : '/estaticos/default-image.jpg'} 
-          alt={selectedProduct.nombre}
-          className="cart-item-image"
-        />
-        <div className="cart-item-details">
-          <h5>{selectedProduct.nombre}</h5>
-          <div className="cart-item-price">
-            Ahora ${selectedProduct.precio.toLocaleString('es-CL')}
-            <span className="cart-item-discount">35%</span>
-          </div>
-          <div className="cart-item-original-price">
-            Normal ${(selectedProduct.precio * 1.35).toLocaleString('es-CL')}
-          </div>
-          <div className="cart-quantity-controls">
-            <button
-              className="btn-circle"
-              onClick={() => handleDecrementQuantity(selectedProduct!)}
-            >
-              -
-            </button>
-            <span>{quantities[selectedProduct?.id || 0] || 1}</span>
-            <button
-              className="btn-circle"
-              onClick={() => handleIncrementQuantity(selectedProduct!)}
-            >
-              +
-            </button>
-          </div>
+        <Offcanvas
+          show={showOffcanvas}
+          onHide={() => setShowOffcanvas(false)}
+          placement="end"
+        >
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Mi Carrito de compras</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            {selectedProduct && (
+              <div className="cart-item-card">
+                <img
+                  src={selectedProduct.imagenes && selectedProduct.imagenes.length > 0
+                    ? selectedProduct.imagenes[0].ruta
+                    : '/estaticos/default-image.jpg'}
+                  alt={selectedProduct.nombre}
+                  className="cart-item-image"
+                />
+                <div className="cart-item-details">
+                  <h5>{selectedProduct.nombre}</h5>
+                  <div className="cart-item-price">
+                    Ahora ${selectedProduct.precio.toLocaleString('es-CL')}
+                    <span className="cart-item-discount">35%</span>
+                  </div>
+                  <div className="cart-item-original-price">
+                    Normal ${(selectedProduct.precio * 1.35).toLocaleString('es-CL')}
+                  </div>
+                  <div className="cart-quantity-controls">
+                    <button
+                      className="btn-circle"
+                      onClick={() => handleDecrementQuantity(selectedProduct!)}
+                    >
+                      -
+                    </button>
+                    <span>{quantities[selectedProduct?.id || 0] || 1}</span>
+                    <button
+                      className="btn-circle"
+                      onClick={() => handleIncrementQuantity(selectedProduct!)}
+                    >
+                      +
+                    </button>
+                  </div>
 
-        </div>
-        <button className="delete-button">
-          <span className="material-symbols-outlined">close</span>
-        </button>
-      </div>
-    )}
-    
-    <div className="cart-total">
-      <div className="d-flex justify-content-between">
-        <span>Total a pagar:</span>
-        <span>${((selectedProduct?.precio || 0) * (quantities[selectedProduct?.id || 0] || 1)).toLocaleString('es-CL')}</span>
-      </div>
-    </div>
-  </Offcanvas.Body>
-  <div className="offcanvas-footer">
-    <button 
-      className="btn-go-to-cart"
-      onClick={() => navigate('/cart')}
-    >
-      Ir al carrito de compras
-    </button>
-    <button 
-      className="btn-continue-shopping"
-      onClick={() => setShowOffcanvas(false)}
-    >
-      Sigue comprando
-    </button>
-  </div>
-</Offcanvas>
+                </div>
+                <button className="delete-button">
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+            )}
+
+            <div className="cart-total">
+              <div className="d-flex justify-content-between">
+                <span>Total a pagar:</span>
+                <span>${((selectedProduct?.precio || 0) * (quantities[selectedProduct?.id || 0] || 1)).toLocaleString('es-CL')}</span>
+              </div>
+            </div>
+          </Offcanvas.Body>
+          <div className="offcanvas-footer">
+            <button
+              className="btn-go-to-cart"
+              onClick={() => navigate('/cart')}
+            >
+              Ir al carrito de compras
+            </button>
+            <button
+              className="btn-continue-shopping"
+              onClick={() => setShowOffcanvas(false)}
+            >
+              Sigue comprando
+            </button>
+          </div>
+        </Offcanvas>
       </Container>
     </>
   );

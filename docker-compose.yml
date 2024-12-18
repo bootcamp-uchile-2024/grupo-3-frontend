@@ -1,3 +1,4 @@
+name: grupo-3
 services:
   database-prod:
     image: 'mysql:${VERSION_MYSQL}'
@@ -16,10 +17,9 @@ services:
       - ./sql:/flyway/sql
     command: [ '-url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false', '-user=${DB_USERNAME}', '-password=${DB_PASSWORD}', '-connectRetries=60', 'migrate' ]
 
-  cotiledon-prod:
-    image: nicolasf1/cotiledonapp:1.11.4
-    volumes:
-      - ./imagenes/productos:/home/node/app/imagenes/productos
+  backend-prod:
+    image: nicolasf1/cotiledonapp:1.11.5
+    container_name: backend
     depends_on:
       - database-prod
     environment:
@@ -36,11 +36,13 @@ services:
       - JWT_SECRET=${JWT_SECRET}
     ports:
       - '8080:${API_PORT}'
+
   frontend-prod:
     image: chirmus/plantaiapp-frontend:plantaifront4
+    container_name: frontend
     depends_on:
-      - cotiledon-prod
+      - backend-prod
     ports:
-      - "5173:80"
+      - "80:80"
     env_file:
       - .env.production
