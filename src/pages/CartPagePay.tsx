@@ -49,29 +49,27 @@ const CartPagePay: React.FC = () => {
 
   const fetchActiveCart = useCallback(async (): Promise<number | null> => {
     try {
-      console.log(`Verificando carrito activo para el usuario ${userId}`);
       const response = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
         method: 'GET',
         headers: { Accept: 'application/json' },
       });
-
+  
       if (response.ok) {
         const data = await response.json();
-        setCartId(data.id);
-        console.log('Carrito activo encontrado:', data);
+        console.log('CartId encontrado en fetchActiveCart:', data.id); 
+        setCartId(data.id); 
         return data.id;
-      } else if (response.status === 404) {
-        console.log('No hay carrito activo para este usuario.');
+      } else {
+        console.warn('No se encontró un carrito activo.');
         setCartId(null);
         return null;
-      } else {
-        throw new Error(`Error HTTP al verificar el carrito: ${response.status}`);
       }
-    } catch (error: unknown) {
-      console.error(getErrorMessage(error));
+    } catch (error) {
+      console.error('Error al buscar carrito activo:', error);
       return null;
     }
-  }, [userId, setCartId, API_BASE_URL]);
+  }, [userId, API_BASE_URL]);
+  
 
   const addProductToCart = async (cartId: number, productId: number, quantity: number) => {
     try {
@@ -375,38 +373,19 @@ const CartPagePay: React.FC = () => {
       }
   
       const data = await response.json();
-      console.log('Compra finalizada exitosamente. Pedido creado:', data);
+      const newCartId = data.idCarrito || data.id || null;
   
-      console.log('Haciendo GET para obtener los detalles del pedido del usuario:', userId);
-      const orderResponse = await fetch(`${API_BASE_URL}/pedidos/${userId}`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      });
-  
-      if (!orderResponse.ok) {
-        const orderErrorData = await orderResponse.json();
-        console.error('Error al obtener los detalles del pedido:', orderErrorData);
-        alert(`Error al obtener los detalles del pedido: ${orderErrorData.message || 'Error desconocido'}`);
-        return;
+      if (!newCartId) {
+        throw new Error('No se recibió un ID de carrito válido desde el backend.');
       }
   
-      const orderDetails = await orderResponse.json();
-      console.log('Detalles del pedido recibidos:', orderDetails);
+      console.log('Compra finalizada exitosamente. Pedido creado con ID:', newCartId);
   
-      console.log('Pedido procesado correctamente. Limpiando carrito y redirigiendo...');
-      dispatch(clearCart());
-      localStorage.removeItem('__redux__cart__');
+      localStorage.setItem('cartId', newCartId.toString()); 
+
   
-      const newCartId = await fetchActiveCart();
-      if (newCartId) {
-        console.log(`Nuevo carrito activo sincronizado con ID ${newCartId}`);
-      } else {
-        console.warn('No se pudo sincronizar con el nuevo carrito activo.');
-      }
-  
-      setIsPurchaseCompleted(true);
-      navigate('/success-page');
-    } catch (e: unknown) {
+      navigate('/success-page', { state: { cartId: newCartId } });
+    } catch (e) {
       console.error('Error crítico al finalizar la compra:', e);
       alert('Hubo un problema al finalizar la compra. Por favor, inténtalo nuevamente.');
     } finally {
@@ -414,7 +393,8 @@ const CartPagePay: React.FC = () => {
     }
   };
   
-
+  
+  
   const discountedTotal = total * (1 - discount);
 
   const formattedTotal = new Intl.NumberFormat('es-CL', {

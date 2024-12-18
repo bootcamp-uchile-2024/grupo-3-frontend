@@ -78,10 +78,20 @@ const cartSlice = createSlice({
 
     clearCart(state) {
       console.log('Limpiando el carrito en Redux...');
+    
+      const preservedCartId = localStorage.getItem('cartId'); 
+    
       state.productos = []; 
-      saveCartToLocalStorage(state); 
+      saveCartToLocalStorage(state);
+    
+      if (preservedCartId) {
+        localStorage.setItem('cartId', preservedCartId); 
+        console.log('CartId preservado en localStorage:', preservedCartId);
+      }
+    
       console.log('Carrito limpio y LocalStorage sincronizado.');
     },
+    
     
     
     updateQuantity: (state, action: PayloadAction<{ id: number; cantidad: number }>) => {

@@ -377,6 +377,9 @@ const discountedTotal = total * 0.8;
     }
   
     try {
+      console.log('Guardando cartId en localStorage antes de navegar...');
+      localStorage.setItem('cartId', cartId.toString()); 
+  
       console.log('Verificando sincronización del carrito...');
       await replaceCartProducts();
   
@@ -386,6 +389,7 @@ const discountedTotal = total * 0.8;
       alert('Hubo un problema al procesar tu carrito. Por favor, inténtalo nuevamente.');
     }
   };
+  
   
 
   return (
