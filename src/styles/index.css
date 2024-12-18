@@ -12,16 +12,6 @@
   width: 1440px;
 }
 
-
-header{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--main-bg-color);
-  height: 40px;
-  }
-  
-
 form#search-form {
   display: flex;
   flex-direction: row;
@@ -624,7 +614,7 @@ button.btn-orange.disabled {
 }
 
 .home-banner {
-  margin-top: 96px;
+  margin-top: 150px;
 }
 
 /* Home Banner */

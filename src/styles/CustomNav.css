@@ -1,131 +1,141 @@
- .custom-navbar {
-    padding: 1rem 0;
-  }
-  
-  .nav-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  
-  .navbar-brand {
-    background-image: url("/src/assets/LOGO_PLANTAI.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 100px!important;
-    height: 100px!important;
-    position: relative;
-    display: block;
-    top: 3rem;
-    left: 35px;
-    z-index: 1;
-    border: 1px solid #E5E7EB;
-    border-radius: 999px;
-  }
-  
-  .main-nav {
-    display: flex;
-    gap: 2rem;
-    margin: 0 auto;
-  }
-
-  .nav-link.login-link, .nav-link.cart-link {
-    color: white !important;
-    font-size: 16px !important;
-    margin: 0 !important;
-  }
-
-  .nav-link.login-link {
-    margin: 0 0 0 -1rem !important;
-  }
-
-  .nav-link.cart-link {
-    margin: 0.2rem 0 0 0 !important;
-  }
-
-  a#user-dropdown {
-    color: white !important;
-    font-size: 18px !important;
-    position: relative;
-    top: 0.7rem;
-    left: 0rem;
-  }
-  
-  .nav-dropdown .dropdown-toggle, .nav-link {
-    color: #1a4756!important;
-    font-size: 22px!important;
-  }
-
-  .navbar-expand .navbar-nav {
-    flex-direction: row;
-    margin-top: 8.4rem;
+.custom-navbar {
+  width: 100%;
+  background-color: white;
+  border-top: 58px solid #1a4756;
 }
-  
-  .nav-dropdown .dropdown-menu {
-    border-radius: 8px;
-    border: 1px solid #E5E7EB;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  }
-  
-  .nav-dropdown .dropdown-item {
-    padding: 0.5rem 1rem;
-    color: #1F2937;
-  }
-  
-  .nav-actions {
-    display: flex;
-    align-items: left;
-    gap: 1rem;
-  }
-  
-  .user-menu {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  
-  .user-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-  }
-  
-  .login-link {
-    color: white !important;
-    text-decoration: none;
-  }
-  
-  .cart-link {
-    position: relative;
-    color: white !important;
-  }
-  
-  .cart-badge {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background-color: #DC2626;
-    color: white;
-    border-radius: 50%;
-    width: 18px;
-    height: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-  }
-  
-  .material-symbols-outlined {
-    font-size: 24px;
-  }
-  
-  /* Hover effects */
 
-  .nav-link:hover {
-    color: white important;
-  }
+.navbar-brand {
+  background-image: url("/src/assets/LOGO_PLANTAI.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100px !important;
+  height: 100px !important;
+  position: relative;
+  display: block;
+  top: -2rem;
+  left: -4.6rem;
+  z-index: 1001; 
+  border: 1px solid #E5E7EB;
+  border-radius: 999px;
+  background-color: white; 
+}
 
-  .nav-dropdown .dropdown-toggle:hover {
-    color: #007b94!important;
-  }
+.main-nav {
+  gap: 3rem;
+  margin: 0 auto;
+}
+
+nav.custom-navbar.fixed-top.navbar.navbar-expand-lg.navbar-light {
+  height: 130px;
+}
+
+.nav-link.login-link, 
+.nav-link.cart-link {
+  color: white !important;
+  font-size: 16px !important;
+  margin: 0 !important;
+}
+
+.nav-link.login-link {
+  margin: 0 0 0 -1rem !important;
+}
+
+.nav-link.cart-link {
+  margin: 0.2rem 0 0 0 !important;
+}
+
+a#user-dropdown {
+  color: white !important;
+  font-size: 18px !important;
+  position: relative;
+  top: 0.7rem;
+  left: 0rem;
+}
+
+.nav-dropdown .dropdown-toggle, 
+.nav-link {
+  color: #1a4756 !important;
+  font-size: 22px !important;
+}
+
+.navbar-expand .navbar-nav {
+  flex-direction: row;
+  margin-top: 8.4rem;
+}
+
+.nav-dropdown .dropdown-menu {
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 1002;
+}
+
+.nav-dropdown .dropdown-item {
+  padding: 0.5rem 1rem;
+  color: #1F2937;
+}
+
+.nav-actions {
+  display: flex;
+  gap: 2rem;
+  position: relative;
+  z-index: 1001;
+  top: -4rem;
+  left: 7.2rem;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.login-link {
+  color: white !important;
+  text-decoration: none;
+}
+
+.cart-link {
+  position: relative;
+  color: white !important;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #DC2626;
+  color: white;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+}
+
+.material-symbols-outlined {
+  font-size: 24px;
+}
+
+/* Hover effects */
+.nav-link:hover {
+  color: white !important;
+}
+
+.nav-dropdown .dropdown-toggle:hover {
+  color: #007b94 !important;
+}
+
+.dropdown-menu.show {
+  z-index: 1002;
+  margin-top: 1rem;
+}
