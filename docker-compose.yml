@@ -15,7 +15,12 @@ services:
     image: 'flyway/flyway:${VERSION_FLYWAY}'
     volumes:
       - ./sql:/flyway/sql
-    command: [ '-url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false', '-user=${DB_USERNAME}', '-password=${DB_PASSWORD}', '-connectRetries=60', 'migrate' ]
+    command:
+      - '-url=jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_DATABASE}?allowPublicKeyRetrieval=true&useSSL=false'
+      - '-user=${DB_USERNAME}'
+      - '-password=${DB_PASSWORD}'
+      - '-connectRetries=60'
+      - 'migrate'
 
   backend-prod:
     image: nicolasf1/cotiledonapp:1.11.5
@@ -35,7 +40,7 @@ services:
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
       - JWT_SECRET=${JWT_SECRET}
     ports:
-      - '8080:${API_PORT}'
+      - "8080:${API_PORT}"
 
   frontend-prod:
     image: chirmus/plantaiapp-frontend:plantaifront4

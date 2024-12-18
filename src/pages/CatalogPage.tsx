@@ -5,7 +5,7 @@ import { productsCatalog } from '../interfaces/ProductsCatalog';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../states/cartSlice';
 import { Pagination, Card, Button, Row, Col, Container, Offcanvas } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import SidebarFilters from '../components/SidebarFilters';
 import SortFilters from '../components/SortFiltersCatalog';
 import { useSelector } from 'react-redux';
@@ -26,6 +26,8 @@ const CatalogPage: React.FC = () => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState<productsCatalog | null>(null);
+  const [searchParams] = useSearchParams();
+  const searchTerm = searchParams.get('search');
   const [filters, setFilters] = useState<CatalogFilters>({
     petFriendly: undefined,
     puntuacion: 0,
@@ -50,30 +52,41 @@ const CatalogPage: React.FC = () => {
     return text;
   };
 
-  // Obtener productos desde el servidor
   const fetchProducts = useCallback(async () => {
     try {
       setLoading(true);
+      let url = '';
       const queryParams = new URLSearchParams();
+
+      if (searchTerm) {
+        queryParams.append('search', searchTerm); 
+      }
 
       if (filters.minPrecio && filters.minPrecio !== 1000) queryParams.append('minPrecio', filters.minPrecio.toString());
       if (filters.maxPrecio && filters.maxPrecio !== 10000) queryParams.append('maxPrecio', filters.maxPrecio.toString());
       if (filters.puntuacion !== 0) queryParams.append('puntuacion', filters.puntuacion.toString());
       if (filters.petFriendly !== undefined) queryParams.append('petFriendly', filters.petFriendly ? 'true' : 'false');
-      if (filters.planta?.idToleranciaTemperatura && filters.planta?.idToleranciaTemperatura!== 0) queryParams.append('idToleranciaTemperatura', filters.planta.idToleranciaTemperatura.toString());
-      if (filters.planta?.idIluminacion && filters.planta?.idIluminacion!== 0) queryParams.append('idIluminacion', filters.planta.idIluminacion.toString());
-      if (filters.planta?.idTipoRiego&& filters.planta?.idTipoRiego !== 0) queryParams.append('idTipoRiego', filters.planta.idTipoRiego.toString());
+      if (filters.planta?.idToleranciaTemperatura && filters.planta?.idToleranciaTemperatura !== 0) queryParams.append('idToleranciaTemperatura', filters.planta.idToleranciaTemperatura.toString());
+      if (filters.planta?.idIluminacion && filters.planta?.idIluminacion !== 0) queryParams.append('idIluminacion', filters.planta.idIluminacion.toString());
+      if (filters.planta?.idTipoRiego && filters.planta?.idTipoRiego !== 0) queryParams.append('idTipoRiego', filters.planta.idTipoRiego.toString());
       if (filters.planta?.idTamano && filters.planta.idTamano !== 0) {
         queryParams.append('sizePlant', filters.planta.idTamano.toString());
       }
       if (filters.ordenarPor) queryParams.append('ordenarPor', filters.ordenarPor);
       if (filters.orden) queryParams.append('orden', filters.orden);
-      
+
       queryParams.append('page', currentPage.toString());
       queryParams.append('pageSize', pageSize.toString());
-      console.log('Query Params:', queryParams.toString());
 
-      const response = await fetch(`http://localhost:8080/catalogo?${queryParams}`, {
+      if (searchTerm) {
+        url = `http://localhost:8080/catalogo/search?${queryParams.toString()}`;
+      } else {
+        url = `http://localhost:8080/catalogo?${queryParams.toString()}`;
+      }
+
+      console.log('Fetching URL:', url); 
+
+      const response = await fetch(url, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -81,7 +94,16 @@ const CatalogPage: React.FC = () => {
         },
       });
 
-      if (!response.ok) throw new Error('Error al cargar los productos');
+      if (!response.ok) {
+        let errorMessage = 'Error al cargar los productos';
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch (e) {
+          console.error('Error parsing error response:', e);
+        }
+        throw new Error(errorMessage);
+      }
 
       const data = await response.json();
 
@@ -93,14 +115,16 @@ const CatalogPage: React.FC = () => {
       }
     } catch (error) {
       setError(error instanceof Error ? error.message : 'Ha ocurrido un error desconocido');
+      console.error('Error en fetchProducts:', error);
     } finally {
       setLoading(false);
     }
-  }, [currentPage, pageSize, filters]);
+  }, [currentPage, pageSize, filters, searchTerm]);
 
   useEffect(() => {
     fetchProducts();
-  }, [filters, currentPage, pageSize, fetchProducts]);
+  }, [filters, currentPage, pageSize, searchTerm, fetchProducts]);
+
 
   const handleAddToCart = (product: productsCatalog) => {
     const productId = product.id;
@@ -144,14 +168,12 @@ const CatalogPage: React.FC = () => {
   };
 
 
-  // Cambiar página de la paginación
   const handlePageChange = (page: number) => {
     if (page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
 
-  // Función para renderizar la paginación
   const renderPaginationItems = () => {
     const items: JSX.Element[] = [];
 
