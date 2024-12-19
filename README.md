@@ -1,3 +1,8 @@
+<p align="left">
+  <img src="P06.png" height="450" alt="PlantAI FRONTEND"/>
+</p>
+
+
 # PlantAI e-commerce
 
 # Arquitectura de datos Frontend
