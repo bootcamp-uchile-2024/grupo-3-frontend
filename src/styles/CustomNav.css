@@ -127,10 +127,6 @@ a#user-dropdown {
 }
 
 /* Hover effects */
-.nav-link:hover {
-  color: white !important;
-}
-
 .nav-dropdown .dropdown-toggle:hover {
   color: #007b94 !important;
 }

@@ -106,8 +106,8 @@ const ProductManagement = () => {
         }
     };
 
-       // Cambiar la página cuando seleccionamos un producto
-       const handleProductSelect = (product: ProductAdmin | null) => {
+    // Cambiar la página cuando seleccionamos un producto
+    const handleProductSelect = (product: ProductAdmin | null) => {
         setSelectedProduct(product);
         if (product) {
             const productIndex = products.findIndex((prod) => prod.id === product.id);
@@ -116,7 +116,7 @@ const ProductManagement = () => {
                 setCurrentPage(page); // Establece la página correcta
             }
         } else {
-            setCurrentPage(1); 
+            setCurrentPage(1);
         }
     };
     // Eliminar un producto
@@ -165,10 +165,11 @@ const ProductManagement = () => {
 
     return (
         <Container fluid className="mt-4">
-            <Col md={12}>
-                <UserGreeting />
-            </Col>
-
+            <Row>
+                <Col md={12}>
+                    <UserGreeting />
+                </Col>
+            </Row>
             <Row>
                 <Col>
                     <AdminSideBar />

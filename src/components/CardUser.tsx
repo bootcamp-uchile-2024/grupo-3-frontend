@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card } from 'react-bootstrap';
+import { Col, Card } from 'react-bootstrap';
 import { User } from '../types/types'; 
 
 
@@ -11,22 +11,19 @@ const CardUser: React.FC<CardUserProps> = ({ selectedUser }) => {
   console.log('Selected User in Card:', selectedUser);
 
   return (
+  <Col md={6} className='mx-auto'>
   <Card
     className="mb-4"
     style={{
       display: 'flex',
-      width: '581px',
-      height: '269px',
-      padding: '35px 64px', 
+      padding: '35px', 
       flexDirection: 'column',
       alignItems: 'flex-start',
-      gap: '10px',
       flexShrink: 0,
       borderRadius: '8px',
       background: '#DCE2D3',
-      boxShadow: '0px 4px 4px 0px rgba(0, 0, 0, 0.25)',
-      marginLeft: '57px', 
-      marginBottom: '90px',
+      margin: '0 auto',
+      border: 'none',
     }}
   >
     <Card.Body>
@@ -168,6 +165,7 @@ const CardUser: React.FC<CardUserProps> = ({ selectedUser }) => {
       </div>
     </Card.Body>
   </Card>
+</Col>
 );
 }
 export default CardUser;

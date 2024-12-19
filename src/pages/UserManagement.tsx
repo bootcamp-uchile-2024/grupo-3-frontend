@@ -262,6 +262,12 @@ const UserManagement = () => {
     : [];
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  const userRoles = [
+    { idRol: 1, name: "Super Admin" },
+    { idRol: 2, name: "Admin" },
+    { idRol: 3, name: "Cliente" },
+    { idRol: 4, name: "Visitante" },
+  ];
 
   return (
     <Container fluid className="mt-4">
@@ -270,7 +276,6 @@ const UserManagement = () => {
           <UserGreeting />
         </Col>
       </Row>
-
       <Row>
         <Col>
           <AdminSideBar />
@@ -395,7 +400,6 @@ const UserManagement = () => {
                       <>
                         <CardUser selectedUser={editingUser} />
                         <Form>
-                          {/* Form rows for editing user */}
                           <Row>
                             <Col>
                               <Form.Group>
@@ -427,23 +431,174 @@ const UserManagement = () => {
                             </Col>
                           </Row>
 
-                          {/* Rest of the form fields... */}
+                          <Row className="mt-3">
+                            <Col>
+                              <Form.Group>
+                                <Form.Label>Correo Electrónico</Form.Label>
+                                <Form.Control
+                                  type="email"
+                                  value={editingUser.email}
+                                  onChange={(e) =>
+                                    setEditingUser((prev) =>
+                                      prev
+                                        ? { ...prev, email: e.target.value }
+                                        : null
+                                    )
+                                  }
+                                />
+                              </Form.Group>
+                            </Col>
+                            <Col>
+                              <Form.Group>
+                                <Form.Label>Teléfono</Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  value={editingUser.telefono}
+                                  onChange={(e) =>
+                                    setEditingUser((prev) =>
+                                      prev
+                                        ? { ...prev, telefono: e.target.value }
+                                        : null
+                                    )
+                                  }
+                                />
+                              </Form.Group>
+                            </Col>
+                          </Row>
+                          <Row className="mt-3">
+                            <Col>
+                              <Form.Group>
+                                <Form.Label>Nombre de Usuario</Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  value={editingUser.nombreUsuario}
+                                  onChange={(e) =>
+                                    setEditingUser((prev) =>
+                                      prev
+                                        ? { ...prev, nombreUsuario: e.target.value }
+                                        : null
+                                    )
+                                  }
+                                />
+                              </Form.Group>
+                            </Col>
+                            <Col>
+                              <Form.Group>
+                                <Form.Label>Género</Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  value={editingUser.genero}
+                                  onChange={(e) =>
+                                    setEditingUser((prev) =>
+                                      prev
+                                        ? { ...prev, genero: e.target.value }
+                                        : null
+                                    )
+                                  }
+                                />
+                              </Form.Group>
+                            </Col>
+                          </Row>
+                          <Row className="mt-3">
+                            <Col>
+                              <Form.Group>
+                                <Form.Label>RUT</Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  value={editingUser.rut}
+                                  onChange={(e) =>
+                                    setEditingUser((prev) =>
+                                      prev
+                                        ? { ...prev, rut: e.target.value }
+                                        : null
+                                    )
+                                  }
+                                />
+                              </Form.Group>
+                            </Col>
+                            <Col>
+                              <Form.Group controlId="formFechaNacimiento">
+                                <Form.Label>Fecha de Nacimiento</Form.Label>
+                                <Form.Control
+                                  type="date"
+                                  value={editingUser?.fechaNacimiento || ""}
+                                  onChange={(e) => {
+                                    if (editingUser) {
+                                      setEditingUser({
+                                        ...editingUser,
+                                        fechaNacimiento: e.target.value,
+                                      });
+                                    } else {
+                                      console.error("No hay un usuario seleccionado para actualizar la fecha de nacimiento.");
+                                    }
+                                  }}
+                                  required
+                                />
+                              </Form.Group>
+                         </Col>
+                          </Row>
+                          <Row className="mt-3">
+                            <Col>
+                              <Form.Group>
+                                <Form.Label>Dirección</Form.Label>
+                                <Form.Control
+                                  type="text"
+                                  value={editingUser.direccion || ""}
+                                  onChange={(e) =>
+                                    setEditingUser((prev) =>
+                                      prev
+                                        ? { ...prev, direccion: e.target.value }
+                                        : null
+                                    )
+                                  }
+                                />
+                              </Form.Group>
+                            </Col>
+                            <Col>
+                              <Form.Group>
+                                <Form.Label>Tipo de Usuario</Form.Label>
+                                <Form.Select
+                                  value={editingUser?.idRol || ""}
+                                  onChange={(e) => {
+                                    const newIdRol = parseInt(e.target.value, 10);
+                                    console.log("Nuevo idRol seleccionado:", newIdRol); // Verificación
+                                    if (editingUser) {
+                                      setEditingUser({
+                                        ...editingUser,
+                                        idRol: newIdRol,
+                                      });
+                                    }
+                                  }}
+                                  required
+                                >
+                                  <option value="">Seleccione un tipo de usuario</option>
+                                  {userRoles.map((role) => (
+                                    <option key={role.idRol} value={role.idRol}>
+                                      {role.name}
+                                    </option>
+                                  ))}
+                                </Form.Select>
 
-                          <div className="d-flex justify-content-center mt-3 gap-2">
-                            <Button
-                              variant="secondary"
-                              onClick={() => setEditingUser(null)}
-                            >
-                              Cancelar
-                            </Button>
-                            <Button
-                              variant="success"
-                              onClick={handleSaveChangesClick}
-                            >
-                              Guardar Cambios
-                            </Button>
-                          </div>
+                              </Form.Group>
+
+                            </Col>
+                          </Row>
                         </Form>
+
+                        <div className="d-flex justify-content-center mt-3 gap-2">
+                          <Button
+                            variant="secondary"
+                            onClick={() => setEditingUser(null)}
+                          >
+                            Cancelar
+                          </Button>
+                          <Button
+                            variant="success"
+                            onClick={handleSaveChangesClick}
+                          >
+                            Guardar Cambios
+                          </Button>
+                        </div>
                       </>
                     ) : (
                       <>
