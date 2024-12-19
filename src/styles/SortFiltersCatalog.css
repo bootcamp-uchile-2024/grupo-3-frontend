@@ -1,28 +1,40 @@
+/* Estilo para la caja del select */
 .custom-select-container {
-    position: relative;
-  }
-  
-  .custom-select {
-    padding-right: 30px; 
-  }
-  
-  .custom-arrow {
-    position: absolute;
-    right: 10px;  
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none; 
-    font-size: 20px; 
-    color: #000;  
-  }
-  .rotate-90 {
-    transform: rotate(90deg);
-  }
+  position: relative;
+  width: 200px;
+}
 
-  .colorlet {
-    color: var(--main-bg-color);
+/* Estilo para el select */
+.custom-select {
+  margin-right: 30px;
+  border: none;
+  outline: none;
+  appearance: none;
+}
 
-  }
-  .titulopagecatalog {
-    font-size: var(--font-xl-medium);
-  }
+/* Estilo para la flecha del select */
+.custom-arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-70%); 
+  pointer-events: none;
+  font-size: 32px; 
+  color: #1A4756;
+  transition: transform 0.3s ease;
+}
+
+/* Rotar la flecha cuando hay un valor seleccionado */
+.custom-arrow.rotate {
+  transform: translateY(-70%) rotate(180deg);
+}
+
+/* Color de texto de los elementos */
+.colorlet {
+  color: var(--main-bg-color);
+}
+
+/* Título en la parte superior de la página */
+.titulopagecatalog {
+  font-size: var(--font-xl-medium);
+}

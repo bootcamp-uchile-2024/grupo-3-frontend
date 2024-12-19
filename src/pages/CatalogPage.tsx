@@ -7,7 +7,7 @@ import { addToCart } from '../states/cartSlice';
 import { Pagination, Card, Button, Row, Col, Container, Offcanvas } from 'react-bootstrap';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import SidebarFilters from '../components/SidebarFilters';
-import SortFilters from '../components/SortFiltersCatalog';
+import {SortFilters, SortFilter} from '../components/SortFiltersCatalog';
 import { useSelector } from 'react-redux';
 import { RootState } from '../states/store';
 import { CatalogFilters } from '../interfaces/CatalogFilters';
@@ -52,74 +52,57 @@ const CatalogPage: React.FC = () => {
     return text;
   };
 
-  const fetchProducts = useCallback(async () => {
-    try {
-      setLoading(true);
-      let url = '';
-      const queryParams = new URLSearchParams();
+  // Usamos useCallback para memorizar la función y evitar su ejecución innecesaria
+const fetchProducts = useCallback(async () => {
+  try {
+    setLoading(true);
+    let url = '';
+    const queryParams = new URLSearchParams();
 
-      if (searchTerm) {
-        queryParams.append('search', searchTerm); 
-      }
+    // Aquí construimos los parámetros de la consulta de acuerdo con los filtros
+    if (searchTerm) queryParams.append('search', searchTerm);
+    if (filters.minPrecio && filters.minPrecio !== 1000) queryParams.append('minPrecio', filters.minPrecio.toString());
+    if (filters.maxPrecio && filters.maxPrecio !== 10000) queryParams.append('maxPrecio', filters.maxPrecio.toString());
+    if (filters.puntuacion !== 0) queryParams.append('puntuacion', filters.puntuacion.toString());
+    if (filters.petFriendly !== undefined) queryParams.append('petFriendly', filters.petFriendly ? 'true' : 'false');
+    if (filters.planta?.idToleranciaTemperatura && filters.planta?.idToleranciaTemperatura !== 0) 
+      queryParams.append('idToleranciaTemperatura', filters.planta.idToleranciaTemperatura.toString());
+    if (filters.planta?.idIluminacion && filters.planta?.idIluminacion !== 0) 
+      queryParams.append('idIluminacion', filters.planta.idIluminacion.toString());
+    if (filters.planta?.idTipoRiego && filters.planta?.idTipoRiego !== 0) 
+      queryParams.append('idTipoRiego', filters.planta.idTipoRiego.toString());
+    if (filters.planta?.idTamano && filters.planta.idTamano !== 0) 
+      queryParams.append('sizePlant', filters.planta.idTamano.toString());
+    if (filters.ordenarPor) queryParams.append('ordenarPor', filters.ordenarPor);
+    if (filters.orden) queryParams.append('orden', filters.orden);
 
-      if (filters.minPrecio && filters.minPrecio !== 1000) queryParams.append('minPrecio', filters.minPrecio.toString());
-      if (filters.maxPrecio && filters.maxPrecio !== 10000) queryParams.append('maxPrecio', filters.maxPrecio.toString());
-      if (filters.puntuacion !== 0) queryParams.append('puntuacion', filters.puntuacion.toString());
-      if (filters.petFriendly !== undefined) queryParams.append('petFriendly', filters.petFriendly ? 'true' : 'false');
-      if (filters.planta?.idToleranciaTemperatura && filters.planta?.idToleranciaTemperatura !== 0) queryParams.append('idToleranciaTemperatura', filters.planta.idToleranciaTemperatura.toString());
-      if (filters.planta?.idIluminacion && filters.planta?.idIluminacion !== 0) queryParams.append('idIluminacion', filters.planta.idIluminacion.toString());
-      if (filters.planta?.idTipoRiego && filters.planta?.idTipoRiego !== 0) queryParams.append('idTipoRiego', filters.planta.idTipoRiego.toString());
-      if (filters.planta?.idTamano && filters.planta.idTamano !== 0) {
-        queryParams.append('sizePlant', filters.planta.idTamano.toString());
-      }
-      if (filters.ordenarPor) queryParams.append('ordenarPor', filters.ordenarPor);
-      if (filters.orden) queryParams.append('orden', filters.orden);
+    queryParams.append('page', currentPage.toString());
+    queryParams.append('pageSize', pageSize.toString());
 
-      queryParams.append('page', currentPage.toString());
-      queryParams.append('pageSize', pageSize.toString());
+    url = `http://localhost:8080/catalogo${searchTerm ? '/search' : ''}?${queryParams.toString()}`;
+    console.log (url)
 
-      if (searchTerm) {
-        url = `http://localhost:8080/catalogo/search?${queryParams.toString()}`;
-      } else {
-        url = `http://localhost:8080/catalogo?${queryParams.toString()}`;
-      }
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
 
-      console.log('Fetching URL:', url); 
-
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) {
-        let errorMessage = 'Error al cargar los productos';
-        try {
-          const errorData = await response.json();
-          errorMessage = errorData.message || errorMessage;
-        } catch (e) {
-          console.error('Error parsing error response:', e);
-        }
-        throw new Error(errorMessage);
-      }
-
-      const data = await response.json();
-
-      if (Array.isArray(data.data)) {
-        setProducts(data.data);
-        setTotalPages(Math.ceil(data.totalItems / pageSize));
-      } else {
-        throw new Error('Datos de productos no válidos');
-      }
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Ha ocurrido un error desconocido');
-      console.error('Error en fetchProducts:', error);
-    } finally {
-      setLoading(false);
+    if (!response.ok) {
+      throw new Error('Error al cargar los productos');
     }
-  }, [currentPage, pageSize, filters, searchTerm]);
+
+    const data = await response.json();
+    setProducts(data.data);
+    setTotalPages(Math.ceil(data.totalItems / pageSize));
+  } catch (error) {
+    setError(error instanceof Error ? error.message : 'Ha ocurrido un error desconocido');
+  } finally {
+    setLoading(false);
+  }
+}, [filters, currentPage, pageSize, searchTerm]);
 
   useEffect(() => {
     fetchProducts();
@@ -169,10 +152,11 @@ const CatalogPage: React.FC = () => {
 
 
   const handlePageChange = (page: number) => {
-    if (page > 0 && page <= totalPages) {
+    if (page !== currentPage && page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
+  
 
   const renderPaginationItems = () => {
     const items: JSX.Element[] = [];
@@ -249,7 +233,13 @@ const CatalogPage: React.FC = () => {
     );
   }
   const handleFilterChange = (newFilters: CatalogFilters) => {
-    setFilters(newFilters);
+    setFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters, ...newFilters };
+      if (JSON.stringify(updatedFilters) === JSON.stringify(prevFilters)) {
+        return prevFilters; // Si no ha cambiado nada, no hacer nada
+      }
+      return updatedFilters;
+    });
   };
 
   if (error) return <p>Error: {error}</p>;
@@ -289,7 +279,15 @@ const CatalogPage: React.FC = () => {
     );
   };
 
-
+  const handleSortChange = (sortFilter: SortFilter) => {
+    setFilters((prevFilters) => {
+      if (prevFilters.ordenarPor === sortFilter.ordenarPor && prevFilters.orden === sortFilter.orden) {
+        return prevFilters;
+      }
+      return { ...prevFilters, ordenarPor: sortFilter.ordenarPor, orden: sortFilter.orden };
+    });
+  };
+  
   const handleDecrementQuantity = (product: productsCatalog) => {
     const productId = product.id;
     const currentQuantity = quantities[productId] || 1;
@@ -331,7 +329,7 @@ const CatalogPage: React.FC = () => {
         <Container className="banner-content text-center"></Container>
       </div>
       <Container fluid>
-        <SortFilters />
+        <SortFilters onSortChange={handleSortChange}/>
         <Row>
 
           <Col xs={12} sm={3} className="sidebar-filters">
