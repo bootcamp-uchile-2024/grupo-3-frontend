@@ -62,7 +62,7 @@ const UserManagement = () => {
     }
   };
 
-  const isFieldDisabled = (field: string) => {
+  const isFieldDisabled = (field: string) => { 
     switch (field) {
       case 'id':
         return !!searchName || !!searchUsername || !!searchEmail;
@@ -83,6 +83,10 @@ const UserManagement = () => {
       setIsAdmin(true);
     }
 
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem("selectedUser") || "null");
     if (savedUser) {
       const existsInUsers = users.find((u) => u.id === savedUser.id);
@@ -92,15 +96,11 @@ const UserManagement = () => {
         localStorage.removeItem("selectedUser");
       }
     }
-
-    fetchUsers();
-  }, [users]);
-
-
+  }, [users]); 
 
   const handleSetSelectedUser = (user: User | null) => {
     if (user?.id === selectedUser?.id) return;
-    setSelectedUser(user);
+    setSelectedUser(user); 
     if (user) {
       localStorage.setItem("selectedUser", JSON.stringify(user));
     } else {
@@ -675,6 +675,7 @@ const UserManagement = () => {
 };
 
 export default UserManagement;
+
 
 
 
