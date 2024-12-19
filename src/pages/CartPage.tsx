@@ -390,7 +390,9 @@ const discountedTotal = total * 0.8;
     }
   };
   
-  
+  const handleGoBack = () => {
+    navigate('/catalogo');
+  };
 
   return (
     <Container className="cart-container">
@@ -502,8 +504,13 @@ const discountedTotal = total * 0.8;
       <Row>
         <Col md={12} className="d-flex justify-content-between mt-4">
           <Col md={4}>
-            <Button className='back-button float-start btn btn-primary' variant="outline-primary" onClick={handleClearCart}>
-              Volver
+            <Button
+              style={{backgroundColor: 'white', color:'#1A4756', border: '3px solid #1A4756'}}
+              className="bt go-button float-end"
+              variant="secondary"
+              onClick={handleGoBack}
+                >
+                Volver
             </Button>
           </Col>
           <Col md={5}>

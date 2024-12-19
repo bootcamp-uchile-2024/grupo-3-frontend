@@ -169,12 +169,17 @@ const CartPagePay: React.FC = () => {
       }
   
       dispatch(removeFromCart(productId));
+
+      const updatedCartItems = cartItems.filter(item => item.id !== productId);
+      localStorage.setItem('__redux__cart__', JSON.stringify({ productos: updatedCartItems }));
+  
       alert('El producto ha sido eliminado del carrito.');
     } catch (error) {
       console.error('Error al intentar eliminar el producto:', error);
       alert('No se pudo eliminar el producto. Por favor, inténtalo nuevamente.');
     }
   };
+  
   
 
   const replaceCartProducts = async () => {
@@ -289,45 +294,6 @@ const CartPagePay: React.FC = () => {
     dispatch(updateQuantity({ id: productId, cantidad: -1 }));
   };
 
-  const handleClearCart = async () => {
-    if (!window.confirm('¿Estás seguro de que deseas vaciar el carrito?')) {
-      return;
-    }
-
-    try {
-      if (!cartId) {
-        alert('No hay un carrito asociado para vaciar.');
-        return;
-      }
-
-      console.log(`Vaciando carrito con ID ${cartId}`);
-
-      const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
-        method: 'PUT',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productosCarro: [],
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error al vaciar el carrito:', errorData);
-        alert(errorData.message || 'Hubo un problema al vaciar el carrito.');
-        return;
-      }
-
-      dispatch(clearCart());
-      alert('El carrito ha sido vaciado exitosamente.');
-    } catch (error: unknown) {
-      console.error('Error al intentar vaciar el carrito:', getErrorMessage(error));
-      alert('Hubo un problema al vaciar el carrito. Por favor, inténtalo nuevamente.');
-    }
-  };
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setIsPurchaseCompleted(false);
@@ -393,8 +359,6 @@ const CartPagePay: React.FC = () => {
     }
   };
   
-  
-  
   const discountedTotal = total * (1 - discount);
 
   const formattedTotal = new Intl.NumberFormat('es-CL', {
@@ -416,6 +380,10 @@ const CartPagePay: React.FC = () => {
     localStorage.removeItem('__redux__cart__'); 
     dispatch(clearCart());
     navigate('/success-page');
+  };
+
+  const handleGoBack = () => {
+    navigate('/checkout-invitado');
   };
   
   return (
@@ -571,14 +539,25 @@ const CartPagePay: React.FC = () => {
       <Row>
         <Col md={12} className="d-flex justify-content-between mt-4">
             <Col md={4}>
-              <Button className='back-button float-start btn btn-primary' variant="outline-primary" onClick={handleClearCart}>
-                Volver
-              </Button>
+            <Button
+              style={{backgroundColor: 'white', color:'#1A4756', border: '3px solid #1A4756'}}
+              className="bt go-button float-end"
+              variant="secondary"
+              onClick={handleGoBack}
+            >
+              Volver
+            </Button>
             </Col>
             <Col md={5}>
-              <Button className='bt go-button float-end' variant="primary" onClick={handleNavigateToCheckout}>
-                Finalizar la compra
-              </Button>
+            <Button 
+              className='bt go-button float-end' 
+              variant="primary" 
+              onClick={handleNavigateToCheckout}
+              disabled={cartItems.length === 0}
+            >
+              Finalizar la compra
+            </Button>
+
             </Col>
         </Col>
       </Row>
@@ -589,10 +568,6 @@ const CartPagePay: React.FC = () => {
               {isPurchaseCompleted ? (
   
                 <>
-                  <div className="modal-header">
-                    <h5 className="modal-title">Tu compra ha sido finalizada con éxito</h5>
-                    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
-                  </div>
                   <div className="modal-body">
                     <p>¡Gracias por tu compra!</p>
                     <h6>Detalles del pedido:</h6>
@@ -687,12 +662,6 @@ const CartPagePay: React.FC = () => {
                     >
                       {loading ? 'Procesando...' : 'Finalizar compra'}
                     </Button>
-                    <button
-                      className="btn btn-link text-secondary w-100"
-                      onClick={handleCloseModal}
-                    >
-                      Seguir comprando
-                    </button>
                   </div>
                 </>
               )}
