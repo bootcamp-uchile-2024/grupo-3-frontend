@@ -63,6 +63,7 @@ const UserManagement = () => {
   };
 
   const isFieldDisabled = (field: string) => { 
+    
     switch (field) {
       case 'id':
         return !!searchName || !!searchUsername || !!searchEmail;
@@ -162,7 +163,6 @@ const UserManagement = () => {
 
       setEditingUser({
         ...selectedUser,
-        fechaNacimiento: formattedFechaNacimiento,
         idRol: selectedUser.idRol,
       });
       setModalAction("modify");
@@ -180,18 +180,8 @@ const UserManagement = () => {
       return;
     }
 
-    const formattedFechaNacimiento = editingUser.fechaNacimiento?.split("T")[0] || "";
 
     const requestBody = {
-      nombre: editingUser.nombre,
-      apellido: editingUser.apellido,
-      contrasena: "defaultPassword123",
-      nombreUsuario: editingUser.nombreUsuario,
-      email: editingUser.email,
-      telefono: editingUser.telefono,
-      genero: editingUser.genero,
-      rut: editingUser.rut,
-      fechaNacimiento: formattedFechaNacimiento,
       idRol: editingUser.idRol,
     };
 
@@ -412,6 +402,7 @@ const UserManagement = () => {
                                       prev ? { ...prev, nombre: e.target.value } : null
                                     )
                                   }
+                                  disabled
                                 />
                               </Form.Group>
                             </Col>
@@ -426,6 +417,7 @@ const UserManagement = () => {
                                       prev ? { ...prev, apellido: e.target.value } : null
                                     )
                                   }
+                                  disabled
                                 />
                               </Form.Group>
                             </Col>
@@ -445,6 +437,7 @@ const UserManagement = () => {
                                         : null
                                     )
                                   }
+                                  disabled
                                 />
                               </Form.Group>
                             </Col>
@@ -461,6 +454,7 @@ const UserManagement = () => {
                                         : null
                                     )
                                   }
+                                  disabled
                                 />
                               </Form.Group>
                             </Col>
@@ -479,6 +473,7 @@ const UserManagement = () => {
                                         : null
                                     )
                                   }
+                                  disabled
                                 />
                               </Form.Group>
                             </Col>
@@ -495,6 +490,7 @@ const UserManagement = () => {
                                         : null
                                     )
                                   }
+                                  disabled
                                 />
                               </Form.Group>
                             </Col>
@@ -513,6 +509,7 @@ const UserManagement = () => {
                                         : null
                                     )
                                   }
+                                  disabled
                                 />
                               </Form.Group>
                             </Col>
@@ -532,8 +529,9 @@ const UserManagement = () => {
                                       console.error("No hay un usuario seleccionado para actualizar la fecha de nacimiento.");
                                     }
                                   }}
-                                  required
+                                  disabled
                                 />
+                                
                               </Form.Group>
                          </Col>
                           </Row>
@@ -551,6 +549,7 @@ const UserManagement = () => {
                                         : null
                                     )
                                   }
+                                  disabled
                                 />
                               </Form.Group>
                             </Col>
@@ -571,7 +570,7 @@ const UserManagement = () => {
                                   }}
                                   required
                                 >
-                                  <option value="">Seleccione un tipo de usuario</option>
+                                  <option value="">Seleccione tipo de usuario</option>
                                   {userRoles.map((role) => (
                                     <option key={role.idRol} value={role.idRol}>
                                       {role.name}

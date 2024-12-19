@@ -62,4 +62,8 @@
     background-color: transparent;
   }
 
-  
+
+  .form-control[disabled] {
+    color: #b9b9b9; 
+    border-color: #bbb; 
+  }

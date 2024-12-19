@@ -1,17 +1,17 @@
-.search-bar-container {
-  max-width: 786px;
-  margin: 0 auto;
-}
-
 .search-bar {
-  width: 100%;
   position: relative;
+  width: 100%;
+  max-width: 800px; 
+  margin: 0 auto; 
+  box-sizing: border-box; 
 }
 
 .input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .search-icon {
@@ -24,30 +24,47 @@
 }
 
 .search-input {
-  width: 100%;
-  padding: 12px 45px 12px 40px;
+  width: 100%; 
+  padding: 12px 45px 12px 40px; 
   border-radius: 8px;
-  border: none;
+  border: 1px solid #ddd; 
   font-size: 16px;
   outline: none;
+  height: 40px;
+  box-sizing: border-box;
 }
 
-.camera-button {
+.suggestions-list {
   position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #1A4756;
+  top: 100%; 
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  list-style: none;
+  margin: 0;
   padding: 0;
-  cursor: pointer;
-  z-index: 2;
+  z-index: 10;
+  max-height: 150px;
+  overflow-y: auto;
+  width: 100%; 
+  box-sizing: border-box;
 }
 
-.material-symbols-outlined {
-  font-size: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.suggestion-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+
+  text-align: left;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background-color: #f8f8f8;
 }
