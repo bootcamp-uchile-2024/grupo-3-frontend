@@ -403,3 +403,325 @@ const login = (user: ILogin): boolean => {
 ```
 - Valida las credenciales de un usuario y da un error si es invalido. 
 - Almaceda la data de usario en `localStorage`.
+
+# Gestión de Usuarios en la Plataforma
+
+Sistema de administración de usuarios, donde se gestionan las operaciones CRUD (crear, leer, actualizar, eliminar) de los usuarios. Los administradores pueden ver, editar y eliminar usuarios, y también se incluye la funcionalidad de paginación y búsqueda.
+
+## Componentes Principales
+
+#### 1. **UserManagement**:
+   - Es el componente principal que gestiona la interfaz de administración de usuarios. 
+   - Contiene la lógica para la paginación, búsqueda, y acciones como editar, eliminar y visualizar detalles de los usuarios.
+
+#### 2. **UserCreateForm**:
+   - Componente utilizado para crear nuevos usuarios (no se muestra en este código, pero se menciona como importado).
+
+#### 3. **CardUser**:
+   - Muestra una tarjeta con la información básica de un usuario (también importado pero no se muestra en el código proporcionado).
+
+#### 4. **UserTable**:
+   - Muestra la lista de usuarios en formato tabla (importado pero no se detalla en este código).
+
+#### 5. **CustomPagination**:
+   - Componente encargado de la paginación de la lista de usuarios, permitiendo navegar entre las páginas.
+
+#### 6. **AdminSideBar**:
+   - Barra lateral que probablemente contiene enlaces y opciones de navegación para la administración (importado pero no detallado en el código).
+
+#### 7. **UserGreeting**:
+   - Componente para mostrar un saludo personalizado al usuario administrador (importado pero no detallado).
+
+## Estados
+
+- **users**: Almacena la lista de usuarios recuperados del backend.
+- **loading**: Estado booleano que indica si los datos están siendo cargados.
+- **isAdmin**: Estado booleano que indica si el usuario tiene rol de administrador.
+- **editingUser**: Usuario que se encuentra siendo editado.
+- **selectedUser**: Usuario seleccionado para visualización o modificación.
+- **error**: Estado para manejar errores y mostrar mensajes en la interfaz.
+- **currentPage**: Página actual en la paginación de usuarios.
+- **showModal**: Determina si el modal de confirmación de acción está visible o no.
+- **modalAction**: Define si la acción en el modal es de "modificar" o "eliminar".
+- **usersPerPage**: Número de usuarios que se muestran por página.
+- **searchId, searchName, searchUsername, searchEmail**: Variables de estado para almacenar los términos de búsqueda.
+
+## Funciones y Lógica
+
+### 1. **handleSearchChange**
+   - Función para manejar los cambios en los campos de búsqueda. Dependiendo del campo, actualiza los estados de búsqueda correspondientes.
+
+```typescript
+const handleSearchChange = (event: React.ChangeEvent<HTMLElement>, field: string) => {
+  const value = (event.target as HTMLInputElement).value;
+  switch (field) {
+    case 'id':
+      setSearchId(value);
+      break;
+    case 'name':
+      setSearchName(value);
+      break;
+    case 'username':
+      setSearchUsername(value);
+      break;
+    case 'email':
+      setSearchEmail(value);
+      break;
+    default:
+      break;
+  }
+};
+```
+### 2. **handleSearchSubmit**
+- Función que se ejecuta cuando se envía el formulario de búsqueda. Filtra los usuarios según los criterios de búsqueda (ID, nombre, nombre de usuario, email) y establece el primer usuario coincidente como selectedUser.
+
+```typescript
+const handleSearchSubmit = () => {
+  const filteredUsers = users.filter((user) => {
+    const matchId = searchId ? user.id === Number(searchId) : true;
+    const matchName = searchName ? user.nombre.toLowerCase().includes(searchName.toLowerCase()) : true;
+    const matchUsername = searchUsername ? user.nombreUsuario.toLowerCase().includes(searchUsername.toLowerCase()) : true;
+    const matchEmail = searchEmail ? user.email.toLowerCase().includes(searchEmail.toLowerCase()) : true;
+    return matchId && matchName && matchUsername && matchEmail;
+  });
+
+  if (filteredUsers.length > 0) {
+    setSelectedUser(filteredUsers[0]);
+  } else {
+    alert('Usuario no encontrado');
+    setSelectedUser(null);
+  }
+};
+```
+### 3. **isFieldDisabled**
+- Determina si un campo de búsqueda debe estar deshabilitado según otros criterios de búsqueda. Si hay un valor en algún campo, los demás se deshabilitan para evitar conflictos.
+
+```typescript
+const isFieldDisabled = (field: string) => { 
+  switch (field) {
+    case 'id':
+      return !!searchName || !!searchUsername || !!searchEmail;
+    case 'name':
+      return !!searchId || !!searchUsername || !!searchEmail;
+    case 'username':
+      return !!searchId || !!searchName || !!searchEmail;
+    case 'email':
+      return !!searchId || !!searchName || !!searchUsername;
+    default:
+      return false;
+  }
+};
+
+```
+### 4. **useEffect (admin-check)**
+   - Verifica si el usuario actual tiene rol de administrador y actualiza el estado `isAdmin`. Si el usuario tiene el rol adecuado, se habilitan las funcionalidades de administración.
+
+```typescript
+useEffect(() => {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  if (user && user.roles && user.roles.includes("admin-1")) {
+    setIsAdmin(true);
+  }
+
+  fetchUsers();
+}, []);
+```
+### 5. **useEffect (load-selected-user)**
+   - Este `useEffect` carga el usuario previamente seleccionado desde el `localStorage`. Si el usuario existe y está presente en la lista de usuarios (`users`), se establece como el usuario seleccionado en el estado `selectedUser`. Si no, se elimina la entrada del `localStorage`.
+
+```typescript
+useEffect(() => {
+  const savedUser = JSON.parse(localStorage.getItem("selectedUser") || "null");
+  if (savedUser) {
+    const existsInUsers = users.find((u) => u.id === savedUser.id);
+    if (existsInUsers) {
+      setSelectedUser(savedUser);
+    } else {
+      localStorage.removeItem("selectedUser");
+    }
+  }
+}, [users]); 
+```
+### 6. **handleSetSelectedUser**
+   - Función que se encarga de seleccionar o deseleccionar un usuario. Si el usuario seleccionado es el mismo que el ya seleccionado, no realiza ninguna acción. Si se selecciona un nuevo usuario, se guarda en el `localStorage` para persistencia de la selección en futuras sesiones.
+
+```typescript
+const handleSetSelectedUser = (user: User | null) => {
+  if (user?.id === selectedUser?.id) return;
+  setSelectedUser(user); 
+  if (user) {
+    localStorage.setItem("selectedUser", JSON.stringify(user));
+  } else {
+    localStorage.removeItem("selectedUser");
+  }
+};
+```
+### 7. **fetchUsers**
+   - Función asincrónica que recupera la lista de usuarios desde el backend utilizando una solicitud `GET` a la URL `http://localhost:8080/usuarios`. Los datos de usuarios obtenidos se almacenan en el estado `users`. En caso de error, se maneja la excepción y se muestra un mensaje en el estado `error`.
+
+```typescript
+const fetchUsers = async () => {
+  try {
+    const response = await fetch("http://localhost:8080/usuarios");
+    if (!response.ok) {
+      throw new Error("Error al obtener los usuarios");
+    }
+    const responseData = await response.json();
+    console.log("Estructura de responseData:", responseData);
+    if (!Array.isArray(responseData.data)) {
+      console.error("El campo 'data' no es un array:", responseData.data);
+    }
+
+    const data: User[] = Array.isArray(responseData.data) ? responseData.data : [];
+    setUsers(data);
+    console.log("Usuarios actualizados en el estado:", data);
+  } catch (error) {
+    console.error("Error:", error);
+    setError("Error al obtener los usuarios");
+  } finally {
+    setLoading(false);
+  }
+};
+```
+### 8. **deleteUser**
+   - Función que elimina un usuario enviando una solicitud `DELETE` al backend en la URL `http://localhost:8080/usuarios/{userId}`. Después de eliminar el usuario, la función `fetchUsers` se llama para actualizar la lista de usuarios.
+
+```typescript
+const deleteUser = async (userId: number) => {
+  try {
+    const response = await fetch(`http://localhost:8080/usuarios/${userId}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      throw new Error("Error al eliminar el usuario");
+    }
+    console.log("Usuario eliminado");
+    fetchUsers();
+  } catch (error) {
+    console.error("Error al eliminar el usuario:", error);
+    setError("Error al eliminar el usuario");
+  }
+};
+```
+### 9. **handleCancelEdit**
+   - Función que cancela la edición del usuario y restablece el estado `editingUser` a `null`.
+
+```typescript
+const handleCancelEdit = () => {
+  setEditingUser(null);
+};
+```
+### 10. **handleModifyClick**
+   - Esta función maneja el clic en el botón para modificar un usuario seleccionado. Si un usuario está seleccionado, se prepara la fecha de nacimiento formateada para la edición y se establece el estado `editingUser` con los datos del usuario.
+
+```typescript
+const handleModifyClick = () => {
+  if (selectedUser) {
+    const fechaOriginal = selectedUser.fechaNacimiento || "";
+    const formattedFechaNacimiento = fechaOriginal.includes("T")
+      ? fechaOriginal.split("T")[0]
+      : fechaOriginal;
+
+    console.log("Fecha formateada:", formattedFechaNacimiento);
+
+    setEditingUser({
+      ...selectedUser,
+      idRol: selectedUser.idRol,
+    });
+    setModalAction("modify");
+  }
+};
+```
+### 11. **handleUpdateUser**
+   - Esta función maneja la actualización de un usuario. Si el campo `idRol` no está definido, se muestra un error. Si todo está correcto, se envía una solicitud `PUT` al backend para actualizar los datos del usuario seleccionado. Si la actualización es exitosa, se vuelve a obtener la lista de usuarios.
+
+```typescript
+const handleUpdateUser = async () => {
+  console.log("handleUpdateUser llamada");
+  if (!editingUser) return;
+
+  if (editingUser.idRol === null || editingUser.idRol === undefined) {
+    console.error("idRol no está definido para el usuario que se va a actualizar.");
+    setError("El rol del usuario es obligatorio.");
+    return;
+  }
+
+  const requestBody = {
+    idRol: editingUser.idRol,
+  };
+
+  console.log("requestBody preparado:", requestBody);
+
+  try {
+    const response = await fetch(`http://localhost:8080/usuarios/${editingUser.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    const result = await response.json();
+    console.log("response:", result);
+
+    if (!response.ok) {
+      throw new Error(`Error al actualizar el usuario: ${response.status} - ${result.message || "Error desconocido"}`);
+    }
+
+    console.log("Usuario actualizado correctamente");
+    fetchUsers();
+    setEditingUser(null);
+  } catch (error) {
+    console.error("Error al actualizar el usuario:", error);
+    setError("Error al actualizar el usuario. Verifica los datos.");
+  }
+};
+```
+# Manejo de Productos desde administrador
+
+Este documento describe el funcionamiento del componente `ProductManagement` en React. El componente gestiona la visualización, búsqueda, paginación, selección, eliminación y filtrado de productos desde una API.
+
+## 1. **Estado de los Productos y Filtros**
+   - El estado de los productos, filtros de búsqueda, y otros estados relacionados con la carga de productos y la selección de productos se gestionan con el hook `useState`.
+
+```typescript
+const [products, setProducts] = useState<ProductAdmin[]>([]);
+const [loading, setLoading] = useState<boolean>(true);
+const [selectedProduct, setSelectedProduct] = useState<ProductAdmin | null>(null);
+const [, setError] = useState<string | null>(null);
+const [searchId, setSearchId] = useState<number | string>('');
+const [searchName, setSearchName] = useState<string>('');
+const [searchSKU, setSearchSKU] = useState<string>('');
+const [searchCategory, setSearchCategory] = useState<number | string>('');
+const [currentPage, setCurrentPage] = useState(1);
+```
+## 2. **fetchProducts**
+   - La función fetchProducts obtiene los productos desde la API utilizando fetch. Si la respuesta es exitosa, los productos se almacenan en el estado products.
+
+```typescript
+const fetchProducts = useCallback(async () => {
+    try {
+        setLoading(true);
+        const response = await fetch('http://localhost:8080/productos', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) throw new Error('Error al cargar los productos');
+
+        const data = await response.json();
+        if (Array.isArray(data)) {
+            setProducts(data);
+        } else {
+            throw new Error('Datos de productos no válidos');
+        }
+    } catch (error) {
+        setError(error instanceof Error ? error.message : 'Ha ocurrido un error desconocido');
+        console.error(error);
+    } finally {
+        setLoading(false);
+    }
+}, []);
