@@ -1,382 +1,405 @@
-# Servicios del proyecto E-commerce PlantAI
+# Servicios del E-commerce PlantAI
 
-# Servicios del Proyecto Ecommerce
+
+#  Compra de Productos 
+Este servicio gestiona el flujo de compra de productos, desde la gestión del carrito de compras hasta la finalización del pedido. Integra la lógica del frontend con los endpoints del backend para manipular datos del carrito, calcular totales y realizar compras.
+## Componentes Principales
+#### 1. CartPage: 
+Página principal del carrito donde los usuarios pueden ver, agregar, eliminar y modificar productos en su carrito de compras.
+#### 2. Estados Globales y Locales: 
+Se utilizan estados globales (Redux) y locales (useState) para la manipulación de datos y la interfaz. 
+- **cartSlice**: Acciones para el manejo del carrito (añadir, eliminar, actualizar).
+
+#### 3. Integración con Backend: 
+Consume endpoints REST para sincronizar el carrito y procesar pedidos.
+
+## Uso de Servicios
+#### 1. Obtener Carrito Activo
+- **Descripción**: Verifica si existe un carrito activo para el usuario actual. Si no existe, devuelve un error 404.
+- **Endpoint**: GET /carro-compras/user/{userId}
+- **Uso del código**:
+```typescript
+const fetchActiveCart = async (): Promise<number | null> => {
+  const response = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`);
+  if (response.ok) {
+    const data = await response.json();
+    return data.id;
+  }
+  return null;
+};
+```
+#### 2. Crear un Nuevo Carrito
+- **Descripción**:  Genera un nuevo carrito para el usuario actual.
+- **Endpoint**: POST /carro-compras/{userId}
+- **Uso del código**:
+```typescript
+const createCart = async () => {
+  const response = await fetch(`${API_BASE_URL}/carro-compras/${userId}`, { method: 'POST' });
+  const data = await response.json();
+  setCartId(data.id);
+};
+```
+#### 3. Agregar Producto al Carrito
+- **Descripción**:  Agrega un producto al carrito existente con una cantidad específica.
+- **Endpoint**: POST /carro-compras/addproducto/{cartId}
+- **Uso del código**:
+```typescript
+const addProductToCart = async (cartId: number, productId: number, quantity: number) => {
+  const response = await fetch(`${API_BASE_URL}/carro-compras/addproducto/${cartId}`, {
+    method: 'POST',
+    body: JSON.stringify({ productoId: productId, cantidadProducto: quantity }),
+  });
+};
+```
+#### 4. Eliminar Producto del Carrito
+- **Descripción**: Elimina un producto del carrito basado en su ID.
+- **Endpoint**: DELETE /carro-compras/removeProducto/{cartId}/{productId}
+- **Uso del código**:
+```typescript
+const handleRemoveProductFromCart = async (productId: number) => {
+  await fetch(`${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`, { method: 'DELETE' });
+};
+```
+#### 5. Actualizar Productos en el Carrito
+- **Descripción**:Sincroniza los productos en el carrito con el backend.
+- **Endpoint**: PUT /carro-compras/replaceProductos/{cartId}
+- **Uso del código**:
+```typescript
+const replaceCartProducts = async () => {
+  await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      productosCarro: cartItems.map((item) => ({
+        productoId: item.id,
+        cantidadProducto: item.cantidad,
+      })),
+    }),
+  });
+};
+```
+#### 6. Finalizar Compra
+- **Descripción**:Procesa la compra de los productos en el carrito y vacía el carrito en caso de éxito.
+- **Endpoint**: POST /carro-compras/finalizar
+- **Uso del código**:
+```typescript
+const handleFinalizePurchase = async () => {
+  const response = await finalizePurchaseRequest(cartItems);
+  if (response.statusCode === 200) {
+    handleClearCart();
+  }
+};
+```
+#### 7. Vaciar el Carrito
+- **Descripción**:Limpia el contenido del carrito del usuario.
+- **Endpoint**: PUT /carro-compras/replaceProductos/{cartId}
+- **Uso del código**:
+```typescript
+const handleClearCart = async () => {
+  await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ productosCarro: [] }),
+  });
+};
+
+```
+
+
+# **Catálogo de Productos**
+
+Este servicio gestiona la visualización, filtrado y paginación de productos en el catálogo. Permite a los usuarios buscar productos, aplicar filtros, modificar cantidades y agregar productos al carrito de compras. Integra la lógica del frontend con los servicios del backend para garantizar una experiencia de usuario dinámica y eficiente.
+
+## **Componentes Principales**
+
+### **1. Página de Catálogo (CatalogPage):**
+Página principal del catálogo donde los usuarios pueden navegar por los productos disponibles, aplicar filtros, ordenar y gestionar la paginación.
+
+### **2. Gestión de Estados:**
+Se emplean estados globales (Redux) y locales (useState) para sincronizar datos y gestionar la interfaz.
+- **`cartSlice`**: Acciones para el manejo del carrito (agregar productos, actualizar cantidades, etc.).
+- **`filters`**: Estado local que define los filtros activos para el catálogo (precio, puntuación, tipo de planta, etc.).
+
+### **3. Integración con Backend:**
+Consume endpoints RESTful para recuperar productos, gestionar filtros y sincronizar datos con el servidor.
+
+---
+
+## **Uso de Servicios**
+
+### **1. Obtener Productos del Catálogo**
+- **Descripción**: Recupera los productos del catálogo desde el backend según los filtros activos, la búsqueda y la paginación.
+- **Endpoint**: `GET /catalogo`  
+  Parámetros opcionales:  
+  - `search`: Término de búsqueda.  
+  - `minPrecio` y `maxPrecio`: Rango de precios.  
+  - `puntuacion`: Filtro por puntuación mínima.  
+  - `page` y `pageSize`: Paginación.  
+  - Otros filtros relacionados con atributos de las plantas.
+- **Uso del Código**:
+  ```typescript
+  const fetchProducts = useCallback(async () => {
+    let url = 'http://localhost:8080/catalogo';
+    const queryParams = new URLSearchParams();
+
+    if (filters.minPrecio) queryParams.append('minPrecio', filters.minPrecio.toString());
+    if (filters.maxPrecio) queryParams.append('maxPrecio', filters.maxPrecio.toString());
+    if (filters.puntuacion) queryParams.append('puntuacion', filters.puntuacion.toString());
+    queryParams.append('page', currentPage.toString());
+    queryParams.append('pageSize', pageSize.toString());
+
+    url += `?${queryParams.toString()}`;
+
+    const response = await fetch(url, { method: 'GET' });
+    if (response.ok) {
+      const data = await response.json();
+      setProducts(data.data);
+      setTotalPages(Math.ceil(data.totalItems / pageSize));
+    } else {
+      throw new Error('Error al cargar los productos');
+    }
+  }, [filters, currentPage, pageSize]);
+  ```
+
+### **2. Filtrar Productos**
+- **Descripción**: Aplica diferentes filtros al catálogo para refinar los resultados mostrados al usuario.
+- **Endpoint**: `GET /catalogo`  
+  Parámetros adicionales:  
+  - `petFriendly`: Filtra productos aptos para mascotas.  
+  - `idToleranciaTemperatura`, `idIluminacion`, `idTipoRiego`, `idTamano`: Filtros por atributos específicos de las plantas.  
+  - `ordenarPor` y `orden`: Ordena los resultados.
+- **Uso del Código**:
+  ```typescript
+  const handleFilterChange = (newFilters: CatalogFilters) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      ...newFilters,
+    }));
+  };
+  ```
+
+### **3. Agregar Productos al Carrito**
+- **Descripción**: Agrega un producto seleccionado al carrito del usuario y sincroniza la acción con el estado global.
+- **Endpoint**: `POST /carro-compras/addproducto/{cartId}`
+- **Uso del Código**:
+  ```typescript
+  const handleAddToCart = (product: productsCatalog) => {
+    const imagePath = product.imagenes?.[0]?.ruta ?? '/estaticos/default-image.jpg';
+    dispatch(
+      addToCart({
+        id: product.id,
+        nombre: product.nombre,
+        precio: product.precio,
+        imagen: imagePath,
+        cantidad: 1,
+        stock: product.stock,
+      })
+    );
+    setShowOffcanvas(true);
+  };
+  ```
+
+### **4. Cambiar Cantidad de Productos**
+- **Descripción**: Incrementa o decrementa la cantidad de un producto en el carrito del usuario.
+- **Endpoint**: `PUT /carro-compras/updateCantidad/{cartId}/{productId}`
+- **Uso del Código**:
+  ```typescript
+  const handleIncrementQuantity = (product: productsCatalog) => {
+    if (product.stock > (quantities[product.id] || 1)) {
+      setQuantities((prev) => ({
+        ...prev,
+        [product.id]: (quantities[product.id] || 1) + 1,
+      }));
+    } else {
+      alert(`No puedes agregar más de ${product.stock} unidades.`);
+    }
+  };
+  ```
+
+### **5. Paginación**
+- **Descripción**: Controla la navegación entre páginas del catálogo.
+- **Endpoint**: `GET /catalogo?page={page}&pageSize={pageSize}`
+- **Uso del Código**:
+  ```typescript
+  const handlePageChange = (page: number) => {
+    if (page > 0 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
+  ```
+# Detalle del Producto
 
 ## Descripción General
 
-A continuación, se describen los servicios relacionados con la gestión del carrito de compras detallando la estructura de cada archivo, los estados gestionados y las acciones disponibles para interactuar con el carrito de compras.
+El componente **ProductDetailPage** es una página React que muestra información detallada sobre un producto específico. Este componente permite:
+- Ver imágenes del producto y sus características.
+- Seleccionar cantidad para la compra.
+- Agregar el producto al carrito de compras.
+- Elegir entre envío a domicilio o retiro en tienda.
+- Comprar directamente desde la página de detalle.
 
 ---
 
-## CartPage
+## Tecnologías y Librerías Utilizadas
 
-El componente `CartPage` es responsable de mostrar los productos agregados al carrito, gestionar la cantidad de cada producto, aplicar cupones de descuento y procesar la finalización de la compra.
-
-### Funcionalidades
-
-- **Visualización del Carrito**: Muestra los productos agrupados por `id`, sumando la cantidad de cada ítem.
-- **Incrementar/Decrementar Cantidad**: Permite ajustar la cantidad de cada producto usando los botones `+` y `-`:
-
-```
-const handleIncrement = (productId: number) => {
-    dispatch(updateQuantity({ id: productId, cantidad: 1 }));
-  };
-
-  const handleDecrement = (productId: number) => {
-    dispatch(updateQuantity({ id: productId, cantidad: -1 }));
-  };
-```
-
-- **Eliminar del Carrito**: Remueve un producto del carrito mediante un botón específico.
-
-```
-removeFromCart(state, action: PayloadAction<number>) {
-      state.items = state.items.filter(item => item.id !== action.payload);
-      saveCartToLocalStorage(state);
-    },
-
-```
-
-- **Vaciar Carrito**: Limpia todos los productos del carrito.
-
-```
-removeFromCart(state, action: PayloadAction<number>) {
-      state.items = state.items.filter(item => item.id !== action.payload);
-      saveCartToLocalStorage(state);
-    },
-```
-
-- **Aplicación de Cupones**: Ofrece un campo de texto para ingresar un cupón de descuento (válido: `bootcamp2024` con un 10% de descuento).
-
-```
-const handleApplyCoupon = () => {
-    if (coupon === 'bootcamp2024') {
-      setDiscount(0.1);
-    } else {
-      alert('Cupón inválido');
-      setDiscount(0);
-    }
-  };
-```
-
-- **Modal de Confirmación de Compra**: Al hacer clic en "Pagar", se abre un modal que muestra un resumen de los productos antes de finalizar la compra.
-- **Total con Descuento**: Calcula el total del carrito con el descuento aplicado, si es válido.
-
-### Importante
-
-- Despacha las acciones `updateQuantity`, `removeFromCart` y `clearCart` desde `cartSlice` para manipular el estado del carrito.
-- Utiliza `useSelector` para obtener el estado del carrito desde el store y `useDispatch` para enviar acciones.
+- **React**: Biblioteca principal para la creación del componente.
+- **Redux**: Gestión de estado global (para el carrito de compras).
+- **React Router**: Manejo de rutas y parámetros.
+- **Bootstrap**: Estilos y componentes predefinidos.
+- **Icons Bootstrap**: Para iconografía interactiva.
 
 ---
 
-## CatalogPage
+## Estructura del Código
 
-`CatalogPage` gestiona la visualización del catálogo de productos y permite a los usuarios agregar productos al carrito.
+### Dependencias Importadas
 
-### Funcionalidades
-
-- **Carga de Productos**: Realiza una petición `fetch` para obtener el catálogo de productos desde la Base de datos.
-
-```
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch(`http://localhost:8080/catalogo?page=${currentPage}&pageSize=${pageSize}`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-      });
-
-      if (!response.ok) throw new Error('Error al cargar los productos');
-
-      const data = await response.json();
-
-      if (Array.isArray(data.data)) {
-        setProducts(data.data);
-        setTotalPages(Math.ceil(data.totalItems / pageSize));
-      } else {
-        throw new Error('Datos de productos no válidos');
-      }
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Ha ocurrido un error desconocido');
-    } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 500); 
-    }
-  };
-
+```javascript
+import '../styles/ProductDetailStyle.css';
+import '../styles/Offcanvas.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { productsCatalog } from '../interfaces/ProductsCatalog';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '../states/cartSlice';
+import { Button, Card, Col, Container, Row, Form, Offcanvas } from 'react-bootstrap';
+import { CartPlus, CaretDown } from 'react-bootstrap-icons';
 ```
 
-- **Agregar al Carrito**: Al hacer clic en "Agregar al carrito", se despacha la acción `addToCart` de `cartSlice`.
+Estas dependencias incluyen estilos CSS, funciones y componentes React necesarios para la implementación.
 
-```
-const handleAddToCart = (product: productsCatalog) => {
-    const quantity = quantities[product.id] || 1;
+### Estado y Hooks
 
-    if (quantity > product.cantidad) {
-      setErrorMessages((prevMessages) => ({
-        ...prevMessages,
-        [product.id]: `Stock insuficiente. Solo hay ${product.cantidad} unidades disponibles.`,
-      }));
-      return;
-    }
-    dispatch(addToCart({
-      id: product.id,
-      nombre: product.nombre,
-      precio: product.precio,
-      imagen: product.imagen,
-      descripcion: product.descripcion,
-      cantidad: quantity,
-      unidadesVendidas: product.unidadesVendidas,
-      puntuacion: product.puntuacion,
-      ancho: product.ancho,
-      alto: product.alto,
-      largo: product.largo,
-      peso: product.peso,
-    }));
-    setErrorMessages((prevMessages) => ({
-      ...prevMessages,
-      [product.id]: '',
-    }));
-  };
+- **Estados**: Manejan datos como producto, cantidad seleccionada, error, y controlan el estado del carrito.
+- **Hooks**: Se usan `useParams`, `useNavigate`, `useDispatch` y `useEffect` para manejar datos, rutas y efectos secundarios.
 
+```javascript
+const { id } = useParams<{ id: string }>();
+const [product, setProduct] = useState<productsCatalog | null>(null);
+const [loading, setLoading] = useState<boolean>(true);
+const [error, setError] = useState<string | null>(null);
+const [quantity, setQuantity] = useState<number>(1);
+// Otros estados omitidos para brevedad
 ```
 
-## cartSlice
+### Funcionalidades Clave
 
-El archivo `cartSlice` define el estado del carrito de compras y las acciones disponibles para modificarlo, utilizando `createSlice` de Redux Toolkit,.
+1. **Carga de Producto desde API**:
+    - Llama a una API para obtener detalles del producto.
+    - Muestra una imagen predeterminada si no hay imágenes disponibles.
 
-### Estado Inicial
-
-- `items`: Arreglo que contiene los productos del carrito, cada uno con su `id`, `name`, `price` y `quantity`.
-
-### Acciones Disponibles
-
-- **addToCart**: Agrega un producto al carrito o incrementa su cantidad si ya está presente.
-- **removeFromCart**: Remueve un producto específico del carrito.
-- **updateQuantity**: Modifica la cantidad de un producto en el carrito.
-- **clearCart**: Vacía todos los productos del carrito.
-
-```
-  const handleAddToCart = (product: productsCatalog) => {
-    const quantity = quantities[product.id] || 1;
-
-    if (quantity > product.cantidad) {
-      setErrorMessages((prevMessages) => ({
-        ...prevMessages,
-        [product.id]: `Stock insuficiente. Solo hay ${product.cantidad} unidades disponibles.`,
-      }));
-      return;
-    }
-    dispatch(addToCart({
-      id: product.id,
-      nombre: product.nombre,
-      precio: product.precio,
-      imagen: product.imagen,
-      descripcion: product.descripcion,
-      cantidad: quantity,
-      unidadesVendidas: product.unidadesVendidas,
-      puntuacion: product.puntuacion,
-      ancho: product.ancho,
-      alto: product.alto,
-      largo: product.largo,
-      peso: product.peso,
-    }));
-    setErrorMessages((prevMessages) => ({
-      ...prevMessages,
-      [product.id]: '',
-    }));
-  };
-```
-
-- `removeFromCart` elimina productos por su `id`.
-
-```
-removeFromCart(state, action: PayloadAction<number>) {
-      state.items = state.items.filter(item => item.id !== action.payload);
-      saveCartToLocalStorage(state);
-    }
-```
-
-- `updateQuantity` asegura que la cantidad sea mayor a cero antes de actualizar.
-
-```
-updateQuantity: (state, action: PayloadAction<{ id: number; cantidad: number }>) => {
-      const { id, cantidad } = action.payload;
-      const item = state.items.find(item => item.id === id);
-      if (item) {
-        item.cantidad += cantidad;
-        if (item.cantidad < 1) {
-          item.cantidad = 1;
+    ```javascript
+    useEffect(() => {
+      const getProduct = async () => {
+        try {
+          const response = await fetch(`http://localhost:8080/productos/${id}`);
+          const productJson = await response.json();
+          setProduct(productJson);
+        } catch (error) {
+          setError('Hubo un error al obtener el producto');
+        } finally {
+          setLoading(false);
         }
+      };
+      getProduct();
+    }, [id]);
+    ```
+
+2. **Agregar al Carrito**:
+    - Verifica si la cantidad seleccionada es válida antes de agregar el producto.
+    - Despacha la acción `addToCart` del slice de Redux.
+
+    ```javascript
+    const handleAddToCart = (product) => {
+      if (quantity > product.stock) {
+        alert(`Solo hay ${product.stock} unidades disponibles.`);
+        return;
       }
-      saveCartToLocalStorage(state);
-    }
-```
+      dispatch(addToCart({
+        id: product.id,
+        nombre: product.nombre,
+        // Otros atributos omitidos
+      }));
+    };
+    ```
 
-- `clearCart` resetea el estado a su valor inicial (`items` vacío).
+3. **Cambiar Imágenes y Controlar Cantidad**:
+    - Cambia la imagen principal al hacer clic en una miniatura.
+    - Incrementa o decrementa la cantidad seleccionada respetando el stock disponible.
 
-```
-clearCart(state) {
-      state.items = [];
-      saveCartToLocalStorage(state);
-    },
-```
+4. **Visualización de Detalles y Características**:
+    - Las características del producto se despliegan de manera interactiva.
 
----
-
-## store
-
-El archivo `store.ts` configura el store de Redux para la aplicación, combinando los diferentes reducers, incluyendo `cartReducer`.
-
-## CartItem Interface
-
-### Descripción
-
-La interfaz `CartItem` define la estructura de los elementos del carrito de compras, incluyendo:
-
-- `id: number` - Identificador único del producto.  
-- `nombre: string` - Nombre del producto.  
-- `precio: number` - Precio unitario del producto.  
-- `imagen: string` - URL de la imagen del producto.  
-- `descripcion: string` - Descripción detallada del producto.  
-- `cantidad: number` - Cantidad de ese producto en el carrito.  
-- `unidadesVendidas: number` - Número de unidades vendidas del producto.  
-- `puntuacion: number` - Puntuación promedio del producto basada en reseñas.  
-- `familia?: string` - Familia botánica o categoría del producto (opcional).  
-- `fotoperiodo?: string` - Requisitos de fotoperiodo para el cuidado del producto (opcional).  
-- `tipoRiego?: string` - Tipo de riego recomendado para el producto (opcional).  
-- `petFriendly?: boolean` - Indica si el producto es seguro para mascotas (opcional).  
-- `color?: string` - Color característico del producto (opcional).  
-- `ancho: number` - Ancho del producto en centímetros.  
-- `alto: number` - Altura del producto en centímetros.  
-- `largo: number` - Largo del producto en centímetros.  
-- `peso: number` - Peso del producto en kilogramos.  
+    ```javascript
+    const toggleSection = (section) => {
+      setOpenSection(prev => (prev === section ? null : section));
+    };
+    ```
+# Servicio Inicio de sesión
+## Description
+Permite a los usuarios introducir sus credenciales, verifica la información con usuarios predefinidos y los redirige en función de sus roles. Este componente está construido con React e integra React Router para la navegación.
 
 ---
+## Características principales
+1. **Validación de usuario**:
+   - Compara las credenciales de entrada con una lista predefinida de usuarios.
+   - Muestra los mensajes de error correspondientes para un nombre de usuario o una contraseña no válidos.
+2. **Navegación basada en roles**:
+   - Redirige a los usuarios a '/user-management' si tienen privilegios de administrador.
+   - Redirige a los usuarios habituales a la página de inicio ('/').
+3. **Integración de almacenamiento local**:
+   - Almacena los datos del usuario en 'localStorage' al iniciar sesión correctamente.
+```tsx
+import React from 'react';
+import LoginForm from './LoginForm';
 
-## Uso de LocalStorage
+const App = () => {
+  const handleLogin = (username, role) => {
+    console.log(`Logged in as ${username} with role ${role}`);
+  };
 
-El `localStorage` se utiliza para almacenar de manera persistente los datos del carrito de compras en el navegador del usuario. Esto asegura que, incluso si el usuario recarga la página o cierra el navegador, los productos en el carrito se mantendrán disponibles hasta que el usuario decida eliminarlos. A continuación, se describen los aspectos clave del uso de `localStorage` en este proyecto.
-
-### Funcionalidades
-
-- **Almacenamiento Persistente**: Permite que el carrito de compras persista entre sesiones, mejorando la experiencia del usuario al evitar la pérdida de productos seleccionados.
-- **Carga Inicial del Carrito**: Al cargar la aplicación, se verifica si hay datos en `localStorage`. Si existen, se inicializa el estado del carrito con esos datos.
-
-### Implementación
-
-#### Almacenamiento de Datos en LocalStorage
-
-Cada vez que se agrega, actualiza o elimina un producto del carrito, se debe actualizar el `localStorage` para reflejar el estado actual.
-
-```
-const saveCartToLocalStorage = (cart: CartItem[]) => {
-    localStorage.setItem('cart', JSON.stringify(cart));
+  return <LoginForm onLogin={handleLogin} />;
 };
 
-addToCart: (state, action) => {
-    const existingItem = state.items.find(item => item.id === action.payload.id);
-    if (existingItem) {
-        existingItem.quantity += 1;
-    } else {
-        state.items.push({ ...action.payload, quantity: 1 });
-    }
-    saveCartToLocalStorage(state.items); // Actualiza el localStorage
-},
-
+export default App;
 ```
 
-## Servicio Catálogo
+---
 
-- **Descripción**: Muestra la oferta visible para los usuarios. <br>
-- **Método HTTP:** GET
-- **EndPoint consumido**: https://clon-cotiledonbackend.onrender.com/catalogo <br>
-- **Interface utilizada:** productosDeCatalogo
+## Explicación de código
 
-## Detalles de Producto<br>
-
-- **Descripción**: Proporciona los detalles específicos de un producto individual en el catálogo.<br>
-- **Método HTTP:** GET
-- **EndPoint consumido**: http://localhost:8080/catalogo?page=${currentPage}&pageSize=${pageSize} <br>
-- **Interface utilizada:** productosDeCatalogo
-
-## Lista de interfaces
-
-**Interface**: productsCatalog
-
-- **Descripción:** Define la estructura de los productos que se muestran en el catálogo, proporcionando los atributos clave que representan cada producto.
-
-- **Ruta fichero DTO**: `src/interfaces/ProductsCatalog.ts` <br>
-
-```typescript
-interface productsCatalog {
-  nombre: string;
-  precio: number;
-  imagen: string;
-  descripcion: string;
-  cantidad: number;
-  unidadesVendidas: number;
-  puntuacion: number;
-  familia: string;
-  fotoperiodo: string;
-  tipoRiego: string;
-  petFriendly: boolean;
-  color: string;
-  id: number;
-}
+### User Data
+```tsx
+const users = [
+  { username: 'administrador', password: 'administrador', roles: ['admin-1'] },
+  { username: 'usuario', password: 'usuario', roles: ['user-1'] }
+];
 ```
+- Contiene credenciales.
 
-**Interface**: CreateProductData
+### Lógica Login
+```tsx
+const login = (user: ILogin): boolean => {
+  const foundUser = users.find(u => u.username === user.username);
 
-- **Descripción:** Define la estructura del nuevo producto que se va a crear para luego mostrarse en el catálogo, proporcionando los atributos clave que representan cada producto.
+  if (!foundUser) {
+    setErrors(prev => ({ ...prev, usernameError: 'Nombre de usuario incorrecto' }));
+    return false;
+  }
 
-- **Ruta fichero DTO**: `src/interfaces/CreateProductData.ts` <br>
+  if (foundUser.password !== user.password) {
+    setErrors(prev => ({ ...prev, passwordError: 'Contraseña incorrecta' }));
+    return false;
+  }
 
-```typescript
-interface createProductData {
-  nombre: string;
-  precio: number;
-  imagen?: string;
-  descripcion: string;
-  cantidad: number;
-  familia: string;
-  fotoperiodo: string;
-  tipoRiego: string;
-  petFriendly: boolean;
-  color: string;
-  id?: number;
-}
+  const userResponse: ILogin = {
+    ...user,
+    roles: foundUser.roles
+  };
+
+  const datosUsuario = JSON.stringify(userResponse);
+  localStorage.setItem('user', datosUsuario);
+  return true;
+};
 ```
-
-**Interface**: CreateUsuarioDTO
-
-- **Descripción:** Permite la creación de cuentas de usuario.
-
-- **Ruta fichero DTO**: `src/interfaces/CreateUserDTO.ts` <br>
-
-```typescript
-export interface createUsuarioDTO {
-  name: string;
-  password: string;
-  email: string;
-}
-```
-
-**Interface**: CartItem
-
-- **Descripción:** Permite agregar y agrupar los items al carrito de compra
-
-- **Ruta fichero DTO**: `src/interfaces/CartItem.ts` <br>
-
-```typescript
-export interface CartItem {
-  id: number;
-  nombre: string;
-  precio: number;
-  cantidad: number;
-}
-```
+- Valida las credenciales de un usuario y da un error si es invalido. 
+- Almaceda la data de usario en `localStorage`.
