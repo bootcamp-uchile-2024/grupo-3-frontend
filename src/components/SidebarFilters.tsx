@@ -1,4 +1,3 @@
-// SidebarFilters.tsx
 import '../styles/SidebarFilters.css';
 import React, { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
@@ -15,7 +14,6 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = ({ onFilterChange }) => {
 
     try {
       const parsedFilters = JSON.parse(storedFilters);
-      // Validar la estructura de los filtros si es necesario
       return parsedFilters;
     } catch (e) {
       return getDefaultFilters();
@@ -67,7 +65,7 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = ({ onFilterChange }) => {
 
   const handleMaxPriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(event.target.value);
-    if (value >= (filters.minPrecio ?? 0)) {  // Use nullish coalescing to provide a fallback value
+    if (value >= (filters.minPrecio ?? 0)) { 
       updateFilters({ ...filters, maxPrecio: value });
     }
   };

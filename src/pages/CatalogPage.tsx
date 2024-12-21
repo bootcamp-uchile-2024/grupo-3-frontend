@@ -52,14 +52,12 @@ const CatalogPage: React.FC = () => {
     return text;
   };
 
-  // Usamos useCallback para memorizar la función y evitar su ejecución innecesaria
 const fetchProducts = useCallback(async () => {
   try {
     setLoading(true);
     let url = '';
     const queryParams = new URLSearchParams();
 
-    // Aquí construimos los parámetros de la consulta de acuerdo con los filtros
     if (searchTerm) queryParams.append('search', searchTerm);
     if (filters.minPrecio && filters.minPrecio !== 1000) queryParams.append('minPrecio', filters.minPrecio.toString());
     if (filters.maxPrecio && filters.maxPrecio !== 10000) queryParams.append('maxPrecio', filters.maxPrecio.toString());
@@ -161,12 +159,10 @@ const fetchProducts = useCallback(async () => {
   const renderPaginationItems = () => {
     const items: JSX.Element[] = [];
 
-    // Flecha de "anterior"
     items.push(
       <Pagination.Prev key="prev" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
     );
 
-    // Primer número de página siempre visible
     items.push(
       <Pagination.Item
         key={1}
@@ -181,7 +177,6 @@ const fetchProducts = useCallback(async () => {
       items.push(<Pagination.Ellipsis key="ellipsis-start" />);
     }
 
-    // Páginas cercanas a la página actual
     for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
       items.push(
         <Pagination.Item
@@ -194,12 +189,10 @@ const fetchProducts = useCallback(async () => {
       );
     }
 
-    // Si no estamos cerca de la última página, mostrar "..."
     if (currentPage < totalPages - 2) {
       items.push(<Pagination.Ellipsis key="ellipsis-end" />);
     }
 
-    // Último número de página siempre visible
     if (totalPages > 1) {
       items.push(
         <Pagination.Item
@@ -212,7 +205,6 @@ const fetchProducts = useCallback(async () => {
       );
     }
 
-    // Flecha de "siguiente"
     items.push(
       <Pagination.Next key="next" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
     );
@@ -236,7 +228,7 @@ const fetchProducts = useCallback(async () => {
     setFilters((prevFilters) => {
       const updatedFilters = { ...prevFilters, ...newFilters };
       if (JSON.stringify(updatedFilters) === JSON.stringify(prevFilters)) {
-        return prevFilters; // Si no ha cambiado nada, no hacer nada
+        return prevFilters; 
       }
       return updatedFilters;
     });

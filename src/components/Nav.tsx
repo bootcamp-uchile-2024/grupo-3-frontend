@@ -48,7 +48,7 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
               {user ? (
                 <div className="user-menu">
                   <img
-                    src="/path-to-avatar.png"
+                    src="https://ui-avatars.com/api/?name=Admin&background=1A4756&color=fff&size=128"
                     alt="Avatar"
                     className="user-avatar"
                   />
