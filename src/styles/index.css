@@ -345,13 +345,17 @@ i.fas.fa-search {
 /* FOOTER */
 
 footer {
-  position: relative;
+  position: absolute;
+  left: 0;
+  right: 0;
   color: white;
   overflow: hidden;
-  padding: 40px;
-  width: 1440px;
-  height: 290px;
+  padding: 40px 0; 
+  width: 100%; 
+  min-height: 250px; 
   background-color: #1A4756;
+  display: flex;
+  align-items: center;
 }
 
 /* Pattern de fondo */
@@ -360,6 +364,7 @@ footer::before {
   position: absolute;
   top: 0;
   left: 0;
+  right: 0;
   width: 100%;
   height: 100%;
   background-image: url("/src/assets/pattern_footer.png");
@@ -375,28 +380,31 @@ footer::after {
   position: absolute;
   top: 0;
   left: 0;
+  right: 0;
   width: 100%;
   height: 100%;
   background: linear-gradient(to right, rgba(26, 71, 86, 1) 0%, rgba(26, 71, 86, 0) 100%);
   z-index: 2;
 }
 
-/* Contenido del footer */
 footer * {
-  position: relative;
   z-index: 3; /* Asegura que el contenido esté por encima del gradiente */
+}
+
+.footer-container {
+  padding: 0 20px;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
 .footer-logo {
   background-image: url("/src/assets/LOGO_PLANTAI.png");
   background-size: contain; 
   background-repeat: no-repeat; 
-  background-position: center; 
-  display: block; 
-  width: 99px;
+  background-position: right;
+  width: 100px;
   height: 100px;
-  text-indent: -9999px; 
-  overflow: hidden; 
 }
 
 .footer-links {
@@ -405,14 +413,21 @@ footer * {
   margin: 0;
 }
 
+footer h6 {
+  font-size: 22px;
+  margin-bottom: 20px;
+}
+
 .footer-links li {
   margin-bottom: 8px;
 }
 
 .footer-links a {
   color: white;
+  font-size: 17px;
+  line-height: 26px;
+  display: inline-block;
   text-decoration: none;
-  font-size: 14px;
 }
 
 .footer-links a:hover {
@@ -420,7 +435,7 @@ footer * {
 }
 
 .footer-subscription-text {
-  font-size: 14px!important;
+  font-size: 13px!important;
   margin-bottom: 10px;
   color: #F2D95E;
 }
@@ -456,6 +471,16 @@ footer * {
   font-size: var(--font-footer-small);
 }
 
+@media (max-width: 768px) {
+  footer {
+    padding: 30px 0;
+    height: auto;
+  }
+  
+  .footer-logo {
+    margin-bottom: 20px;
+  }
+}
 
 /* Social Icons */
 .social-icons a {

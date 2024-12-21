@@ -2,16 +2,16 @@ import { Container, Row, Col, Form} from "react-bootstrap";
 
 const Footer = () => {
   return (
-    <footer className="footer">
-      <Container fluid>
+    <footer>
+      <Container fluid className="footer-container">
         <Row>
-        <Col lg={2} className="d-flex align-items-center me-3">
-          <h1 className="footer-logo" aria-label="PlantAI Logo"></h1>
+        <Col lg={1} className="footer-logo mt-4">
+          <h1 className="" aria-label="PlantAI Logo"></h1>
           </Col>
-          <Col lg={9}>
-            <Row>
-              <Col sm={4}>
-                <h6>¿Necesitas ayuda?</h6>
+          <Col lg={11}>
+            <Row className="ms-5">
+              <Col sm={3} className="ms-5">
+                <h6>Infórmate</h6>
                 <ul className="footer-links">
                   <li></li>
                   <li><a href="#faq">Preguntas Frecuentes</a></li>
@@ -20,8 +20,8 @@ const Footer = () => {
                   <li><a href="#shipping-policy">Política de Despacho</a></li>
                 </ul>
               </Col>
-              <Col sm={3}>
-                <h6>Infórmate</h6>
+              <Col sm={3} className="ms-5">
+                <h6>¿Necesitas ayuda?</h6>
                 <ul className="footer-links">
                   <li><a href="#payment-methods">Medios de Pago</a></li>
                   <li><a href="#about">Acerca de Nosotros</a></li>
@@ -29,7 +29,7 @@ const Footer = () => {
                   <li><a href="#work-with-us">Trabaja con Nosotros</a></li>
                 </ul>
               </Col>
-              <Col sm={5}>
+              <Col sm={4} className="ms-5">
                 <h6>Síguenos</h6>
                 <ul className="social-icons d-flex justify-content-left align-items-left list-unstyled gap-3">
                   <li>
