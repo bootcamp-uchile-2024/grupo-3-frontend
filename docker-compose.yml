@@ -43,7 +43,7 @@ services:
       - "8080:${API_PORT}"
 
   frontend-prod:
-    image: chirmus/plantaiapp-frontend:plantaifront4
+    image: estefaniaperez/plantaiapp-frontend:plantaifrontg3v1.0.11
     container_name: frontend
     depends_on:
       - backend-prod
