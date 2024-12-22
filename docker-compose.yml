@@ -44,6 +44,12 @@ services:
 
   frontend-prod:
     image: estefaniaperez/plantaiapp-frontend:plantaifrontg3v1.0.11
+    build:
+      context: .
+      args:
+        - VITE_URL_ENDPOINT_BACKEND
+    environment:
+      - VITE_URL_ENDPOINT_BACKEND=${VITE_URL_ENDPOINT_BACKEND}
     container_name: frontend
     depends_on:
       - backend-prod
@@ -51,5 +57,3 @@ services:
       - "80:80"
     env_file:
       - .env.production
-
-

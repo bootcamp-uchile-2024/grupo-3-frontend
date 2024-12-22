@@ -29,7 +29,8 @@ export default function ProductDetailPage() {
       try {
         if (!id) return;
 
-        const response = await fetch(`http://localhost:8080/productos/${id}`);
+        const baseUrl = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${baseUrl}/productos/${id}`);
         if (!response.ok) {
           throw new Error('No pudimos obtener el producto');
         }

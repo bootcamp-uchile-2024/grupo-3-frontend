@@ -77,7 +77,8 @@ const fetchProducts = useCallback(async () => {
     queryParams.append('page', currentPage.toString());
     queryParams.append('pageSize', pageSize.toString());
 
-    url = `http://localhost:8080/catalogo${searchTerm ? '/search' : ''}?${queryParams.toString()}`;
+    const baseUrl = import.meta.env.VITE_API_URL;
+    url = `${baseUrl}/catalogo${searchTerm ? '/search' : ''}?${queryParams.toString()}`;
     console.log (url)
 
     const response = await fetch(url, {
