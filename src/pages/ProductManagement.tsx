@@ -40,9 +40,7 @@ const ProductManagement = () => {
         try {
             setLoading(true);
             const backendUrl = import.meta.env.VITE_API_URL;
-            let url= `${backendUrl}/productos`;
-            console.log ('URL es:', url);
-            const response = await fetch(url, {
+            const response = await fetch(`${backendUrl}/productos`, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
