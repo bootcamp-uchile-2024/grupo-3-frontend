@@ -55,7 +55,6 @@ const CatalogPage: React.FC = () => {
 const fetchProducts = useCallback(async () => {
   try {
     setLoading(true);
-    let url = '';
     const queryParams = new URLSearchParams();
 
     if (searchTerm) queryParams.append('search', searchTerm);
@@ -78,10 +77,7 @@ const fetchProducts = useCallback(async () => {
     queryParams.append('pageSize', pageSize.toString());
 
     const baseUrl = import.meta.env.VITE_API_URL;
-    url = `${baseUrl}/catalogo${searchTerm ? '/search' : ''}?${queryParams.toString()}`;
-    console.log('URL de la API:', url);
-
-    const response = await fetch(url, {
+    const response = await fetch(`${baseUrl}/catalogo${searchTerm ? '/search' : ''}?${queryParams.toString()}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
