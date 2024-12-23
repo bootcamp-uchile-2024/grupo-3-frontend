@@ -137,7 +137,7 @@ Consume endpoints RESTful para recuperar productos, gestionar filtros y sincroni
 - **Uso del Código**:
   ```typescript
   const fetchProducts = useCallback(async () => {
-    let url = 'http://localhost:8080/catalogo';
+    let url = '${baseUrl}/catalogo';
     const queryParams = new URLSearchParams();
 
     if (filters.minPrecio) queryParams.append('minPrecio', filters.minPrecio.toString());
@@ -725,3 +725,22 @@ const fetchProducts = useCallback(async () => {
         setLoading(false);
     }
 }, []);
+```
+
+# Swagger API ENDPOINTS
+
+## Documentación de la API
+
+La API entregada por Backend está documentada en: `http://localhost:8080/api/`
+
+## Módulos Disponibles
+
+La documentación específica está disponible para los siguientes módulos:
+
+* **Carro de compras**: `api/carro`
+* **Pedidos**: `api/pedidos`
+* **Productos**: `api/productos`
+* **Usuarios**: `api/usuarios`
+* **Equipo**: `api/equipo`
+* **Autenticación**: `api/aut`
+* **Reviews**: `api/reviews`
