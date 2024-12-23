@@ -42,7 +42,8 @@ const AdminCartPage: React.FC = () => {
 
   const fetchCarritoById = useCallback(async (id: number): Promise<Carrito | null> => {
     try {
-      const response = await fetch(`http://localhost:8080/carro-compras/${id}`, {
+      const baseUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${baseUrl}/carro-compras/${id}`, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -123,7 +124,8 @@ const AdminCartPage: React.FC = () => {
 
   const checkCarritoActivo = async (userId: number) => {
     try {
-      const response = await fetch(`http://localhost:8080/carro-compras/activo/${userId}`, {
+      const backendUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${backendUrl}/carro-compras/activo/${userId}`, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -163,7 +165,8 @@ const AdminCartPage: React.FC = () => {
         return;
       }
 
-      const response = await fetch(`http://localhost:8080/carro-compras/${newUserId}`, {
+      const backendUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${backendUrl}/carro-compras/${newUserId}`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -208,7 +211,8 @@ const AdminCartPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/carro-compras/${carritoId}`, {
+      const backendUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${backendUrl}/carro-compras/${carritoId}`, {
         method: 'DELETE',
       });
 

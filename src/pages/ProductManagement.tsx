@@ -39,7 +39,10 @@ const ProductManagement = () => {
     const fetchProducts = useCallback(async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:8080/productos', {
+            const backendUrl = import.meta.env.VITE_API_URL;
+            let url= `${backendUrl}/productos`;
+            console.log ('URL es:', url);
+            const response = await fetch(url, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
@@ -113,7 +116,7 @@ const ProductManagement = () => {
             const productIndex = products.findIndex((prod) => prod.id === product.id);
             if (productIndex !== -1) {
                 const page = Math.floor(productIndex / itemsPerPage) + 1;
-                setCurrentPage(page); // Establece la página correcta
+                setCurrentPage(page);
             }
         } else {
             setCurrentPage(1);
@@ -124,7 +127,8 @@ const ProductManagement = () => {
         const confirmation = window.confirm(`¿Estás seguro de querer eliminar el producto ${productId}?`);
         if (confirmation) {
             try {
-                const response = await fetch(`http://localhost:8080/productos/${productId}`, {
+                const backendUrl = import.meta.env.VITE_API_URL;
+                const response = await fetch(`${backendUrl}/productos/${productId}`, {
                     method: 'DELETE',
                 });
                 if (!response.ok) {

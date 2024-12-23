@@ -43,7 +43,8 @@ const EditProductPage: React.FC = () => {
         return;
       }
       try {
-        const response = await fetch(`http://localhost:8080/productos/${id}`);
+        const backendUrl = import.meta.env.VITE_URL_ENDPOINT_BACKEND;
+        const response = await fetch(`${backendUrl}/productos/${id}`);
         if (!response.ok) throw new Error('Error al obtener los detalles del producto');
         const data = await response.json();
         setProduct(data);
@@ -59,7 +60,8 @@ const EditProductPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8080/productos/${id}`, {
+      const backendUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${backendUrl}/productos/${id}`, {
         method: 'PATCH',
         headers: {
           'Accept': 'application/json',

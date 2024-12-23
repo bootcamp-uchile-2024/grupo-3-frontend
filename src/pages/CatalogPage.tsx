@@ -79,7 +79,7 @@ const fetchProducts = useCallback(async () => {
 
     const baseUrl = import.meta.env.VITE_API_URL;
     url = `${baseUrl}/catalogo${searchTerm ? '/search' : ''}?${queryParams.toString()}`;
-    console.log (url)
+    console.log('URL de la API:', url);
 
     const response = await fetch(url, {
       method: 'GET',

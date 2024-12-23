@@ -315,7 +315,8 @@ const CreateProduct: React.FC = () => {
                 setProducto({ ...producto, SKU });
                 console.log("Producto JSON para enviar:", JSON.stringify(productoData));
 
-                const response = await fetch('http://localhost:8080/productos', {
+                const backendUrl = import.meta.env.VITE_API_URL;
+                const response = await fetch(`${backendUrl}/productos`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(productoData),

@@ -9,7 +9,8 @@ export const finalizePurchaseRequest = async (cartData: CartItem[]) => {
 
     
     try {
-        const response = await fetch('http://localhost:8080/carro-compras', {
+        const baseUrl = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${baseUrl}/carro-compras`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
