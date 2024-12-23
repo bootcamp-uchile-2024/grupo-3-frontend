@@ -121,7 +121,7 @@ const fetchProducts = useCallback(async () => {
       return;
     }
 
-    const imagePath = product.imagenes?.[0]?.ruta ?? '/estaticos/default-image.jpg';
+    const imagePath = '/estaticos/default-image.jpg';
 
     dispatch(
       addToCart({
