@@ -24,7 +24,6 @@ services:
 
   backend-prod:
     image: nicolasf1/cotiledonapp:1.11.5
-    container_name: backend
     depends_on:
       - database-prod
     environment:
@@ -39,32 +38,29 @@ services:
       - RUTA_FISICA=${RUTA_FISICA}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN}
       - JWT_SECRET=${JWT_SECRET}
-    ports: 
-    - "8080:${API_PORT}"
+    ports:
+      - "8080:${API_PORT}"
 
   frontend-prod:
-    image: estefaniaperez/plantaiapp-frontend:plantaifrontg3v1.0.11
     build:
       context: .
       args:
-        - VITE_URL_ENDPOINT_BACKEND
-    environment:
-      - VITE_URL_ENDPOINT_BACKEND=${VITE_URL_ENDPOINT_BACKEND}
+        - VITE_URL_ENDPOINT_BACKEND=${VITE_URL_ENDPOINT_BACKEND}
+        - VITE_API_URL=${VITE_API_URL}
     container_name: frontend
     depends_on:
       - backend-prod
     ports:
       - "3000:80"
-    env_file:
-      - .env.production
-  nginx: 
-    image: nginx:latest 
-    container_name: nginx 
-    depends_on: 
-     - backend-prod 
-     - frontend-prod 
-    ports: 
-     - "80:80" 
-    volumes: 
-     - ./nginx.conf:/etc/nginx/conf.d/default.conf  
-     - ./dist:/usr/share/nginx/html 
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    depends_on:
+      - backend-prod
+      - frontend-prod
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./dist:/usr/share/nginx/html
