@@ -9,7 +9,7 @@ interface Product {
   precio: number;
   descripcion: string;
   imagen: string;
-  cantidad: number;
+  stock: number;
   unidadesVendidas?: number;
   puntuacion?: number;
   ancho: number;
@@ -26,7 +26,7 @@ const EditProductPage: React.FC = () => {
     precio: 0,
     descripcion: '',
     imagen: '',
-    cantidad: 0,
+    stock: 0,
     ancho: 0,
     alto: 0,
     largo: 0,
@@ -129,13 +129,13 @@ const EditProductPage: React.FC = () => {
           />
         </div>
         <div>
-          <label htmlFor="cantidad">Cantidad:</label>
+          <label htmlFor="stock">stock:</label>
           <input
             type="number"
-            id="cantidad"
+            id="stock"
             className="Create-product-container-inputs"
-            value={product.cantidad || ''}
-            onChange={(e) => setProduct({ ...product, cantidad: Number(e.target.value) })}
+            value={product.stock || ''}
+            onChange={(e) => setProduct({ ...product, stock: Number(e.target.value) })}
           />
         </div>
         <div>
