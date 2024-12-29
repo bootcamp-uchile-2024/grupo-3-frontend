@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, clearCart, updateQuantity, addToCart } from '../states/cartSlice';
 import { RootState } from '../states/store';
 import { CartItem } from '../interfaces/CartItem';
-import { finalizePurchaseRequest } from '../endpoints/purchase';
+
 import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap';
 import '../styles/CartPage.css';
 
@@ -14,18 +14,18 @@ const CartPage: React.FC = () => {
   const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
   const navigate = useNavigate();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false);
   const [cartId, setCartId] = useState<number | null>(null);
-  const [coupon, setCoupon] = useState<string>('');
-  const [purchasedItems, setPurchasedItems] = useState<CartItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
+
 
   const userId = 1;
+  const API_BASE_URL = 'http://localhost:8080';
 
-
-  const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
-  
+  const getErrorMessage = (error: unknown): string => {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return 'Error inesperado.';
+  };
 
   const fetchActiveCart = useCallback(async (): Promise<number | null> => {
     try {
@@ -53,32 +53,6 @@ const CartPage: React.FC = () => {
     }
   }, [userId, setCartId, API_BASE_URL]);
 
-  const addProductToCart = async (cartId: number, productId: number, quantity: number) => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/carro-compras/addproducto/${cartId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({ productoId: productId, cantidadProducto: quantity }),
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Producto agregado al carrito:', data);
-        await replaceCartProducts();
-      } else {
-        console.error('Error en la respuesta del servidor:', await response.json());
-        throw new Error(`Error HTTP: ${response.status}`);
-      }
-    } catch (error) {
-      console.error('Error al agregar producto al carrito:', error);
-    }
-  };
-  
-  
-
   const createCart = useCallback(async () => {
     if (cartId) {
       console.log(`Ya existe un carrito activo con ID ${cartId}. No se creará uno nuevo.`);
@@ -104,7 +78,61 @@ const CartPage: React.FC = () => {
       console.error('Error crítico al intentar crear el carrito:', error);
     }
   }, [cartId, userId, API_BASE_URL]);
+
+  const addProductToCart = async (cartId: number, productId: number, quantity: number) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/carro-compras/addproducto/${cartId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({ productoId: productId, cantidadProducto: quantity }),
+      });
   
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Producto agregado al carrito:', data);
+        await replaceCartProducts();
+      } else {
+        console.error('Error en la respuesta del servidor:', await response.json());
+        throw new Error(`Error HTTP: ${response.status}`);
+      }
+    } catch (error) {
+      console.error('Error al agregar producto al carrito:', error);
+    }
+  };
+  
+  const replaceCartProducts = async () => {
+    if (!cartId) {
+      console.error('No se puede actualizar el carrito porque no existe un ID de carrito.');
+      return;
+    }
+
+    try {
+      
+      const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
+        method: 'PUT',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productosCarro: cartItems.map((item) => ({
+            productoId: item.id,
+            cantidadProducto: item.cantidad,
+          })),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`errorData.message || Error HTTP: ${response.status}`);
+      }
+    } catch (error: unknown) {
+      console.error('Error al actualizar el carrito en el backend:', getErrorMessage(error));
+      throw error;
+    }
+  };
 
   const handleRemoveProductFromCart = async (productId: number) => {
     if (!window.confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
@@ -145,104 +173,29 @@ const CartPage: React.FC = () => {
       alert('No se pudo sincronizar y eliminar el producto. Inténtalo nuevamente.');
     }
   };
-  
-  
 
-  const replaceCartProducts = async () => {
-    if (!cartId) {
-      console.error('No se puede actualizar el carrito porque no existe un ID de carrito.');
-      return;
-    }
-
+  const loadCartProducts = useCallback(async (cartId: number) => {
     try {
-      console.log(`Actualizando productos en el carrito con ID ${cartId}`);
-      const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
-        method: 'PUT',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productosCarro: cartItems.map((item) => ({
-            productoId: item.id,
-            cantidadProducto: item.cantidad,
-          })),
-        }),
+      const response = await fetch(`${API_BASE_URL}/carro-compras/${cartId}/`, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
       });
 
-      if (!response.ok) {
-        throw new Error(`errorData.message || Error HTTP: ${response.status}`);
-      }
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Productos cargados del carrito:', data);
 
-      console.log('Productos del carrito actualizados en el backend.');
-    } catch (error: unknown) {
-      console.error('Error al actualizar el carrito en el backend:', getErrorMessage(error));
-      throw error;
+        if (data.productos && data.productos.length > 0) {
+          dispatch(clearCart());
+          data.productos.forEach((item: CartItem) => {
+            dispatch(addToCart(item));
+          });
+        }
+      }
+    } catch (error) {
+      console.error('Error al cargar productos del carrito:', error);
     }
-  };
-
-  useEffect(() => {
-    const initializeCart = async () => {
-      try {
-        const activeCartId = await fetchActiveCart();
-  
-        if (activeCartId) {
-          console.log(`Carrito activo detectado con ID ${activeCartId}.`);
-          setCartId(activeCartId);
-  
-          const response = await fetch(`${API_BASE_URL}/carro-compras/${activeCartId}`);
-          if (response.ok) {
-            const cartData = await response.json();
-  
-            if (cartData.carroProductos && cartData.carroProductos.length > 0) {
-              console.log('Cargando productos del carrito.');
-              await loadCartProducts(activeCartId);
-            } else {
-              console.log('El carrito está vacío.');
-            }
-          }
-        } else {
-          console.log('No hay carrito activo. Creando uno nuevo...');
-          await createCart();
-        }
-      } catch (error) {
-        console.error('Error al inicializar el carrito:', error);
-      }
-    };
-  
-    const loadCartProducts = async (cartId: number) => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/carro-compras/${cartId}/`, {
-          method: 'GET',
-          headers: { Accept: 'application/json' },
-        });
-    
-        if (response.ok) {
-          const data = await response.json();
-          console.log('Productos cargados del carrito:', data);
-    
-          if (data.productos && data.productos.length > 0) {
-            dispatch(clearCart());
-            data.productos.forEach((item: CartItem) => {
-              dispatch(addToCart(item));
-            });
-          } else {
-            console.warn('Productos no cargados desde el backend. Conservando estado actual.');
-          }
-          
-        } else {
-          console.warn('No se encontraron productos en el carrito.');
-        }
-      } catch (error) {
-        console.error('Error al cargar productos del carrito:', error);
-      }
-    };
-    
-  
-    initializeCart();
-  }, [fetchActiveCart, createCart, dispatch, API_BASE_URL]);
-  
-  
+  }, [dispatch]);
 
   const handleIncrement = async (productId: number) => {
     if (!cartId) {
@@ -310,39 +263,36 @@ const CartPage: React.FC = () => {
       alert('Hubo un problema al vaciar el carrito. Por favor, inténtalo nuevamente.');
     }
   };
+
+
+  useEffect(() => {
+    const initializeCart = async () => {
+      try {
+        const activeCartId = await fetchActiveCart();
   
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setIsPurchaseCompleted(false);
-  };
-
-  const handleFinalizePurchase = async () => {
-    setLoading(true);
-    setPurchasedItems(cartItems);
-
-    try {
-      if (!cartId && cartItems.length > 0) {
-        console.log('No hay carrito activo. Creando uno nuevo.');
-        await createCart();
+        if (activeCartId) {
+          console.log(`Carrito activo detectado con ID ${activeCartId}.`);
+          setCartId(activeCartId);
+  
+          const response = await fetch(`${API_BASE_URL}/carro-compras/${activeCartId}`);
+          if (response.ok) {
+            const cartData = await response.json();
+  
+            if (cartData.carroProductos && cartData.carroProductos.length > 0) {
+              await loadCartProducts(activeCartId);
+            }
+          }
+        } else {
+          await createCart();
+        }
+      } catch (error) {
+        console.error('Error al inicializar el carrito:', error);
       }
-      await replaceCartProducts();
-      const response = await finalizePurchaseRequest(cartItems);
-      if (response.statusCode === 200) {
-        console.log('Compra finalizada exitosamente.');
-        handleClearCart();
-        setIsPurchaseCompleted(true);
-      } else {
-        console.error('Error al finalizar la compra:', response.statusCode);
-        alert(`Error al finalizar la compra: Código ${response.statusCode}`);
-      }
-    } catch (e: unknown) {
-      console.error('Error al finalizar la compra:', getErrorMessage(e));
-      alert('Error al finalizar la compra. Por favor, inténtalo nuevamente.');
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+  
+    initializeCart();
+  }, [fetchActiveCart, createCart, dispatch, API_BASE_URL, loadCartProducts]);
+  
 
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
     const existingItem = acc.find((i: CartItem) => i.id === item.id);
@@ -358,21 +308,7 @@ const total = groupedItems.reduce((acc: number, item: CartItem) => {
   return acc + item.precio * item.cantidad;
 }, 0);
 
-const discountedTotal = total * 0.8;
 
-
-  const formattedTotal = new Intl.NumberFormat('es-CL', {
-    style: 'decimal',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(discountedTotal);
-
-  const getErrorMessage = (error: unknown): string => {
-    if (error instanceof Error) {
-      return error.message;
-    }
-    return 'Error inesperado.';
-  };
 
   const handleNavigateToCheckout = async (): Promise<void> => {
     if (!cartId) {
@@ -381,10 +317,8 @@ const discountedTotal = total * 0.8;
     }
   
     try {
-      console.log('Guardando cartId en localStorage antes de navegar...');
       localStorage.setItem('cartId', cartId.toString()); 
-  
-      console.log('Verificando sincronización del carrito...');
+
       await replaceCartProducts();
   
       navigate('/login-checkout');
@@ -530,121 +464,6 @@ const discountedTotal = total * 0.8;
           </Col>
         </Col>
       </Row>
-      {isModalOpen && (
-        <div className="modal show" style={{ display: 'block' }} aria-modal="true">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              {isPurchaseCompleted ? (
-                // Vista de compra completada
-                <>
-                  <div className="modal-header">
-                    <h5 className="modal-title">Tu compra ha sido finalizada con éxito</h5>
-                    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
-                  </div>
-                  <div className="modal-body">
-                    <p>¡Gracias por tu compra!</p>
-                    <h6>Detalles del pedido:</h6>
-                    <ul className="list-group">
-                      {purchasedItems.map((item: CartItem) => (
-                        <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
-                          <div className="d-flex align-items-center">
-                            <img
-                              src={item.imagen || 'placeholder.jpg'}
-                              alt={item.nombre}
-                              className="product-image me-3"
-                            />
-                            <span>{item.nombre}</span>
-                          </div>
-                          <span>x {item.cantidad} - ${item.precio * item.cantidad}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <p>El total de tu compra fue de: <h3>${formattedTotal}</h3></p>
-                    <div className="modal-footer">
-                      <button className="btn btn-primary w-100" onClick={handleCloseModal}>
-                        Cerrar
-                      </button>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                // Vista de carrito/resumen de compra 
-                <>
-                  <div className="modal-header">
-                    <h5 className="modal-title">Mi Carrito de compras</h5>
-                    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
-                  </div>
-                  <div className="modal-body">
-                    <div className="list-group">
-                      {groupedItems.map((item: CartItem) => (
-                        <div key={item.id} className="list-group-item">
-                          <img
-                            src={item.imagen || 'placeholder.jpg'}
-                            alt={item.nombre}
-                            className="product-image"
-                          />
-                          <div className="product-details">
-                            <h6>{item.nombre}</h6>
-                            <p>Normal ${item.precio.toLocaleString('es-CL')}</p>
-                            <div className="quantity-controls">
-                              <Button
-                                variant="link"
-                                size="sm"
-                                onClick={() => handleDecrement(item.id)}
-                                disabled={item.cantidad === 1}
-                              >-</Button>
-                              <span>{item.cantidad}</span>
-                              <Button
-                                variant="link"
-                                size="sm"
-                                onClick={() => handleIncrement(item.id)}
-                              >+</Button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="coupon-section mb-3">
-                      <span>Aplicar cupón de descuento?</span>
-                      <div className="input-group">
-                        <input
-                          type="text"
-                          value={coupon}
-                          onChange={(e) => setCoupon(e.target.value)}
-                          placeholder="Ingresa tu cupón"
-                          className="form-control"
-                        />                      
-                      </div>
-                    </div>
-
-                    <div className="total-section mt-3">
-                      <strong>Total a pagar: ${formattedTotal}</strong>
-                    </div>
-                  </div>
-
-                  <div className="modal-footer flex-column">
-                    <Button
-                      variant="primary"
-                      className="w-100"
-                      onClick={handleFinalizePurchase}
-                      disabled={loading}
-                    >
-                      {loading ? 'Procesando...' : 'Finalizar compra'}
-                    </Button>
-                    <button
-                      className="btn btn-link text-secondary w-100"
-                      onClick={handleCloseModal}
-                    >
-                      Seguir comprando
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </Container>
   );
 };

@@ -15,12 +15,7 @@ const CartPagePay: React.FC = () => {
   const location = useLocation(); 
   const { formData, pedidoId } = location.state || {};
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isPurchaseCompleted, setIsPurchaseCompleted] = useState(false);
   const [cartId, setCartId] = useState<number | null>(null);
-  const [discount ] = useState<number>(0.2);
-  const [purchasedItems] = useState<CartItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
   const [coupon, setCoupon] = useState<string>(''); 
   const [couponDiscount, setCouponDiscount] = useState<number>(0);
 
@@ -56,7 +51,6 @@ const CartPagePay: React.FC = () => {
   
       if (response.ok) {
         const data = await response.json();
-        console.log('CartId encontrado en fetchActiveCart:', data.id); 
         setCartId(data.id); 
         return data.id;
       } else {
@@ -104,40 +98,7 @@ const CartPagePay: React.FC = () => {
     }
   };
 
-  const createCart = useCallback(async () => {
-    try {
-      if (cartId) {
-        console.log(`Ya existe un carrito activo con ID ${cartId}. No se creará uno nuevo.`);
-        return;
-      }
 
-      console.log(`Creando un nuevo carrito para el usuario ${userId}`);
-      const response = await fetch(`${API_BASE_URL}/carro-compras/${userId}`, {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error al crear el carrito:', errorData);
-
-        if (response.status === 400) {
-          console.error('El servidor rechazó la creación del carrito (400).');
-          alert(errorData.message || 'No se pudo crear el carrito debido a un error en el servidor. Contacta soporte.');
-          return;
-        }
-
-        throw new Error(errorData.message || `Error HTTP al crear carrito: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setCartId(data.id);
-      console.log('Carrito creado con éxito:', data);
-    } catch (error: unknown) {
-      console.error('Error crítico al intentar crear un carrito:', getErrorMessage(error));
-      alert('Hubo un problema al crear el carrito. Inténtalo nuevamente más tarde.');
-    }
-  }, [cartId, userId, API_BASE_URL]);
 
   const handleRemoveProductFromCart = async (productId: number) => {
     if (!window.confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
@@ -180,8 +141,6 @@ const CartPagePay: React.FC = () => {
     }
   };
   
-  
-
   const replaceCartProducts = async () => {
     if (!cartId) {
       console.error('No se puede actualizar el carrito porque no existe un ID de carrito.');
@@ -221,8 +180,6 @@ const CartPagePay: React.FC = () => {
       const activeCartId = await fetchActiveCart();
 
       if (activeCartId) {
-        console.log(`Carrito activo detectado con ID ${activeCartId}. No se creará un nuevo carrito.`);
-
         const savedCartItems = localStorage.getItem('__redux__cart__');
         if (savedCartItems) {
           try {
@@ -245,11 +202,10 @@ const CartPagePay: React.FC = () => {
       }
 
       console.log('No hay carrito activo. Creando uno nuevo...');
-      await createCart();
     };
 
     initializeCart();
-  }, [fetchActiveCart, createCart, dispatch]);
+  }, [fetchActiveCart, dispatch]);
 
   const handleApplyCoupon = () => {
     if (coupon.trim() === 'bootcamp2024') {
@@ -293,79 +249,6 @@ const CartPagePay: React.FC = () => {
   const handleDecrement = (productId: number) => {
     dispatch(updateQuantity({ id: productId, cantidad: -1 }));
   };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setIsPurchaseCompleted(false);
-  };
-
-  const handleFinalizePurchase = async () => {
-    setLoading(true);
-  
-    try {
-      console.log('Sincronizando productos antes de finalizar la compra...');
-      await replaceCartProducts();
-  
-      const payload = {
-        fechaCreacion: new Date().toISOString().split('T')[0],
-        idMedioPago: 1,
-        idEstado: 1,
-        idTipoDespacho: 1,
-        receptor: formData.quienRecibe,
-        fechaEntrega: new Date(new Date().setDate(new Date().getDate() + 3))
-          .toISOString()
-          .split('T')[0],
-        direccionEnvio: {
-          comuna: formData.comuna,
-          calle: formData.direccion,
-          numero: '123',
-          departamento: '1215',
-          referencia: 'Cerca del parque',
-        },
-      };
-  
-      console.log('Realizando POST para crear el pedido con payload:', payload);
-      const response = await fetch(`${API_BASE_URL}/pedidos/${userId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error al finalizar la compra:', errorData);
-        alert(`Error al finalizar la compra: ${errorData.message || 'Error desconocido'}`);
-        return;
-      }
-  
-      const data = await response.json();
-      const newCartId = data.idCarrito || data.id || null;
-  
-      if (!newCartId) {
-        throw new Error('No se recibió un ID de carrito válido desde el backend.');
-      }
-  
-      console.log('Compra finalizada exitosamente. Pedido creado con ID:', newCartId);
-  
-      localStorage.setItem('cartId', newCartId.toString()); 
-
-  
-      navigate('/success-page', { state: { cartId: newCartId } });
-    } catch (e) {
-      console.error('Error crítico al finalizar la compra:', e);
-      alert('Hubo un problema al finalizar la compra. Por favor, inténtalo nuevamente.');
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  const discountedTotal = total * (1 - discount);
-
-  const formattedTotal = new Intl.NumberFormat('es-CL', {
-    style: 'decimal',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
-  }).format(discountedTotal);
 
   const getErrorMessage = (error: unknown): string => {
     if (error instanceof Error) {
@@ -560,115 +443,7 @@ const CartPagePay: React.FC = () => {
 
             </Col>
         </Col>
-      </Row>
-      {isModalOpen && (
-        <div className="modal show" style={{ display: 'block' }} aria-modal="true">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              {isPurchaseCompleted ? (
-  
-                <>
-                  <div className="modal-body">
-                    <p>¡Gracias por tu compra!</p>
-                    <h6>Detalles del pedido:</h6>
-                    <ul className="list-group">
-                      {purchasedItems.map((item: CartItem) => (
-                        <li key={item.id} className="list-group-item d-flex justify-content-between align-items-center">
-                          <div className="d-flex align-items-center">
-                            <img
-                              src={item.imagen || 'placeholder.jpg'}
-                              alt={item.nombre}
-                              className="product-image me-3"
-                            />
-                            <span>{item.nombre}</span>
-                          </div>
-                          <span>x {item.cantidad} - ${item.precio * item.cantidad}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <p>El total de tu compra fue de: <h3>${formattedTotal}</h3></p>
-                    <div className="modal-footer">
-                      <button className="btn btn-primary w-100" onClick={handleCloseModal}>
-                        Cerrar
-                      </button>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                // Vista de carrito/resumen de compra
-                <>
-                  <div className="modal-header">
-                    <h5 className="modal-title">Mi Carrito de compras</h5>
-                    <button type="button" className="btn-close" onClick={handleCloseModal}></button>
-                  </div>
-                  <div className="modal-body">
-                    <div className="list-group">
-                      {groupedItems.map((item: CartItem) => (
-                        <div key={item.id} className="list-group-item">
-                          <img
-                            src={item.imagen || 'placeholder.jpg'}
-                            alt={item.nombre}
-                            className="product-image"
-                          />
-                          <div className="product-details">
-                            <h6>{item.nombre}</h6>
-                            <p>Normal ${item.precio.toLocaleString('es-CL')}</p>
-                            <div className="quantity-controls">
-                              <Button
-                                variant="link"
-                                size="sm"
-                                onClick={() => handleDecrement(item.id)}
-                                disabled={item.cantidad === 1}
-                              >-</Button>
-                              <span>{item.cantidad}</span>
-                              <Button
-                                variant="link"
-                                size="sm"
-                                onClick={() => handleIncrement(item.id)}
-                              >+</Button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="coupon-section mb-3">
-                      <span>Aplicar cupón de descuento?</span>
-                      <div className="input-group">
-                        <input
-                          type="text"
-                          value={coupon}
-                          onChange={(e) => setCoupon(e.target.value)}
-                          placeholder="Ingresa tu cupón"
-                          className="form-control"
-                        />
-                        <button className="btn btn-secondary" onClick={handleApplyCoupon}>
-                          Aplicar
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="total-section mt-3">
-                      <strong>Total a pagar: ${formattedTotal}</strong>
-                    </div>
-                  </div>
-
-                  <div className="modal-footer flex-column">
-                    <Button
-                      variant="primary"
-                      className="w-100"
-                      onClick={handleFinalizePurchase}
-                      disabled={loading}
-                    >
-                      {loading ? 'Procesando...' : 'Finalizar compra'}
-                    </Button>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      </Row> 
     </Container>
   );
 };
