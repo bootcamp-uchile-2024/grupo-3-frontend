@@ -23,7 +23,7 @@ type UserCreationFormProps = {
   isAdmin: boolean;
 };
 
-const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAdmin }) => {
+const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAdmin = false }) => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState<CreateUserDTO>({
@@ -36,7 +36,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
     genero: '',
     rut: '',
     fechaNacimiento: '',
-    idRol: 3
+    idRol: 3, // Rol predeterminado para clientes
   });
 
   const [errors, setErrors] = useState({
@@ -50,24 +50,23 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
     rut: '',
     fechaNacimiento: '',
     idRol: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
- 
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [confirmPassword, setConfirmPassword] = useState('');
   const [acceptTerms, setAcceptTerms] = useState(false);
 
-
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: '' }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: '' }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
   const validate = () => {
@@ -82,17 +81,18 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
       genero: formData.genero ? '' : 'El género es obligatorio',
       rut: formData.rut ? '' : 'El RUT es obligatorio',
       fechaNacimiento: formData.fechaNacimiento ? '' : 'La fecha de nacimiento es obligatoria',
-      idRol: isAdmin || formData.idRol === 3 ? '' : 'El tipo de usuario debe estar entre 1 y 4',
+      idRol: isAdmin || formData.idRol === 3 ? '' : 'Solo un administrador puede asignar roles diferentes de Cliente',
     };
 
+    console.log('Errores detectados:', newErrors);
     setErrors(newErrors);
-    
+
     if (!acceptTerms) {
-      alert("Debes aceptar los términos y condiciones");
+      alert('Debes aceptar los términos y condiciones');
       return false;
     }
 
-    return Object.values(newErrors).every(error => !error);
+    return Object.values(newErrors).every((error) => !error);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -104,6 +104,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
         idRol: isAdmin ? formData.idRol : 3,
       };
 
+      console.log('Datos enviados al servidor:', userData);
       setIsSubmitting(true);
 
       try {
@@ -114,6 +115,8 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
           },
           body: JSON.stringify(userData),
         });
+
+        console.log('Estado de la respuesta:', response.status);
 
         if (!response.ok) {
           const errorData = await response.json();
@@ -131,7 +134,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
           genero: '',
           rut: '',
           fechaNacimiento: '',
-          idRol: isAdmin ? 1 : 3,
+          idRol: 3,
         });
         setConfirmPassword('');
         setAcceptTerms(false);
@@ -139,6 +142,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
         if (onUserCreated) onUserCreated();
       } catch (error) {
         if (error instanceof Error) {
+          console.error('Error al crear usuario:', error.message);
           alert(`Error al crear el usuario: ${error.message}. Intente nuevamente.`);
         }
       } finally {
@@ -156,7 +160,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
         </p>
 
         <h3 className="section-title">Mis datos</h3>
-        
+
         <Row>
           <Col md={6}>
             <Form.Group>
@@ -169,9 +173,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
                 className="form-control-custom"
                 isInvalid={!!errors.nombre}
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.nombre}
-              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.nombre}</Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col md={6}>
@@ -185,9 +187,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
                 className="form-control-custom"
                 isInvalid={!!errors.apellido}
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.apellido}
-              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.apellido}</Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
@@ -202,9 +202,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
             className="form-control-custom"
             isInvalid={!!errors.nombreUsuario}
           />
-          <Form.Control.Feedback type="invalid">
-            {errors.nombreUsuario}
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">{errors.nombreUsuario}</Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group>
@@ -218,9 +216,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
             className="form-control-custom"
             isInvalid={!!errors.email}
           />
-          <Form.Control.Feedback type="invalid">
-            {errors.email}
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">{errors.email}</Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group>
@@ -234,9 +230,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
             className="form-control-custom"
             isInvalid={!!errors.contrasena}
           />
-          <Form.Control.Feedback type="invalid">
-            {errors.contrasena}
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">{errors.contrasena}</Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group>
@@ -249,9 +243,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
             className="form-control-custom"
             isInvalid={!!errors.confirmPassword}
           />
-          <Form.Control.Feedback type="invalid">
-            {errors.confirmPassword}
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">{errors.confirmPassword}</Form.Control.Feedback>
         </Form.Group>
 
         <Row>
@@ -266,9 +258,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
                 className="form-control-custom"
                 isInvalid={!!errors.rut}
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.rut}
-              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.rut}</Form.Control.Feedback>
             </Form.Group>
           </Col>
           <Col md={6}>
@@ -282,30 +272,10 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
                 className="form-control-custom"
                 isInvalid={!!errors.telefono}
               />
-              <Form.Control.Feedback type="invalid">
-                {errors.telefono}
-              </Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.telefono}</Form.Control.Feedback>
             </Form.Group>
           </Col>
         </Row>
-
-        <Form.Group>
-          <Form.Select 
-            name="genero" 
-            value={formData.genero}
-            onChange={handleSelectChange}
-            className="form-select-custom"
-            isInvalid={!!errors.genero}
-          >
-            <option value="">Género</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Femenino">Femenino</option>
-            <option value="Otro">Otro</option>
-          </Form.Select>
-          <Form.Control.Feedback type="invalid">
-            {errors.genero}
-          </Form.Control.Feedback>
-        </Form.Group>
 
         <Form.Group>
           <Form.Label className="required-field">Fecha nacimiento</Form.Label>
@@ -317,12 +287,28 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
             className="form-control-custom"
             isInvalid={!!errors.fechaNacimiento}
           />
-          <Form.Control.Feedback type="invalid">
-            {errors.fechaNacimiento}
-          </Form.Control.Feedback>
+          <Form.Control.Feedback type="invalid">{errors.fechaNacimiento}</Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group>
+          <Form.Label className="required-field">Género</Form.Label>
+          <Form.Select
+            name="genero"
+            value={formData.genero}
+            onChange={handleSelectChange}
+            className="form-select-custom"
+            isInvalid={!!errors.genero}
+          >
+            <option value="">Selecciona un género</option>
+            <option value="Masculino">Masculino</option>
+            <option value="Femenino">Femenino</option>
+            <option value="Otro">Otro</option>
+          </Form.Select>
+          <Form.Control.Feedback type="invalid">{errors.genero}</Form.Control.Feedback>
+        </Form.Group>
+
+        {isAdmin && (
+          <Form.Group>
             <Form.Label>Tipo de Usuario</Form.Label>
             <Form.Select
               name="idRol"
@@ -337,13 +323,11 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
               <option value="3">Cliente</option>
               <option value="4">Visitante</option>
             </Form.Select>
-            <Form.Control.Feedback type="invalid">
-              {errors.idRol}
-            </Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">{errors.idRol}</Form.Control.Feedback>
           </Form.Group>
-        
+        )}
 
-        <div className="terms-checkbox">
+        <Form.Group>
           <Form.Check
             type="checkbox"
             id="terms"
@@ -351,17 +335,17 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
             onChange={(e) => setAcceptTerms(e.target.checked)}
             label="Acepto Términos y Condiciones"
           />
-        </div>
+        </Form.Group>
 
         <div className="button-container">
-          <Button 
+          <Button
             className="btn-primary-outline"
             onClick={() => navigate(-1)}
             type="button"
           >
             Volver
           </Button>
-          <Button 
+          <Button
             className="btn-create"
             type="submit"
             disabled={isSubmitting}

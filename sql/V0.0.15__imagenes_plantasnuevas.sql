@@ -12,10 +12,10 @@ create table imagenes_productos(
     foreign key (id_producto) references productos(id)
 );
 
--- Usuario Super Admin (username: admin, clave: admin)
+-- Usuario Super Admin (username: administrador, clave: administrador)
 INSERT INTO usuarios (contrasena, rut, id_rol, nombre_usuario, nombre, apellido, email, telefono, genero, fecha_nacimiento)
 VALUES  
-('$2a$10$1PuyvH.FSLR9P48fDnaHcuPq99HEsdUwHj/u9Bv8B5xel0/KMYGnC', '12422222-2', 1, 'admin', 'Admin', 'Cotiledón', 'admin@mail.com', '951233221', 'Masculino', '1968-01-01');
+('$2a$10$HwrUIArpcQkdACOWYwohQuWUqndXoFOiPMSbLr2tXKxaE9df0AGrS', '12422222-2', 1, 'administrador', 'Admin', 'Cotiledón', 'admin@cotiledon.com', '951233221', 'Femenino', '1900-01-01');
 
 -- Productos nuevos, hasta el 69
 INSERT INTO productos (sku, id_categoria,  stock, nombre,precio, descripcion, unidades_vendidas, puntuacion, ancho, alto, largo, peso, habilitado)

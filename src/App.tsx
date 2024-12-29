@@ -24,13 +24,8 @@ import CheckoutLoginForm from './pages/CheckoutLoginForm';
 import CartPagePay from './pages/CartPagePay';
 import SuccessPage from './pages/SuccessPage';
 
-
 function App() {
   const [user, setUser] = useState<{ username: string; role: string } | null>(null);
-
-  const handleLogin = (username: string, role: string) => {
-    setUser({ username, role });
-  };
 
   const handleLogout = () => {
     setUser(null); 
@@ -51,14 +46,14 @@ function App() {
             <Route path="catalogo/producto/:id" element={<ProductDetailPage />} />
             <Route path="about" element={<AboutPage />} />
             <Route path="contact" element={<ContactPage />} />
-            <Route path="login" element={<LoginForm onLogin={handleLogin} />} />
-            {/* <Route path="dashboard" element={<DashboardPage />} /> */}
+            <Route path="login" element={<LoginForm />} />
             <Route path="crear-usuario" element={<UserCreationForm isAdmin={false}/>} />
             <Route path="crear-producto" element={<PrivateRoute roles={["admin-1"]}><CrearProducto /></PrivateRoute>} />
             <Route path="editar-producto/:id" element={<PrivateRoute roles={["admin-1"]}><EditProductPage /></PrivateRoute>} />
             <Route path="cart" element={<CartPage />} />
-            <Route path="user-management" element={<PrivateRoute roles={['admin-1']}><UserManagement /></PrivateRoute>} />
-            <Route path="product-management" element={<PrivateRoute roles={['admin-1']}><ProductManagement/></PrivateRoute>}/>
+            <Route path="user-management" element={<PrivateRoute roles={['Super Admin']}><UserManagement /></PrivateRoute>} />
+
+            <Route path="product-management" element={<PrivateRoute roles={['Super Admin']}><ProductManagement/></PrivateRoute>}/>
 
             {/* Nueva ruta para AdminCartPage */}
             <Route path="admin-carts" element={<PrivateRoute roles={['admin-1']}><AdminCartPage /></PrivateRoute>} />

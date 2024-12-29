@@ -3,23 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
 import '../styles/LoginFormStyles.css';
 
-interface LoginFormProps {
-  onLogin: (username: string, role: string) => void;
-}
-
-export interface ILogin {
-  username: string;
-  password: string;
-  roles?: string[];
-}
-
-const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
+const LoginForm: React.FC = () => {
   const navigate = useNavigate();
-
-  const users = [
-    { username: 'administrador', password: 'administrador', roles: ['admin-1'] },
-    { username: 'usuario', password: 'usuario', roles: ['user-1'] }
-  ];
 
   const [formData, setFormData] = useState({
     username: '',
@@ -28,57 +13,74 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 
   const [errors, setErrors] = useState({
     usernameError: '',
-    passwordError: ''
+    passwordError: '',
+    generalError: ''
   });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [`${name}Error`]: '' });
+    setErrors({ ...errors, [`${name}Error`]: '', generalError: '' });
   };
 
-  const login = (user: ILogin): boolean => {
-    const foundUser = users.find(u => u.username === user.username);
-
-    if (!foundUser) {
-      setErrors(prev => ({ ...prev, usernameError: 'Nombre de usuario incorrecto' }));
-      return false;
-    }
-
-    if (foundUser.password !== user.password) {
-      setErrors(prev => ({ ...prev, passwordError: 'Contraseña incorrecta' }));
-      return false;
-    }
-
-    const userResponse: ILogin = {
-      ...user,
-      roles: foundUser.roles
-    };
-
-    const datosUsuario = JSON.stringify(userResponse);
-    localStorage.setItem('user', datosUsuario);
-    return true;
-  }
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const user = { username: formData.username, password: formData.password };
-
-    if (login(user)) {
-      const userStored = JSON.parse(localStorage.getItem('user') || '{}');
-
-      alert(`Iniciaste sesión como ${userStored.roles.includes('admin-1') ? 'Admin' : 'User'}`);
-
-      onLogin(userStored.username, userStored.roles.includes('admin-1') ? 'admin' : 'user');
-
-      if (userStored.roles.includes('admin-1')) {
-        navigate('/user-management');
-      } else {
-        navigate('/');
+    setIsSubmitting(true);
+  
+    try {
+      const response = await fetch('http://localhost:8080/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Credenciales incorrectas');
       }
+  
+      const { access_token } = await response.json();
+  
+      if (!access_token) {
+        throw new Error('El token de acceso no fue devuelto por el servidor');
+      }
+  
+      localStorage.setItem('token', access_token);
+  
+      const decodedToken = JSON.parse(atob(access_token.split('.')[1]));
+      console.log('Token decodificado:', decodedToken);
+  
+      const role = decodedToken.role || '';
+      const isAdmin = role.toLowerCase() === 'super admin';
+  
+      console.log('Rol del usuario:', role);
+      console.log('Redirigiendo a:', isAdmin ? '/user-management' : '/');
+  
+      localStorage.setItem('user', JSON.stringify({ username: decodedToken.username, role }));
+  
+      alert(`Iniciaste sesión como ${isAdmin ? 'Admin' : 'User'}`);
+  
+      if (isAdmin) {
+        navigate('/user-management', { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        setErrors((prev) => ({ ...prev, generalError: error.message }));
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
+  
 
   return (
     <Container className="login-container">
@@ -87,7 +89,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
           <Card className="login-card">
             <h2 className="login-title">Iniciar sesión</h2>
             <Form className='login-form' onSubmit={handleSubmit}>
-            <Form.Label>Correo electrónico o Usuario</Form.Label>
+              <Form.Label>Correo electrónico o Usuario</Form.Label>
               <Form.Control
                 type="text"
                 name="username"
@@ -108,10 +110,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
                 isInvalid={!!errors.passwordError}
               />
               <Form.Control.Feedback type="invalid">{errors.passwordError}</Form.Control.Feedback>
+
+              {errors.generalError && (
+                <p className="text-danger">{errors.generalError}</p>
+              )}
+
               <Row className="justify-content-center">
                 <Col md={12} className='botones-login mt-3'>
-                  <Button className="btn-primary" type="submit">
-                    Ingresar
+                  <Button className="btn-primary" type="submit" disabled={isSubmitting}>
+                    {isSubmitting ? 'Ingresando...' : 'Ingresar'}
                   </Button>
                   <Link to="/crear-usuario">
                     <Button className="btn-registrar">
@@ -132,5 +139,4 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 };
 
 export default LoginForm;
-
 
