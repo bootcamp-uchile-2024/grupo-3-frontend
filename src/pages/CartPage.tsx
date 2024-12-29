@@ -181,33 +181,6 @@ const CartPage: React.FC = () => {
     }
   };
 
-  const loadCartProducts = async (cartId: number) => {
-    try {
-      const response = await fetch(`http://localhost:8080/carro-compras/${cartId}/`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Productos cargados del carrito:', data);
-  
-        if (data.productos && data.productos.length > 0) {
-          dispatch(clearCart());
-          data.productos.forEach((item: CartItem) => {
-            dispatch(addToCart(item));
-          });
-        } else {
-          console.warn('Productos no cargados desde el backend. Conservando estado actual.');
-        }
-      } else {
-        console.warn('No se encontraron productos en el carrito.');
-      }
-    } catch (error) {
-      console.error('Error al cargar productos del carrito:', error);
-    }
-  };
-  
   useEffect(() => {
     const initializeCart = async () => {
       try {
@@ -217,7 +190,7 @@ const CartPage: React.FC = () => {
           console.log(`Carrito activo detectado con ID ${activeCartId}.`);
           setCartId(activeCartId);
   
-          const response = await fetch(`http://localhost:8080/carro-compras/${activeCartId}`);
+          const response = await fetch(`${API_BASE_URL}/carro-compras/${activeCartId}`);
           if (response.ok) {
             const cartData = await response.json();
   
@@ -237,9 +210,37 @@ const CartPage: React.FC = () => {
       }
     };
   
+    const loadCartProducts = async (cartId: number) => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/carro-compras/${cartId}/`, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+        });
+    
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Productos cargados del carrito:', data);
+    
+          if (data.productos && data.productos.length > 0) {
+            dispatch(clearCart());
+            data.productos.forEach((item: CartItem) => {
+              dispatch(addToCart(item));
+            });
+          } else {
+            console.warn('Productos no cargados desde el backend. Conservando estado actual.');
+          }
+          
+        } else {
+          console.warn('No se encontraron productos en el carrito.');
+        }
+      } catch (error) {
+        console.error('Error al cargar productos del carrito:', error);
+      }
+    };
+    
+  
     initializeCart();
   }, [fetchActiveCart, createCart, dispatch, API_BASE_URL]);
-  
   
   
 
