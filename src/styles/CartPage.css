@@ -4,9 +4,7 @@
 }
 
 .cart-item {
-  border: none !important;
   margin-bottom: 10px;
-  border-radius: 4px !important;
   padding: 15px !important;
 }
 
@@ -54,7 +52,7 @@
 
 .summary-card .card-title {
   color: #1A4756;
-  font-size: 18px;
+  font-size: 25px;
   font-weight: 500;
   margin-bottom: 20px;
 }
@@ -187,12 +185,6 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-}
-
-.cart-item {
-  border: 1px solid #E5E7EB !important;
-  margin-bottom: 10px !important;
-  border-radius: 8px !important;
 }
 
 .empty-cart-button {

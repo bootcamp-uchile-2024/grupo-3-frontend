@@ -326,7 +326,7 @@ import '../styles/CartPage.css';
   return (
     <Container className="cart-container">
       <Row className="justify-content-center">
-        <Col md={5} className='me-5'>
+        <Col md={5} className='col-md-5 mt-4 border rounded p-3'>
           <div className="cart-header">
             <h4>Tu compra</h4>
             {groupedItems.length > 0 && (
@@ -378,8 +378,8 @@ import '../styles/CartPage.css';
           )}
         </Col>
 
-        <Col md={5} className='mt-5'>
-          <Card className="summary-card">
+        <Col md={6} className='mt-3'>
+          <Card className="summary-card mt-2">
             <Card.Body>
               <Card.Title>Resumen de mi compra</Card.Title>
               <ListGroup variant="flush" className="mb-3">
