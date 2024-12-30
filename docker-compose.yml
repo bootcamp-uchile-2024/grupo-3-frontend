@@ -24,7 +24,6 @@ services:
 
   backend-prod:
     image: nicolasf1/cotiledonapp:1.11.5
-    container_name: backend
     depends_on:
       - database-prod
     environment:
@@ -43,13 +42,25 @@ services:
       - "8080:${API_PORT}"
 
   frontend-prod:
-    image: chirmus/plantaiapp-frontend:plantaifront4
+    build:
+      context: .
+      args:
+        - VITE_URL_ENDPOINT_BACKEND=${VITE_URL_ENDPOINT_BACKEND}
+        - VITE_API_URL=${VITE_API_URL}
     container_name: frontend
     depends_on:
       - backend-prod
     ports:
+      - "3000:80"
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    depends_on:
+      - backend-prod
+      - frontend-prod
+    ports:
       - "80:80"
-    env_file:
-      - .env.production
-
-
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./dist:/usr/share/nginx/html

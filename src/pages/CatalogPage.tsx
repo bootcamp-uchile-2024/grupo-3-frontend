@@ -55,7 +55,6 @@ const CatalogPage: React.FC = () => {
 const fetchProducts = useCallback(async () => {
   try {
     setLoading(true);
-    let url = '';
     const queryParams = new URLSearchParams();
 
     if (searchTerm) queryParams.append('search', searchTerm);
@@ -77,10 +76,8 @@ const fetchProducts = useCallback(async () => {
     queryParams.append('page', currentPage.toString());
     queryParams.append('pageSize', pageSize.toString());
 
-    url = `http://localhost:8080/catalogo${searchTerm ? '/search' : ''}?${queryParams.toString()}`;
-    console.log (url)
-
-    const response = await fetch(url, {
+    const baseUrl = import.meta.env.VITE_API_URL;
+    const response = await fetch(`${baseUrl}/catalogo${searchTerm ? '/search' : ''}?${queryParams.toString()}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -120,7 +117,7 @@ const fetchProducts = useCallback(async () => {
       return;
     }
 
-    const imagePath = product.imagenes?.[0]?.ruta ?? '/estaticos/default-image.jpg';
+    const imagePath = '/estaticos/default-image.jpg';
 
     dispatch(
       addToCart({

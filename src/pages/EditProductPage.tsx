@@ -9,7 +9,7 @@ interface Product {
   precio: number;
   descripcion: string;
   imagen: string;
-  cantidad: number;
+  stock: number;
   unidadesVendidas?: number;
   puntuacion?: number;
   ancho: number;
@@ -26,7 +26,7 @@ const EditProductPage: React.FC = () => {
     precio: 0,
     descripcion: '',
     imagen: '',
-    cantidad: 0,
+    stock: 0,
     ancho: 0,
     alto: 0,
     largo: 0,
@@ -43,7 +43,8 @@ const EditProductPage: React.FC = () => {
         return;
       }
       try {
-        const response = await fetch(`http://localhost:8080/productos/${id}`);
+        const backendUrl = import.meta.env.VITE_URL_ENDPOINT_BACKEND;
+        const response = await fetch(`${backendUrl}/productos/${id}`);
         if (!response.ok) throw new Error('Error al obtener los detalles del producto');
         const data = await response.json();
         setProduct(data);
@@ -59,7 +60,8 @@ const EditProductPage: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:8080/productos/${id}`, {
+      const backendUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${backendUrl}/productos/${id}`, {
         method: 'PATCH',
         headers: {
           'Accept': 'application/json',
@@ -127,13 +129,13 @@ const EditProductPage: React.FC = () => {
           />
         </div>
         <div>
-          <label htmlFor="cantidad">Cantidad:</label>
+          <label htmlFor="stock">stock:</label>
           <input
             type="number"
-            id="cantidad"
+            id="stock"
             className="Create-product-container-inputs"
-            value={product.cantidad || ''}
-            onChange={(e) => setProduct({ ...product, cantidad: Number(e.target.value) })}
+            value={product.stock || ''}
+            onChange={(e) => setProduct({ ...product, stock: Number(e.target.value) })}
           />
         </div>
         <div>

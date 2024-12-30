@@ -99,7 +99,8 @@ const CheckoutInvitadoForm: React.FC = () => {
     try {
       console.log('Enviando datos al endpoint de finalizar compra:', pedidoPayload);
 
-      const response = await fetch(`http://localhost:8080/pedidos/${userId}`, {
+      const backendUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${backendUrl}/pedidos/${userId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

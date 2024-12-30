@@ -108,7 +108,8 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
       setIsSubmitting(true);
 
       try {
-        const response = await fetch('http://localhost:8080/usuarios', {
+        const backendUrl = import.meta.env.VITE_API_URL;
+        const response = await fetch(`${backendUrl}/usuarios`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

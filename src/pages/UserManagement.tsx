@@ -111,7 +111,8 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://localhost:8080/usuarios");
+      const backendUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${backendUrl}/usuarios`);
       if (!response.ok) {
         throw new Error("Error al obtener los usuarios");
       }
@@ -134,7 +135,8 @@ const UserManagement = () => {
 
   const deleteUser = async (userId: number) => {
     try {
-      const response = await fetch(`http://localhost:8080/usuarios/${userId}`, {
+      const backendUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${backendUrl}/usuarios/${userId}`, {
         method: "DELETE",
       });
       if (!response.ok) {
@@ -188,7 +190,8 @@ const UserManagement = () => {
     console.log("requestBody preparado:", requestBody);
 
     try {
-      const response = await fetch(`http://localhost:8080/usuarios/${editingUser.id}`, {
+      const backendUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(`${backendUrl}/usuarios/${editingUser.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
