@@ -4,19 +4,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, clearCart, updateQuantity, addToCart } from '../states/cartSlice';
 import { RootState } from '../states/store';
 import { CartItem } from '../interfaces/CartItem';
-
 import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap';
 import '../styles/CartPage.css';
 
 
-const CartPage: React.FC = () => {
+  const CartPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
   const navigate = useNavigate();
-
   const [cartId, setCartId] = useState<number | null>(null);
-
-
   const userId = 1;
   const API_BASE_URL = 'http://localhost:8080';
 
@@ -58,14 +54,14 @@ const CartPage: React.FC = () => {
       console.log(`Ya existe un carrito activo con ID ${cartId}. No se creará uno nuevo.`);
       return;
     }
-  
+
     try {
       console.log(`Creando un nuevo carrito para el usuario ${userId}`);
       const response = await fetch(`${API_BASE_URL}/carro-compras/${userId}`, {
         method: 'POST',
         headers: { Accept: 'application/json' },
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         setCartId(data.id);
@@ -89,7 +85,7 @@ const CartPage: React.FC = () => {
         },
         body: JSON.stringify({ productoId: productId, cantidadProducto: quantity }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         console.log('Producto agregado al carrito:', data);
@@ -102,7 +98,7 @@ const CartPage: React.FC = () => {
       console.error('Error al agregar producto al carrito:', error);
     }
   };
-  
+
   const replaceCartProducts = async () => {
     if (!cartId) {
       console.error('No se puede actualizar el carrito porque no existe un ID de carrito.');
@@ -110,7 +106,6 @@ const CartPage: React.FC = () => {
     }
 
     try {
-      
       const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
         method: 'PUT',
         headers: {
@@ -138,22 +133,22 @@ const CartPage: React.FC = () => {
     if (!window.confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
       return;
     }
-  
+
     if (!cartId) {
       alert('El carrito no está inicializado correctamente.');
       return;
     }
-  
+
     try {
       console.log(`Sincronizando carrito con ID: ${cartId}`);
       await replaceCartProducts();
-  
+
       console.log(`Eliminando producto ID: ${productId} del carrito ID: ${cartId}`);
       const response = await fetch(`${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`, {
         method: 'DELETE',
         headers: { Accept: 'application/json' },
       });
-  
+
       if (!response.ok) {
         let errorMessage = 'Hubo un problema al eliminar el producto.';
         try {
@@ -165,7 +160,7 @@ const CartPage: React.FC = () => {
         alert(errorMessage);
         return;
       }
-  
+
       dispatch(removeFromCart(productId));
       alert('El producto ha sido eliminado del carrito.');
     } catch (error) {
@@ -202,16 +197,16 @@ const CartPage: React.FC = () => {
       alert('No se ha inicializado el carrito.');
       return;
     }
-  
+
     const product = cartItems.find((item) => item.id === productId);
     if (product) {
       try {
         const newQuantity = product.cantidad + 1;
-  
+
         await addProductToCart(cartId, productId, newQuantity);
-  
+
         dispatch(updateQuantity({ id: productId, cantidad: 1 }));
-        
+
         await replaceCartProducts();
       } catch (_error) {
         alert('Error al intentar incrementar el producto. Por favor, inténtalo nuevamente.');
@@ -221,7 +216,7 @@ const CartPage: React.FC = () => {
 
   const handleDecrement = async (productId: number) => {
     dispatch(updateQuantity({ id: productId, cantidad: -1 }));
-  
+
     await replaceCartProducts();
   };
 
@@ -230,10 +225,10 @@ const CartPage: React.FC = () => {
       alert('No hay un carrito asociado para vaciar.');
       return;
     }
-  
+
     try {
       console.log(`Vaciando carrito con ID ${cartId}`);
-  
+
       const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
         method: 'PUT',
         headers: {
@@ -242,21 +237,21 @@ const CartPage: React.FC = () => {
         },
         body: JSON.stringify({ productosCarro: [] }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Error al vaciar el carrito:', errorData);
         alert(`Error al vaciar el carrito: ${errorData.message || 'Error desconocido'}`);
         return;
       }
-  
+
       const data = await response.json();
       console.log('Carrito vaciado en el backend:', data);
-  
+
       dispatch(clearCart());
-  
+
       localStorage.removeItem('__redux__cart__');
-  
+
       alert('El carrito ha sido vaciado exitosamente.');
     } catch (error) {
       console.error('Error al intentar vaciar el carrito:', error);
@@ -264,20 +259,19 @@ const CartPage: React.FC = () => {
     }
   };
 
-
   useEffect(() => {
     const initializeCart = async () => {
       try {
         const activeCartId = await fetchActiveCart();
-  
+
         if (activeCartId) {
           console.log(`Carrito activo detectado con ID ${activeCartId}.`);
           setCartId(activeCartId);
-  
+
           const response = await fetch(`${API_BASE_URL}/carro-compras/${activeCartId}`);
           if (response.ok) {
             const cartData = await response.json();
-  
+
             if (cartData.carroProductos && cartData.carroProductos.length > 0) {
               await loadCartProducts(activeCartId);
             }
@@ -289,10 +283,9 @@ const CartPage: React.FC = () => {
         console.error('Error al inicializar el carrito:', error);
       }
     };
-  
+
     initializeCart();
   }, [fetchActiveCart, createCart, dispatch, API_BASE_URL, loadCartProducts]);
-  
 
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
     const existingItem = acc.find((i: CartItem) => i.id === item.id);
@@ -304,30 +297,28 @@ const CartPage: React.FC = () => {
     return acc;
   }, []);
 
-const total = groupedItems.reduce((acc: number, item: CartItem) => {
-  return acc + item.precio * item.cantidad;
-}, 0);
-
-
+  const total = groupedItems.reduce((acc: number, item: CartItem) => {
+    return acc + item.precio * item.cantidad;
+  }, 0);
 
   const handleNavigateToCheckout = async (): Promise<void> => {
     if (!cartId) {
       alert('No se ha inicializado el carrito.');
       return;
     }
-  
+
     try {
-      localStorage.setItem('cartId', cartId.toString()); 
+      localStorage.setItem('cartId', cartId.toString());
 
       await replaceCartProducts();
-  
+
       navigate('/login-checkout');
     } catch (error) {
       console.error('Error al sincronizar el carrito antes de navegar:', error);
       alert('Hubo un problema al procesar tu carrito. Por favor, inténtalo nuevamente.');
     }
   };
-  
+
   const handleGoBack = () => {
     navigate('/catalogo');
   };
@@ -352,65 +343,41 @@ const total = groupedItems.reduce((acc: number, item: CartItem) => {
             <p>El carrito está vacío.</p>
           ) : (
             <div className="products-scroll-container">
-             <ListGroup className="mb-4">
-              {groupedItems.map((item: CartItem) => (
-                <ListGroup.Item key={item.id} className="cart-item">
-                  <Row className="align-items-center">
-                    <Col md={6}>
-                      <img
-                        src={item.imagen || '/estaticos/default-image.jpg'}
-                        alt={item.nombre}
-                        className="product-image img-fluid"
-                      />
-                    </Col>
-                    <Col md={6}>
-                    <Button
-                        variant="link"
-                        className="button-delete"
-                        onClick={() => handleRemoveProductFromCart(item.id)}
-                      >
-                        <span className="material-symbols-outlined">delete</span>
-                      </Button>
-                      <h5 className="product-title mb-2">{item.nombre}</h5>
-                      <div className="d-flex align-items-center gap-2">
-                        <p className="price-text-cart mb-1">
-                          Ahora ${ (item.precio * 0.8).toLocaleString('es-CL') }
-                        </p>
-                        <span className="cart-price-badge">-20%</span>
-                      </div>
-                      <p className="original-price text-muted">
-                        Normal ${item.precio.toLocaleString('es-CL')}
-                      </p>
-                      <div className="quantity-controls">
-                        <Button
-                          className='btn-circle-cart'
-                          size="sm"
-                          onClick={() => handleDecrement(item.id)}
-                          disabled={item.cantidad === 1}
-                        >
-                          -
+              <ListGroup className="mb-4">
+                {groupedItems.map((item: CartItem) => (
+                  <ListGroup.Item key={item.id} className="cart-item">
+                    <Row className="align-items-center">
+                      <Col md={6}>
+                        <img src={item.imagen || '/estaticos/default-image.jpg'} alt={item.nombre} className="product-image img-fluid" />
+                      </Col>
+                      <Col md={6}>
+                        <h5 className="product-title mb-2">{item.nombre}</h5>
+                        <div className="d-flex align-items-center gap-2">
+                          <p className="price-text-cart mb-1">Ahora ${(item.precio * 0.8).toLocaleString('es-CL')}</p>
+                          <span className="cart-price-badge">-20%</span>
+                        </div>
+                        <p className="original-price text-muted">Normal ${item.precio.toLocaleString('es-CL')}</p>
+                        <div className="quantity-controls">
+                          <Button className='btn-circle-cart' size="sm" onClick={() => handleDecrement(item.id)} disabled={item.cantidad === 1}>
+                            -
+                          </Button>
+                          <span className="mx-3">{item.cantidad}</span>
+                          <Button className='btn-circle-cart' size="sm" onClick={() => handleIncrement(item.id)}>
+                            +
+                          </Button>
+                        </div>
+                        <Button variant="link" className="button-delete mt-4" onClick={() => handleRemoveProductFromCart(item.id)}>
+                          eliminar<span className="material-symbols-outlined">delete</span>
                         </Button>
-                        <span className="mx-3">{item.cantidad}</span>
-                        <Button
-                          className='btn-circle-cart'
-                          size="sm"
-                          onClick={() => handleIncrement(item.id)}
-                        >
-                          +
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
-                </ListGroup.Item>
-              ))}
-            </ListGroup>
-
-
+                      </Col>
+                    </Row>
+                  </ListGroup.Item>
+                ))}
+              </ListGroup>
             </div>
           )}
         </Col>
 
-     
         <Col md={5} className='mt-5'>
           <Card className="summary-card">
             <Card.Body>
@@ -443,23 +410,23 @@ const total = groupedItems.reduce((acc: number, item: CartItem) => {
         <Col md={12} className="d-flex justify-content-between mt-4">
           <Col md={4}>
             <Button
-              style={{backgroundColor: 'white', color:'#1A4756', border: '3px solid #1A4756'}}
+              style={{ backgroundColor: 'white', color: '#1A4756', border: '3px solid #1A4756' }}
               className="bt go-button float-end"
               variant="secondary"
               onClick={handleGoBack}
-                >
-                Volver
+            >
+              Volver
             </Button>
           </Col>
           <Col md={5}>
-          <Button
-            className='bt go-button float-end'
-            variant="primary"
-            onClick={handleNavigateToCheckout}
-            disabled={groupedItems.length === 0} 
-          >
-            Finalizar la compra
-          </Button>
+            <Button
+              className='bt go-button float-end'
+              variant="primary"
+              onClick={handleNavigateToCheckout}
+              disabled={groupedItems.length === 0}
+            >
+              Finalizar la compra
+            </Button>
 
           </Col>
         </Col>

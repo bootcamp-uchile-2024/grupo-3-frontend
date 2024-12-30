@@ -23,7 +23,7 @@
   
   /* Botones de cantidad */
   .quantity-controls {
-    gap: 10px;
+    gap: 0;
     margin-top: 10px;
   }
   

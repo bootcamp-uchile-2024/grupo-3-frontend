@@ -7,8 +7,8 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "docker:build": "npm run build",
-    "docker:push": "docker build -e VITE_API_URL=http://localhost:8080 -e VITE_URL_ENDPOINT_BACKEND=http://localhost:8080 -t estefaniaperez/plantaiapp-frontend:plantaifrontg3v1.0.11 .",
-    "docker:publish": "docker push estefaniaperez/plantaiapp-frontend:plantaifrontg3v1.0.11"
+    "docker:push": "docker build -e VITE_API_URL=http://localhost:8080 -e VITE_URL_ENDPOINT_BACKEND=http://localhost:8080 -t estefaniaperez/plantai-frontend:1.0.12 .",
+    "docker:publish": "docker push estefaniaperez/plantai-frontend:1.0.12"
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
