@@ -175,22 +175,67 @@ import '../styles/CartPage.css';
         method: 'GET',
         headers: { Accept: 'application/json' },
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log('Productos cargados del carrito:', data);
-
+  
         if (data.productos && data.productos.length > 0) {
           dispatch(clearCart());
-          data.productos.forEach((item: CartItem) => {
-            dispatch(addToCart(item));
-          });
+  
+          for (const item of data.productos) {
+            const productResponse = await fetch(`${API_BASE_URL}/producto/${item.productoId}`, {
+              method: 'GET',
+              headers: { Accept: 'application/json' },
+            });
+  
+            if (productResponse.ok) {
+              const productData = await productResponse.json();
+              const imagePath = productData.imagenes && productData.imagenes.length > 0
+                ? productData.imagenes[0].ruta
+                : '/estaticos/default-image.jpg';
+  
+              dispatch(addToCart({
+                id: productData.id,
+                nombre: productData.nombre,
+                precio: productData.precio,
+                imagen: imagePath,
+                descripcion: productData.descripcion,
+                cantidad: item.cantidadProducto,
+                unidadesVendidas: productData.unidadesVendidas,
+                puntuacion: productData.puntuacion,
+                ancho: productData.ancho,
+                alto: productData.alto,
+                largo: productData.largo,
+                peso: productData.peso,
+                stock: productData.stock,
+              }));
+            } else {
+              console.error(`Error al obtener detalles del producto ID: ${item.productoId}`);
+              dispatch(addToCart({
+                id: item.productoId,
+                nombre: 'Producto Desconocido',
+                precio: 0,
+                imagen: '/estaticos/default-image.jpg',
+                descripcion: 'Descripción no disponible',
+                cantidad: item.cantidadProducto,
+                unidadesVendidas: 0,
+                puntuacion: 0,
+                ancho: 0,
+                alto: 0,
+                largo: 0,
+                peso: 0,
+                stock: 0,
+              }));
+            }
+          }
         }
       }
     } catch (error) {
       console.error('Error al cargar productos del carrito:', error);
     }
-  }, [dispatch]);
+  }, [dispatch, API_BASE_URL]);
+  
 
   const handleIncrement = async (productId: number) => {
     if (!cartId) {
@@ -326,7 +371,7 @@ import '../styles/CartPage.css';
   return (
     <Container className="cart-container">
       <Row className="justify-content-center">
-        <Col md={5} className='col-md-5 mt-4 border rounded p-3'>
+        <Col md={5} className='me-5'>
           <div className="cart-header">
             <h4>Tu compra</h4>
             {groupedItems.length > 0 && (
@@ -344,42 +389,46 @@ import '../styles/CartPage.css';
           ) : (
             <div className="products-scroll-container">
               <ListGroup className="mb-4">
-                {groupedItems.map((item: CartItem) => (
-                  <ListGroup.Item key={item.id} className="cart-item">
-                    <Row className="align-items-center">
-                      <Col md={6}>
-                        <img src={item.imagen || '/estaticos/default-image.jpg'} alt={item.nombre} className="product-image img-fluid" />
-                      </Col>
-                      <Col md={6}>
-                        <h5 className="product-title mb-2">{item.nombre}</h5>
-                        <div className="d-flex align-items-center gap-2">
-                          <p className="price-text-cart mb-1">Ahora ${(item.precio * 0.8).toLocaleString('es-CL')}</p>
-                          <span className="cart-price-badge">-20%</span>
-                        </div>
-                        <p className="original-price text-muted">Normal ${item.precio.toLocaleString('es-CL')}</p>
-                        <div className="quantity-controls">
-                          <Button className='btn-circle-cart' size="sm" onClick={() => handleDecrement(item.id)} disabled={item.cantidad === 1}>
-                            -
-                          </Button>
-                          <span className="mx-3">{item.cantidad}</span>
-                          <Button className='btn-circle-cart' size="sm" onClick={() => handleIncrement(item.id)}>
-                            +
-                          </Button>
-                        </div>
-                        <Button variant="link" className="button-delete mt-4" onClick={() => handleRemoveProductFromCart(item.id)}>
-                          eliminar<span className="material-symbols-outlined">delete</span>
+              {groupedItems.map((item: CartItem) => (
+                <ListGroup.Item key={item.id} className="cart-item">
+                  <Row className="align-items-center">
+                    <Col md={6}>
+                      <img
+                        src={item.imagen || '/estaticos/default-image.jpg'}
+                        alt={item.nombre}
+                        className="product-image img-fluid"
+                      />
+                    </Col>
+                    <Col md={6}>
+                      <h5 className="product-title mb-2">{item.nombre}</h5>
+                      <div className="d-flex align-items-center gap-2">
+                        <p className="price-text-cart mb-1">Ahora ${(item.precio * 0.8).toLocaleString('es-CL')}</p>
+                        <span className="cart-price-badge">-20%</span>
+                      </div>
+                      <p className="original-price text-muted">Normal ${item.precio.toLocaleString('es-CL')}</p>
+                      <div className="quantity-controls">
+                        <Button className='btn-circle-cart' size="sm" onClick={() => handleDecrement(item.id)} disabled={item.cantidad === 1}>
+                          -
                         </Button>
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
+                        <span className="mx-3">{item.cantidad}</span>
+                        <Button className='btn-circle-cart' size="sm" onClick={() => handleIncrement(item.id)}>
+                          +
+                        </Button>
+                      </div>
+                      <Button variant="link" className="button-delete mt-4" onClick={() => handleRemoveProductFromCart(item.id)}>
+                        eliminar<span className="material-symbols-outlined">delete</span>
+                      </Button>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
                 ))}
               </ListGroup>
             </div>
           )}
         </Col>
 
-        <Col md={6} className='mt-3'>
-          <Card className="summary-card mt-2">
+        <Col md={5} className='mt-5'>
+          <Card className="summary-card">
             <Card.Body>
               <Card.Title>Resumen de mi compra</Card.Title>
               <ListGroup variant="flush" className="mb-3">

@@ -108,7 +108,7 @@ const fetchProducts = useCallback(async () => {
     const productId = product.id;
     const existingCartItem = cart.find((item) => item.id === productId);
     const quantity = existingCartItem ? existingCartItem.cantidad : 1;
-
+  
     if (quantity > product.stock) {
       setErrorMessages((prevMessages) => ({
         ...prevMessages,
@@ -116,15 +116,17 @@ const fetchProducts = useCallback(async () => {
       }));
       return;
     }
-
-    const imagePath = '/estaticos/default-image.jpg';
-
+  
+    const imagePath = product.imagenes && product.imagenes.length > 0 
+      ? product.imagenes[0].ruta 
+      : '/estaticos/default-image.jpg';
+  
     dispatch(
       addToCart({
         id: product.id,
         nombre: product.nombre,
         precio: product.precio,
-        imagen: imagePath,
+        imagen: imagePath, 
         descripcion: product.descripcion,
         cantidad: quantity,
         unidadesVendidas: product.unidadesVendidas,
@@ -136,7 +138,7 @@ const fetchProducts = useCallback(async () => {
         stock: product.stock,
       })
     );
-
+  
     setSelectedProduct(product);
     setShowOffcanvas(true);
     setErrorMessages((prevMessages) => ({
@@ -144,6 +146,7 @@ const fetchProducts = useCallback(async () => {
       [product.id]: '',
     }));
   };
+  
 
 
   const handlePageChange = (page: number) => {

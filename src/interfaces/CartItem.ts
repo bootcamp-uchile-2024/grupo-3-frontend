@@ -1,3 +1,7 @@
+export interface Imagen {
+  ruta: string;
+}
+
 export interface CartItem {
   id: number;
   nombre: string;
@@ -17,5 +21,7 @@ export interface CartItem {
   largo: number;
   peso: number;
   stock?: number;
+  imagenes?: Imagen[];
 }
+
   

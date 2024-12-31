@@ -10,6 +10,7 @@ const loadCartFromLocalStorage = (): CartState => {
   try {
     const savedCart = localStorage.getItem('__redux__cart__');
     if (!savedCart) {
+      console.log('No se encontró carrito en LocalStorage.');
       return { idUsuario: 1, productos: [] };
     }
 
