@@ -40,7 +40,7 @@ export default function ProductDetailPage() {
         if (productJson.imagenes && productJson.imagenes.length > 0) {
           setSelectedImage(productJson.imagenes[0].ruta);
         } else {
-          setSelectedImage('/estaticos/default-image.jpg'); 
+          setSelectedImage('/estaticos/default-image.jpg');
         }
       } catch (error) {
         setError('Hubo un error al obtener el producto');
@@ -127,8 +127,33 @@ export default function ProductDetailPage() {
       <Container className="mt-5 mb-5 pt-5">
         {product && (
           <Row>
-            <Col md={6}>
+            <Col md={7}>
               <Row>
+              <Col md={2}>
+                  <div className="image-thumbnails d-flex flex-wrap gap-3">
+                    {product.imagenes && product.imagenes.length > 0 ? (
+                      product.imagenes.map((img, index) => (
+                        <Col key={index} xs={12}>
+                          <img
+                            src={img.ruta}
+                            alt={`${product.nombre} - Imagen ${index + 1}`}
+                            className={`thumbnail-img img-fluid ${selectedImage === img.ruta ? 'selected-thumbnail' : ''}`}
+                            onClick={() => handleSelectImage(img.ruta)}
+                          />
+                        </Col>
+                      ))
+                    ) : (
+                      <Col xs={12}>
+                        <img
+                          src="/estaticos/default-image.jpg"
+                          alt="Imagen por defecto"
+                          className="thumbnail-img img-fluid"
+                          onClick={() => setSelectedImage('/estaticos/default-image.jpg')}
+                        />
+                      </Col>
+                    )}
+                  </div>
+                </Col>
                 <Col md={10}>
                 <Card.Img
                   variant="top"
@@ -140,48 +165,14 @@ export default function ProductDetailPage() {
                           : '/estaticos/default-image.jpg')
                   }
                   alt={product.nombre}
-                  className="rounded img-fluid"
+                  className="img-fluid  main-image"
                 />
 
                 </Col>
-                <Col className="d-flex justify-content-center align-items-center">
-                  <span className="material-symbols-outlined">
-                    arrow_forward_ios
-                  </span>
-                </Col>
-              </Row>
-              <Row className="mt-5">
-                <div className="image-thumbnails d-flex flex-wrap gap-3">
-                {product.imagenes && product.imagenes.length > 0 ? (
-                  product.imagenes.map((img, index) => (
-                    <Col key={index} xs={3} sm={2}>
-                      <img
-                        src={
-                          `${import.meta.env.MODE === 'development' ? '' : import.meta.env.VITE_API_URL}${img.ruta}`
-                        }
-                        alt={`${product.nombre} - Imagen ${index + 1}`}
-                        className={`thumbnail-img rounded img-fluid ${selectedImage === img.ruta ? 'selected-thumbnail' : ''}`}
-                        onClick={() => handleSelectImage(img.ruta)}
-                        style={{ cursor: 'pointer', width: '100%', height: 'auto' }}
-                      />
-                    </Col>
-                  ))
-                ) : (
-                  <Col xs={3} sm={2}>
-                    <img
-                      src="/estaticos/default-image.jpg"
-                      alt={product.nombre || 'Imagen del producto'}
-                      className="thumbnail-img rounded img-fluid"
-                      onClick={() => setSelectedImage('/estaticos/default-image.jpg')}
-                      style={{ cursor: 'pointer', width: '100%', height: 'auto' }}
-                    />
-                  </Col>
-                )}
-
-                </div>
               </Row>
             </Col>
-            <Col md={6}>
+
+            <Col md={5}>
               <Card.Body>
                 <Card.Title className="product-title">{product.nombre}</Card.Title>
                 <Card.Text className="product-description">
@@ -285,8 +276,7 @@ export default function ProductDetailPage() {
             </Col>
 
           </Row>
-        )
-        }
+        )}
 
         <Row className="mt-4">
           {['descripcion', 'dimensiones', 'recomendaciones', 'garantias'].map((section) => (
@@ -316,9 +306,10 @@ export default function ProductDetailPage() {
             </Col>
           ))}
         </Row>
-        <Offcanvas 
-          show={showOffcanvas} 
-          onHide={() => setShowOffcanvas(false)} 
+
+        <Offcanvas
+          show={showOffcanvas}
+          onHide={() => setShowOffcanvas(false)}
           placement="end"
         >
           <Offcanvas.Header closeButton>
@@ -327,8 +318,8 @@ export default function ProductDetailPage() {
           <Offcanvas.Body>
             {product && (
               <div className="cart-item-card">
-                <img 
-                  src={selectedImage || '/estaticos/default-image.jpg'} 
+                <img
+                  src={selectedImage || '/estaticos/default-image.jpg'}
                   alt={product.nombre}
                   className="cart-item-image"
                 />
@@ -352,7 +343,7 @@ export default function ProductDetailPage() {
                 </button>
               </div>
             )}
-            
+
             <div className="cart-total">
               <div className="d-flex justify-content-between">
                 <span>Total a pagar:</span>
@@ -361,13 +352,13 @@ export default function ProductDetailPage() {
             </div>
           </Offcanvas.Body>
           <div className="offcanvas-footer">
-            <button 
+            <button
               className="btn-go-to-cart"
               onClick={() => navigate('/cart')}
             >
               Ir al carrito de compras
             </button>
-            <button 
+            <button
               className="btn-continue-shopping"
               onClick={() => setShowOffcanvas(false)}
             >
@@ -375,7 +366,8 @@ export default function ProductDetailPage() {
             </button>
           </div>
         </Offcanvas>
-      </Container >
+      </Container>
     </div>
+
   );
 }
