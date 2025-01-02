@@ -1,6 +1,6 @@
 import '../styles/SidebarFilters.css';
 import React, { useState } from 'react';
-import { Button, Form } from 'react-bootstrap';
+import { Form } from 'react-bootstrap';
 import { CatalogFilters } from '../interfaces/CatalogFilters';
 
 interface SidebarFiltersProps {
@@ -93,14 +93,16 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="mt-4 sidebar-filters fontcolor">
+    <div className="sidebar-filters fontcolor">
       {/* Botón para resetear los filtros */}
-      <Button variant="primary" className="mb-4 mt-2" onClick={resetFilters}>
+      <div className="container-sidebarfilterbutton">
+      <button className="sidebarfilterbutton1 mb-4" onClick={resetFilters}>
         Restablecer Filtros
-      </Button>
+      </button>
+      </div>
 
       {/* Filtro de precio */}
-      <Form.Group className="border-bottom mb-3 pb-3">
+      <Form.Group className="border-bottom mt-1 mb-3 pb-3">
         <Form.Label className="d-flex justify-content-between align-items-center">
           <span className='fontfilters'>Precio</span>
           <span className="ms-2">
@@ -177,7 +179,7 @@ const SidebarFilters: React.FC<SidebarFiltersProps> = ({ onFilterChange }) => {
       </Form.Group>
 
       {/* Filtro de pet friendly */}
-      <Form.Group>
+      <Form.Group className="border-bottom mb-3 pb-3">
         <Form.Label className='fontfilters'>Pet Friendly</Form.Label>
         <Form.Check
           type="checkbox"

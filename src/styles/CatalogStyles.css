@@ -51,7 +51,6 @@
 .pagination-container .page-item:first-child .page-link,
 .pagination-container .page-item:last-child .page-link {
     background-color: #466A76;
-    color: white;
 }
 
 .pagination-container .page-item:first-child .page-link:hover,
@@ -62,7 +61,7 @@
 
 /* Estilos para el selector de cantidad de productos por página */
 .show-products-selector a {
-    color: #1A4756;
+    color: var(--main-bg-color);
     font-weight: normal;
     text-decoration: none;
     transition: color 0.3s ease;
@@ -73,7 +72,7 @@
 }
 
 .show-products-selector a:hover {
-    color: black;
+    color: #FF8C30;
 }
 
 /* Estilo para el contenedor del botón del carrito */
@@ -159,4 +158,11 @@
   .loading-container.loading-finished .loading-spinner {
     opacity: 0;
   }
+
+  :not([href]):not([class]), a:not([href]):not([class]):hover {
+    color: var(--main-bg-color);}
+
+.fw-bold {
+  color:#FF8C30;
+}
   
