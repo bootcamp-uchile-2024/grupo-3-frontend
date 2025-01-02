@@ -11,6 +11,7 @@ import {SortFilters, SortFilter} from '../components/SortFiltersCatalog';
 import { useSelector } from 'react-redux';
 import { RootState } from '../states/store';
 import { CatalogFilters } from '../interfaces/CatalogFilters';
+import SearchBar from '../components/SearchBar';
 
 const CatalogPage: React.FC = () => {
   const [products, setProducts] = useState<productsCatalog[]>([]);
@@ -318,7 +319,9 @@ const fetchProducts = useCallback(async () => {
   return (
     <>
       <div className="catalog-banner">
-        <Container className="banner-content text-center"></Container>
+        <Container className="banner-content text-center">
+        <SearchBar />
+        </Container>
       </div>
       <Container fluid>
         <SortFilters onSortChange={handleSortChange}/>
@@ -397,7 +400,7 @@ const fetchProducts = useCallback(async () => {
             <br />
             <br />
             <Row className="mb-4 d-flex">
-              <Col className="d-flex justify-content-end">
+              <Col className="d-flex justify-content-end mb-2">
                 <Pagination className="pagination-container">
                   {renderPaginationItems()}
                 </Pagination>
