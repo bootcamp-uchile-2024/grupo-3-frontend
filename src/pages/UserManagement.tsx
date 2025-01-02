@@ -111,20 +111,33 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
+      setLoading(true);
       const backendUrl = import.meta.env.VITE_API_URL;
-      const response = await fetch(`${backendUrl}/usuarios`);
+  
+      const token = localStorage.getItem("token");
+  
+      const response = await fetch(`${backendUrl}/usuarios`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+  
       if (!response.ok) {
         throw new Error("Error al obtener los usuarios");
       }
+  
       const responseData = await response.json();
       console.log("Estructura de responseData:", responseData);
+  
       if (!Array.isArray(responseData.data)) {
         console.error("El campo 'data' no es un array:", responseData.data);
       }
-
+  
       const data: User[] = Array.isArray(responseData.data) ? responseData.data : [];
       setUsers(data);
       console.log("Usuarios actualizados en el estado:", data);
+  
     } catch (error) {
       console.error("Error:", error);
       setError("Error al obtener los usuarios");
@@ -132,16 +145,24 @@ const UserManagement = () => {
       setLoading(false);
     }
   };
+  
 
   const deleteUser = async (userId: number) => {
     try {
       const backendUrl = import.meta.env.VITE_API_URL;
+      const token = localStorage.getItem("token");
+  
       const response = await fetch(`${backendUrl}/usuarios/${userId}`, {
         method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
       });
+  
       if (!response.ok) {
         throw new Error("Error al eliminar el usuario");
       }
+  
       console.log("Usuario eliminado");
       fetchUsers();
     } catch (error) {
@@ -149,6 +170,7 @@ const UserManagement = () => {
       setError("Error al eliminar el usuario");
     }
   };
+  
 
   const handleCancelEdit = () => {
     setEditingUser(null);
@@ -175,46 +197,48 @@ const UserManagement = () => {
   const handleUpdateUser = async () => {
     console.log("handleUpdateUser llamada");
     if (!editingUser) return;
-
+  
     if (editingUser.idRol === null || editingUser.idRol === undefined) {
       console.error("idRol no está definido para el usuario que se va a actualizar.");
       setError("El rol del usuario es obligatorio.");
       return;
     }
-
-
+  
     const requestBody = {
       idRol: editingUser.idRol,
     };
-
+  
     console.log("requestBody preparado:", requestBody);
-
+  
     try {
       const backendUrl = import.meta.env.VITE_API_URL;
-      const response = await fetch(`${backendUrl}/usuarios/${editingUser.id}`, {
+      const token = localStorage.getItem("token");
+  
+      const response = await fetch(`${backendUrl}/usuarios/${editingUser.id}/cambiar-rol`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, 
         },
         body: JSON.stringify(requestBody),
       });
-
+  
       const result = await response.json();
       console.log("response:", result);
-
+  
       if (!response.ok) {
         throw new Error(`Error al actualizar el usuario: ${response.status} - ${result.message || "Error desconocido"}`);
       }
-
+  
       console.log("Usuario actualizado correctamente");
-      fetchUsers();
-      setEditingUser(null);
+      fetchUsers(); 
+      setEditingUser(null); 
     } catch (error) {
       console.error("Error al actualizar el usuario:", error);
       setError("Error al actualizar el usuario. Verifica los datos.");
     }
   };
-
+  
   const handleSaveChangesClick = () => {
     if (!editingUser) {
       console.error("No hay un usuario seleccionado para modificar.");
