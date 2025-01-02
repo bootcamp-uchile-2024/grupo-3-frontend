@@ -393,11 +393,16 @@ import '../styles/CartPage.css';
                 <ListGroup.Item key={item.id} className="cart-item">
                   <Row className="align-items-center">
                     <Col md={6}>
-                      <img
-                        src={item.imagen || '/estaticos/default-image.jpg'}
-                        alt={item.nombre}
-                        className="product-image img-fluid"
-                      />
+                    <img
+                      src={
+                        item.imagen && item.imagen.length > 0
+                          ? `${import.meta.env.MODE === 'development' ? '' : import.meta.env.VITE_API_URL}${item.imagen}`
+                          : '/estaticos/default-image.jpg'
+                      }
+                      alt={item.nombre}
+                      className="product-image img-fluid"
+                    />
+
                     </Col>
                     <Col md={6}>
                       <h5 className="product-title mb-2">{item.nombre}</h5>

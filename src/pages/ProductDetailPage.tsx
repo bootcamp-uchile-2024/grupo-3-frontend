@@ -130,12 +130,19 @@ export default function ProductDetailPage() {
             <Col md={6}>
               <Row>
                 <Col md={10}>
-                  <Card.Img
-                    variant="top"
-                    src={selectedImage}
-                    alt={product.nombre}
-                    className="rounded img-fluid"
-                  />
+                <Card.Img
+                  variant="top"
+                  src={
+                    selectedImage && selectedImage !== '/estaticos/default-image.jpg'
+                      ? selectedImage
+                      : (product.imagenes && product.imagenes.length > 0
+                          ? `${import.meta.env.MODE === 'development' ? '' : import.meta.env.VITE_API_URL}${product.imagenes[0]?.ruta}`
+                          : '/estaticos/default-image.jpg')
+                  }
+                  alt={product.nombre}
+                  className="rounded img-fluid"
+                />
+
                 </Col>
                 <Col className="d-flex justify-content-center align-items-center">
                   <span className="material-symbols-outlined">
@@ -145,29 +152,32 @@ export default function ProductDetailPage() {
               </Row>
               <Row className="mt-5">
                 <div className="image-thumbnails d-flex flex-wrap gap-3">
-                  {product.imagenes && product.imagenes.length > 0 ? (
-                    product.imagenes.map((img, index) => (
-                      <Col key={index} xs={3} sm={2}>
-                        <img
-                          src={img.ruta}
-                          alt={`${product.nombre} - Imagen ${index + 1}`}
-                          className={`thumbnail-img rounded img-fluid ${selectedImage === img.ruta ? 'selected-thumbnail' : ''}`}
-                          onClick={() => handleSelectImage(img.ruta)}
-                          style={{ cursor: 'pointer', width: '100%', height: 'auto' }}
-                        />
-                      </Col>
-                    ))
-                  ) : (
-                    <Col xs={3} sm={2}>
+                {product.imagenes && product.imagenes.length > 0 ? (
+                  product.imagenes.map((img, index) => (
+                    <Col key={index} xs={3} sm={2}>
                       <img
-                        src="/estaticos/default-image.jpg"
-                        alt="Imagen por defecto"
-                        className="thumbnail-img rounded img-fluid"
-                        onClick={() => setSelectedImage('/estaticos/default-image.jpg')}
+                        src={
+                          `${import.meta.env.MODE === 'development' ? '' : import.meta.env.VITE_API_URL}${img.ruta}`
+                        }
+                        alt={`${product.nombre} - Imagen ${index + 1}`}
+                        className={`thumbnail-img rounded img-fluid ${selectedImage === img.ruta ? 'selected-thumbnail' : ''}`}
+                        onClick={() => handleSelectImage(img.ruta)}
                         style={{ cursor: 'pointer', width: '100%', height: 'auto' }}
                       />
                     </Col>
-                  )}
+                  ))
+                ) : (
+                  <Col xs={3} sm={2}>
+                    <img
+                      src="/estaticos/default-image.jpg"
+                      alt={product.nombre || 'Imagen del producto'}
+                      className="thumbnail-img rounded img-fluid"
+                      onClick={() => setSelectedImage('/estaticos/default-image.jpg')}
+                      style={{ cursor: 'pointer', width: '100%', height: 'auto' }}
+                    />
+                  </Col>
+                )}
+
                 </div>
               </Row>
             </Col>

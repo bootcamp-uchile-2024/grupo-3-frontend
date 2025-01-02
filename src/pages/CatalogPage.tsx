@@ -339,12 +339,16 @@ const fetchProducts = useCallback(async () => {
                     <Card>
                       <Link to={`/catalogo/producto/${product.id}`}>
 
-                        <Card.Img
-                          variant="top"
-                          src={product.imagenes && product.imagenes.length > 0 ? product.imagenes[0].ruta : '/estaticos/default-image.jpg'}
-                          alt={product.nombre}
-                          className="card-products-container"
-                        />
+                      <Card.Img
+                        variant="top"
+                        src={
+                          product.imagenes && product.imagenes.length > 0
+                            ? `${import.meta.env.MODE === 'development' ? '' : import.meta.env.VITE_API_URL}${product.imagenes[0].ruta}`
+                            : '/estaticos/default-image.jpg'
+                        }
+                        alt={product.nombre}
+                        className="card-products-container"
+                      />
 
                       </Link>
                       <Card.Body className="text-start">
@@ -449,12 +453,15 @@ const fetchProducts = useCallback(async () => {
             {selectedProduct && (
               <div className="cart-item-card">
                 <img
-                  src={selectedProduct.imagenes && selectedProduct.imagenes.length > 0
-                    ? selectedProduct.imagenes[0].ruta
-                    : '/estaticos/default-image.jpg'}
+                  src={
+                    selectedProduct.imagenes && selectedProduct.imagenes.length > 0
+                      ? `${import.meta.env.MODE === 'development' ? '' : import.meta.env.VITE_API_URL}${selectedProduct.imagenes[0].ruta}`
+                      : '/estaticos/default-image.jpg'
+                  }
                   alt={selectedProduct.nombre}
                   className="cart-item-image"
                 />
+
                 <div className="cart-item-details">
                   <h5>{selectedProduct.nombre}</h5>
                   <div className="cart-item-price">

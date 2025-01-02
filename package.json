@@ -6,8 +6,7 @@
     "dev": "vite --open",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "docker:build": "npm run build",
-    "docker:push": "docker build -e VITE_API_URL=http://localhost:8080 -e VITE_URL_ENDPOINT_BACKEND=http://localhost:8080 -t estefaniaperez/plantai-frontend:1.0.12 .",
+    "docker:build": "docker build -t estefaniaperez/plantai-frontend:1.0.12 --build-arg VITE_API_URL=http://52.15.36.189:8080 --build-arg VITE_URL_ENDPOINT_BACKEND=http://52.15.36.189:8080 .",
     "docker:publish": "docker push estefaniaperez/plantai-frontend:1.0.12"
   },
   "dependencies": {
