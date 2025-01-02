@@ -7,12 +7,12 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    username: '',
+    usernameOrEmail: '',  
     password: ''
   });
 
   const [errors, setErrors] = useState({
-    usernameError: '',
+    usernameOrEmailError: '',  
     passwordError: '',
     generalError: ''
   });
@@ -36,7 +36,7 @@ const LoginForm: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          username: formData.username,
+          usernameOrEmail: formData.usernameOrEmail, 
           password: formData.password,
         }),
       });
@@ -92,13 +92,13 @@ const LoginForm: React.FC = () => {
               <Form.Label>Correo electrónico o Usuario</Form.Label>
               <Form.Control
                 type="text"
-                name="username"
-                placeholder="Ingresa tu Correo Electrónico"
-                value={formData.username}
+                name="usernameOrEmail"  
+                placeholder="Ingresa tu Correo Electrónico o Usuario"
+                value={formData.usernameOrEmail}  
                 onChange={handleInputChange}
-                isInvalid={!!errors.usernameError}
+                isInvalid={!!errors.usernameOrEmailError} 
               />
-              <Form.Control.Feedback type="invalid">{errors.usernameError}</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">{errors.usernameOrEmailError}</Form.Control.Feedback>
               
               <Form.Label>Contraseña</Form.Label>
               <Form.Control
@@ -139,4 +139,5 @@ const LoginForm: React.FC = () => {
 };
 
 export default LoginForm;
+
 
