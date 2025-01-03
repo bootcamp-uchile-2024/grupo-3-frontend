@@ -7,7 +7,7 @@ import { productsCatalog } from '../interfaces/ProductsCatalog';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../states/cartSlice';
 import { Button, Card, Col, Container, Row, Form, Offcanvas } from 'react-bootstrap';
-import { CartPlus, CaretDown } from 'react-bootstrap-icons';
+import { CartPlus} from 'react-bootstrap-icons';
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -17,7 +17,6 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState<number>(1);
   const [isShipping, setIsShipping] = useState<boolean>(false);
   const [isPickup, setIsPickup] = useState<boolean>(false);
-  const [openSection, setOpenSection] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>('');
   const [showOffcanvas, setShowOffcanvas] = useState(false);
 
@@ -116,10 +115,6 @@ export default function ProductDetailPage() {
     alert('Verificando disponibilidad para la selección de envío/retirada.');
   };
 
-  const toggleSection = (section: string) => {
-    setOpenSection(prev => (prev === section ? null : section));
-  };
-
   const handleSelectImage = (image: string) => setSelectedImage(image);
 
   return (
@@ -167,22 +162,22 @@ export default function ProductDetailPage() {
                   alt={product.nombre}
                   className="img-fluid  main-image"
                 />
-
                 </Col>
               </Row>
             </Col>
-
+            
             <Col md={5}>
               <Card.Body>
-                <Card.Title className="product-title">{product.nombre}</Card.Title>
-                <Card.Text className="product-description">
+                <Card.Title className="productotitle">{product.nombre}</Card.Title>
+                <Card.Text className="productodescription">
                   {product.descripcion}
-                  <p className='ref'>*Fotos De Carácter Referencial</p>
+                  <p className='ref'>*Fotos de carácter referencial</p>
                 </Card.Text>
+                <div className="priceandbuttonsmargin">
                 <Card.Text>
                   <span className="product-price">
                     <div>
-                      <span>Ahora </span>
+                      <span>Ahora: </span>
                       {new Intl.NumberFormat('es-CL', {
                         style: 'currency',
                         currency: 'CLP',
@@ -190,25 +185,25 @@ export default function ProductDetailPage() {
                       }).format(product.precio)}
                     </div>
                   </span>
-                  <span className='product-details p'>
-                    <div>
-                      <span>Normal </span>
+                  <span className='productodetails'>
+                      <a> Normal </a>
                       {new Intl.NumberFormat('es-CL', {
                         style: 'currency',
                         currency: 'CLP',
                         minimumFractionDigits: 0,
                       }).format(product.precio)}
-                    </div>
                   </span>
                 </Card.Text>
+                </div>
 
                 {/* Controles de cantidad */}
                 <div className="d-flex align-items-center mb-3 mt-4 quantity-controls">
-                  <span>Cantidad</span>
-                  <Button onClick={decrementQuantity} className="btn-circle">-</Button>
+                  <span className="textcantidad"> Cantidad </span>
+                  <Button onClick={decrementQuantity} className="btn-circle-cart btn btn-primary btn-sm">-</Button>
                   <span className="mx-2">{quantity}</span>
-                  <Button onClick={incrementQuantity} className="btn-circle">+</Button>
+                  <Button onClick={incrementQuantity} className="btn-circle-cart btn btn-primary btn-sm">+</Button>
                 </div>
+               
 
                 {/* Botones de acción */}
                 <div className="d-flex gap-3 mt-3">
@@ -249,10 +244,15 @@ export default function ProductDetailPage() {
                     </Button>
                   </Col>
                 </div>
-
-                {/* Características del producto */}
-                <Card.Text className="product-details mt-3" id="product-icons">
+              </Card.Body>
+            </Col>
+            {/* Características del producto */}
+            <div>
+            <p>Descripción</p>
+            {product.descripcion} </div>
+            <Card.Text className="product-details mt-3" id="product-icons">
                   <p id="textcolorinput">Características:</p>
+                  <p></p>
                   <Row className="g-0 mt-2">
                     {/* Columna de iconos */}
                     <Col md={1} className="d-flex flex-column align-items-center gap-2">
@@ -271,41 +271,8 @@ export default function ProductDetailPage() {
                     </Col>
                   </Row>
                 </Card.Text>
-
-              </Card.Body>
-            </Col>
-
           </Row>
         )}
-
-        <Row className="mt-4">
-          {['descripcion', 'dimensiones', 'recomendaciones', 'garantias'].map((section) => (
-            <Col md={3} key={section}>
-              <Button
-                variant="outline-secondary"
-                onClick={() => toggleSection(section)}
-                className="d-flex justify-content-between align-items-center w-100"
-              >
-                {section.charAt(0).toUpperCase() + section.slice(1)}
-                <CaretDown size={18} className={`ms-2 ${openSection === section ? 'rotate-180' : ''}`} />
-              </Button>
-              {openSection === section && (
-                <div className="mt-2">
-                  {section === 'descripcion' && product?.descripcion}
-                  {section === 'dimensiones' && (
-                    <>
-                      Ancho: {product?.ancho} cm<br />
-                      Alto: {product?.alto} cm<br />
-                      Largo: {product?.largo} cm
-                    </>
-                  )}
-                  {section === 'recomendaciones' && 'La planta es apta para exteriores, es resistente a altas temperaturas.'}
-                  {section === 'garantias' && 'Garantía de 1 año contra defectos de fabricación.'}
-                </div>
-              )}
-            </Col>
-          ))}
-        </Row>
 
         <Offcanvas
           show={showOffcanvas}
@@ -333,9 +300,9 @@ export default function ProductDetailPage() {
                     Normal ${(product.precio * 1.35).toLocaleString('es-CL')}
                   </div>
                   <div className="cart-quantity-controls">
-                    <button className="btn-circle">-</button>
+                    <button className="btn-circle-cart btn btn-primary btn-sm">-</button>
                     <span>{quantity}</span>
-                    <button className="btn-circle">+</button>
+                    <button className="btn-circle-cart btn btn-primary btn-sm">+</button>
                   </div>
                 </div>
                 <button className="delete-button">
