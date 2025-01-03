@@ -12,7 +12,7 @@ import "../styles/UserManagementStyle.css"
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [, setError] = useState<string>("");
@@ -80,12 +80,12 @@ const UserManagement = () => {
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
-    if (user && user.roles && user.roles.includes("admin-1")) {
-      setIsAdmin(true);
-    }
-
+    const isAdminRole = user.role === "Super Admin";
+    setIsAdmin(isAdminRole);
     fetchUsers();
   }, []);
+  
+  
 
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem("selectedUser") || "null");
@@ -300,12 +300,17 @@ const UserManagement = () => {
 
         <Col md={10}>
           <div style={{ marginTop: "1rem", marginBottom: "6rem", padding: "16px", background: "#F5F5F5", borderRadius: "0px 0px 8px 8px", boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}>
-            <Tabs defaultActiveKey="modificarUsuario" className="custom-tabs mb-3">
-              <Tab eventKey="crearUsuario" title="Crear Usuario">
-                {isAdmin && (
-                  <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />
-                )}
-              </Tab>
+          <Tabs defaultActiveKey="crearUsuario" className="custom-tabs mb-3">
+
+          <Tab eventKey="crearUsuario" title="Crear Usuario">
+            {isAdmin === null ? (
+              <Spinner animation="border" />
+            ) : isAdmin ? (
+              <UserCreateForm onUserCreated={fetchUsers} isAdmin={isAdmin} />
+            ) : (
+              <p>No tienes permisos para crear usuarios.</p>
+            )}
+          </Tab>
 
               <Tab eventKey="eliminarUsuario" title="Eliminar Usuario">
                 {loading ? (

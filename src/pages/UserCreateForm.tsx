@@ -109,6 +109,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
 
       try {
         const backendUrl = import.meta.env.VITE_API_URL;
+
         const response = await fetch(`${backendUrl}/usuarios`, {
           method: 'POST',
           headers: {
@@ -117,11 +118,11 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
           body: JSON.stringify(userData),
         });
 
-        console.log('Estado de la respuesta:', response.status);
+        const responseData = await response.json();
+        console.log('Respuesta completa del backend:', responseData);
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'Error al crear el usuario');
+          throw new Error(responseData.message || 'Error al crear el usuario');
         }
 
         alert('¡Usuario creado exitosamente!');
@@ -151,6 +152,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
       }
     }
   };
+
 
   return (
     <Container className="user-creation-container">
