@@ -23,7 +23,7 @@ services:
       - 'migrate'
 
   backend-prod:
-    image: nicolasf1/cotiledonapp:1.12.0
+    image: nicolasf1/cotiledonapp:1.12.1
     depends_on:
       - database-prod
     environment:

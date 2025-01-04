@@ -78,4 +78,14 @@
 --bs-navbar-active-color: #ffffff;
 --font-footer-title: 24px;
 
+/* Accordion */
+
+--bs-accordion-btn-bg: #1a4756;
+--bs-accordion-active-bg: #1a4756;
+--bs-accordion-active-color: white;
+--bs-accordion-btn-color: white;
+--bs-accordion-border-color: transparent;
+--bs-accordion-bg: #1a4756!important;
+--bs-accordion-btn-bg:#ffffff!important;
+
 }

@@ -1,14 +1,14 @@
 import '../styles/index.css'
 import Banner from '../components/Banner'
-import CardProducts from '../components/CardProducts';
 import GoogleMapEmbed from '../components/GoogleMaps';
 import InfoCards from '../components/InfoCards';
+import FeaturedProducts from '../components/FeaturedProducts';
 
 export default function HomePage() {
   return (
     <div>
-       <Banner />
-      <CardProducts />
+      <Banner />
+      <FeaturedProducts />
       <InfoCards />
       <GoogleMapEmbed />
     </div>

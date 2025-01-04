@@ -1,4 +1,5 @@
-import { Container, Row, Col, Form} from "react-bootstrap";
+import { Container, Row, Col, Form, Accordion } from "react-bootstrap";
+import "../styles/Footer.css";
 
 const Footer = () => {
   return (
@@ -8,7 +9,7 @@ const Footer = () => {
         <Col lg={1} className="footer-logo mt-4">
           <h1 className="" aria-label="PlantAI Logo"></h1>
           </Col>
-          <Col lg={11}>
+          <Col lg={11} className="d-sm-none d-md-block">
             <Row className="ms-5">
               <Col sm={3} className="ms-5">
                 <h6>Infórmate</h6>
@@ -88,6 +89,58 @@ const Footer = () => {
               </Col>
             </Row>
           </Col>
+          {/* Footer versión móvil con accordion */}
+      <div className="d-lg-none">
+        <Container fluid>
+          <Accordion defaultActiveKey="0" className="custom-accordion">
+            <Accordion.Item eventKey="0">
+              <Accordion.Header>Mapa de sitio</Accordion.Header>
+              <Accordion.Body>
+                <ul className="footer-links">
+                  <li><a href="#faq">Preguntas Frecuentes</a></li>
+                  <li><a href="#tracking">Seguimiento de Pedido</a></li>
+                  <li><a href="#returns">Devoluciones y Cambios</a></li>
+                  <li><a href="#shipping-policy">Política de Despacho</a></li>
+                </ul>
+              </Accordion.Body>
+            </Accordion.Item>
+
+            <Accordion.Item eventKey="1">
+              <Accordion.Header>Ayuda</Accordion.Header>
+              <Accordion.Body>
+                <ul className="footer-links">
+                  <li><a href="#payment-methods">Medios de Pago</a></li>
+                  <li><a href="#about">Acerca de Nosotros</a></li>
+                  <li><a href="#sell-with-us">Vende con Nosotros</a></li>
+                  <li><a href="#work-with-us">Trabaja con Nosotros</a></li>
+                </ul>
+              </Accordion.Body>
+            </Accordion.Item>
+
+            <Accordion.Item eventKey="2">
+              <Accordion.Header>Acerca de Plant AI</Accordion.Header>
+              <Accordion.Body>
+                <div className="subscription-section">
+                  <p className="footer-subscription-text">
+                    Inscríbete y obtén <b>15% OFF</b> en tu primera compra
+                  </p>
+                  <Form className="footer-subscription-form">
+                    <Form.Control
+                      type="email"
+                      placeholder="Correo"
+                      className="footer-input rounded-pill"
+                    />
+                  </Form>
+                </div>
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+
+          <div className="social-icons-mobile mt-4">
+            {/* Iconos sociales que ya tenías */}
+          </div>
+        </Container>
+      </div>
         </Row>
       </Container>
     </footer>

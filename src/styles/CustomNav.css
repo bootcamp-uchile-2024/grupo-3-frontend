@@ -9,16 +9,18 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
-  width: 100px !important;
-  height: 100px !important;
+  width: 100px !important; 
+  height: 100px !important; 
   position: relative;
   display: block;
   top: -2rem;
-  left: -4.6rem;
+  left: 0; 
   z-index: 1001; 
   border: 1px solid #E5E7EB;
   border-radius: 999px;
-  background-color: white; 
+  background-color: white;
+  margin: 0 1rem; 
+  transition: all 0.3s ease; 
 }
 
 .main-nav {
@@ -134,4 +136,70 @@ a#user-dropdown {
 .dropdown-menu.show {
   z-index: 1002;
   margin-top: 1rem;
+}
+
+.nav-container {
+  position: relative;
+}
+
+@media (max-width: 991px) {
+  .main-nav {
+    padding: 1rem 0;
+  }
+
+  .nav-actions {
+    padding: 1rem 0;
+    border-top: 1px solid #eee;
+  }
+
+  .user-menu {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+}
+
+.custom-navbar {
+  width: 100%;
+  background-color: white;
+  border-top: 58px solid #1a4756;
+}
+
+/* Media queries para el logo */
+@media (min-width: 992px) {
+  .navbar-brand {
+    width: 100px !important;
+    height: 100px !important;
+    left: -5.6rem;
+  }
+}
+
+@media (max-width: 991px) {
+  .custom-navbar {
+    border-top: 30px solid #1a4756; 
+  }
+
+  nav.custom-navbar.fixed-top.navbar.navbar-expand-lg.navbar-light {
+    height: auto; 
+    min-height: 80px;
+  }
+
+  .navbar-expand .navbar-nav {
+    margin-top: 4rem; 
+  }
+
+  .nav-actions {
+    top: 0;
+    left: 0;
+    padding: 1rem;
+    position: static;
+  }
+}
+
+@media (max-width: 800px) {
+  .navbar-brand {
+    width: 70px !important;
+    height: 70px !important;
+    top: -1rem;
+  }
 }
