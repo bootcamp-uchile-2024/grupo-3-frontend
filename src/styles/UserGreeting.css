@@ -1,26 +1,26 @@
 .user-greeting {
-    display: flex;
     align-items: center;
+    display: flex;
+    gap: 18px;
     justify-content: flex-end;
     margin-left: 184px;
-    gap: 18px;
     margin-top: 140px;
   }
   
   .user-greeting__avatar {
-    width: 64px;
-    height: 64px;
     border-radius: 50%;
+    box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
+    height: 64px;
     object-fit: cover;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    width: 64px;
   }
   
   .user-greeting__text {
-    font-family: 'Quicksand';
+    color: #1a4756;
+    font-family: Quicksand, sans-serif;
     font-size: 30px;
     font-style: normal;
     font-weight: 500;
     line-height: 52px;
-    color: #1a4756;
     margin: 0;
   }  

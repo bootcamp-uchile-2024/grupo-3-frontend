@@ -1,8 +1,8 @@
 .productotitle {
+  color: #0D270D;
+  font-family: var(--font-family-primary);
   font-size: var(--font-l-medium);
   margin-bottom: 10px;
-  font-family: var(--font-family-primary);
-  color: #0D270D;
 }
 
 .productodescription {
@@ -12,13 +12,13 @@
 
 /* Precio grande */
 .product-price {
-  font-size: var(--line-height-text2-medium);
   color: var(--main-bg-color);
+  font-size: var(--line-height-text2-medium);
 }
 
 .priceandbuttonsmargin {
-  padding-left: 15px;
   padding-bottom: 7px;
+  padding-left: 15px;
 }
 
 .ref {
@@ -28,9 +28,10 @@
 
 .textcantidad {
   color: #0D270D;
-  padding-right: 20px;
   font-size: var(--font-text2-medium);
+  padding-right: 20px;
 }
+
 /* Botones de cantidad */
 .quantity-controls {
   gap: 0;
@@ -46,14 +47,14 @@
 /* Características */
 .productodetails {
   color: #7f8c8d;
-  text-decoration: line-through;
-  position: relative;
   display: flex;
+  position: relative;
+  text-decoration: line-through;
 }
 
 .product-details p {
+  color: #555;
   margin: 5px 0;
-  color: #555555;
 }
 
 .rotate-180 {
@@ -76,8 +77,8 @@ input[type="checkbox"]:checked {
 }
 
 .card-img-top {
-  object-fit: cover;
   height: 100%;
+  object-fit: cover;
 }
 
 .contenedorsupremo {
@@ -86,19 +87,19 @@ input[type="checkbox"]:checked {
 
 /* Estilo para las miniaturas */
 .thumbnail-img {
+  border-radius: 1.2rem;
   cursor: pointer;
   height: auto;
   margin: 0.4rem;
-  border-radius: 1.2rem;
   max-height: 128px;
   object-fit: contain;
 }
 
 /* Estilo para la imagen principal */
 .main-image {
-  width: 100%;
-  max-width: 533px;
+  border-radius: 1.2rem;
   height: auto;
   max-height: 608px;
-  border-radius: 1.2rem;
+  max-width: 533px;
+  width: 100%;
 }

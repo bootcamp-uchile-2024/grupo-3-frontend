@@ -1,35 +1,33 @@
-/* CSS file for estilos.css */
-
-
 @import url('./variables.css');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Quicksand:wght@400;500;700&display=swap');
 
 
 #root{
+  font-family: Quicksand, sans-serif;
   margin: 0 auto;
   padding: 0;
-  font-family: 'Quicksand', sans-serif;
   width: 1440px;
 }
 
 form#search-form {
+  align-items: center;
   display: flex;
   flex-direction: row;
-  align-items: center;
   justify-content: space-around;
 }
 
 .search-form-input {
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
   border-radius: 16px;
-  padding: 8px;
-  width: 200px;
-  position: relative;
   left: 100px;
+  padding: 8px;
+  position: relative;
+  width: 200px;
 }
 
 .container {
   width: 100%;
+
   /* margin: 20px auto 0; */
 }
 
@@ -40,51 +38,37 @@ form#search-form {
 }
 
 .product{
-  width: 380px;
-  padding: 0 0 20px 0;
   border: 1px solid #ccc;
   border-radius: 5px;
   display: flex;
   flex-flow: column;
   justify-content: space-between;
-  margin: 0px -55px;
+  margin: 0 -55px;
+  padding: 0 0 20px;
+  width: 380px;
 }
 
 .product h3 {
   font-size: 1.4rem;
-  padding: 0;
   margin: 20px 10px -10px 18px;
+  padding: 0;
 }
 
-.product-image{
-  width: 100%;
-  height: 320px;
-  background-color: #cccccc;
-}
 
 .product p{
   font-size: 1rem;
-  margin-left: 18px;
   font-weight: bold;
+  margin-left: 18px;
 }
 
 .user-avatar{
-  width: 44px;
-  height: 40px;
+  background-color: #ccc;
   border-radius: 50%;
-  background-color: #cccccc;
-  float: left;
   display: flex;
+  float: left;
+  height: 40px;
   margin: 10px;
-}
-
-button {
-  background-color: #000;
-  border-radius: 6px;
-  color: white;
-  padding: 10px;
-  border: none;
-  font-size: 1rem;
+  width: 44px;
 }
 
 button a {
@@ -99,23 +83,23 @@ button a {
 }
 
 .tip{
-  width: 530px;
-  padding: 20px 34px;
+  align-items: center;
   border: 1px solid #ccc;
   border-radius: 5px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
   margin: 22px;
+  padding: 20px 34px;
+  width: 530px;
 }
 
 .img-tip {
-  width: 100px;
-  height: 100px;
-  background-color: #cccccc;
+  background-color: #ccc;
   display: flex;
   flex-direction: column;
   float: left;
+  height: 100px;
+  width: 100px;
 }
 
 .subscribe {
@@ -129,32 +113,31 @@ button a {
 }
 
 #login ul {
+  bottom: 8px;
   list-style: none;
   position: relative;
   right: 40px;
-  bottom: 8px;
 }
 
 #login ul li a {
-  text-decoration: none;
-  
   color: black;
   font-weight: bold;
+  text-decoration: none;
 }
 
 #search-form {
-  position: relative;
   bottom: 8px;
+  position: relative;
   z-index: -2;
 }
 
 i.fas.fa-search {
+  left: 68px;
   position: relative;
   z-index: 999;
-  left: 68px;
 }
 
-/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
+/* :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
 
 /* Estilo general para el contenedor del catálogo */
 
@@ -164,9 +147,9 @@ i.fas.fa-search {
 
 /* Estilo para el título del catálogo */
 .catalog-container h1 {
+  color: #333;
   font-size: 2.5rem;
   margin-bottom: 40px; /* Ajusta este valor para cambiar la distancia */
-  color: #333;
   text-align: center;
 }
 
@@ -182,93 +165,93 @@ i.fas.fa-search {
 .product-card {
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  width: 300px;
-  text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
-  margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  margin-bottom: 20px;
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  width: 300px;
 }
 
 /* Efecto de hover para las tarjetas */
 .product-card:hover {
+  box-shadow: 0 6px 12px rgb(0 0 0 / 20%);
   transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Estilo para las imágenes de placeholder */
 .product-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
+  background-color: #ccc;
   border-bottom: 1px solid #ddd;
+  height: 320px;
+  object-fit: cover;
+  width: 100%;
 }
 
 /* Estilo para el título dentro de la tarjeta */
 .product-card h3 {
+  color: #333;
   font-size: 1.2rem;
   margin: 10px;
-  color: #333;
 }
 
 /* Estilo para el botón de compra */
-.product-card button {
-  background-color: #3b3b3b; 
-  color: white;
+.product-card button { 
+  align-self: center;
+  background-color: #3b3b3b;
   border: none;
-  padding: 10px;
-  border-radius: 5px;
+  border-radius: 5px; 
+  color: white;
   cursor: pointer; 
   font-size: 1rem;
   margin: 10px;
-  transition: background-color 0.3s, color 0.3s; 
-  align-self: center;
+  padding: 10px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 /* Efecto de hover para el botón */
 .product-card button:hover {
   background-color: #565656; 
-  color: #ffffff; 
+  color: #fff; 
   cursor: pointer; 
 }
 
-/*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
+/* :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
 
-/*Botón para volver a catálogo en detalle del producto*/
+/* Botón para volver a catálogo en detalle del producto */
 
 .back-to-catalog-button {
-  position: absolute;
-  top: 130px;
-  padding-bottom: 10px;
   background-color: #3b3b3b;
-  color: white;
-  padding: 10px 10px;
   border: none;
   border-radius: 5px;
-  text-decoration: none;
+  color: white;
   font-size: 15px;
+  padding: 10px;
+  position: absolute;
+  text-decoration: none;
+  top: 130px;
   transition: background-color 0.3s, color 0.3s;
   
 }
 
 .back-to-catalog-button:hover {
   background-color: #565656; 
-  color: #ffffff; 
+  color: #fff; 
   cursor: pointer;
 }
 
-/*Estilos para la creación de producto*/
+/* Estilos para la creación de producto */
 
 .Create-product-container {
-  max-width: 600px;
-  margin: 20px auto;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgb(0 0 0 / 10%);
+  margin: 20px auto;
+  max-width: 600px;
+  padding: 20px;
 }
 
 .Create-product-container-divs {
@@ -277,32 +260,35 @@ i.fas.fa-search {
   gap: 20px;
 }
 
-.Create-product-container-divs div {
-  flex: 1 1 300px; 
+.Create-product-container-divs div { 
   display: flex;
+  flex: 1 1 300px;
   flex-direction: column; 
 }
-.Create-product-container-divs label {
+
+.Create-product-container-divs label { 
+  font-weight: bold;
   margin-bottom: 5px; 
-  font-weight: bold; 
 }
-.Create-product-container-inputs {
-    padding: 10px; 
+
+.Create-product-container-inputs { 
     border: 1px solid #ccc; 
     border-radius: 4px; 
-    font-size: 1rem; 
+    font-size: 1rem;
+    padding: 10px; 
     transition: border-color 0.3s; 
 }
+
 .Create-product-containerbutton {
   background-color: black; 
-  color: white; 
-  padding: 10px 15px; 
   border: none; 
   border-radius: 4px; 
-  font-size: 16px;
+  color: white;
   cursor: pointer; 
-  width: 100%;
+  font-size: 16px; 
+  padding: 10px 15px;
   transition: background-color 0.3s; 
+  width: 100%; 
 }
 
 .Create-product-containerbutton:hover {
@@ -315,14 +301,14 @@ i.fas.fa-search {
 }
 
 /* Estilos para el botón del carrito *********************************************************************************/
-.cart-button {
-  display: inline-flex; 
+.cart-button { 
   align-items: center; 
-  padding: 10px 20px; 
   background-color: #007bff; 
-  color: white; 
-  text-decoration: none; 
   border-radius: 5px; 
+  color: white;
+  display: inline-flex; 
+  padding: 10px 20px; 
+  text-decoration: none; 
   transition: background-color 0.3s; 
 }
 
@@ -333,12 +319,12 @@ i.fas.fa-search {
 
 /* Estilos para el contador de productos en el carrito */
 .cart-count {
-  background-color: rgb(240, 28, 28); 
-  color: white; 
+  background-color: rgb(240 28 28); 
   border-radius: 50%; 
-  padding: 5px 10px; 
-  margin-left: 5px; 
+  color: white; 
   font-size: 14px; 
+  margin-left: 5px; 
+  padding: 5px 10px; 
   position: absolute; 
 }
 
@@ -346,20 +332,20 @@ i.fas.fa-search {
 /* BUTTONS */
 
 button {
-  display: flex;
-  height: 48px!important;
-  padding: 8px 16px!important;
-  justify-content: center;
   align-items: center;
-  gap: 8px;
   align-self: stretch;
+  display: flex;
+  gap: 8px;
+  height: 48px!important;
+  justify-content: center;
+  padding: 8px 16px!important;
 }
 
 /* Primary Button */
 button.btn-primary {
   background-color: var(--primary-color);
-  color: white;
   border-color: var(--primary-color);
+  color: white;
 }
 
 button.btn-primary:hover {
@@ -373,22 +359,22 @@ button.btn-primary:active {
 }
 
 button.btn-primary:focus {
-  box-shadow: 0 0 0 0.25rem rgba(0, 123, 148, 0.25); /* Adaptar al color del focus */
   border-color: var(--primary-focus);
+  box-shadow: 0 0 0 0.25rem rgb(0 123 148 / 25%); /* Adaptar al color del focus */
 }
 
 button.btn-primary:disabled, 
 button.btn-primary.disabled {
   background-color: var(--primary-disabled-bg);
-  color: var(--primary-disabled-text);
   border-color: var(--primary-disabled-bg);
+  color: var(--primary-disabled-text);
 }
 
 /* Secondary Button */
 button.btn-secondary {
   background-color: var(--secondary-color);
-  color: white;
   border-color: var(--secondary-color);
+  color: white;
 }
 
 button.btn-secondary:hover {
@@ -402,28 +388,28 @@ button.btn-secondary:active {
 }
 
 button.btn-secondary:focus {
-  box-shadow: 0 0 0 0.25rem rgba(20, 108, 74, 0.25); /* Adaptar al color del focus */
   border-color: var(--secondary-focus);
+  box-shadow: 0 0 0 0.25rem rgb(20 108 74 / 25%); /* Adaptar al color del focus */
 }
 
 button.btn-secondary:disabled, 
 button.btn-secondary.disabled {
   background-color: var(--primary-disabled-bg);
-  color: var(--primary-disabled-text);
   border-color: var(--primary-disabled-bg);
+  color: var(--primary-disabled-text);
 }
 
 /* Tertiary Button (Outline) */
 button.btn-outline-primary {
   background-color: transparent;
-  color: var(--tertiary-color);
   border-color: var(--tertiary-color);
+  color: var(--tertiary-color);
 }
 
 button.btn-outline-primary:hover {
   background-color: white;
-  color: #1A4756;
   border-color: var(--tertiary-color);
+  color: #1A4756;
 }
 
 button.btn-outline-primary:active {
@@ -431,22 +417,22 @@ button.btn-outline-primary:active {
 }
 
 button.btn-outline-primary:focus {
-  box-shadow: 0 0 0 0.25rem rgba(0, 123, 148, 0.25); /* Adaptar al color del focus */
   border-color: var(--primary-focus);
+  box-shadow: 0 0 0 0.25rem rgb(0 123 148 / 25%); /* Adaptar al color del focus */
 }
 
 button.btn-outline-primary:disabled, 
 button.btn-outline-primary.disabled {
   background-color: var(--tertiary-disabled-bg);
-  color: var(--primary-disabled-text);
   border-color: var(--tertiary-disabled-border);
+  color: var(--primary-disabled-text);
 }
 
 /* Orange Button */
 button.btn-orange {
   background-color: var(--orange-color);
-  color: white;
   border-color: var(--orange-color);
+  color: white;
 }
 
 button.btn-orange:hover {
@@ -460,47 +446,44 @@ button.btn-orange:active {
 }
 
 button.btn-orange:focus {
-  box-shadow: 0 0 0 0.25rem rgba(227, 142, 36, 0.25); /* Adaptar al color del focus */
   border-color: var(--orange-hover);
+  box-shadow: 0 0 0 0.25rem rgb(227 142 36 / 25%); /* Adaptar al color del focus */
 }
 
 button.btn-orange:disabled, 
 button.btn-orange.disabled {
   background-color: var(--primary-disabled-bg);
-  color: var(--primary-disabled-text);
   border-color: var(--primary-disabled-bg);
+  color: var(--primary-disabled-text);
 }
 
-.icon-white {
-  font-family: 'Material Symbols Outlined';
+.icon-white { 
+  color: white;
+  font-family: 'Material Symbols Outlined'; 
+  font-size: 30px;
   font-variation-settings: 'FILL' 1; 
-  font-size: 30px; 
-  color: white; 
 }
 
 /* Banner Home */
 
 .home-banner,
-.additional-banner {
-  width: 100%; 
-  display: flex; 
+.additional-banner { 
   align-items: center;
-  justify-content: center;
-  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-}
-
-.home-banner {
-  margin-top: 150px;
+  background-size: cover; 
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
 /* Home Banner */
 .home-banner {
   background-image: url('/src/assets/001_Plantai_Home_Featured.webp'); 
-  height: 614px; 
   border-radius: 10px;
-  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 8px rgb(0 0 0 / 20%); 
+  height: 614px;
+  margin-top: 150px;
 }
 
 .home-banner-uno {
@@ -518,7 +501,7 @@ button.btn-orange.disabled {
 .home-banner-uno,
 .home-banner-dos {
   border-radius: 8px;
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 4px 0 rgb(0 0 0 / 25%);
 }
 
 /* Tabs */
@@ -528,31 +511,31 @@ button.btn-orange.disabled {
 }
 
 .custom-tabs .nav-link {
-  background-color: white;
-  color: #879DA5!important; 
-  border: 1px solid transparent!important; 
+  background-color: white; 
+  border: 1px solid transparent!important;
+  color: #879DA5!important;
+  font-size: 18px!important; 
   transition: all 0.3s ease-in-out;
-  font-size: 18px!important;
 }
 
 .custom-tabs .nav-link.active {
   background-color: #F5F5F5!important; 
-  color: #1A4756!important; 
   border-color: #F5F5F5!important; 
+  color: #1A4756!important;
+  cursor: pointer; 
   text-decoration: underline;
-  cursor: pointer;
 }
 
 ul.custom-tabs.mb-3.nav.nav-tabs {
-  position: relative;
-  bottom: 3.98rem;
-  z-index: 1;
   border: none;
+  bottom: 3.98rem;
+  position: relative;
+  z-index: 1;
 }
 
 /* Estilo para filas impares y pares */
 .table-custom tbody tr:nth-child(odd) {
-  background-color: #FFFFFF; /* Color para filas impares */
+  background-color: #FFF; /* Color para filas impares */
 }
 
 .table-custom tbody tr:nth-child(even) {
@@ -592,8 +575,8 @@ ul.custom-tabs.mb-3.nav.nav-tabs {
 
 .text-m-bold {
   font-size: var(--font-m-bold);
-  line-height: var(--line-height-m-bold);
   font-weight: bold;
+  line-height: var(--line-height-m-bold);
 }
 
 .text-text1-regular {
@@ -603,14 +586,14 @@ ul.custom-tabs.mb-3.nav.nav-tabs {
 
 .text-text2-medium {
   font-size: var(--font-text2-medium);
-  line-height: var(--line-height-text2-medium);
   font-weight: 500;
+  line-height: var(--line-height-text2-medium);
 }
 
 .text-text2-bold {
   font-size: var(--font-text2-bold);
-  line-height: var(--line-height-text2-bold);
   font-weight: bold;
+  line-height: var(--line-height-text2-bold);
 }
 
 .text-text3-regular {
@@ -620,8 +603,8 @@ ul.custom-tabs.mb-3.nav.nav-tabs {
 
 .text-text3-semibold {
   font-size: var(--font-text3-semibold);
-  line-height: var(--line-height-text3-semibold);
   font-weight: 600;
+  line-height: var(--line-height-text3-semibold);
 }
 
 .text-text4-xxs-regular {
@@ -631,15 +614,15 @@ ul.custom-tabs.mb-3.nav.nav-tabs {
 
 .text-text4-xxs-medium {
   font-size: var(--font-text4-xxs-medium);
-  line-height: var(--line-height-text4-xxs-medium);
   font-weight: 500;
+  line-height: var(--line-height-text4-xxs-medium);
 }
 
 /* Carro de compra */
 
 .carro-container {
+  margin-bottom: 12rem;
   margin-top: 2rem;
   position: relative;
   top: 10rem;
-  margin-bottom: 12rem;
 }

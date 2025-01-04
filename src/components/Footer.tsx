@@ -9,7 +9,7 @@ const Footer = () => {
         <Col lg={1} className="footer-logo mt-4">
           <h1 className="" aria-label="PlantAI Logo"></h1>
           </Col>
-          <Col lg={11} className="d-sm-none d-md-block">
+          <Col lg={11} className="d-none d-lg-block">
             <Row className="ms-5">
               <Col sm={3} className="ms-5">
                 <h6>Infórmate</h6>
@@ -71,7 +71,7 @@ const Footer = () => {
                   </li>
                 </ul>
                 <p className="footer-subscription-text">
-              Inscríbete y obtén <b>15% OFF</b> en tu primera compra
+              Inscríbete y obtén 15% OFF en tu primera compra
             </p>
             <Form className="footer-subscription-form">
               <Form.Group controlId="subscriptionEmail">

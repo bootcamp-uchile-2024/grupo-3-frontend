@@ -1,26 +1,26 @@
 .checkout-container {
-    max-width: 800px;
-    margin: 10rem auto 4rem;
-    padding: 2rem;
     background-color: white;
+    margin: 10rem auto 4rem;
+    max-width: 800px;
+    padding: 2rem;
   }
   
   .checkout-section {
-    margin-bottom: 2rem;
-    width: 600px;
-    padding: 1rem;
     border-radius: 8px;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    width: 600px;
   }
   
   .checkout-section h2 {
+    color: #1A4756;
     font-size: 1.2rem;
     margin-bottom: 1.5rem;
-    color: #1A4756;
   }
   
   .form-label {
-    font-weight: 500;
     color: #212529;
+    font-weight: 500;
   }
   
   .form-control, .form-select {
@@ -41,6 +41,6 @@
   }
   
   .button-container button {
-    width: 200px;
     padding: 0.75rem;
+    width: 200px;
   }

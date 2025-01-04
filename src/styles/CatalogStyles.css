@@ -1,20 +1,17 @@
 /* Catalog Page */
 .catalog-banner {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-size: cover;
+    align-items: center; 
+    background-image: url("/src/assets/PLANTAI_Planta_Group_09.webp");
     background-position: center;
     background-repeat: no-repeat;
-    margin: 150px 0 0 0; 
-}
-
-.catalog-banner {
-    background-image: url(/src/assets/PLANTAI_Planta_Group_09.webp);
-    height: 350px;
+    background-size: cover;
     border-radius: 8px;
-    box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 4px 4px 0 rgb(0 0 0 / 25%);
+    display: flex;
+    height: 350px;
+    justify-content: center;
+    margin: 150px 0 0;
+    width: 100%;
 }
 
 /* Estilos generales para la paginación */
@@ -28,8 +25,8 @@
 }
 
 .pagination-container .page-link {
-    color: black;
     border: 1px white;
+    color: black;
 }
 
 .pagination-container .page-link:hover {
@@ -40,12 +37,12 @@
 
 .pagination-container .page-item.active .page-link {
     background-color: var(--main-bg-color);
-    color: white;
-    font-weight: bold;
-    font-size: large;
-    height: 39px;
     border: 1px solid var(--main-bg-color);
     border-radius: 3px;
+    color: white;
+    font-size: large;
+    font-weight: bold;
+    height: 39px;
 }
 
 .pagination-container .page-item:first-child .page-link,
@@ -62,13 +59,16 @@
 /* Estilos para el selector de cantidad de productos por página */
 .show-products-selector a {
     color: var(--main-bg-color);
+    cursor: pointer;
     font-weight: normal;
+    margin-right: 5px;
     text-decoration: none;
     transition: color 0.3s ease;
 }
+
 .page-item:last-child .page-link {
-    border-top-right-radius: var(--bs-pagination-border-radius);
     border-bottom-right-radius: var(--bs-pagination-border-radius);
+    border-top-right-radius: var(--bs-pagination-border-radius);
 }
 
 .show-products-selector a:hover {
@@ -77,22 +77,22 @@
 
 /* Estilo para el contenedor del botón del carrito */
 .cart-button-container {
-    position: absolute;
     bottom: 10px;
+    position: absolute;
     right: 10px;
 }
 
 #custom-cart-button {
-    padding: 8px 8px;
     border-radius: 8px;
-    width: 32px;
     height: 32px !important;
+    padding: 8px;
+    width: 32px;
 }
 
 #image-text {
+    color: #1A4756;
     font-size: 22px;
     font-weight: bold;
-    color: #1A4756;
 }
 
 .description-text {
@@ -101,55 +101,53 @@
 
 
 /* Estilo para la tarjeta del producto */
-.card-products-container {
-  width: 230px;
-  height: 270px !important;              
-  flex-shrink: 0;                   
-  object-fit: cover;           
-  background-color: lightgray; 
+.card-products-container {           
+  background-color: lightgray;              
+  flex-shrink: 0;
+  height: 270px !important;                   
+  object-fit: cover;
+  width: 230px; 
 }
 
   
   .description-text {
-    font-size: 1em;
     color: #555;
+    font-size: 1em;
   }
   
   .price-text {
+    color: #1A4756;
     font-size: 20px;
     font-weight: bold;
-    color: #1A4756;
     margin-top: 10px;
   }
   
   .error-message {
+    bottom: 40px;
     color: red;
     font-size: 0.8em;
-    position: relative;
-    bottom: 40px;
     left: -65px;
+    position: relative;
   }
-  
-  .show-products-selector a {
-    cursor: pointer;
-    margin-right: 5px;
-  }
+
   .col {
+    align-items: center;
     display: flex;
     justify-content: center;
-    align-items: center;
     min-height: 100%;
   }
   
   .contenedordeTituloyDescripcion{
     height: 46px ;
   }
+
   .loading-container {
-    display: flex;
-    justify-content: center;
     align-items: center;
+    display: flex;
     height: 100vh;
+    justify-content: center;
   }
+
   .loading-spinner {
     opacity: 1;
     transition: opacity 0.5s ease-out;
@@ -159,10 +157,6 @@
     opacity: 0;
   }
 
-  :not([href]):not([class]), a:not([href]):not([class]):hover {
-    color: var(--main-bg-color);}
-
 .fw-bold {
   color:#FF8C30;
 }
-  

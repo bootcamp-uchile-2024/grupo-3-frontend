@@ -1,4 +1,4 @@
-:root, [data-bs-theme=light]  {
+:root, [data-bs-theme="light"]  {
   /* Tipografías */
   --font-family-primary: 'Quicksand', sans-serif;
   --font-family-secondary: 'Inter', sans-serif;
@@ -6,37 +6,26 @@
   /* Tamaños y estilos de texto */
   --font-xxl-medium: 60px; 
   --line-height-xxl-medium: 52px;
-
   --font-xl-medium: 48px; 
   --line-height-xl-medium: 52px;
-
   --font-l-medium: 40px; 
   --line-height-l-medium: 52px;
-
   --font-m-medium: 30px; 
   --line-height-m-medium: 52px;
-
   --font-m-bold: 30px; 
   --line-height-m-bold: 52px;
-
   --font-text1-regular: 24px; 
   --line-height-text1-regular: 30px;
-
   --font-text2-medium: 18px; 
   --line-height-text2-medium: 22px;
-
   --font-text2-bold: 18px; 
   --line-height-text2-bold: 22px;
-
   --font-text3-regular: 14px; 
   --line-height-text3-regular: 13px;
-
   --font-text3-semibold: 14px; 
   --line-height-text3-semibold: 13px;
-
   --font-text4-xxs-regular: 12px; 
   --line-height-text4-xxs-regular: 15px;
-
   --font-text4-xxs-medium: 12px; 
   --line-height-text4-xxs-medium: 15px;
 
@@ -47,22 +36,18 @@
 --primary-focus: #007b94;
 --primary-disabled-bg: #e1e6ea;
 --primary-disabled-text: #8b9499;
-
 --secondary-color: #0c4a33;
 --secondary-hover: #146c4a;
 --secondary-active: #083021;
 --secondary-focus: #146c4a;
-
 --tertiary-color: #005b73;
 --tertiary-hover-bg: #eef6f8;
 --tertiary-active-bg: #d4ebf2;
 --tertiary-disabled-bg: transparent;
 --tertiary-disabled-border: #e1e6ea;
-
 --orange-color: #d97706;
 --orange-hover: #e38e24;
 --orange-active: #b56204;
-
 --gray-color: #6c757d;
 --gray-hover: #8a99a3;
 --gray-active: #5a6268;
@@ -74,18 +59,16 @@
 
 /* Header y Footer */
 --main-bg-color: #1A4756;
---bs-navbar-color: #ffffff;
---bs-navbar-active-color: #ffffff;
+--bs-navbar-color: #fff;
+--bs-navbar-active-color: #fff;
 --font-footer-title: 24px;
 
 /* Accordion */
 
---bs-accordion-btn-bg: #1a4756;
 --bs-accordion-active-bg: #1a4756;
 --bs-accordion-active-color: white;
 --bs-accordion-btn-color: white;
 --bs-accordion-border-color: transparent;
 --bs-accordion-bg: #1a4756!important;
---bs-accordion-btn-bg:#ffffff!important;
-
+--bs-accordion-btn-bg:#fff!important;
 }

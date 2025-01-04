@@ -1,6 +1,6 @@
 .cart-container {
-  margin-top: 160px;
   margin-bottom: 40px;
+  margin-top: 160px;
 }
 
 .cart-item {
@@ -14,25 +14,25 @@
 }
 
 .original-price {
-  font-size: 14px;
   color: #6c757d;
+  font-size: 14px;
   margin: 0;
   text-decoration: line-through;
 }
 
 .price-text-cart {
-  font-size: 21px;
-  color: #1A4756;
-  margin-top: 10px;
-  display: flex;
   align-items: center;
+  color: #1A4756;
+  display: flex;
+  font-size: 21px;
+  margin-top: 10px;
 }
 
 .quantity-controls {
-  display: flex;
   align-items: center;
-  margin-top: 10px;
+  display: flex;
   gap:0;
+  margin-top: 10px;
 }
 
 .quantity-controls button {
@@ -46,7 +46,7 @@
 }
 
 .summary-card {
-  background-color: #ffffff;
+  background-color: #fff;
   border-radius: 8px;
 }
 
@@ -59,17 +59,17 @@
 
 .summary-card .list-group-item {
   background-color: transparent;
-  padding: 10px 0;
   color: #1A4756;
   font-size: 20px;
   line-height: 20px;
+  padding: 10px 0;
 }
 
 .total-row {
   border-top: 1px solid #dee2e6 !important;
+  font-size: 22px !important;
   margin-top: 10px;
   padding-top: 15px !important;
-  font-size: 22px !important;
 }
 
 .btn-primary {
@@ -83,8 +83,8 @@
 }
 
 .btn-outline-primary {
-  color: #1A4756;
   border-color: #1A4756;
+  color: #1A4756;
 }
 
 .btn-outline-primary:hover {
@@ -95,9 +95,9 @@
 /* Modal */
 
 .modal {
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex !important;
   align-items: center;
+  background-color: rgb(0 0 0 / 50%);
+  display: flex !important;
   justify-content: center;
 }
 
@@ -109,24 +109,24 @@
 
 .modal-content {
   background: white;
-  border-radius: 8px;
   border: none;
+  border-radius: 8px;
   padding: 20px;
 }
 
 .product-image {
-  width: 100%;
-  position: relative;
+  border: none;
   border-radius: 8px;
   height: 231px;
   object-fit: cover;
-  border: none;
+  position: relative;
+  width: 100%;
 }
 
 .modal-header {
   border: none;
-  padding: 0;
   margin-bottom: 20px;
+  padding: 0;
   position: relative;
 }
 
@@ -147,9 +147,9 @@
 
 .list-group-item {
   border: none;
-  padding: 10px 0;
   display: flex;
   gap: 15px;
+  padding: 10px 0;
 }
 
 .product-details {
@@ -159,10 +159,10 @@
 /* Scroll */
 
 .products-scroll-container {
+  margin-bottom: 20px;
   max-height: 50vh;
   overflow-y: auto;
   padding-right: 10px;
-  margin-bottom: 20px;
 }
 
 .products-scroll-container::-webkit-scrollbar {
@@ -184,33 +184,33 @@
 }
 
 .cart-header {
+  align-items: center;
   display: flex;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: 20px;
 }
 
 .empty-cart-button {
-  color: #1A4756 !important;
   border: 1px solid #E5E7EB !important;
   border-radius: 8px !important;
-  padding: 8px 16px !important;
+  color: #1A4756 !important;
   font-size: 14px !important;
+  padding: 8px 16px !important;
   text-decoration: none;
 }
 
 button.btn-circle-cart {
-  width: 24px !important;
-  height: 32px !important;
-  border-radius: 50%;
-  background-color: #1A4756;
-  color: white;
-  border: none;
-  display: flex;
   align-items: center;
-  justify-content: center;
+  background-color: #1A4756;
+  border: none;
+  border-radius: 50%;
+  color: white;
+  display: flex;
   font-size: 16px;
+  height: 32px !important;
+  justify-content: center;
   transition: background-color 0.2s ease;
+  width: 24px !important;
 }
 
 button.btn-circle-cart:hover {
@@ -228,23 +228,23 @@ button.btn-circle-cart:disabled {
 }
 
 .cart-price-badge {
-  position: relative;
-  border-radius: 8px;
   background-color: #d11111;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #fff;
+  font-size: 14px;
   overflow: hidden;
   padding: 2px;
-  box-sizing: border-box;
+  position: relative;
   text-align: center;
-  font-size: 14px;
-  color: #fff;
 }
 
 .button-delete {
-  width: 100%;
-  display: flex;
-  color: #1A4756;
-  justify-content: flex-start;
   align-items: flex-end;
-  text-decoration: none;
+  color: #1A4756;
+  display: flex;
   flex-direction: row-reverse;
+  justify-content: flex-start;
+  text-decoration: none;
+  width: 100%;
 }

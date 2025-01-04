@@ -6,21 +6,21 @@
 
 /* Estilo para el select */
 .custom-select {
-  margin-right: 30px;
-  border: none;
-  outline: none;
   appearance: none;
+  border: none;
+  margin-right: 30px;
+  outline: none;
 }
 
 /* Estilo para la flecha del select */
-.custom-arrow {
+.custom-arrow { 
+  color: #1A4756;
+  font-size: 32px; 
+  pointer-events: none;
   position: absolute;
   right: 10px;
   top: 50%;
-  transform: translateY(-70%); 
-  pointer-events: none;
-  font-size: 32px; 
-  color: #1A4756;
+  transform: translateY(-70%);
   transition: transform 0.3s ease;
 }
 

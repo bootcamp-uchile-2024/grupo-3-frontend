@@ -1,34 +1,34 @@
 .product-management-content {
     align-items: center;
+    background: #f5f5f5;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 4px rgb(0 0 0 / 25%);
     margin-top: 10rem;
     padding: 16px;
-    background: #f5f5f5;
-    border-radius: 0px 0px 8px 8px;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
   
   /* Modal Estilos */
   .modal-header {
+    align-self: stretch;
     border-bottom: none;
     text-align: center;
-    align-self: stretch;
   }
   
   .modal-title {
     color: var(--Color1, #1A4756);
-    font-family: 'Quicksand';
+    font-family: Quicksand, sans-serif;
     font-size: 24px;
     font-weight: 700;
     line-height: 30px;
   }
   
   .modal-body {
-    text-align: center;
     color: var(--Color1, #1A4756);
-    font-family: 'Quicksand';
+    font-family: Quicksand, sans-serif;
     font-size: 18px;
     font-weight: 700;
     line-height: 22px;
+    text-align: center;
   }
   
   .modal-footer {
@@ -41,8 +41,8 @@
   }
   
   .modal-btn-secondary {
-    color: #1a4756;
     background-color: #fff;
+    color: #1a4756;
   }
   
   /* Botón de Modificar */
@@ -58,12 +58,13 @@
   .mt-2 {
     margin-top: 2rem;
   }
+
   .transparent-button {
     background-color: transparent;
   }
 
 
-  .form-control[disabled] {
+  .form-control[disabled] { 
+    border-color: #bbb;
     color: #b9b9b9; 
-    border-color: #bbb; 
   }

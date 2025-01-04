@@ -1,45 +1,45 @@
 /* FOOTER */
 
 footer {
-    position: absolute;
-    left: 0;
-    right: 0;
-    color: white;
-    overflow: hidden;
-    padding: 40px 0; 
-    width: 100%; 
-    min-height: 250px; 
+    align-items: center; 
     background-color: #1A4756;
+    color: white;
     display: flex;
-    align-items: center;
+    left: 0; 
+    min-height: 250px;
+    overflow: hidden;
+    padding: 40px 0;
+    position: absolute;
+    right: 0; 
+    width: 100%;
   }
   
   /* Pattern de fondo */
   footer::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
     background-image: url("/src/assets/pattern_footer.png");
-    background-repeat: repeat;
     background-position: center;
+    background-repeat: repeat;
+    content: '';
+    height: 100%;
+    left: 0;
     opacity: 0.24;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
     z-index: 1;
   }
   
   /* Gradiente por encima del pattern */
   footer::after {
+    background: linear-gradient(to right, rgb(26 71 86 / 100%) 0%, rgb(26 71 86 / 0%) 100%);
     content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
     height: 100%;
-    background: linear-gradient(to right, rgba(26, 71, 86, 1) 0%, rgba(26, 71, 86, 0) 100%);
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 100%;
     z-index: 2;
   }
   
@@ -48,25 +48,25 @@ footer {
   }
   
   .footer-container {
+    margin: 0 auto;
+    max-width: 1440px;
     padding: 0 20px;
     width: 100%;
-    max-width: 1440px;
-    margin: 0 auto;
   }
   
   .footer-logo {
-    background-image: url("/src/assets/LOGO_PLANTAI.png");
-    background-size: contain; 
-    background-repeat: no-repeat; 
-    background-position: right;
-    width: 100px;
+    background-image: url("/src/assets/LOGO_PLANTAI.png"); 
+    background-position: right; 
+    background-repeat: no-repeat;
+    background-size: contain;
     height: 100px;
+    width: 100px;
   }
   
   .footer-links {
     list-style: none;
-    padding: 0;
     margin: 0;
+    padding: 0;
   }
   
   footer h6 {
@@ -80,9 +80,9 @@ footer {
   
   .footer-links a {
     color: white;
+    display: inline-block;
     font-size: 17px;
     line-height: 26px;
-    display: inline-block;
     text-decoration: none;
   }
   
@@ -91,9 +91,9 @@ footer {
   }
   
   .footer-subscription-text {
+    color: #F2D95E;
     font-size: 13px!important;
     margin-bottom: 10px;
-    color: #F2D95E;
   }
   
   .footer-input {
@@ -102,10 +102,10 @@ footer {
   
   .footer-button {
     background-color: white;
-    color: #1A4756;
     border: none;
-    padding: 8px 16px;
+    color: #1A4756;
     font-weight: bold;
+    padding: 8px 16px;
   }
   
   .footer-button:hover {
@@ -114,6 +114,7 @@ footer {
   }
   
   .footer h6 {
+    display: inline-block;
     font-size: var(--font-footer-title)!important;
   }
   
@@ -127,31 +128,44 @@ footer {
     font-size: var(--font-footer-small);
   }
   
-  /* Mantén los estilos existentes para desktop */
-  @media (min-width: 992px) {
-    /* Tus estilos desktop actuales */
-  }
-  
-  @media (max-width: 991px) {
+
+  @media (width <= 991px) {
     .footer-subscription-text {
       text-align: center;
     }
     
     .social-icons-mobile {
       display: flex;
-      justify-content: center;
       gap: 1.5rem;
+      justify-content: center;
       padding: 1rem 0;
     }
+
+    footer {
+        min-height: auto;
+        padding: 20px 0;
+        position: relative;
+    }
+
+
+    .custom-accordion {
+        margin: 0 auto;
+        width: 80%;
+    }
+
+    .accordion-body {
+        padding: 1rem;
+    }
+
   }
 
   .custom-accordion {
-    --bs-accordion-bg: #1A4756!important;
+    --bs-accordion-bg: none!important;
     --bs-accordion-active-bg: #1A4756;
     --bs-accordion-btn-bg: #1A4756;
-    --bs-accordion-active-color: #ffffff;
-    --bs-accordion-btn-color: #ffffff;
-    --bs-accordion-color: #ffffff;
+    --bs-accordion-active-color: #fff;
+    --bs-accordion-btn-color: #fff;
+    --bs-accordion-color: #fff;
     --bs-accordion-border-color: transparent!important;
     --bs-accordion-btn-focus-border-color: none;
     --bs-accordion-btn-focus-box-shadow: none;
@@ -160,14 +174,18 @@ footer {
   }
 
     .custom-accordion .accordion-button {
-        padding: 1rem 1.25rem;
-        font-size: 1rem;
-        font-weight: 400;
-        color: #ffffff;
-        background-color: #1A4756;
         border: none;
         border-radius: 0;
-        text-align: left;
+        color: #fff;
+        font-size: 1rem;
+        font-weight: 400;
+        padding: 1rem 1.25rem;
         position: relative;
+        text-align: left;
         transition: background-color 0.3s;
     }
+
+
+   
+
+    

@@ -1,32 +1,33 @@
 .small-preview {
-  width: 220px;
+  border: 0.5px solid #1A4756;
+  border-radius: 5%;
   height: auto;
   margin-bottom: 10px;
-  border-radius: 5%;
-  border: 0.5px solid #1A4756;
+  width: 220px;
 }
 
 .icono-tamano-personalizado {
-  font-size: 90px;
-  margin-block: 10%;
+  align-items: center;
   border: 0.5px solid #1A4756;
   border-radius: 5%;
-  width: 220px;
-  height: 220px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   color: #1A4756;
+  display: flex;
+  font-size: 90px;
+  height: 220px;
+  justify-content: center;
+  margin-block: 10%;
   margin-bottom: 10px;
+  width: 220px;
 }
 
 .form-label {
-  font-weight: bolder!important;
   color: #1A4756!important;
+  font-weight: bolder!important;
 }
+
 .form-control {
-  border-radius: 10px!important;
-  border: none!important; 
+  border: none!important;
+  border-radius: 10px!important; 
 }
 
 input#imagen.form-control{

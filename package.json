@@ -6,6 +6,7 @@
     "dev": "vite --open",
     "build": "tsc && vite build",
     "preview": "vite preview",
+    "stylelint-fix": "stylelint 'src/**/*.css' --fix",
     "docker:build": "docker build -t estefaniaperez/plantai-frontend:1.0.12 --build-arg VITE_API_URL=http://52.15.36.189:8080 --build-arg VITE_URL_ENDPOINT_BACKEND=http://52.15.36.189:8080 .",
     "docker:publish": "docker push estefaniaperez/plantai-frontend:1.0.12"
   },
@@ -32,6 +33,9 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
+    "stylelint": "^16.12.0",
+    "stylelint-config-standard": "^36.0.1",
+    "stylelint-order": "^6.0.4",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.2"

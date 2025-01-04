@@ -3,18 +3,18 @@
 }
 
 .login-card {
-  padding: 34px 24px 0 24px;
   border: 1px solid #E5E7EB;
   border-radius: 8px;
   margin: 0;
+  padding: 34px 24px 0;
 }
 
 .login-title {
+  color: #1A4756;
   font-size: 30px;
   font-weight: 500;
-  color: #1A4756;
-  text-align: center;
   margin-top: 10px;
+  text-align: center;
 }
 
 .login-form {
@@ -24,24 +24,24 @@
 }
 
 input.form-control {
-  border-radius: 8px;
   background: var(--Surface-light, #F8FAFC)!important;
+  border-radius: 8px;
 }
 
 .form-label {
+  color: #4B5563;
   font-size: 18px;
   font-weight: 500;
-  color: #4B5563;
   margin-bottom: 8px;
 }
 
 .form-control {
-  width: 100%;
-  padding: 8px 12px;
   border: 1px solid #D1D5DB;
   border-radius: 6px;
-  margin-bottom: 16px!important;
   font-size: 14px;
+  margin-bottom: 16px!important;
+  padding: 8px 12px;
+  width: 100%;
 }
 
 .form-control::placeholder {
@@ -49,11 +49,11 @@ input.form-control {
 }
 
 .forgot-password {
-  text-align: center;
   color: #1A4756;
-  font-size: 14px;
-  text-decoration: none;
   display: block;
+  font-size: 14px;
+  text-align: center;
+  text-decoration: none;
 }
 
 .forgot-password:hover {
@@ -61,18 +61,18 @@ input.form-control {
 }
 
 .botones-login {
-  display: flex;
-  width: 230px;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
+  display: flex;
+  flex-direction: column;
   gap: 24px;
+  justify-content: center;
+  width: 230px;
 }
 
 .btn-registrar{
-  font-size: 1rem;
-  padding: 10px 55px !important;
-  color: #1A4756!important;
   background-color: white!important;
   border-color: #1A4756;
+  color: #1A4756!important;
+  font-size: 1rem;
+  padding: 10px 55px !important;
 }

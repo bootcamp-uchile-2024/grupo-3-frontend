@@ -1,35 +1,35 @@
 .checkout-container {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 20px;
-  padding: 20px;
   margin: 10rem auto 4rem;
+  padding: 20px;
 }
 
 .checkout-card {
-  width: 100%;
-  padding: 24px;
+  background-color: white;
   border: 1px solid #E5E7EB;
   border-radius: 8px;
-  background-color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
+  padding: 24px;
+  width: 100%;
 }
 
 .checkout-title {
   color: #1A4756;
   font-size: 30px;
   font-weight: 500;
-  text-align: center;
   margin-bottom: 24px;
+  text-align: center;
 }
 
 .checkout-bajada-form {
   color: #1A4756;
   font-size: 18px;
   font-weight: 500;
+  margin: 20px 0 10px;
   text-align: center;
-  margin: 20px 0 10px 0;
 }
 
 .buttons-stack {
@@ -39,20 +39,20 @@
 }
 
 .action-button {
-  width: 100%;
-  padding: 12px !important;
+  border: none !important;
   border-radius: 6px !important;
   font-size: 16px !important;
   font-weight: 500 !important;
+  padding: 12px !important;
   text-align: center;
-  border: none !important;
   transition: background-color 0.2s ease;
+  width: 100%;
 }
 
 .primary-button {
   background-color: #1A4756 !important;
   color: white !important;
-  margin: 0.5rem 0 0 0;
+  margin: 0.5rem 0 0;
 }
 
 .primary-button:hover {
@@ -70,8 +70,8 @@
 
 .tertiary-button {
   background-color: white !important;
-  color: #1A4756 !important;
   border: 1px solid #E5E7EB !important;
+  color: #1A4756 !important;
 }
 
 .tertiary-button:hover {
@@ -79,16 +79,16 @@
 }
 
 .back-button {
-  width: 60%;
-  padding: 12px;
   background-color: transparent !important;
-  color: #1F2937 !important;
   border: 1px solid #E5E7EB !important;
   border-radius: 6px;
+  color: #1F2937 !important;
   font-size: 16px;
   font-weight: 500;
-  margin: 0 0 80px 0;
+  margin: 0 0 80px;
+  padding: 12px;
   transition: background-color 0.2s ease;
+  width: 60%;
 }
 
 .back-button:hover {
@@ -96,12 +96,12 @@
 }
 
 .go-button {
-  width: 50%;
-  padding: 12px;
   border: 1px solid #E5E7EB !important;
   border-radius: 6px;
   font-size: 16px;
   font-weight: 500;
-  margin: 0 0 80px 0;
+  margin: 0 0 80px;
+  padding: 12px;
   transition: background-color 0.2s ease;
+  width: 50%;
 }

@@ -1,6 +1,7 @@
 .fontcolor {
     color: var( --main-bg-color);
 }
+
 .fontfilters {
     font-weight: bold;
     margin-top: 5px;
@@ -8,19 +9,17 @@
 
   /* Estilo para el track del rango (parte inactiva) */
 input[type="range"].form-range {
-    -webkit-appearance: none;
     appearance: none;
-    width: 100%;
-    height: 8px;
     background: #ddd;  
     border-radius: 5px;
+    height: 8px;
     outline: none;
     transition: background 0.3s;
+    width: 100%;
   }
   
   /* Estilo para el círculo del rango (thumb/puntero) */
   input[type="range"].form-range::-webkit-slider-thumb {
-    -webkit-appearance: none;
     appearance: none;
     background: var(--main-bg-color);  
     border-radius: 50%;
@@ -37,9 +36,10 @@ input[type="range"].form-range {
 }
 
 .sidebarfilterbutton1 {
-  color:  var(--main-bg-color);
   background-color: white;
-  text-decoration: underline;
+  color:  var(--main-bg-color);
   font-size: large;
+  text-decoration: underline;
+  border: none;
 }
   

@@ -1,26 +1,26 @@
 .custom-navbar {
-  width: 100%;
   background-color: white;
   border-top: 58px solid #1a4756;
+  width: 100%;
 }
 
 .navbar-brand {
+  background-color: white;
   background-image: url("/src/assets/LOGO_PLANTAI.png");
-  background-size: contain;
-  background-repeat: no-repeat;
   background-position: center;
-  width: 100px !important; 
-  height: 100px !important; 
-  position: relative;
-  display: block;
-  top: -2rem;
-  left: 0; 
-  z-index: 1001; 
+  background-repeat: no-repeat;
+  background-size: contain; 
   border: 1px solid #E5E7EB;
   border-radius: 999px;
-  background-color: white;
+  display: block; 
+  height: 100px !important;
+  left: 0;
   margin: 0 1rem; 
-  transition: all 0.3s ease; 
+  position: relative;
+  top: -2rem; 
+  transition: all 0.3s ease;
+  width: 100px !important; 
+  z-index: 1001; 
 }
 
 .main-nav {
@@ -44,15 +44,15 @@ nav.custom-navbar.fixed-top.navbar.navbar-expand-lg.navbar-light {
 }
 
 .nav-link.cart-link {
-  margin: 0.2rem 0 0 0 !important;
+  margin: 0.2rem 0 0 !important;
 }
 
 a#user-dropdown {
   color: white !important;
   font-size: 18px !important;
+  left: 0;
   position: relative;
   top: 0.7rem;
-  left: 0rem;
 }
 
 .nav-dropdown .dropdown-toggle, 
@@ -67,36 +67,36 @@ a#user-dropdown {
 }
 
 .nav-dropdown .dropdown-menu {
-  border-radius: 8px;
   border: 1px solid #E5E7EB;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 10%);
   z-index: 1002;
 }
 
 .nav-dropdown .dropdown-item {
-  padding: 0.5rem 1rem;
   color: #1F2937;
+  padding: 0.5rem 1rem;
 }
 
 .nav-actions {
   display: flex;
   gap: 2rem;
-  position: relative;
-  z-index: 1001;
-  top: -4rem;
   left: 7.2rem;
+  position: relative;
+  top: -4rem;
+  z-index: 1001;
 }
 
 .user-menu {
-  display: flex;
   align-items: center;
+  display: flex;
   gap: 0.5rem;
 }
 
 .user-avatar {
-  width: 32px;
-  height: 32px;
   border-radius: 50%;
+  height: 32px;
+  width: 32px;
 }
 
 .login-link {
@@ -105,23 +105,23 @@ a#user-dropdown {
 }
 
 .cart-link {
-  position: relative;
   color: white !important;
+  position: relative;
 }
 
 .cart-badge {
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  background-color: #DC2626;
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  display: flex;
   align-items: center;
-  justify-content: center;
+  background-color: #DC2626;
+  border-radius: 50%;
+  color: white;
+  display: flex;
   font-size: 12px;
+  height: 18px;
+  justify-content: center;
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  width: 18px;
 }
 
 .material-symbols-outlined {
@@ -134,47 +134,41 @@ a#user-dropdown {
 }
 
 .dropdown-menu.show {
-  z-index: 1002;
   margin-top: 1rem;
+  z-index: 1002;
 }
 
 .nav-container {
   position: relative;
 }
 
-@media (max-width: 991px) {
+@media (width <= 991px) {
   .main-nav {
     padding: 1rem 0;
   }
 
   .nav-actions {
-    padding: 1rem 0;
     border-top: 1px solid #eee;
+    padding: 1rem 0;
   }
 
   .user-menu {
-    display: flex;
     align-items: center;
+    display: flex;
     margin-bottom: 1rem;
   }
 }
 
-.custom-navbar {
-  width: 100%;
-  background-color: white;
-  border-top: 58px solid #1a4756;
-}
-
 /* Media queries para el logo */
-@media (min-width: 992px) {
+@media (width >= 992px) {
   .navbar-brand {
-    width: 100px !important;
     height: 100px !important;
     left: -5.6rem;
+    width: 100px !important;
   }
 }
 
-@media (max-width: 991px) {
+@media (width <= 991px) {
   .custom-navbar {
     border-top: 30px solid #1a4756; 
   }
@@ -189,17 +183,17 @@ a#user-dropdown {
   }
 
   .nav-actions {
-    top: 0;
     left: 0;
     padding: 1rem;
     position: static;
+    top: 0;
   }
 }
 
-@media (max-width: 800px) {
+@media (width <= 800px) {
   .navbar-brand {
-    width: 70px !important;
     height: 70px !important;
     top: -1rem;
+    width: 70px !important;
   }
 }
