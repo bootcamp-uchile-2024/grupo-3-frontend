@@ -1,59 +1,62 @@
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Container, Row, Col, Card } from "react-bootstrap";
+import "../styles/InfoCards.css";
 
 const InfoCards = () => {
   return (
     <Container className="mt-4">
-      <Row className="justify-content-center">
-        {/* Card 1 */}
-        <Col md={4} className="mb-4">
-          <Card className="text-center shadow-sm">
-            <Card.Body>
-              <div>
-                <span className="material-symbols-outlined" style={{ fontSize: "48px", color: "#1A4756" }}>
+      <Row className="justify-content-center g-4">
+        {/* Card Envío */}
+        <Col lg={4}>
+          <Card className="info-card">
+            <Card.Body className="d-flex align-items-center">
+              <div className="icon-container">
+                <span className="material-symbols-outlined">
                   local_shipping
                 </span>
               </div>
-              <Card.Title className="mt-3" style={{ color: "#1A4756", fontWeight: "bold" }}>
-                ENVÍO GRATIS
-              </Card.Title>
-              <Card.Text>En Todos Los Productos Comprando Por</Card.Text>
-              <Button style={{ backgroundColor: "#1A4756", border: "none" }}>App Plant Ai</Button>
+              <div className="content-container">
+                <Card.Title>ENVÍO GRATIS</Card.Title>
+                <Card.Text>En todos los productos comprando desde nuestra App.</Card.Text>
+                <button className="custom-button">App Plant Ai</button>
+              </div>
             </Card.Body>
           </Card>
         </Col>
 
-        {/* Card 2 */}
-        <Col md={4} className="mb-4">
-          <Card className="text-center shadow-sm">
-            <Card.Body>
-              <div>
-                <span className="material-symbols-outlined" style={{ fontSize: "48px", color: "#1A4756" }}>
+        {/* Card Club */}
+        <Col lg={4}>
+          <Card className="info-card">
+            <Card.Body className="d-flex align-items-center">
+              <div className="icon-container-circle">
+                <span className="material-symbols-outlined">
                   star
                 </span>
               </div>
-              <Card.Title className="mt-3" style={{ color: "#1A4756", fontWeight: "bold" }}>
-                CLUB PLANTAI
-              </Card.Title>
-              <Card.Text>Descubre Tus</Card.Text>
-              <Button style={{ backgroundColor: "#1A4756", border: "none" }}>Beneficios</Button>
+              <div className="content-container">
+                <Card.Title>CLUB PLANTAI</Card.Title>
+                <Card.Text>Descubre los beneficios que tenemos para ti.</Card.Text>
+                <button className="custom-button">Beneficios</button>
+              </div>
             </Card.Body>
           </Card>
         </Col>
 
-        {/* Card 3 */}
-        <Col md={4} className="mb-4">
-          <Card className="text-center shadow-sm">
-            <Card.Body>
-              <div>
-                <span className="material-symbols-outlined" style={{ fontSize: "48px", color: "#1A4756" }}>
-                  grass
-                </span>
+        {/* Card Consejos */}
+        <Col lg={4}>
+          <Card className="info-card">
+            <Card.Body className="d-flex align-items-center">
+              <div className="icon-container">
+                <div className="plant-icon">
+                  <span className="material-symbols-outlined">
+                    grass
+                  </span>
+                </div>
               </div>
-              <Card.Title className="mt-3" style={{ color: "#1A4756", fontWeight: "bold" }}>
-                CONSEJOS Y TIPS
-              </Card.Title>
-              <Card.Text>Descubre sobre cuidado de plantas</Card.Text>
-              <Button style={{ backgroundColor: "#1A4756", border: "none" }}>Consejos</Button>
+              <div className="content-container">
+                <Card.Title>CONSEJOS Y TIPS</Card.Title>
+                <Card.Text>Descubre todo sobre el cuidado para tus plantas.</Card.Text>
+                <button className="custom-button">Consejos</button>
+              </div>
             </Card.Body>
           </Card>
         </Col>
