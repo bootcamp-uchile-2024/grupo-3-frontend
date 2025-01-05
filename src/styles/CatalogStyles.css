@@ -109,6 +109,21 @@
   width: 230px; 
 }
 
+.card-products-container {
+  transition: transform 0.3s ease;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card:hover .card-products-container {
+  transform: scale(1.1);
+}
+
+.card {
+  overflow: hidden;
+}
+
   
   .description-text {
     color: #555;
@@ -160,3 +175,4 @@
 .fw-bold {
   color:#FF8C30;
 }
+
