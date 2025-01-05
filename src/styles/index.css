@@ -561,22 +561,26 @@ ul.custom-tabs.mb-3.nav.nav-tabs {
 .text-xl-medium {
   font-size: var(--font-xl-medium);
   line-height: var(--line-height-xl-medium);
+  color: #1A4756;
 }
 
 .text-l-medium {
   font-size: var(--font-l-medium);
   line-height: var(--line-height-l-medium);
+  color: #1A4756;
 }
 
 .text-m-medium {
   font-size: var(--font-m-medium);
   line-height: var(--line-height-m-medium);
+  color: #1A4756;
 }
 
 .text-m-bold {
   font-size: var(--font-m-bold);
   font-weight: bold;
   line-height: var(--line-height-m-bold);
+  color: #1A4756;
 }
 
 .text-text1-regular {

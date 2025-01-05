@@ -37,7 +37,7 @@ const SuccessPage: React.FC = () => {
           className="success-icon"
         />
         <h2 className="success-title">¡Compra Exitosa!</h2>
-        <p className="success-message">Muchas Gracias Por tu Compra.</p>
+        <p className="success-message">Muchas gracias por tu compra.</p>
         {cartId ? (
           <p className="success-submessage">
             Compra con ID: <strong>{cartId}</strong>

@@ -1,0 +1,32 @@
+.google-maps-container {
+    text-decoration: none;
+    overflow: hidden;
+    max-width: 100%;
+    width: 1326px;
+    height: 384px;
+    margin: 20px auto 50px;
+  }
+  
+  .map-canvas {
+    height: 100%;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .map-iframe {
+    height: 100%;
+    width: 100%;
+    border: 0;
+  }
+
+  .map-title {
+    margin-top: 1.2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  #google-maps-canvas img {
+    max-width: none !important;
+    background: none !important;
+    font-size: inherit;
+    font-weight: inherit;
+  }

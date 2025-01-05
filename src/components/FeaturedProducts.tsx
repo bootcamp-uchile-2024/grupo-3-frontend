@@ -30,7 +30,7 @@ const FeaturedProducts: React.FC = () => {
             try {
                 setLoading(true);
                 const baseUrl = import.meta.env.VITE_API_URL;
-                const response = await fetch(`${baseUrl}/catalogo?page=1&pageSize=8`, {
+                const response = await fetch(`${baseUrl}/catalogo?page=1&pageSize=12`, {
                     method: 'GET',
                     headers: {
                         'Accept': 'application/json',
@@ -115,7 +115,7 @@ const FeaturedProducts: React.FC = () => {
                     <Row className="">
                         {Array.isArray(products) && products.length > 0 ? (
                             products.map((product) => (
-                                <Col className='col-sm-12 col-md-3 col-lg-3'>
+                                <Col className='col-sm-12 col-md-3 col-lg-3 mb-5'>
                                     <Card className="h-100">
                                         <Link to={`/catalogo/producto/${product.id}`}>
                                             <Card.Img
