@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Navbar, Nav, NavDropdown, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "../styles/CustomNav.css";
@@ -12,35 +12,117 @@ interface TopBarProps {
 
 const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
+
+  const isDropdownActive = (paths: string[]) => {
+    return paths.some(path => location.pathname.startsWith(path));
+  };
 
   return (
     <Navbar collapseOnSelect className="custom-navbar fixed-top" expand="lg">
       <Container className="nav-container">
         <Navbar.Brand as={Link} to="/" />
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        
+
         <Navbar.Collapse id="responsive-navbar-nav">
+          {/* Navegación principal */}
           <Nav className="main-nav mx-auto">
-            <Nav.Link as={Link} to="/" className="nav-link">
+            {/* Inicio */}
+            <Nav.Link
+              as={Link}
+              to="/"
+              className={`nav-link ${isActive('/') ? 'active' : ''}`}
+            >
               Inicio
             </Nav.Link>
-            <NavDropdown title="Plantas" id="plantas-dropdown" className="nav-dropdown">
-              <NavDropdown.Item as={Link} to="/catalogo">Catálogo</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/categorias">Categorías</NavDropdown.Item>
+
+            {/* Dropdown Plantas */}
+            <NavDropdown
+              title="Plantas"
+              id="plantas-dropdown"
+              className={`nav-dropdown ${isDropdownActive(['/catalogo', '/categorias']) ? 'active' : ''}`}
+            >
+              <NavDropdown.Item
+                as={Link}
+                to="/catalogo"
+                className={isActive('/catalogo') ? 'active' : ''}
+              >
+                Catálogo
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                as={Link}
+                to="/categorias"
+                className={isActive('/categorias') ? 'active' : ''}
+              >
+                Categorías
+              </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown title="Comunidad" id="comunidad-dropdown" className="nav-dropdown">
-              <NavDropdown.Item as={Link} to="/foros">Foros</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/eventos">Eventos</NavDropdown.Item>
+
+            {/* Dropdown Comunidad */}
+            <NavDropdown
+              title="Comunidad"
+              id="comunidad-dropdown"
+              className={`nav-dropdown ${isDropdownActive(['/foros', '/eventos']) ? 'active' : ''}`}
+            >
+              <NavDropdown.Item
+                as={Link}
+                to="/foros"
+                className={isActive('/foros') ? 'active' : ''}
+              >
+                Foros
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                as={Link}
+                to="/eventos"
+                className={isActive('/eventos') ? 'active' : ''}
+              >
+                Eventos
+              </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown title="Educación" id="educacion-dropdown" className="nav-dropdown">
-              <NavDropdown.Item as={Link} to="/recursos">Recursos</NavDropdown.Item>
+
+            {/* Dropdown Educación */}
+            <NavDropdown
+              title="Educación"
+              id="educacion-dropdown"
+              className={`nav-dropdown ${isDropdownActive(['/recursos']) ? 'active' : ''}`}
+            >
+              <NavDropdown.Item
+                as={Link}
+                to="/recursos"
+                className={isActive('/recursos') ? 'active' : ''}
+              >
+                Recursos
+              </NavDropdown.Item>
             </NavDropdown>
-            <NavDropdown title="Asistente Virtual" id="asistente-dropdown" className="nav-dropdown">
-              <NavDropdown.Item as={Link} to="/faq">FAQ</NavDropdown.Item>
-              <NavDropdown.Item as={Link} to="/contacto">Contacto</NavDropdown.Item>
+
+            {/* Dropdown Asistente Virtual */}
+            <NavDropdown
+              title="Asistente Virtual"
+              id="asistente-dropdown"
+              className={`nav-dropdown ${isDropdownActive(['/faq', '/contacto']) ? 'active' : ''}`}
+            >
+              <NavDropdown.Item
+                as={Link}
+                to="/faq"
+                className={isActive('/faq') ? 'active' : ''}
+              >
+                FAQ
+              </NavDropdown.Item>
+              <NavDropdown.Item
+                as={Link}
+                to="/contacto"
+                className={isActive('/contacto') ? 'active' : ''}
+              >
+                Contacto
+              </NavDropdown.Item>
             </NavDropdown>
           </Nav>
-  
+
+          {/* Sección de acciones de usuario */}
           <Nav className="nav-actions">
             {user ? (
               <div className="user-menu">
@@ -49,35 +131,63 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
                   alt="Avatar"
                   className="user-avatar"
                 />
-                <NavDropdown title={user.username} id="user-dropdown" className="nav-dropdown">
+                <NavDropdown
+                  title={user.username}
+                  id="user-dropdown"
+                  className={`nav-dropdown ${isDropdownActive(['/crear-producto', '/user-management', '/admin-carts']) ? 'active' : ''}`}
+                >
                   {user.role === "admin" && (
                     <>
-                      <NavDropdown.Item as={Link} to="/crear-producto">
+                      <NavDropdown.Item
+                        as={Link}
+                        to="/crear-producto"
+                        className={isActive('/crear-producto') ? 'active' : ''}
+                      >
                         Crear Producto
                       </NavDropdown.Item>
-                      <NavDropdown.Item as={Link} to="/user-management">
+                      <NavDropdown.Item
+                        as={Link}
+                        to="/user-management"
+                        className={isActive('/user-management') ? 'active' : ''}
+                      >
                         Gestión de Usuarios
                       </NavDropdown.Item>
-                      <NavDropdown.Item as={Link} to="/admin-carts">
+                      <NavDropdown.Item
+                        as={Link}
+                        to="/admin-carts"
+                        className={isActive('/admin-carts') ? 'active' : ''}
+                      >
                         Gestión de Carritos
                       </NavDropdown.Item>
                     </>
                   )}
-                  <NavDropdown.Item onClick={() => {
-                    onLogout();
-                    navigate("/login");
-                    localStorage.removeItem("user");
-                  }}>
+                  <NavDropdown.Item
+                    onClick={() => {
+                      onLogout();
+                      navigate("/login");
+                      localStorage.removeItem("user");
+                    }}
+                  >
                     Cerrar sesión
                   </NavDropdown.Item>
                 </NavDropdown>
               </div>
             ) : (
-              <Nav.Link as={Link} to="/login" className="login-link">
+              <Nav.Link
+                as={Link}
+                to="/login"
+                className={`login-link ${isActive('/login') ? 'active' : ''}`}
+              >
                 Registrarse/Login
               </Nav.Link>
             )}
-            <Nav.Link as={Link} to="/cart" className="cart-link">
+
+            {/* Carrito de compras */}
+            <Nav.Link
+              as={Link}
+              to="/cart"
+              className={`cart-link ${isActive('/cart') ? 'active' : ''}`}
+            >
               <span className="material-symbols-outlined">shopping_cart</span>
               {cartItemCount > 0 && (
                 <span className="cart-badge">{cartItemCount}</span>

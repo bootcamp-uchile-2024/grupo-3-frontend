@@ -1,4 +1,95 @@
 /* Catalog Page */
+
+.catalog-container {
+  padding: 20px;
+}
+
+.catalog-container h1 {
+  color: #333;
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.products-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px; 
+  justify-content: center;
+}
+
+.product-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+  width: 300px;
+}
+
+.product-card:hover {
+  box-shadow: 0 6px 12px rgb(0 0 0 / 20%);
+  transform: translateY(-5px);
+}
+
+.product-image {
+  background-color: #ccc;
+  border-bottom: 1px solid #ddd;
+  height: 320px;
+  object-fit: cover;
+  width: 100%;
+}
+
+.product-card h3 {
+  color: #333;
+  font-size: 1.2rem;
+  margin: 10px;
+}
+
+.product-card button { 
+  align-self: center;
+  background-color: #3b3b3b;
+  border: none;
+  border-radius: 5px; 
+  color: white;
+  cursor: pointer; 
+  font-size: 1rem;
+  margin: 10px;
+  padding: 10px;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.product-card button:hover {
+  background-color: #565656; 
+  color: #fff; 
+  cursor: pointer; 
+}
+
+.back-to-catalog-button {
+  background-color: #3b3b3b;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 15px;
+  padding: 10px;
+  position: absolute;
+  text-decoration: none;
+  top: 130px;
+  transition: background-color 0.3s, color 0.3s;
+  
+}
+
+.back-to-catalog-button:hover {
+  background-color: #565656; 
+  color: #fff; 
+  cursor: pointer;
+}
+
 .catalog-banner {
     align-items: center; 
     background-image: url("/src/assets/PLANTAI_Planta_Group_09.webp");

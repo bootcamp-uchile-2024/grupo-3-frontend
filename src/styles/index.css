@@ -9,6 +9,10 @@
   width: 1440px;
 }
 
+h4 {
+  color: var(--tertiary-color)!important;
+}
+
 form#search-form {
   align-items: center;
   display: flex;
@@ -27,8 +31,6 @@ form#search-form {
 
 .container {
   width: 100%;
-
-  /* margin: 20px auto 0; */
 }
 
 #productos{
@@ -137,112 +139,6 @@ i.fas.fa-search {
   z-index: 999;
 }
 
-/* :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
-
-/* Estilo general para el contenedor del catálogo */
-
-.catalog-container {
-  padding: 20px;
-}
-
-/* Estilo para el título del catálogo */
-.catalog-container h1 {
-  color: #333;
-  font-size: 2.5rem;
-  margin-bottom: 40px; /* Ajusta este valor para cambiar la distancia */
-  text-align: center;
-}
-
-/* Estilo para la cuadrícula de productos */
-.products-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px; /* Ajusta este valor para cambiar la distancia entre las tarjetas */
-  justify-content: center;
-}
-
-/* Estilo para cada tarjeta de producto */
-.product-card {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgb(0 0 0 / 10%);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  overflow: hidden;
-  text-align: center;
-  transition: transform 0.3s, box-shadow 0.3s;
-  width: 300px;
-}
-
-/* Efecto de hover para las tarjetas */
-.product-card:hover {
-  box-shadow: 0 6px 12px rgb(0 0 0 / 20%);
-  transform: translateY(-5px);
-}
-
-/* Estilo para las imágenes de placeholder */
-.product-image {
-  background-color: #ccc;
-  border-bottom: 1px solid #ddd;
-  height: 320px;
-  object-fit: cover;
-  width: 100%;
-}
-
-/* Estilo para el título dentro de la tarjeta */
-.product-card h3 {
-  color: #333;
-  font-size: 1.2rem;
-  margin: 10px;
-}
-
-/* Estilo para el botón de compra */
-.product-card button { 
-  align-self: center;
-  background-color: #3b3b3b;
-  border: none;
-  border-radius: 5px; 
-  color: white;
-  cursor: pointer; 
-  font-size: 1rem;
-  margin: 10px;
-  padding: 10px;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-/* Efecto de hover para el botón */
-.product-card button:hover {
-  background-color: #565656; 
-  color: #fff; 
-  cursor: pointer; 
-}
-
-/* :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
-
-/* Botón para volver a catálogo en detalle del producto */
-
-.back-to-catalog-button {
-  background-color: #3b3b3b;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  font-size: 15px;
-  padding: 10px;
-  position: absolute;
-  text-decoration: none;
-  top: 130px;
-  transition: background-color 0.3s, color 0.3s;
-  
-}
-
-.back-to-catalog-button:hover {
-  background-color: #565656; 
-  color: #fff; 
-  cursor: pointer;
-}
-
 /* Estilos para la creación de producto */
 
 .Create-product-container {
@@ -300,23 +196,6 @@ i.fas.fa-search {
   font-size: 0.9em;
 }
 
-/* Estilos para el botón del carrito *********************************************************************************/
-.cart-button { 
-  align-items: center; 
-  background-color: #007bff; 
-  border-radius: 5px; 
-  color: white;
-  display: inline-flex; 
-  padding: 10px 20px; 
-  text-decoration: none; 
-  transition: background-color 0.3s; 
-}
-
-.cart-button:hover {
-  background-color: #014fa2; 
-
-}
-
 /* Estilos para el contador de productos en el carrito */
 .cart-count {
   background-color: rgb(240 28 28); 
@@ -327,7 +206,6 @@ i.fas.fa-search {
   padding: 5px 10px; 
   position: absolute; 
 }
-
 
 /* BUTTONS */
 

@@ -28,6 +28,7 @@
   --line-height-text4-xxs-regular: 15px;
   --font-text4-xxs-medium: 12px; 
   --line-height-text4-xxs-medium: 15px;
+  --heading-color:var(--tertiary-color);
 
 /* Kit Botones */
 --primary-color: #005b73!important;

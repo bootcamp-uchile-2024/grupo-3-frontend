@@ -197,3 +197,20 @@ a#user-dropdown {
     width: 70px !important;
   }
 }
+
+.nav-link.active, 
+.nav-dropdown.active > .dropdown-toggle {
+  color: var(--primary-hover)!important;
+  font-weight: 600;
+  position: relative;
+}
+
+.nav-link.active::after,
+.nav-dropdown.active > .dropdown-toggle::after {
+  color: var(--primary-hover);
+}
+
+.dropdown-item.active {
+  background-color: #1A4756 !important;
+  color: white !important;
+}
