@@ -7,15 +7,7 @@ import { CartItem } from '../interfaces/CartItem';
 import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap';
 import '../styles/CartPage.css';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-
-const getImageUrl = (ruta: string): string => {
-  if (import.meta.env.MODE === 'development') {
-    return ruta.startsWith('/') ? ruta : `/${ruta}`;
-  } else {
-    return `${API_BASE_URL}${ruta.startsWith('/') ? ruta : `/${ruta}`}`;
-  }
-};
+const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
@@ -89,7 +81,7 @@ const CartPage: React.FC = () => {
   }, 0);
 
   return (
-    <Container className="cart-container vh-70">
+    <Container className="cart-container">
       <Row className="justify-content-center">
         <Col md={5} className="me-5">
           <div className="cart-header">
@@ -115,8 +107,8 @@ const CartPage: React.FC = () => {
                       <Col md={6}>
                         <img
                           src={
-                            item.imagen && item.imagen.length > 0
-                              ? getImageUrl(item.imagen)
+                            item.imagenes && item.imagenes.length > 0
+                              ? `${import.meta.env.MODE === 'development' ? '' : baseUrl}${item.imagenes[0].ruta}`
                               : '/estaticos/default-image.jpg'
                           }
                           alt={item.nombre}
@@ -223,5 +215,7 @@ const CartPage: React.FC = () => {
 };
 
 export default CartPage;
+
+
 
 

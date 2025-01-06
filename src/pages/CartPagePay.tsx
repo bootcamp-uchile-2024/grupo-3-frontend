@@ -15,13 +15,6 @@ import transferenciaIcon from '../assets/transferencia-bancaria.png';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
-const getImageUrl = (ruta: string): string => {
-  if (import.meta.env.MODE === 'development') {
-    return ruta.startsWith('/') ? ruta : `/${ruta}`;
-  } else {
-    return `${API_BASE_URL}${ruta.startsWith('/') ? ruta : `/${ruta}`}`;
-  }
-};
 
 const CartPagePay: React.FC = () => {
   const dispatch = useDispatch();
@@ -346,14 +339,14 @@ const CartPagePay: React.FC = () => {
                     <Row className="align-items-center row col-md-12">
                       <Col md={3}>
                       <img
-                          src={
-                            item.imagen && item.imagen.length > 0
-                              ? getImageUrl(item.imagen)
-                              : '/estaticos/default-image.jpg'
-                          }
-                          alt={item.nombre}
-                          className="product-image img-fluid"
-                        />
+                        src={
+                          item.imagenes && item.imagenes.length > 0
+                            ? `${import.meta.env.MODE === 'development' ? '' : API_BASE_URL}${item.imagenes[0].ruta}`
+                            : '/estaticos/default-image.jpg'
+                        }
+                        alt={item.nombre}
+                        className="product-image img-fluid"
+                      />
                       </Col>
                       <Col md={7}>
                         <h5 className="product-title mb-2">{item.nombre}</h5>
