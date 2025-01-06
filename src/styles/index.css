@@ -33,6 +33,10 @@ form#search-form {
   width: 100%;
 }
 
+.vh-70 {
+  height: 70vh!important;
+}
+
 #productos{
   display: flex;
   justify-content: space-evenly;

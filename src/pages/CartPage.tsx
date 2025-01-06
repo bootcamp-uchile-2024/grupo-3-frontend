@@ -80,7 +80,7 @@ const CartPage: React.FC = () => {
   }, 0);
 
   return (
-    <Container className="cart-container">
+    <Container className="cart-container vh-70">
       <Row className="justify-content-center">
         <Col md={5} className="me-5">
           <div className="cart-header">

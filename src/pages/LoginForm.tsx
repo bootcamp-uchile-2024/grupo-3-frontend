@@ -198,7 +198,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   };
   
   return (
-    <Container className="login-container">
+    <Container className="login-container vh-70">
       <Row className="justify-content-center">
         <Col md={4}>
           <Card className="login-card">
