@@ -3,10 +3,10 @@ import { CreateProductData } from '../interfaces/CreateProductData.ts';
 import fileTypeChecker from 'file-type-checker';
 import { Image, Form, Button, Row, Col, Container } from 'react-bootstrap';
 import '../styles/CreateProductFormStyles.css';
-import { SuccessModalProduct } from '../components/SuccesModalProduct.tsx';
+import SuccessModalProduct  from '../components/SuccesModalProduct.tsx';
 
 const CreateProduct: React.FC = () => {
-    const [, setProductCreated] = useState(false);
+    const [productCreated, setProductCreated] = useState<CreateProductData | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null); 
     const [showModal, setShowModal] = useState<boolean>(false);
     const [producto, setProducto] = useState<CreateProductData>({
@@ -227,8 +227,8 @@ const CreateProduct: React.FC = () => {
             isValid = false;
         }
 
-        if (producto.precio <= 10000) {
-            newErrors.precio = 'El precio debe ser mayor que $10.000';
+        if (producto.precio <= 100) {
+            newErrors.precio = 'El precio debe ser mayor que $100';
             isValid = false;
         }
 
@@ -313,12 +313,13 @@ const CreateProduct: React.FC = () => {
                     delete productoData.insumo;
                 }
                 setProducto({ ...producto, SKU });
-                console.log("Producto JSON para enviar:", JSON.stringify(productoData));
-
                 const backendUrl = import.meta.env.VITE_API_URL;
+                const token = localStorage.getItem("token");
                 const response = await fetch(`${backendUrl}/productos`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 
+                        "Authorization": `Bearer ${token}`,
+                    },
                     body: JSON.stringify(productoData),
                 });
 
@@ -326,7 +327,7 @@ const CreateProduct: React.FC = () => {
 
                 const data = await response.json();
                 console.log (data)
-                setProductCreated(true);
+                setProductCreated(productoData);
                 handleShow();
                 setProducto({
                     SKU: '',
@@ -375,7 +376,7 @@ const CreateProduct: React.FC = () => {
                     }
                 });
                 setImagePreview('');
-                console.log("Producto creado: ", productoData);
+                console.log("Producto creado: ", productoData)
 
                 if (fileInputRef.current) {
                     fileInputRef.current.value = ''; // Restablecer el valor del input de archivo
@@ -636,7 +637,7 @@ const CreateProduct: React.FC = () => {
 
                                     {/* Imagen */}
                                     <Form.Group controlId="imagen">
-                                        <Form.Label>Subir Imagen</Form.Label>
+                                        <Form.Label>Subir Imagen (Formato JPG o PNG)</Form.Label>
                                         {/* Previsualización */}
                                         {imagePreview ? (
                                             <div className="mt-3">
@@ -664,6 +665,7 @@ const CreateProduct: React.FC = () => {
                         </Col>
                     </Row >
                     <br />
+                    <div>
                     <Button
                         type="button"
                         onClick={handleSubmit}
@@ -671,7 +673,8 @@ const CreateProduct: React.FC = () => {
                     >
                         Crear Producto
                     </Button>
-                    <SuccessModalProduct show={showModal} handleClose={handleClose} />
+                    </div>
+                    <SuccessModalProduct show={showModal} handleClose={handleClose} productCreated ={productCreated} />
                 </Form>
         </Container >
     );

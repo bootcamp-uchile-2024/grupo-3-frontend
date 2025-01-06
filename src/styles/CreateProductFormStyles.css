@@ -41,3 +41,12 @@ input#imagen.custom-file-input::file-selector-button{
   color: #1A4756;
   font-weight:500 ;
 }
+
+.Create-product-container-button {
+  display: flex;
+  justify-self: end;
+  width: 207px;
+  margin-right: 0.1rem;
+  margin-top: 5rem;
+  margin-bottom: 3rem;
+}

@@ -40,11 +40,13 @@ const ProductManagement = () => {
         try {
             setLoading(true);
             const backendUrl = import.meta.env.VITE_API_URL;
+            const token = localStorage.getItem("token");
             const response = await fetch(`${backendUrl}/productos`, {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
+                    "Authorization": `Bearer ${token}`,
                 },
             });
 
@@ -126,9 +128,12 @@ const ProductManagement = () => {
         if (confirmation) {
             try {
                 const backendUrl = import.meta.env.VITE_API_URL;
+                const token = localStorage.getItem("token");
                 const response = await fetch(`${backendUrl}/productos/${productId}`, {
                     method: 'DELETE',
-                });
+                    headers: {"Authorization": `Bearer ${token}`,
+                },
+            });
                 if (!response.ok) {
                     throw new Error('Error al eliminar el producto');
                 }
@@ -182,7 +187,7 @@ const ProductManagement = () => {
                     <div className="product-management-container">
                         <Tabs defaultActiveKey="productos" className="custom-tabs mb-3">
                             {/* Cargar Productos */}
-                            <Tab eventKey="productos" title="Cargar Productos">
+                            <Tab eventKey="productos" title="Crear Productos">
                                 <div>
                                     <CreateProduct />
                                 </div>
