@@ -7,7 +7,7 @@ import { productsCatalog } from '../interfaces/ProductsCatalog';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../states/cartSlice';
 import { Button, Card, Col, Container, Row, Form, Offcanvas } from 'react-bootstrap';
-import { CartPlus} from 'react-bootstrap-icons';
+import { CartPlus } from 'react-bootstrap-icons';
 
 export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -23,13 +23,14 @@ export default function ProductDetailPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
   useEffect(() => {
     const getProduct = async () => {
       try {
         if (!id) return;
 
-        const baseUrl = import.meta.env.VITE_API_URL;
-        const response = await fetch(`${baseUrl}/productos/${id}`);
+        const response = await fetch(`${API_BASE_URL}/productos/${id}`);
         if (!response.ok) {
           throw new Error('No pudimos obtener el producto');
         }
@@ -37,7 +38,7 @@ export default function ProductDetailPage() {
         setProduct(productJson);
 
         if (productJson.imagenes && productJson.imagenes.length > 0) {
-          setSelectedImage(productJson.imagenes[0].ruta);
+          setSelectedImage(`${API_BASE_URL}${productJson.imagenes[0].ruta}`);
         } else {
           setSelectedImage('/estaticos/default-image.jpg');
         }
@@ -50,7 +51,7 @@ export default function ProductDetailPage() {
     };
 
     getProduct();
-  }, [id]);
+  }, [id, API_BASE_URL]);
 
   if (loading) {
     return (
@@ -77,32 +78,34 @@ export default function ProductDetailPage() {
       return;
     }
 
-    dispatch(addToCart({
-      id: product.id,
-      nombre: product.nombre,
-      precio: product.precio,
-      imagen: selectedImage || '/estaticos/default-image.jpg',
-      descripcion: product.descripcion,
-      cantidad: quantity,
-      unidadesVendidas: product.unidadesVendidas,
-      puntuacion: product.puntuacion,
-      ancho: product.ancho,
-      alto: product.alto,
-      largo: product.largo,
-      peso: product.peso,
-    }));
+    dispatch(
+      addToCart({
+        id: product.id,
+        nombre: product.nombre,
+        precio: product.precio,
+        imagen: selectedImage || '/estaticos/default-image.jpg',
+        descripcion: product.descripcion,
+        cantidad: quantity,
+        unidadesVendidas: product.unidadesVendidas,
+        puntuacion: product.puntuacion,
+        ancho: product.ancho,
+        alto: product.alto,
+        largo: product.largo,
+        peso: product.peso,
+      })
+    );
     setShowOffcanvas(true);
   };
 
   const incrementQuantity = () => {
     if (quantity < (product?.stock || 0)) {
-      setQuantity(prevQuantity => prevQuantity + 1);
+      setQuantity((prevQuantity) => prevQuantity + 1);
     } else {
       alert(`Solo hay ${product?.stock} unidades disponibles.`);
     }
   };
 
-  const decrementQuantity = () => quantity > 1 && setQuantity(prevQuantity => prevQuantity - 1);
+  const decrementQuantity = () => quantity > 1 && setQuantity((prevQuantity) => prevQuantity - 1);
 
   const handleBuyNow = () => {
     if (product) {
@@ -115,24 +118,35 @@ export default function ProductDetailPage() {
     alert('Verificando disponibilidad para la selección de envío/retirada.');
   };
 
-  const handleSelectImage = (image: string) => setSelectedImage(image);
+  const handleSelectImage = (image: string) => {
+    const fullImageUrl = image.startsWith('http')
+      ? image
+      : `${API_BASE_URL}${image}`;
+    setSelectedImage(fullImageUrl);
+  };
 
   return (
-    <div className='contenedorsupremo'>
+    <div className="contenedorsupremo">
       <Container className="mt-5 mb-5 pt-5">
         {product && (
           <Row>
             <Col md={7}>
               <Row>
-              <Col md={2}>
+                <Col md={2}>
                   <div className="image-thumbnails d-flex flex-wrap gap-3">
                     {product.imagenes && product.imagenes.length > 0 ? (
                       product.imagenes.map((img, index) => (
                         <Col key={index} xs={12}>
                           <img
-                            src={img.ruta}
+                            src={
+                              import.meta.env.MODE === 'development'
+                                ? img.ruta
+                                : `${API_BASE_URL}${img.ruta}`
+                            }
                             alt={`${product.nombre} - Imagen ${index + 1}`}
-                            className={`thumbnail-img img-fluid ${selectedImage === img.ruta ? 'selected-thumbnail' : ''}`}
+                            className={`thumbnail-img img-fluid ${
+                              selectedImage === `${API_BASE_URL}${img.ruta}` ? 'selected-thumbnail' : ''
+                            }`}
                             onClick={() => handleSelectImage(img.ruta)}
                           />
                         </Col>
@@ -150,60 +164,63 @@ export default function ProductDetailPage() {
                   </div>
                 </Col>
                 <Col md={10}>
-                <Card.Img
-                  variant="top"
-                  src={
-                    selectedImage && selectedImage !== '/estaticos/default-image.jpg'
-                      ? selectedImage
-                      : (product.imagenes && product.imagenes.length > 0
-                          ? `${import.meta.env.MODE === 'development' ? '' : import.meta.env.VITE_API_URL}${product.imagenes[0]?.ruta}`
-                          : '/estaticos/default-image.jpg')
-                  }
-                  alt={product.nombre}
-                  className="img-fluid  main-image"
-                />
+                  <Card.Img
+                    variant="top"
+                    src={
+                      selectedImage && selectedImage !== '/estaticos/default-image.jpg'
+                        ? selectedImage
+                        : product.imagenes && product.imagenes.length > 0
+                        ? `${API_BASE_URL}${product.imagenes[0]?.ruta}`
+                        : '/estaticos/default-image.jpg'
+                    }
+                    alt={product.nombre}
+                    className="img-fluid main-image"
+                  />
                 </Col>
               </Row>
             </Col>
-            
+
             <Col md={5}>
               <Card.Body>
                 <Card.Title className="productotitle">{product.nombre}</Card.Title>
                 <Card.Text className="productodescription">
                   {product.descripcion}
-                  <p className='ref'>*Fotos de carácter referencial</p>
+                  <p className="ref">*Fotos de carácter referencial</p>
                 </Card.Text>
                 <div className="priceandbuttonsmargin">
-                <Card.Text>
-                  <span className="product-price">
-                    <div>
-                      <span>Ahora: </span>
-                      {new Intl.NumberFormat('es-CL', {
-                        style: 'currency',
-                        currency: 'CLP',
-                        minimumFractionDigits: 0,
-                      }).format(product.precio)}
-                    </div>
-                  </span>
-                  <span className='productodetails'>
+                  <Card.Text>
+                    <span className="product-price">
+                      <div>
+                        <span>Ahora: </span>
+                        {new Intl.NumberFormat('es-CL', {
+                          style: 'currency',
+                          currency: 'CLP',
+                          minimumFractionDigits: 0,
+                        }).format(product.precio)}
+                      </div>
+                    </span>
+                    <span className="productodetails">
                       <a> Normal </a>
                       {new Intl.NumberFormat('es-CL', {
                         style: 'currency',
                         currency: 'CLP',
                         minimumFractionDigits: 0,
                       }).format(product.precio)}
-                  </span>
-                </Card.Text>
+                    </span>
+                  </Card.Text>
                 </div>
 
                 {/* Controles de cantidad */}
                 <div className="d-flex align-items-center mb-3 mt-4 quantity-controls">
                   <span className="textcantidad"> Cantidad </span>
-                  <Button onClick={decrementQuantity} className="btn-circle-cart btn btn-primary btn-sm">-</Button>
+                  <Button onClick={decrementQuantity} className="btn-circle-cart btn btn-primary btn-sm">
+                    -
+                  </Button>
                   <span className="mx-2">{quantity}</span>
-                  <Button onClick={incrementQuantity} className="btn-circle-cart btn btn-primary btn-sm">+</Button>
+                  <Button onClick={incrementQuantity} className="btn-circle-cart btn btn-primary btn-sm">
+                    +
+                  </Button>
                 </div>
-               
 
                 {/* Botones de acción */}
                 <div className="d-flex gap-3 mt-3">
@@ -248,29 +265,30 @@ export default function ProductDetailPage() {
             </Col>
             {/* Características del producto */}
             <div>
-            <p>Descripción</p>
-            {product.descripcion} </div>
+              <p>Descripción</p>
+              {product.descripcion}
+            </div>
             <Card.Text className="product-details mt-3" id="product-icons">
-                  <p id="textcolorinput">Características:</p>
-                  <p></p>
-                  <Row className="g-0 mt-2">
-                    {/* Columna de iconos */}
-                    <Col md={1} className="d-flex flex-column align-items-center gap-2">
-                      <span className="material-symbols-outlined">potted_plant</span>
-                      <span className="material-symbols-outlined">wb_sunny</span>
-                      <span className="material-symbols-outlined">opacity</span>
-                      <span className="material-symbols-outlined">device_thermostat</span>
-                    </Col>
+              <p id="textcolorinput">Características:</p>
+              <p></p>
+              <Row className="g-0 mt-2">
+                {/* Columna de iconos */}
+                <Col md={1} className="d-flex flex-column align-items-center gap-2">
+                  <span className="material-symbols-outlined">potted_plant</span>
+                  <span className="material-symbols-outlined">wb_sunny</span>
+                  <span className="material-symbols-outlined">opacity</span>
+                  <span className="material-symbols-outlined">device_thermostat</span>
+                </Col>
 
-                    {/* Columna de características del producto */}
-                    <Col md={11} className="p-0">
-                      <p>Especie: {product?.planta?.especie || 'No especificado'}</p>
-                      <p>Luz: {product?.planta?.fotoPeriodo || 'No especificado'}</p>
-                      <p>Riego: {product?.planta?.tipoRiego || 'No especificado'}</p>
-                      <p>Temperatura: {product?.planta?.toleranciaTemperatura || 'No especificado'}°C</p>
-                    </Col>
-                  </Row>
-                </Card.Text>
+                {/* Columna de características del producto */}
+                <Col md={11} className="p-0">
+                  <p>Especie: {product?.planta?.especie || 'No especificado'}</p>
+                  <p>Luz: {product?.planta?.fotoPeriodo || 'No especificado'}</p>
+                  <p>Riego: {product?.planta?.tipoRiego || 'No especificado'}</p>
+                  <p>Temperatura: {product?.planta?.toleranciaTemperatura || 'No especificado'}°C</p>
+                </Col>
+              </Row>
+            </Card.Text>
           </Row>
         )}
 
@@ -319,22 +337,15 @@ export default function ProductDetailPage() {
             </div>
           </Offcanvas.Body>
           <div className="offcanvas-footer">
-            <button
-              className="btn-go-to-cart"
-              onClick={() => navigate('/cart')}
-            >
+            <button className="btn-go-to-cart" onClick={() => navigate('/cart')}>
               Ir al carrito de compras
             </button>
-            <button
-              className="btn-continue-shopping"
-              onClick={() => setShowOffcanvas(false)}
-            >
+            <button className="btn-continue-shopping" onClick={() => setShowOffcanvas(false)}>
               Sigue comprando
             </button>
           </div>
         </Offcanvas>
       </Container>
     </div>
-
   );
 }
