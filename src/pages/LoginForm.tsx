@@ -39,7 +39,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
     setErrors({ ...errors, [`${name}Error`]: '', generalError: '' });
   };
 
-  const syncCartWithBackend = async (token: string): Promise<number | null> => {
+  const syncCartWithBackend = async (token: string, role: string): Promise<number | null> => {
+    if (role === 'Super Admin' || role === 'Admin') {
+      console.log('Usuario administrador, no se sincroniza carrito.');
+      return null;
+    }
+  
     const userId = JSON.parse(atob(token.split('.')[1])).sub;
     console.log('ID de usuario extraído del token:', userId);
   
@@ -165,15 +170,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   
       dispatch(updateUserId(userId));
   
-      const cartId = await syncCartWithBackend(access_token);
-      if (!cartId) {
-        alert('No se pudo sincronizar el carrito. Por favor, contacta soporte.');
-        return;
-      }
+      const cartId = await syncCartWithBackend(access_token, userRole);
   
       onLogin({ username, role: userRole });
-
-      if (userRole === 'Super Admin') {
+  
+      if (userRole === 'Super Admin' || userRole === 'Admin') {
         console.log('Iniciando sesión como ADMIN');
         navigate('/user-management', { replace: true });
       } else {
@@ -187,7 +188,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
           replace: true,
         });
       }
-      
     } catch (error) {
       if (error instanceof Error) {
         setErrors((prev) => ({ ...prev, generalError: error.message }));
@@ -260,6 +260,3 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
 };
 
 export default LoginForm;
-
-
-
