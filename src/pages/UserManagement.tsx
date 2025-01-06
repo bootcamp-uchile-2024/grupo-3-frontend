@@ -7,7 +7,7 @@ import { User } from "../types/types";
 import CustomPagination from "../components/CustomPagination";
 import AdminSideBar from "../components/AdminSideBar";
 import UserGreeting from "../components/UserGreeting";
-import "../styles/UserManagementStyle.css"
+import "../styles/UserManagementStyle.css";
 
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -15,7 +15,7 @@ const UserManagement = () => {
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [, setError] = useState<string>("");
+  const [error, setError] = useState<string>(""); 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [showModal, setShowModal] = useState(false);
   const [modalAction, setModalAction] = useState("");
@@ -58,9 +58,11 @@ const UserManagement = () => {
 
     if (filteredUsers.length > 0) {
       setSelectedUser(filteredUsers[0]);
+      localStorage.setItem("selectedUser", JSON.stringify(filteredUsers[0])); 
     } else {
       alert('Usuario no encontrado');
       setSelectedUser(null);
+      localStorage.removeItem("selectedUser");
     }
   };
 
@@ -80,7 +82,7 @@ const UserManagement = () => {
     }
   };
 
-  const fetchUsers = useCallback(async () => {
+  const fetchUsers = useCallback(async (): Promise<User[]> => {
     try {
       setLoading(true);
       
@@ -111,7 +113,7 @@ const UserManagement = () => {
       const data: User[] = Array.isArray(responseData.data) ? responseData.data : [];
       setUsers(data);
       console.log("Usuarios actualizados en el estado:", data);
-
+      return data; 
     } catch (err) { 
       console.error("Error:", err);
       if (err instanceof Error) {
@@ -119,6 +121,7 @@ const UserManagement = () => {
       } else {
         setError("Error desconocido al obtener los usuarios.");
       }
+      return []; 
     } finally {
       setLoading(false);
     }
@@ -173,7 +176,11 @@ const UserManagement = () => {
       }
 
       console.log("Usuario eliminado");
-      fetchUsers();
+      await fetchUsers(); 
+      if (selectedUser && selectedUser.id === userId) {
+        setSelectedUser(null); 
+        localStorage.removeItem("selectedUser"); 
+      }
     } catch (err) { 
       console.error("Error al eliminar el usuario:", err);
       if (err instanceof Error) {
@@ -182,7 +189,7 @@ const UserManagement = () => {
         setError("Error desconocido al eliminar el usuario.");
       }
     }
-  }, [API_BASE_URL, fetchUsers]);
+  }, [API_BASE_URL, fetchUsers, selectedUser]);
 
   const handleCancelEdit = () => {
     setEditingUser(null);
@@ -245,7 +252,12 @@ const UserManagement = () => {
       }
   
       console.log("Usuario actualizado correctamente");
-      fetchUsers(); 
+      const updatedUsers = await fetchUsers();
+      const updatedUser = updatedUsers.find(u => u.id === editingUser.id);
+      if (updatedUser) {
+        setSelectedUser(updatedUser); 
+        localStorage.setItem("selectedUser", JSON.stringify(updatedUser)); 
+      }
       setEditingUser(null); 
     } catch (err) { 
       console.error("Error al actualizar el usuario:", err);
@@ -436,9 +448,9 @@ const UserManagement = () => {
                       </Col>
                     </Row>
 
-                    {editingUser ? (
+                    {editingUser && selectedUser ? (
                       <>
-                        <CardUser selectedUser={editingUser} />
+                        <CardUser selectedUser={selectedUser} />
                         <Form>
                           <Row>
                             <Col>
@@ -568,7 +580,7 @@ const UserManagement = () => {
                                 <Form.Label>Fecha de Nacimiento</Form.Label>
                                 <Form.Control
                                   type="date"
-                                  value={editingUser?.fechaNacimiento || ""}
+                                  value={editingUser.fechaNacimiento || ""}
                                   onChange={(e) => {
                                     if (editingUser) {
                                       setEditingUser({
@@ -581,9 +593,8 @@ const UserManagement = () => {
                                   }}
                                   disabled
                                 />
-                                
                               </Form.Group>
-                         </Col>
+                            </Col>
                           </Row>
                           <Row className="mt-3">
                             <Col>
@@ -607,10 +618,10 @@ const UserManagement = () => {
                               <Form.Group>
                                 <Form.Label>Tipo de Usuario</Form.Label>
                                 <Form.Select
-                                  value={editingUser?.idRol || ""}
+                                  value={editingUser.idRol || ""}
                                   onChange={(e) => {
                                     const newIdRol = parseInt(e.target.value, 10);
-                                    console.log("Nuevo idRol seleccionado:", newIdRol); // Verificación
+                                    console.log("Nuevo idRol seleccionado:", newIdRol);
                                     if (editingUser) {
                                       setEditingUser({
                                         ...editingUser,
@@ -627,9 +638,7 @@ const UserManagement = () => {
                                     </option>
                                   ))}
                                 </Form.Select>
-
                               </Form.Group>
-
                             </Col>
                           </Row>
                         </Form>
@@ -689,6 +698,9 @@ const UserManagement = () => {
         </Col>
       </Row>
 
+      {/* Mostrar Mensajes de Error */}
+      {error && <p className="text-danger mt-3">{error}</p>}
+
       {/* Modal */}
       <Modal
         show={showModal}
@@ -724,6 +736,8 @@ const UserManagement = () => {
 };
 
 export default UserManagement;
+
+
 
 
 
