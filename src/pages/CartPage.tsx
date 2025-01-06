@@ -107,8 +107,8 @@ const CartPage: React.FC = () => {
                       <Col md={6}>
                         <img
                           src={
-                            item.imagenes && item.imagenes.length > 0
-                              ? `${import.meta.env.MODE === 'development' ? '' : baseUrl}${item.imagenes[0].ruta}`
+                            item.imagen
+                              ? `${import.meta.env.MODE === 'development' ? '' : baseUrl}${item.imagen}`
                               : '/estaticos/default-image.jpg'
                           }
                           alt={item.nombre}

@@ -340,8 +340,8 @@ const CartPagePay: React.FC = () => {
                       <Col md={3}>
                       <img
                         src={
-                          item.imagenes && item.imagenes.length > 0
-                            ? `${import.meta.env.MODE === 'development' ? '' : API_BASE_URL}${item.imagenes[0].ruta}`
+                          item.imagen
+                            ? `${import.meta.env.MODE === 'development' ? '' : API_BASE_URL}${item.imagen}`
                             : '/estaticos/default-image.jpg'
                         }
                         alt={item.nombre}
