@@ -56,7 +56,6 @@ form#search-form {
   padding: 0;
 }
 
-
 .product p{
   font-size: 1rem;
   font-weight: bold;
@@ -409,6 +408,7 @@ ul.custom-tabs.mb-3.nav.nav-tabs {
   bottom: 3.98rem;
   position: relative;
   z-index: 1;
+  left: -1rem;
 }
 
 /* Estilo para filas impares y pares */

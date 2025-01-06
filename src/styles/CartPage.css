@@ -80,16 +80,19 @@
 .btn-primary:hover {
   background-color: var(--tertiary-color)!important;
   border-color: var(--tertiary-color)!important;
+  color: white!important;
 }
 
 .btn-outline-primary {
   border-color: var(--tertiary-color);
   color: var(--tertiary-color);
+  border-radius: 6px;
+  border: 1px solid var(--tertiary-color);
 }
 
 .btn-outline-primary:hover {
   background-color: var(--tertiary-color);
-  color: white;
+  color: var(--tertiary-color);
 }
 
 /* Modal */

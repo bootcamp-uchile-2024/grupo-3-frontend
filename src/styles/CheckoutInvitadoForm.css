@@ -38,6 +38,8 @@
     display: flex;
     justify-content: space-between;
     margin-top: 2rem;
+    width: 400px;
+    gap: 30px;
   }
   
   .button-container button {

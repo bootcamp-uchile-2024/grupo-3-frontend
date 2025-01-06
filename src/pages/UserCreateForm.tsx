@@ -342,7 +342,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
 
         <div className="button-container">
           <Button
-            className="btn-primary-outline"
+            className="btn-outline-primary"
             onClick={() => navigate(-1)}
             type="button"
           >

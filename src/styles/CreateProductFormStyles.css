@@ -31,9 +31,11 @@
 }
 
 input#imagen.form-control{
-  border: 1px solid #1A4756!important;
-  color:#1A4756;
-  max-width: 550px;
+  border: 1px solid #1A4756 !important;
+  color: #1A4756;
+  max-width: 484px;
+  padding: 6px;
+  margin-top: 1.6rem;
 }
 
 input#imagen.custom-file-input::file-selector-button{

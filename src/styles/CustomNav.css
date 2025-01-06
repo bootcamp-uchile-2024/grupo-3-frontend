@@ -40,7 +40,7 @@ nav.custom-navbar.fixed-top.navbar.navbar-expand-lg.navbar-light {
 }
 
 .nav-link.login-link {
-  margin: 0 0 0 -1rem !important;
+  margin: 0.2rem 0 0 -1rem !important;
 }
 
 .nav-link.cart-link {
@@ -52,7 +52,7 @@ a#user-dropdown {
   font-size: 18px !important;
   left: 0;
   position: relative;
-  top: 0.7rem;
+  top: 0;
 }
 
 .nav-dropdown .dropdown-toggle, 
@@ -81,7 +81,7 @@ a#user-dropdown {
 .nav-actions {
   display: flex;
   gap: 2rem;
-  left: 7.2rem;
+  left: 4.2rem;
   position: relative;
   top: -4rem;
   z-index: 1001;
