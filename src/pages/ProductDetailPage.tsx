@@ -100,7 +100,7 @@ export default function ProductDetailPage() {
         id: product.id,
         nombre: product.nombre,
         precio: product.precio,
-        imagen: selectedImage || '/estaticos/default-image.jpg',
+        imagen: product.imagenes && product.imagenes.length > 0 ? product.imagenes[0].ruta : '/estaticos/default-image.jpg',
         descripcion: product.descripcion,
         cantidad: quantity,
         unidadesVendidas: product.unidadesVendidas,
