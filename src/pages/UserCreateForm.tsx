@@ -97,34 +97,36 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (validate()) {
       const userData: CreateUserDTO = {
         ...formData,
-        idRol: isAdmin ? formData.idRol : 3,
+        idRol: isAdmin ? formData.idRol : 3, 
       };
-
+  
       console.log('Datos enviados al servidor:', userData);
       setIsSubmitting(true);
-
+  
       try {
         const backendUrl = import.meta.env.VITE_API_URL;
-
-        const response = await fetch(`${backendUrl}/usuarios`, {
+        const response = await fetch(`${backendUrl}/auth/registro`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(userData),
         });
-
-        const responseData = await response.json();
-        console.log('Respuesta completa del backend:', responseData);
-
+  
         if (!response.ok) {
-          throw new Error(responseData.message || 'Error al crear el usuario');
+          const responseData = await response.json();
+          console.error('Error al crear usuario:', responseData.message);
+          alert(`Error al crear el usuario: ${responseData.message}`);
+          return;
         }
-
+  
+        const responseData = await response.json();
+        console.log('Usuario creado exitosamente:', responseData);
+  
         alert('¡Usuario creado exitosamente!');
         setFormData({
           nombre: '',
@@ -140,18 +142,23 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
         });
         setConfirmPassword('');
         setAcceptTerms(false);
+  
+        if (responseData.carritoActivo) {
+          console.log('Carrito activo asignado:', responseData.carritoActivo);
+          localStorage.setItem('cartId', responseData.carritoActivo.id);
+        }
 
         if (onUserCreated) onUserCreated();
+        else navigate('/login'); 
       } catch (error) {
-        if (error instanceof Error) {
-          console.error('Error al crear usuario:', error.message);
-          alert(`Error al crear el usuario: ${error.message}. Intente nuevamente.`);
-        }
+        console.error('Error crítico al crear usuario:', error);
+        alert('Hubo un problema al crear tu cuenta. Por favor, intenta nuevamente.');
       } finally {
         setIsSubmitting(false);
       }
     }
   };
+  
 
 
   return (

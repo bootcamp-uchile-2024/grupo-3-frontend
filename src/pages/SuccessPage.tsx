@@ -5,24 +5,18 @@ import '../styles/SuccessPage.css';
 
 const SuccessPage: React.FC = () => {
   const location = useLocation();
-  const [cartId, setCartId] = useState<string | null>(null);
+  const [compraId, setCompraId] = useState<string | null>(null);
 
   useEffect(() => {
-    const stateCartId = location.state?.cartId;
-    const storedCartId = localStorage.getItem('cartId');
-  
-    if (stateCartId) {
-      setCartId(stateCartId);
-      console.log('CartId recibido desde state:', stateCartId);
-    } else if (storedCartId) {
-      setCartId(storedCartId);
-      console.log('CartId recuperado desde localStorage:', storedCartId);
+    const stateCompraId = location.state?.compraId;
+    
+    if (stateCompraId) {
+      setCompraId(stateCompraId);
+      console.log('CompraId recibido desde state:', stateCompraId);
     } else {
-      console.warn('No se encontró el cartId en state ni en localStorage.');
+      console.warn('No se encontró el ID de la compra (compraId) en location.state.');
     }
   }, [location.state]);
-  
-  
 
   const handleContinueShopping = () => {
     window.location.href = '/';
@@ -37,17 +31,22 @@ const SuccessPage: React.FC = () => {
           className="success-icon"
         />
         <h2 className="success-title">¡Compra Exitosa!</h2>
-        <p className="success-message">Muchas gracias por tu compra.</p>
-        {cartId ? (
+
+
+        <p className="success-message">Muchas Gracias Por tu Compra.</p>
+
+        {compraId ? (
           <p className="success-submessage">
-            Compra con ID: <strong>{cartId}</strong>
+            Compra con ID: <strong>{compraId}</strong>
           </p>
         ) : (
           <p className="error-message">No se encontró el ID de la compra.</p>
         )}
+
         <p className="success-submessage">
           Hemos enviado el recibo de tu compra a tu correo electrónico.
         </p>
+
         <Button
           variant="dark"
           onClick={handleContinueShopping}
@@ -62,4 +61,5 @@ const SuccessPage: React.FC = () => {
 };
 
 export default SuccessPage;
+
 

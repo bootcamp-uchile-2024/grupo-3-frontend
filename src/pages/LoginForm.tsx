@@ -1,20 +1,30 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
+import { updateUserId } from '../states/cartSlice'; 
 import '../styles/LoginFormStyles.css';
+import { CartItem } from '../interfaces/CartItem';
+
+interface LocalCart {
+  productos: CartItem[];
+}
+
+const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch(); 
 
   const [formData, setFormData] = useState({
-    usernameOrEmail: '',  
-    password: ''
+    usernameOrEmail: '',
+    password: '',
   });
 
   const [errors, setErrors] = useState({
-    usernameOrEmailError: '',  
+    usernameOrEmailError: '',
     passwordError: '',
-    generalError: ''
+    generalError: '',
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,18 +35,106 @@ const LoginForm: React.FC = () => {
     setErrors({ ...errors, [`${name}Error`]: '', generalError: '' });
   };
 
+  const syncCartWithBackend = async (token: string): Promise<number | null> => {
+    const userId = JSON.parse(atob(token.split('.')[1])).sub;
+    console.log('ID de usuario extraído del token:', userId);
+  
+    try {
+      const cartId = await getActiveCart(token, userId);
+  
+      if (!cartId) {
+        console.error('No se encontró un carrito activo, aunque debería haberse creado automáticamente.');
+        return null;
+      }
+  
+      return await replaceCartProducts(token, cartId);
+    } catch (error) {
+      console.error('Error al sincronizar el carrito:', error);
+      return null;
+    }
+  };
+  
+  const getActiveCart = async (token: string, userId: number): Promise<number | null> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Carrito activo encontrado:', data);
+        return data.id || null;
+      }
+  
+      if (response.status === 404) {
+        console.warn('Carrito no encontrado para el usuario:', userId);
+        return null;
+      }
+  
+      console.error('Error desconocido al obtener el carrito:', response.status);
+      return null;
+    } catch (error) {
+      console.error('Error en la petición GET del carrito activo:', error);
+      return null;
+    }
+  };
+  
+  const replaceCartProducts = async (token: string, cartId: number): Promise<number | null> => {
+    try {
+      const localCart: LocalCart = JSON.parse(localStorage.getItem('__redux__cart__') || '{}');
+      console.log('Contenido del carrito local:', localCart);
+  
+      if (!localCart || !localCart.productos || localCart.productos.length === 0) {
+        console.warn('No hay productos en el carrito local para sincronizar.');
+        return cartId;
+      }
+  
+      const productosCarro = localCart.productos.map((producto: CartItem) => ({
+        productoId: producto.id,
+        cantidadProducto: producto.cantidad,
+      }));
+  
+      const cuerpo = { productosCarro };
+      console.log('Cuerpo enviado al PUT:', JSON.stringify(cuerpo));
+  
+      const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(cuerpo),
+      });
+  
+      if (response.ok) {
+        console.log('Productos del carrito reemplazados exitosamente.');
+        return cartId;
+      }
+  
+      console.error('Error al reemplazar los productos del carrito:', response.status);
+      return null;
+    } catch (error) {
+      console.error('Error en la petición PUT al reemplazar productos:', error);
+      return null;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
   
     try {
-      const response = await fetch('http://localhost:8080/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          usernameOrEmail: formData.usernameOrEmail, 
+          usernameOrEmail: formData.usernameOrEmail,
           password: formData.password,
         }),
       });
@@ -47,31 +145,43 @@ const LoginForm: React.FC = () => {
       }
   
       const { access_token } = await response.json();
-  
-      if (!access_token) {
-        throw new Error('El token de acceso no fue devuelto por el servidor');
-      }
-  
       localStorage.setItem('token', access_token);
   
-      const decodedToken = JSON.parse(atob(access_token.split('.')[1]));
-      console.log('Token decodificado:', decodedToken);
+      const tokenPayload = JSON.parse(atob(access_token.split('.')[1]));
+      const userId = tokenPayload.sub;
+      const userRole = tokenPayload.role || ''; 
+      const username = tokenPayload.username || '';
   
-      const role = decodedToken.role || '';
-      const isAdmin = role.toLowerCase() === 'super admin';
+      const userObj = {
+        id: userId,
+        role: userRole,
+        username,
+      };
+      localStorage.setItem('user', JSON.stringify(userObj));
   
-      console.log('Rol del usuario:', role);
-      console.log('Redirigiendo a:', isAdmin ? '/user-management' : '/');
+      dispatch(updateUserId(userId));
   
-      localStorage.setItem('user', JSON.stringify({ username: decodedToken.username, role }));
+      const cartId = await syncCartWithBackend(access_token);
+      if (!cartId) {
+        alert('No se pudo sincronizar el carrito. Por favor, contacta soporte.');
+        return;
+      }
   
-      alert(`Iniciaste sesión como ${isAdmin ? 'Admin' : 'User'}`);
-  
-      if (isAdmin) {
+      if (userRole === 'Super Admin') {
+        console.log('Iniciando sesión como ADMIN');
         navigate('/user-management', { replace: true });
       } else {
-        navigate('/', { replace: true });
+        console.log('Iniciando sesión como CLIENTE');
+        navigate('/cart-page-pay', {
+          state: {
+            cartId,
+            formData: { direccion: '...', quienRecibe: '...' },
+            pedidoId: 123,
+          },
+          replace: true,
+        });
       }
+      
     } catch (error) {
       if (error instanceof Error) {
         setErrors((prev) => ({ ...prev, generalError: error.message }));
@@ -81,25 +191,26 @@ const LoginForm: React.FC = () => {
     }
   };
   
-
   return (
     <Container className="login-container">
       <Row className="justify-content-center">
         <Col md={4}>
           <Card className="login-card">
             <h2 className="login-title">Iniciar sesión</h2>
-            <Form className='login-form' onSubmit={handleSubmit}>
+            <Form className="login-form" onSubmit={handleSubmit}>
               <Form.Label>Correo electrónico o Usuario</Form.Label>
               <Form.Control
                 type="text"
-                name="usernameOrEmail"  
+                name="usernameOrEmail"
                 placeholder="Ingresa tu Correo Electrónico o Usuario"
-                value={formData.usernameOrEmail}  
+                value={formData.usernameOrEmail}
                 onChange={handleInputChange}
-                isInvalid={!!errors.usernameOrEmailError} 
+                isInvalid={!!errors.usernameOrEmailError}
               />
-              <Form.Control.Feedback type="invalid">{errors.usernameOrEmailError}</Form.Control.Feedback>
-              
+              <Form.Control.Feedback type="invalid">
+                {errors.usernameOrEmailError}
+              </Form.Control.Feedback>
+
               <Form.Label>Contraseña</Form.Label>
               <Form.Control
                 type="password"
@@ -109,21 +220,25 @@ const LoginForm: React.FC = () => {
                 onChange={handleInputChange}
                 isInvalid={!!errors.passwordError}
               />
-              <Form.Control.Feedback type="invalid">{errors.passwordError}</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {errors.passwordError}
+              </Form.Control.Feedback>
 
               {errors.generalError && (
                 <p className="text-danger">{errors.generalError}</p>
               )}
 
               <Row className="justify-content-center">
-                <Col md={12} className='botones-login mt-3'>
-                  <Button className="btn-primary" type="submit" disabled={isSubmitting}>
+                <Col md={12} className="botones-login mt-3">
+                  <Button
+                    className="btn-primary"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
                     {isSubmitting ? 'Ingresando...' : 'Ingresar'}
                   </Button>
                   <Link to="/crear-usuario">
-                    <Button className="btn-registrar">
-                      Registrarme
-                    </Button>
+                    <Button className="btn-registrar">Registrarme</Button>
                   </Link>
                   <Link to="/recuperar-contraseña" className="forgot-password">
                     ¿Olvidaste tu contraseña?

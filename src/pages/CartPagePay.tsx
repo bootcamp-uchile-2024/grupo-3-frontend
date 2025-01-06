@@ -7,17 +7,110 @@ import { CartItem } from '../interfaces/CartItem';
 import { Button, Card, Col, Container, ListGroup, Row, Form } from 'react-bootstrap';
 import '../styles/CartPage.css';
 
-
 const CartPagePay: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
   const { formData, pedidoId } = location.state || {};
 
   const [cartId, setCartId] = useState<number | null>(null);
-  const [coupon, setCoupon] = useState<string>(''); 
+  const [coupon, setCoupon] = useState<string>('');
   const [couponDiscount, setCouponDiscount] = useState<number>(0);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
+
+  const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
+
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    if (!token) {
+      alert('Debes iniciar sesión para acceder a esta página.');
+      navigate('/login', { replace: true });
+      setIsAuthenticated(false);
+    }
+  }, [token, navigate]);
+
+  const fetchActiveCart = useCallback(async (): Promise<number | null> => {
+    if (!token) {
+      console.error('No se encontró el token. Redirigiendo al login.');
+      navigate('/login', { replace: true });
+      return null;
+    }
+
+    const userId = JSON.parse(atob(token.split('.')[1])).sub;
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Carrito activo encontrado con ID:', data.id);
+        return data.id;
+      }
+
+      if (response.status === 404) {
+        console.warn('No se encontró un carrito activo para este usuario.');
+        return null;
+      }
+
+      throw new Error('Error desconocido al obtener el carrito activo.');
+    } catch (error) {
+      console.error('Error al buscar carrito activo:', error);
+      return null;
+    }
+  }, [navigate, API_BASE_URL, token]);
+
+  useEffect(() => {
+    const initializeCart = async () => {
+      try {
+        const cartIdFromState = location.state?.cartId;
+        const cartIdFromLocalStorage = parseInt(localStorage.getItem('cartId') || '0', 10);
+
+        let activeCartId = cartIdFromState || cartIdFromLocalStorage;
+
+        if (!activeCartId) {
+          activeCartId = await fetchActiveCart();
+        }
+
+        if (activeCartId) {
+          setCartId(activeCartId);
+          localStorage.setItem('cartId', activeCartId.toString());
+
+          const savedCartItems = JSON.parse(localStorage.getItem('__redux__cart__') || '{}');
+          if (savedCartItems.productos?.length > 0) {
+            dispatch(clearCart());
+            savedCartItems.productos.forEach((item: CartItem) => dispatch(addToCart(item)));
+          }
+        } else {
+          console.warn('No se encontró un carrito activo.');
+        }
+      } catch (error) {
+        console.error('Error al inicializar el carrito:', error);
+      }
+    };
+
+    if (isAuthenticated) {
+      initializeCart();
+    }
+  }, [dispatch, location.state?.cartId, fetchActiveCart, isAuthenticated]);
+
+  useEffect(() => {
+    if (!formData || !pedidoId) {
+      alert('No se encontraron datos para continuar con el proceso de pago.');
+      navigate('/cart', { replace: true });
+    }
+  }, [formData, pedidoId, navigate]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
     const existingItem = acc.find((i: CartItem) => i.id === item.id);
@@ -29,202 +122,32 @@ const CartPagePay: React.FC = () => {
     return acc;
   }, []);
 
-  // Cálculos de totales
-  const total = groupedItems.reduce((acc: number, item: CartItem) => {
-    return acc + item.precio * item.cantidad;
-  }, 0);
-
-  const totalWithBaseDiscount = total * 0.8; 
-  const totalWithCoupon = totalWithBaseDiscount * (1 - couponDiscount); 
-
-  const userId = 1;
-
-
-  const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
-
-  const fetchActiveCart = useCallback(async (): Promise<number | null> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        setCartId(data.id); 
-        return data.id;
-      } else {
-        console.warn('No se encontró un carrito activo.');
-        setCartId(null);
-        return null;
-      }
-    } catch (error) {
-      console.error('Error al buscar carrito activo:', error);
-      return null;
-    }
-  }, [userId, API_BASE_URL]);
-  
+  const total = groupedItems.reduce((acc: number, item: CartItem) => acc + item.precio * item.cantidad, 0);
+  const totalWithBaseDiscount = total * 0.8;
+  const totalWithCoupon = totalWithBaseDiscount * (1 - couponDiscount);
 
   const addProductToCart = async (cartId: number, productId: number, quantity: number) => {
     try {
-      console.log(`Intentando agregar producto ${productId} al carrito ${cartId} con cantidad ${quantity}`);
       const response = await fetch(`${API_BASE_URL}/carro-compras/addproducto/${cartId}`, {
         method: 'POST',
         headers: {
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
-          Accept: 'application/json',
         },
         body: JSON.stringify({ productoId: productId, cantidadProducto: quantity }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Respuesta del backend:', data);
-
-        if (data.producto.cantidad < quantity) {
-          alert(`No hay suficiente stock para este producto. Disponible: ${data.producto.cantidad}.`);
-          return;
-        }
-
-        console.log('Producto agregado al carrito:', data);
-      } else {
-        const errorData = await response.json();
-        console.error('Error en la respuesta del servidor:', errorData);
-        throw new Error(errorData.message || `Error HTTP: ${response.status}`);
-      }
-    } catch (error: unknown) {
-      console.error('Error al agregar producto al carrito:', getErrorMessage(error));
-      alert('Hubo un problema al agregar el producto al carrito. Inténtalo nuevamente.');
-    }
-  };
-
-
-
-  const handleRemoveProductFromCart = async (productId: number) => {
-    if (!window.confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
-      return;
-    }
-  
-    if (!cartId) {
-      alert('El carrito no está inicializado correctamente.');
-      return;
-    }
-  
-    try {
-      console.log(`Sincronizando carrito con ID: ${cartId} antes de eliminar producto`);
-      await replaceCartProducts();
-  
-      console.log(`Eliminando producto ID: ${productId} del carrito ID: ${cartId}`);
-      const response = await fetch(
-        `${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`,
-        {
-          method: 'DELETE',
-          headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-        }
-      );
-  
       if (!response.ok) {
         const errorData = await response.json();
-        alert(errorData.message || 'Hubo un problema al eliminar el producto.');
-        return;
+        throw new Error(errorData.message || 'Error al agregar producto.');
       }
-  
-      dispatch(removeFromCart(productId));
 
-      const updatedCartItems = cartItems.filter(item => item.id !== productId);
-      localStorage.setItem('__redux__cart__', JSON.stringify({ productos: updatedCartItems }));
-  
-      alert('El producto ha sido eliminado del carrito.');
+      console.log('Producto agregado al carrito.');
     } catch (error) {
-      console.error('Error al intentar eliminar el producto:', error);
-      alert('No se pudo eliminar el producto. Por favor, inténtalo nuevamente.');
+      console.error('Error al agregar producto:', error);
+      alert('Hubo un problema al agregar el producto al carrito.');
     }
   };
-  
-  const replaceCartProducts = async () => {
-    if (!cartId) {
-      console.error('No se puede actualizar el carrito porque no existe un ID de carrito.');
-      return;
-    }
-
-    try {
-      console.log(`Actualizando productos en el carrito con ID ${cartId}`);
-      const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
-        method: 'PUT',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          productosCarro: cartItems.map((item) => ({
-            productoId: item.id,
-            cantidadProducto: item.cantidad,
-          })),
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || `Error HTTP: ${response.status}`);
-      }
-
-      console.log('Productos del carrito actualizados en el backend.');
-    } catch (error: unknown) {
-      console.error('Error al actualizar el carrito en el backend:', getErrorMessage(error));
-      throw error;
-    }
-  };
-
-  useEffect(() => {
-    const initializeCart = async () => {
-      const activeCartId = await fetchActiveCart();
-
-      if (activeCartId) {
-        const savedCartItems = localStorage.getItem('__redux__cart__');
-        if (savedCartItems) {
-          try {
-            const parsedCart = JSON.parse(savedCartItems);
-
-            if (parsedCart && Array.isArray(parsedCart.productos)) {
-              dispatch(clearCart());
-
-              parsedCart.productos.forEach((item: CartItem) => {
-                dispatch(addToCart(item));
-              });
-            } else {
-              console.warn('El contenido de productos no es un array:', parsedCart.productos);
-            }
-          } catch (error) {
-            console.error('Error al parsear los datos del carrito desde localStorage:', error);
-          }
-        }
-        return;
-      }
-
-      console.log('No hay carrito activo. Creando uno nuevo...');
-    };
-
-    initializeCart();
-  }, [fetchActiveCart, dispatch]);
-
-  const handleApplyCoupon = () => {
-    if (coupon.trim() === 'bootcamp2024') {
-      setCouponDiscount(0.05); 
-      alert('¡Cupón aplicado con éxito! Se ha descontado un 5% adicional.');
-    } else {
-      setCouponDiscount(0); 
-      alert('Cupón inválido. Inténtalo nuevamente.');
-    }
-  };
-  
-  
-
-  if (!formData || !pedidoId) {
-    console.error('No se encontraron datos para la página de pago.');
-    return <p>Error: No hay datos disponibles para finalizar el pago.</p>;
-  }
-
-  console.log('Datos recibidos en CartPagePay:', formData, pedidoId);
 
   const handleIncrement = async (productId: number) => {
     if (!cartId) {
@@ -240,29 +163,153 @@ const CartPagePay: React.FC = () => {
         await addProductToCart(cartId, productId, newQuantity);
 
         dispatch(updateQuantity({ id: productId, cantidad: 1 }));
-      } catch (_error) {
+      } catch (error) {
         alert('Error al intentar incrementar el producto. Por favor, inténtalo nuevamente.');
       }
     }
   };
 
   const handleDecrement = (productId: number) => {
-    dispatch(updateQuantity({ id: productId, cantidad: -1 }));
-  };
-
-  const getErrorMessage = (error: unknown): string => {
-    if (error instanceof Error) {
-      return error.message;
+    const product = cartItems.find((item) => item.id === productId);
+    if (product && product.cantidad > 1) {
+      dispatch(updateQuantity({ id: productId, cantidad: -1 }));
+    } else {
+      alert('La cantidad no puede ser menor a 1.');
     }
-    return 'Error inesperado.';
   };
 
-  const handleNavigateToCheckout = (): void => {
-    console.log('Limpiando localStorage y Redux antes de redirigir a /success-page.');
-    
-    localStorage.removeItem('__redux__cart__'); 
-    dispatch(clearCart());
-    navigate('/success-page');
+  const handleRemoveProductFromCart = async (productId: number) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
+      return;
+    }
+
+    if (!cartId) {
+      alert('El carrito no está inicializado correctamente.');
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(errorData.message || 'Hubo un problema al eliminar el producto.');
+        return;
+      }
+
+      dispatch(removeFromCart(productId));
+      const updatedCartItems = cartItems.filter((item) => item.id !== productId);
+      localStorage.setItem('__redux__cart__', JSON.stringify({ productos: updatedCartItems }));
+
+      alert('El producto ha sido eliminado del carrito.');
+    } catch (error) {
+      console.error('Error al eliminar producto:', error);
+      alert('No se pudo eliminar el producto.');
+    }
+  };
+
+  const handleApplyCoupon = () => {
+    if (coupon.trim() === 'bootcamp2024') {
+      setCouponDiscount(0.05);
+      alert('¡Cupón aplicado con éxito!');
+    } else {
+      setCouponDiscount(0);
+      alert('Cupón inválido.');
+    }
+  };
+
+  const handleNavigateToCheckout = async (): Promise<void> => {
+    if (!cartId) {
+      alert('No se encontró el carrito activo. Por favor, inténtalo nuevamente.');
+      return;
+    }
+
+    try {
+      console.log('Preparando creación del pedido para carrito con ID:', cartId);
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No se encontró el token. Por favor, inicia sesión nuevamente.');
+      }
+      const userId = JSON.parse(atob(token.split('.')[1])).sub;
+      const validateCartResponse = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          Accept: 'application/json',
+        },
+      });
+
+      if (!validateCartResponse.ok) {
+        throw new Error('No se pudo verificar el estado del carrito.');
+      }
+
+      const validatedCart = await validateCartResponse.json();
+      if (!validatedCart.carroProductos || validatedCart.carroProductos.length === 0) {
+        throw new Error('El carro en el backend está vacío. Inténtalo nuevamente.');
+      }
+
+      console.log('Carrito en el backend validado:', validatedCart);
+
+      const pedidoPayload = {
+        fechaCreacion: new Date().toISOString().split('T')[0],
+        idCarro: cartId,
+        idMedioPago: 1,
+        idEstado: 1,
+        idTipoDespacho: formData?.formaEnvio === 'envio' ? 1 : 2,
+        receptor: formData?.quienRecibe || '',
+        fechaEntrega: new Date(new Date().setDate(new Date().getDate() + 3))
+          .toISOString()
+          .split('T')[0],
+        direccionEnvio: {
+          comuna: formData?.comuna || '',
+          calle: formData?.direccion || '',
+          numero: formData?.numero || '0',
+          departamento: formData?.departamento || '',
+          referencia: formData?.referencia || '',
+        },
+      };
+
+      console.log('Payload enviado al backend:', pedidoPayload);
+
+      const pedidoResponse = await fetch(`${API_BASE_URL}/pedidos/${userId}`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(pedidoPayload),
+      });
+
+      if (!pedidoResponse.ok) {
+        const errorData = await pedidoResponse.json();
+        throw new Error(errorData.message || 'Error al confirmar el pedido.');
+      }
+
+      const pedido = await pedidoResponse.json();
+      console.log('Pedido creado con ID:', pedido.id);
+
+      localStorage.removeItem('__redux__cart__');
+      localStorage.removeItem('cartId');
+      dispatch(clearCart());
+
+      navigate('/success-page', {
+        state: { compraId: pedido.id },
+      });
+    } catch (error) {
+      console.error('Error al finalizar la compra:', error);
+      alert(error instanceof Error ? error.message : 'No se pudo finalizar la compra.');
+    }
   };
 
   const handleGoBack = () => {
