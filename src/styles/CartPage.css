@@ -73,22 +73,22 @@
 }
 
 .btn-primary {
-  background-color: #1A4756;
-  border-color: #1A4756;
+  background-color: var(--tertiary-color);
+  border-color: var(--tertiary-color);
 }
 
 .btn-primary:hover {
-  background-color: #143642;
-  border-color: #143642;
+  background-color: var(--tertiary-color);
+  border-color: var(--tertiary-color);
 }
 
 .btn-outline-primary {
-  border-color: #1A4756;
-  color: #1A4756;
+  border-color: var(--tertiary-color);
+  color: var(--tertiary-color);
 }
 
 .btn-outline-primary:hover {
-  background-color: #1A4756;
+  background-color: var(--tertiary-color);
   color: white;
 }
 

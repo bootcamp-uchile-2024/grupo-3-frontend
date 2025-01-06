@@ -176,7 +176,7 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
               <Nav.Link
                 as={Link}
                 to="/login"
-                className={`login-link ${isActive('/login') ? 'active' : ''}`}
+                className={`login-link ${isActive('/login') ? 'active-auth' : ''}`}
               >
                 Registrarse/Login
               </Nav.Link>
@@ -186,7 +186,7 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
             <Nav.Link
               as={Link}
               to="/cart"
-              className={`cart-link ${isActive('/cart') ? 'active' : ''}`}
+              className={`cart-link ${isActive('/cart') ? 'active-auth' : ''}`}
             >
               <span className="material-symbols-outlined">shopping_cart</span>
               {cartItemCount > 0 && (

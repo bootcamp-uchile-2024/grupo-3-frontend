@@ -10,16 +10,19 @@
   border: none;
   margin-right: 30px;
   outline: none;
+  font-size: 21px;
+  color: var(--primary-color);
+  word-wrap: break-word;
 }
 
 /* Estilo para la flecha del select */
 .custom-arrow { 
-  color: #1A4756;
+  color: var(--primary-color);
   font-size: 32px; 
   pointer-events: none;
   position: absolute;
   right: 10px;
-  top: 50%;
+  top: 60%;
   transform: translateY(-70%);
   transition: transform 0.3s ease;
 }
