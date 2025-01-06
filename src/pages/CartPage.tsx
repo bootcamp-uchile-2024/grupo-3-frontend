@@ -7,6 +7,16 @@ import { CartItem } from '../interfaces/CartItem';
 import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap';
 import '../styles/CartPage.css';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
+const getImageUrl = (ruta: string): string => {
+  if (import.meta.env.MODE === 'development') {
+    return ruta.startsWith('/') ? ruta : `/${ruta}`;
+  } else {
+    return `${API_BASE_URL}${ruta.startsWith('/') ? ruta : `/${ruta}`}`;
+  }
+};
+
 const CartPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
@@ -27,7 +37,6 @@ const CartPage: React.FC = () => {
   useEffect(() => {
     syncCartWithLocalStorage();
   }, [syncCartWithLocalStorage]);
-
 
   const handleIncrement = (productId: number) => {
     dispatch(updateQuantity({ id: productId, cantidad: 1 }));
@@ -107,7 +116,7 @@ const CartPage: React.FC = () => {
                         <img
                           src={
                             item.imagen && item.imagen.length > 0
-                              ? item.imagen
+                              ? getImageUrl(item.imagen)
                               : '/estaticos/default-image.jpg'
                           }
                           alt={item.nombre}
@@ -214,3 +223,5 @@ const CartPage: React.FC = () => {
 };
 
 export default CartPage;
+
+

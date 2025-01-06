@@ -7,6 +7,22 @@ import { CartItem } from '../interfaces/CartItem';
 import { Button, Card, Col, Container, ListGroup, Row, Form } from 'react-bootstrap';
 import '../styles/CartPage.css';
 
+import webpayIcon from '../assets/webpay.png';
+import visaIcon from '../assets/visa.png';
+import mastercardIcon from '../assets/mastercard.png';
+import paypalIcon from '../assets/paypal.png';
+import transferenciaIcon from '../assets/transferencia-bancaria.png';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
+const getImageUrl = (ruta: string): string => {
+  if (import.meta.env.MODE === 'development') {
+    return ruta.startsWith('/') ? ruta : `/${ruta}`;
+  } else {
+    return `${API_BASE_URL}${ruta.startsWith('/') ? ruta : `/${ruta}`}`;
+  }
+};
+
 const CartPagePay: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
@@ -18,8 +34,6 @@ const CartPagePay: React.FC = () => {
   const [coupon, setCoupon] = useState<string>('');
   const [couponDiscount, setCouponDiscount] = useState<number>(0);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(true);
-
-  const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
 
   const token = localStorage.getItem('token');
 
@@ -37,9 +51,9 @@ const CartPagePay: React.FC = () => {
       navigate('/login', { replace: true });
       return null;
     }
-
+  
     const userId = JSON.parse(atob(token.split('.')[1])).sub;
-
+  
     try {
       const response = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
         method: 'GET',
@@ -48,24 +62,25 @@ const CartPagePay: React.FC = () => {
           Accept: 'application/json',
         },
       });
-
+  
       if (response.ok) {
         const data = await response.json();
         console.log('Carrito activo encontrado con ID:', data.id);
         return data.id;
       }
-
+  
       if (response.status === 404) {
         console.warn('No se encontró un carrito activo para este usuario.');
         return null;
       }
-
+  
       throw new Error('Error desconocido al obtener el carrito activo.');
     } catch (error) {
       console.error('Error al buscar carrito activo:', error);
       return null;
     }
-  }, [navigate, API_BASE_URL, token]);
+  }, [token, navigate]);
+  
 
   useEffect(() => {
     const initializeCart = async () => {
@@ -315,7 +330,7 @@ const CartPagePay: React.FC = () => {
   const handleGoBack = () => {
     navigate('/checkout-invitado');
   };
-  
+
   return (
     <Container className="cart-container">
       <Row>
@@ -330,8 +345,12 @@ const CartPagePay: React.FC = () => {
                   <ListGroup.Item key={item.id} className="cart-item">
                     <Row className="align-items-center row col-md-12">
                       <Col md={3}>
-                        <img
-                          src={item.imagen || 'placeholder.jpg'}
+                      <img
+                          src={
+                            item.imagen && item.imagen.length > 0
+                              ? getImageUrl(item.imagen)
+                              : '/estaticos/default-image.jpg'
+                          }
                           alt={item.nombre}
                           className="product-image img-fluid"
                         />
@@ -372,7 +391,7 @@ const CartPagePay: React.FC = () => {
                           className="button-delete"
                           onClick={() => handleRemoveProductFromCart(item.id)}
                         >
-                        <span className="material-symbols-outlined">delete</span>
+                          <span className="material-symbols-outlined">delete</span>
                         </Button>
                       </Col>
                     </Row>
@@ -385,86 +404,83 @@ const CartPagePay: React.FC = () => {
         </Col>
 
         <Col md={6} className='mt-5'>
-        <Card className="summary-card">
-          <Card.Body>
-            <Card.Title>Resumen de mi compra</Card.Title>
-            <ListGroup variant="flush" className="mb-3">
-              <ListGroup.Item className="d-flex justify-content-between">
-                <span>Costos de tus productos</span>
-                <span>${total.toLocaleString('es-CL')}</span>
-              </ListGroup.Item>
-              <ListGroup.Item className="d-flex justify-content-between">
-                <span>Descuentos</span>
-                <span>-${(total * 0.2).toLocaleString('es-CL')}</span>
-              </ListGroup.Item>
-              {couponDiscount > 0 && (
+          <Card className="summary-card">
+            <Card.Body>
+              <Card.Title>Resumen de mi compra</Card.Title>
+              <ListGroup variant="flush" className="mb-3">
                 <ListGroup.Item className="d-flex justify-content-between">
-                  <span>Cupón (5%)</span>
-                  <span>-${(totalWithBaseDiscount * 0.05).toLocaleString('es-CL')}</span>
+                  <span>Costos de tus productos</span>
+                  <span>${total.toLocaleString('es-CL')}</span>
                 </ListGroup.Item>
-              )}
-              <ListGroup.Item className="d-flex justify-content-between total-row">
-                <strong>Total</strong>
-                <strong>${totalWithCoupon.toLocaleString('es-CL')}</strong>
-              </ListGroup.Item>
-            </ListGroup>
-          </Card.Body>
-        </Card>
-
-
+                <ListGroup.Item className="d-flex justify-content-between">
+                  <span>Descuentos</span>
+                  <span>-${(total * 0.2).toLocaleString('es-CL')}</span>
+                </ListGroup.Item>
+                {couponDiscount > 0 && (
+                  <ListGroup.Item className="d-flex justify-content-between">
+                    <span>Cupón (5%)</span>
+                    <span>-${(totalWithBaseDiscount * 0.05).toLocaleString('es-CL')}</span>
+                  </ListGroup.Item>
+                )}
+                <ListGroup.Item className="d-flex justify-content-between total-row">
+                  <strong>Total</strong>
+                  <strong>${totalWithCoupon.toLocaleString('es-CL')}</strong>
+                </ListGroup.Item>
+              </ListGroup>
+            </Card.Body>
+          </Card>
         </Col>
       </Row>
       <Col md={6} className='mt-4'>
-      <Card className="payment-card">
-        <Card.Body>
-          {/* Sección de código de descuento */}
-          <div className="discount-section mb-4">
-            <h6 className="mb-3">Código de descuento</h6>
-            <Form.Control
-              type="text"
-              placeholder="Código de descuento"
-              value={coupon}
-              onChange={(e) => setCoupon(e.target.value)}
-              className="mb-2"
-            />
-            <Button 
-              variant="dark" 
-              className="w-100"
-              style={{ backgroundColor: '#1A4756' }}
-              onClick={handleApplyCoupon}
-            >
-              Aplicar
-            </Button>
-
-
-          </div>
-
-          {/* Sección de método de pago */}
-          <div className="payment-method-section">
-            <h6 className="mb-3">Eligen como pagar</h6>
-            
-            {/* Tarjetas guardadas */}
-            <div className="saved-cards mb-3">
-              <p className="text-muted small mb-2">Tarjetas guardadas</p>
-              <Form.Select className="mb-3">
-                <option>Falabella **9999</option>
-              </Form.Select>
+        <Card className="payment-card">
+          <Card.Body>
+            {/* Sección de código de descuento */}
+            <div className="discount-section mb-4">
+              <h6 className="mb-3">Código de descuento</h6>
+              <Form.Control
+                type="text"
+                placeholder="Código de descuento"
+                value={coupon}
+                onChange={(e) => setCoupon(e.target.value)}
+                className="mb-2"
+              />
+              <Button 
+                variant="dark" 
+                className="w-100"
+                style={{ backgroundColor: '#1A4756' }}
+                onClick={handleApplyCoupon}
+              >
+                Aplicar
+              </Button>
             </div>
 
-            {/* Billeteras digitales */}
-            <div className="digital-wallets mb-4">
-              <p className="text-muted small mb-2">Billeteras digitales</p>
-              <div className="payment-methods">
-                <img src="src/assets/webpay.png" alt="Webpay" className="payment-icon" />
-                <img src="src/assets/visa.png" alt="Visa" className="payment-icon" />
-                <img src="src/assets/mastercard.png" alt="Mastercard" className="payment-icon" />
-                <img src="src/assets/paypal.png" alt="PayPal" className="payment-icon" />
-                <img src="src/assets/transferencia-bancaria.png" alt="Transferencia" className="payment-icon" />
+            {/* Sección de método de pago */}
+            <div className="payment-method-section">
+              <h6 className="mb-3">Elige cómo pagar</h6>
+              
+              {/* Tarjetas guardadas */}
+              <div className="saved-cards mb-3">
+                <p className="text-muted small mb-2">Tarjetas guardadas</p>
+                <Form.Select className="mb-3">
+                  <option>Falabella **9999</option>
+                  {/* Agrega más opciones según las tarjetas guardadas */}
+                </Form.Select>
+              </div>
+
+              {/* Billeteras digitales */}
+              <div className="digital-wallets mb-4">
+                <p className="text-muted small mb-2">Billeteras digitales</p>
+                <div className="payment-methods">
+                  <img src={webpayIcon} alt="Webpay" className="payment-icon" />
+                  <img src={visaIcon} alt="Visa" className="payment-icon" />
+                  <img src={mastercardIcon} alt="Mastercard" className="payment-icon" />
+                  <img src={paypalIcon} alt="PayPal" className="payment-icon" />
+                  <img src={transferenciaIcon} alt="Transferencia" className="payment-icon" />
+                </div>
               </div>
             </div>
-          </div>
-        </Card.Body>
-      </Card>
+          </Card.Body>
+        </Card>
       </Col>
       <Row>
         <Col md={12} className="d-flex justify-content-between mt-4">
@@ -487,7 +503,6 @@ const CartPagePay: React.FC = () => {
             >
               Finalizar la compra
             </Button>
-
             </Col>
         </Col>
       </Row> 
@@ -496,6 +511,3 @@ const CartPagePay: React.FC = () => {
 };
 
 export default CartPagePay;
-
-
-
