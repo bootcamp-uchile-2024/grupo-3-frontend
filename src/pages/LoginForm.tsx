@@ -10,9 +10,13 @@ interface LocalCart {
   productos: CartItem[];
 }
 
+interface LoginFormProps {
+  onLogin: (user: { username: string; role: string }) => void;
+}
+
 const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
 
-const LoginForm: React.FC = () => {
+const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch(); 
 
@@ -167,6 +171,8 @@ const LoginForm: React.FC = () => {
         return;
       }
   
+      onLogin({ username, role: userRole });
+
       if (userRole === 'Super Admin') {
         console.log('Iniciando sesión como ADMIN');
         navigate('/user-management', { replace: true });
@@ -254,5 +260,6 @@ const LoginForm: React.FC = () => {
 };
 
 export default LoginForm;
+
 
 

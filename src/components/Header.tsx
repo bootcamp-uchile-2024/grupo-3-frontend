@@ -3,7 +3,6 @@ import Nav from './Nav';
 import { useSelector } from 'react-redux';
 import { RootState } from '../states/store';
 
-
 interface CartItem {
   id: number; 
   nombre: string;
@@ -23,7 +22,7 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
     return items.reduce((total, item) => total + item.cantidad, 0); 
   };
 
-  const cartItemCount = getTotalItems(cartItems);
+  const cartItemCount = user?.role === "admin" ? 0 : getTotalItems(cartItems);
 
   return (
     <header>
@@ -33,3 +32,4 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout }) => {
 };
 
 export default Header;
+

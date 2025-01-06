@@ -219,3 +219,6 @@ a#user-dropdown {
   color: white !important;
 }
 
+.nav-dropdown.no-caret .dropdown-toggle::after {
+  display: none; 
+}

@@ -19,14 +19,14 @@ const loadCartFromLocalStorage = (): CartState => {
   const token = localStorage.getItem('token');
   if (token) {
     try {
-      const idUsuario = JSON.parse(atob(token.split('.')[1])).sub; // Extraer ID del token
+      const idUsuario = JSON.parse(atob(token.split('.')[1])).sub;
       return { idUsuario, productos: [] };
     } catch (error) {
       console.error('Error al procesar el token de usuario:', error);
     }
   }
 
-  return { idUsuario: 0, productos: [] }; // Valor predeterminado si no hay token ni carrito
+  return { idUsuario: 0, productos: [] }; 
 };
 
 const saveCartToLocalStorage = (state: CartState) => {
@@ -72,8 +72,8 @@ const cartSlice = createSlice({
       }
     },
     updateUserId(state, action: PayloadAction<number>) {
-      state.idUsuario = action.payload; // Actualiza el ID del usuario
-      saveCartToLocalStorage(state); // Guarda el estado actualizado en localStorage
+      state.idUsuario = action.payload; 
+      saveCartToLocalStorage(state); 
     },
   },
 });
@@ -81,4 +81,3 @@ const cartSlice = createSlice({
 export const { addToCart, removeFromCart, clearCart, updateQuantity, updateUserId } = cartSlice.actions;
 
 export default cartSlice.reducer;
-
