@@ -25,6 +25,21 @@ export default function ProductDetailPage() {
 
   const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
+  const getImageUrl = (ruta: string): string => {
+    if (import.meta.env.MODE === 'development') {
+      return ruta;
+    } else {
+      const baseUrl = import.meta.env.VITE_API_URL || '';
+      if (baseUrl.endsWith('/') && ruta.startsWith('/')) {
+        return `${baseUrl}${ruta.substring(1)}`;
+      } else if (!baseUrl.endsWith('/') && !ruta.startsWith('/')) {
+        return `${baseUrl}/${ruta}`;
+      } else {
+        return `${baseUrl}${ruta}`;
+      }
+    }
+  };
+
   useEffect(() => {
     const getProduct = async () => {
       try {
@@ -38,7 +53,9 @@ export default function ProductDetailPage() {
         setProduct(productJson);
 
         if (productJson.imagenes && productJson.imagenes.length > 0) {
-          setSelectedImage(`${API_BASE_URL}${productJson.imagenes[0].ruta}`);
+          const firstImage = productJson.imagenes[0].ruta;
+          const fullImageUrl = firstImage.startsWith('http') ? firstImage : getImageUrl(firstImage);
+          setSelectedImage(fullImageUrl);
         } else {
           setSelectedImage('/estaticos/default-image.jpg');
         }
@@ -119,9 +136,7 @@ export default function ProductDetailPage() {
   };
 
   const handleSelectImage = (image: string) => {
-    const fullImageUrl = image.startsWith('http')
-      ? image
-      : `${API_BASE_URL}${image}`;
+    const fullImageUrl = image.startsWith('http') ? image : getImageUrl(image);
     setSelectedImage(fullImageUrl);
   };
 
@@ -135,22 +150,21 @@ export default function ProductDetailPage() {
                 <Col md={2}>
                   <div className="image-thumbnails d-flex flex-wrap gap-3">
                     {product.imagenes && product.imagenes.length > 0 ? (
-                      product.imagenes.map((img, index) => (
-                        <Col key={index} xs={12}>
-                          <img
-                            src={
-                              import.meta.env.MODE === 'development'
-                                ? img.ruta
-                                : `${API_BASE_URL}${img.ruta}`
-                            }
-                            alt={`${product.nombre} - Imagen ${index + 1}`}
-                            className={`thumbnail-img img-fluid ${
-                              selectedImage === `${API_BASE_URL}${img.ruta}` ? 'selected-thumbnail' : ''
-                            }`}
-                            onClick={() => handleSelectImage(img.ruta)}
-                          />
-                        </Col>
-                      ))
+                      product.imagenes.map((img, index) => {
+                        const imageUrl = img.ruta.startsWith('http') ? img.ruta : getImageUrl(img.ruta);
+                        const isSelected = selectedImage === imageUrl;
+
+                        return (
+                          <Col key={index} xs={12}>
+                            <img
+                              src={imageUrl}
+                              alt={`${product.nombre} - Imagen ${index + 1}`}
+                              className={`thumbnail-img img-fluid ${isSelected ? 'selected-thumbnail' : ''}`}
+                              onClick={() => handleSelectImage(img.ruta)}
+                            />
+                          </Col>
+                        );
+                      })
                     ) : (
                       <Col xs={12}>
                         <img
@@ -170,7 +184,7 @@ export default function ProductDetailPage() {
                       selectedImage && selectedImage !== '/estaticos/default-image.jpg'
                         ? selectedImage
                         : product.imagenes && product.imagenes.length > 0
-                        ? `${API_BASE_URL}${product.imagenes[0]?.ruta}`
+                        ? getImageUrl(product.imagenes[0]?.ruta)
                         : '/estaticos/default-image.jpg'
                     }
                     alt={product.nombre}
@@ -292,11 +306,7 @@ export default function ProductDetailPage() {
           </Row>
         )}
 
-        <Offcanvas
-          show={showOffcanvas}
-          onHide={() => setShowOffcanvas(false)}
-          placement="end"
-        >
+        <Offcanvas show={showOffcanvas} onHide={() => setShowOffcanvas(false)} placement="end">
           <Offcanvas.Header closeButton>
             <Offcanvas.Title>Mi Carrito de compras</Offcanvas.Title>
           </Offcanvas.Header>
