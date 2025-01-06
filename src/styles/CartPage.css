@@ -73,13 +73,13 @@
 }
 
 .btn-primary {
-  background-color: var(--tertiary-color);
-  border-color: var(--tertiary-color);
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 .btn-primary:hover {
-  background-color: var(--tertiary-color);
-  border-color: var(--tertiary-color);
+  background-color: var(--tertiary-color)!important;
+  border-color: var(--tertiary-color)!important;
 }
 
 .btn-outline-primary {
