@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Tabs, Tab, Button, Spinner, Container, Row, Col, Form, Modal } from "react-bootstrap";
 import UserCreateForm from "./UserCreateForm";
 import CardUser from "../components/CardUser";
@@ -24,6 +24,8 @@ const UserManagement = () => {
   const [searchName, setSearchName] = useState<string>('');
   const [searchUsername, setSearchUsername] = useState<string>('');
   const [searchEmail, setSearchEmail] = useState<string>('');
+
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLElement>, field: string) => {
     const value = (event.target as HTMLInputElement).value;
@@ -78,14 +80,56 @@ const UserManagement = () => {
     }
   };
 
+  const fetchUsers = useCallback(async () => {
+    try {
+      setLoading(true);
+      
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("No se encontró el token de autenticación.");
+      }
+
+      const response = await fetch(`${API_BASE_URL}/usuarios`, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al obtener los usuarios");
+      }
+
+      const responseData = await response.json();
+      console.log("Estructura de responseData:", responseData);
+
+      if (!Array.isArray(responseData.data)) {
+        console.error("El campo 'data' no es un array:", responseData.data);
+      }
+
+      const data: User[] = Array.isArray(responseData.data) ? responseData.data : [];
+      setUsers(data);
+      console.log("Usuarios actualizados en el estado:", data);
+
+    } catch (err) { 
+      console.error("Error:", err);
+      if (err instanceof Error) {
+        setError("Error al obtener los usuarios: " + err.message);
+      } else {
+        setError("Error desconocido al obtener los usuarios.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [API_BASE_URL]);
+
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     const isAdminRole = user.role === "Super Admin";
     setIsAdmin(isAdminRole);
     fetchUsers();
-  }, []);
-  
-  
+  }, [fetchUsers]);
 
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem("selectedUser") || "null");
@@ -109,68 +153,36 @@ const UserManagement = () => {
     }
   };
 
-  const fetchUsers = async () => {
+  const deleteUser = useCallback(async (userId: number) => {
     try {
-      setLoading(true);
-      const backendUrl = import.meta.env.VITE_API_URL;
-  
       const token = localStorage.getItem("token");
-  
-      const response = await fetch(`${backendUrl}/usuarios`, {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-      });
-  
-      if (!response.ok) {
-        throw new Error("Error al obtener los usuarios");
-      }
-  
-      const responseData = await response.json();
-      console.log("Estructura de responseData:", responseData);
-  
-      if (!Array.isArray(responseData.data)) {
-        console.error("El campo 'data' no es un array:", responseData.data);
-      }
-  
-      const data: User[] = Array.isArray(responseData.data) ? responseData.data : [];
-      setUsers(data);
-      console.log("Usuarios actualizados en el estado:", data);
-  
-    } catch (error) {
-      console.error("Error:", error);
-      setError("Error al obtener los usuarios");
-    } finally {
-      setLoading(false);
-    }
-  };
-  
 
-  const deleteUser = async (userId: number) => {
-    try {
-      const backendUrl = import.meta.env.VITE_API_URL;
-      const token = localStorage.getItem("token");
-  
-      const response = await fetch(`${backendUrl}/usuarios/${userId}`, {
+      if (!token) {
+        throw new Error("No se encontró el token de autenticación.");
+      }
+
+      const response = await fetch(`${API_BASE_URL}/usuarios/${userId}`, {
         method: "DELETE",
         headers: {
           "Authorization": `Bearer ${token}`,
         },
       });
-  
+
       if (!response.ok) {
         throw new Error("Error al eliminar el usuario");
       }
-  
+
       console.log("Usuario eliminado");
       fetchUsers();
-    } catch (error) {
-      console.error("Error al eliminar el usuario:", error);
-      setError("Error al eliminar el usuario");
+    } catch (err) { 
+      console.error("Error al eliminar el usuario:", err);
+      if (err instanceof Error) {
+        setError("Error al eliminar el usuario: " + err.message);
+      } else {
+        setError("Error desconocido al eliminar el usuario.");
+      }
     }
-  };
-  
+  }, [API_BASE_URL, fetchUsers]);
 
   const handleCancelEdit = () => {
     setEditingUser(null);
@@ -190,11 +202,10 @@ const UserManagement = () => {
         idRol: selectedUser.idRol,
       });
       setModalAction("modify");
-
     }
   };
 
-  const handleUpdateUser = async () => {
+  const handleUpdateUser = useCallback(async () => {
     console.log("handleUpdateUser llamada");
     if (!editingUser) return;
   
@@ -211,10 +222,13 @@ const UserManagement = () => {
     console.log("requestBody preparado:", requestBody);
   
     try {
-      const backendUrl = import.meta.env.VITE_API_URL;
       const token = localStorage.getItem("token");
+
+      if (!token) {
+        throw new Error("No se encontró el token de autenticación.");
+      }
   
-      const response = await fetch(`${backendUrl}/usuarios/${editingUser.id}/cambiar-rol`, {
+      const response = await fetch(`${API_BASE_URL}/usuarios/${editingUser.id}/cambiar-rol`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -233,12 +247,16 @@ const UserManagement = () => {
       console.log("Usuario actualizado correctamente");
       fetchUsers(); 
       setEditingUser(null); 
-    } catch (error) {
-      console.error("Error al actualizar el usuario:", error);
-      setError("Error al actualizar el usuario. Verifica los datos.");
+    } catch (err) { 
+      console.error("Error al actualizar el usuario:", err);
+      if (err instanceof Error) {
+        setError("Error al actualizar el usuario. " + err.message);
+      } else {
+        setError("Error desconocido al actualizar el usuario.");
+      }
     }
-  };
-  
+  }, [API_BASE_URL, fetchUsers, editingUser]);
+
   const handleSaveChangesClick = () => {
     if (!editingUser) {
       console.error("No hay un usuario seleccionado para modificar.");
@@ -247,7 +265,6 @@ const UserManagement = () => {
     setModalAction("modify");
     setShowModal(true);
   };
-
 
   const handleDeleteUserClick = () => {
     if (!selectedUser) {
@@ -285,6 +302,7 @@ const UserManagement = () => {
     { idRol: 3, name: "Cliente" },
     { idRol: 4, name: "Visitante" },
   ];
+
 
   return (
     <Container fluid className="mt-4">
