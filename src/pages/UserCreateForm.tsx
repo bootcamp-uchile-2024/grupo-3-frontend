@@ -97,36 +97,37 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (validate()) {
       const userData: CreateUserDTO = {
         ...formData,
         idRol: isAdmin ? formData.idRol : 3, 
       };
-  
+
       console.log('Datos enviados al servidor:', userData);
       setIsSubmitting(true);
-  
+
       try {
-        const backendUrl = import.meta.env.VITE_API_URL;
-        const response = await fetch(`${backendUrl}/auth/registro`, {
+        const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
+        const response = await fetch(`${API_BASE_URL}/auth/registro`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(userData),
         });
-  
+
         if (!response.ok) {
           const responseData = await response.json();
           console.error('Error al crear usuario:', responseData.message);
           alert(`Error al crear el usuario: ${responseData.message}`);
           return;
         }
-  
+
         const responseData = await response.json();
         console.log('Usuario creado exitosamente:', responseData);
-  
+
         alert('¡Usuario creado exitosamente!');
         setFormData({
           nombre: '',
@@ -142,7 +143,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
         });
         setConfirmPassword('');
         setAcceptTerms(false);
-  
+
         if (responseData.carritoActivo) {
           console.log('Carrito activo asignado:', responseData.carritoActivo);
           localStorage.setItem('cartId', responseData.carritoActivo.id);
@@ -158,18 +159,10 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
       }
     }
   };
-  
-
 
   return (
     <Container className="user-creation-container">
       <Form onSubmit={handleSubmit}>
-        <h2 className="form-title">¿Eres nuevo en Plant AI?</h2>
-        <p className="form-subtitle">
-          Regístrate y disfruta de nuestros productos y beneficios
-        </p>
-
-        <h3 className="section-title">Mis datos</h3>
 
         <Row>
           <Col md={6}>
@@ -369,3 +362,4 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
 };
 
 export default UserCreationForm;
+
