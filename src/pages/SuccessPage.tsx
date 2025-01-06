@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Button } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import '../styles/SuccessPage.css';
+import successIcon from '../assets/icon-compra-exitosa.png';
 
 const SuccessPage: React.FC = () => {
   const location = useLocation();
@@ -26,12 +27,11 @@ const SuccessPage: React.FC = () => {
     <Container className="success-container">
       <div className="success-content">
         <img
-          src="src/assets/icon-compra-exitosa.png"
+          src={successIcon}
           alt="Planta feliz"
           className="success-icon"
         />
         <h2 className="success-title">¡Compra Exitosa!</h2>
-
 
         <p className="success-message">Muchas Gracias Por tu Compra.</p>
 
@@ -61,5 +61,3 @@ const SuccessPage: React.FC = () => {
 };
 
 export default SuccessPage;
-
-
