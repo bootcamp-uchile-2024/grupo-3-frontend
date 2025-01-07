@@ -45,7 +45,7 @@ const SuccessPage: React.FC = () => {
         <p className="success-submessage">
           Hemos enviado el recibo de tu compra a tu correo electrónico.
         </p>
-
+        
         <Button
           variant="dark"
           onClick={handleContinueShopping}
