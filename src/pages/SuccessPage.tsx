@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Container, Button } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import '../styles/SuccessPage.css';
-import successIcon from '../assets/icon-compra-exitosa.png';
 
 const SuccessPage: React.FC = () => {
   const location = useLocation();
@@ -10,7 +9,7 @@ const SuccessPage: React.FC = () => {
 
   useEffect(() => {
     const stateCompraId = location.state?.compraId;
-    
+
     if (stateCompraId) {
       setCompraId(stateCompraId);
       console.log('CompraId recibido desde state:', stateCompraId);
@@ -27,8 +26,8 @@ const SuccessPage: React.FC = () => {
     <Container className="success-container">
       <div className="success-content">
         <img
-          src={successIcon}
-          alt="Planta feliz"
+          src="/assets/icon-compra-exitosa.png"
+          alt="Compra Exitosa"
           className="success-icon"
         />
         <h2 className="success-title">¡Compra Exitosa!</h2>
