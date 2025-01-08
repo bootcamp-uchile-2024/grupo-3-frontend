@@ -1,7 +1,7 @@
-import React, { useEffect, useCallback } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeFromCart, clearCart, updateQuantity, addToCart } from '../states/cartSlice';
+import { removeFromCart, clearCart, updateQuantity } from '../states/cartSlice';
 import { RootState } from '../states/store';
 import { CartItem } from '../interfaces/CartItem';
 import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap';
@@ -13,22 +13,6 @@ const CartPage: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
   const navigate = useNavigate();
-
-  const syncCartWithLocalStorage = useCallback(() => {
-    localStorage.setItem('cartItems', JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  useEffect(() => {
-    const storedCart = localStorage.getItem('cartItems');
-    if (storedCart) {
-      const parsedCart: CartItem[] = JSON.parse(storedCart);
-      parsedCart.forEach((item) => dispatch(addToCart(item)));
-    }
-  }, [dispatch]);
-
-  useEffect(() => {
-    syncCartWithLocalStorage();
-  }, [syncCartWithLocalStorage]);
 
   const handleIncrement = (productId: number) => {
     dispatch(updateQuantity({ id: productId, cantidad: 1 }));
@@ -50,7 +34,7 @@ const CartPage: React.FC = () => {
   const handleClearCart = () => {
     if (window.confirm('¿Estás seguro de que deseas vaciar el carrito?')) {
       dispatch(clearCart());
-      localStorage.removeItem('cartItems');
+
     }
   };
 
