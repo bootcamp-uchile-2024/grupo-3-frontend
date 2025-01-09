@@ -4,7 +4,7 @@ import { Row, Col } from 'react-bootstrap';
 
 export interface SortFilter {
     ordenarPor?: string;
-    orden?: 'asc' | 'desc';
+    orden?: 'ASC' | 'DESC';
 }
 
 interface SortFiltersProps {
@@ -15,7 +15,7 @@ export const SortFilters: React.FC<SortFiltersProps> = ({ onSortChange }) => {
     const loadSortFiltersFromLocalStorage = () => {
         const storedOrdenarPor = localStorage.getItem('ordenarPor') || undefined;
         const storedOrden = localStorage.getItem('orden') || undefined; 
-        return { ordenarPor: storedOrdenarPor, orden: storedOrden as 'asc' | 'desc' };
+        return { ordenarPor: storedOrdenarPor, orden: storedOrden as 'ASC' | 'DESC' };
     };
 
     const [sortFilters, setSortFilters] = useState<SortFilter>(loadSortFiltersFromLocalStorage());
@@ -45,13 +45,13 @@ export const SortFilters: React.FC<SortFiltersProps> = ({ onSortChange }) => {
         const newSortFilters: SortFilter = (() => {
             switch (selectedValue) {
                 case 'unidadesVendidas':
-                    return { ordenarPor: 'unidadesVendidas'};
+                    return { ordenarPor: 'unidadesVendidas', orden: 'DESC'};
                 case 'puntuacion':
-                    return { ordenarPor: 'puntuacion'};
+                    return { ordenarPor: 'puntuacion', orden: 'DESC'};
                 case 'precio-asc':
-                    return { ordenarPor: 'precio', orden: 'asc' };
+                    return { ordenarPor: 'precio', orden: 'ASC' };
                 case 'precio-desc':
-                    return { ordenarPor: 'precio', orden: 'desc' };
+                    return { ordenarPor: 'precio', orden: 'DESC' };
                 default:
                     return { ordenarPor: undefined, orden: undefined }; 
             }
