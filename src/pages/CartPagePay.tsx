@@ -63,13 +63,12 @@ const CartPagePay: React.FC = () => {
       }
   
       if (response.status === 404) {
-        console.warn('No se encontró un carrito activo para este usuario.');
         return null;
       }
   
-      throw new Error('Error desconocido al obtener el carrito activo.');
+      throw new Error('Error desconocido al obtener el carrito activo del usuario.');
     } catch (error) {
-      console.error('Error al buscar carrito activo:', error);
+      console.error('Error al buscar carrito activo del usuario:', error);
       return null;
     }
   }, [token, navigate]);
