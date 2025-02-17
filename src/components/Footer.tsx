@@ -1,38 +1,41 @@
-import { Container, Row, Col, Form, Accordion } from "react-bootstrap";
 import "../styles/Footer.css";
 
 const Footer = () => {
   return (
-    <footer>
-      <Container fluid className="footer-container">
-        <Row>
-        <Col lg={1} className="footer-logo mt-4">
-          <h1 className="" aria-label="PlantAI Logo"></h1>
-          </Col>
-          <Col lg={11} className="d-none d-lg-block">
-            <Row className="ms-5">
-              <Col sm={3} className="ms-5">
-                <h6>Infórmate</h6>
-                <ul className="footer-links">
-                  <li></li>
-                  <li><a href="#faq">Preguntas Frecuentes</a></li>
-                  <li><a href="#tracking">Seguimiento de Pedido</a></li>
-                  <li><a href="#returns">Devoluciones y Cambios</a></li>
-                  <li><a href="#shipping-policy">Política de Despacho</a></li>
-                </ul>
-              </Col>
-              <Col sm={3} className="ms-5">
-                <h6>¿Necesitas ayuda?</h6>
-                <ul className="footer-links">
-                  <li><a href="#payment-methods">Medios de Pago</a></li>
-                  <li><a href="#about">Acerca de Nosotros</a></li>
-                  <li><a href="#sell-with-us">Vende con Nosotros</a></li>
-                  <li><a href="#work-with-us">Trabaja con Nosotros</a></li>
-                </ul>
-              </Col>
-              <Col sm={4} className="ms-5">
-                <h6>Síguenos</h6>
-                <ul className="social-icons d-flex justify-content-left align-items-left list-unstyled gap-3">
+    <footer className="footer">
+      <div className="footer-container">
+        {/* Logo */}
+        <div className="footer-logo" aria-label="PlantAI Logo"></div>
+
+        {/* Grid contenedor principal */}
+        <div className="footer-content">
+          {/* Infórmate */}
+          <div className="footer-section">
+            <h6>Infórmate</h6>
+            <ul className="footer-links">
+              <li></li>
+              <li><a href="#faq">Preguntas Frecuentes</a></li>
+              <li><a href="#tracking">Seguimiento de Pedido</a></li>
+              <li><a href="#returns">Devoluciones y Cambios</a></li>
+              <li><a href="#shipping-policy">Política de Despacho</a></li>
+            </ul>
+          </div>
+
+          {/* ¿Necesitas ayuda? */}
+          <div className="footer-section">
+            <h6>¿Necesitas ayuda?</h6>
+            <ul className="footer-links">
+              <li><a href="#payment-methods">Medios de Pago</a></li>
+              <li><a href="#about">Acerca de Nosotros</a></li>
+              <li><a href="#sell-with-us">Vende con Nosotros</a></li>
+              <li><a href="#work-with-us">Trabaja con Nosotros</a></li>
+            </ul>
+          </div>
+
+          {/* Síguenos */}
+          <div className="footer-section social-section">
+            <h6>Síguenos</h6>
+            <ul className="social-icons d-flex justify-content-left align-items-left list-unstyled gap-3">
                   <li>
                     <a href="#twitter" title="Twitter" aria-label="Twitter">
                       <svg width="22" height="23" viewBox="0 0 22 23" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -70,79 +73,22 @@ const Footer = () => {
                     </a>
                   </li>
                 </ul>
-                <p className="footer-subscription-text">
-              Inscríbete y obtén 15% OFF en tu primera compra
-            </p>
-            <Form className="footer-subscription-form">
-              <Form.Group controlId="subscriptionEmail">
-                <Form.Control
+            <div className="subscription-area">
+              <p className="footer-subscription-text">
+                Inscríbete y obtén 15% OFF en tu primera compra
+              </p>
+              <form className="footer-subscription-form">
+                <input
                   type="email"
                   placeholder="Correo"
-                  className="footer-input"
+                  className="footer-input rounded-pill"
                 />
-              </Form.Group>
-              <p className="mt-2">Centro de Ayuda</p>
-{/*               <Button variant="light" className="footer-button">
-                Enviar
-              </Button> */}
-            </Form>
-              </Col>
-            </Row>
-          </Col>
-          {/* Footer versión móvil con accordion */}
-      <div className="d-lg-none">
-        <Container fluid>
-          <Accordion defaultActiveKey="0" className="custom-accordion">
-            <Accordion.Item eventKey="0">
-              <Accordion.Header>Mapa de sitio</Accordion.Header>
-              <Accordion.Body>
-                <ul className="footer-links">
-                  <li><a href="#faq">Preguntas Frecuentes</a></li>
-                  <li><a href="#tracking">Seguimiento de Pedido</a></li>
-                  <li><a href="#returns">Devoluciones y Cambios</a></li>
-                  <li><a href="#shipping-policy">Política de Despacho</a></li>
-                </ul>
-              </Accordion.Body>
-            </Accordion.Item>
-
-            <Accordion.Item eventKey="1">
-              <Accordion.Header>Ayuda</Accordion.Header>
-              <Accordion.Body>
-                <ul className="footer-links">
-                  <li><a href="#payment-methods">Medios de Pago</a></li>
-                  <li><a href="#about">Acerca de Nosotros</a></li>
-                  <li><a href="#sell-with-us">Vende con Nosotros</a></li>
-                  <li><a href="#work-with-us">Trabaja con Nosotros</a></li>
-                </ul>
-              </Accordion.Body>
-            </Accordion.Item>
-
-            <Accordion.Item eventKey="2">
-              <Accordion.Header>Acerca de Plant AI</Accordion.Header>
-              <Accordion.Body>
-                <div className="subscription-section">
-                  <p className="footer-subscription-text">
-                    Inscríbete y obtén <b>15% OFF</b> en tu primera compra
-                  </p>
-                  <Form className="footer-subscription-form">
-                    <Form.Control
-                      type="email"
-                      placeholder="Correo"
-                      className="footer-input rounded-pill"
-                    />
-                  </Form>
-                </div>
-              </Accordion.Body>
-            </Accordion.Item>
-          </Accordion>
-
-          <div className="social-icons-mobile mt-4">
-            {/* Iconos sociales que ya tenías */}
+                <p>Centro de Ayuda</p>
+              </form>
+            </div>
           </div>
-        </Container>
+        </div>
       </div>
-        </Row>
-      </Container>
     </footer>
   );
 };

@@ -13,5 +13,5 @@ export interface CatalogFilters {
     idTamano?: number;
     }
     ordenarPor?: string;
-    orden?:'asc'| 'desc';
+    orden?:'ASC'| 'DESC';
 }

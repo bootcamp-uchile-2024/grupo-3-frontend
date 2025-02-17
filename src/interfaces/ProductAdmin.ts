@@ -51,6 +51,7 @@ interface Categoria {
     precio: number;
     descripcion: string;
     imagen?: string;
+    imagenes?: {ruta: string}[];
     stock: number;
     unidadesVendidas: number;
     puntuacion: number;
@@ -60,6 +61,29 @@ interface Categoria {
     peso: number;
     habilitado: boolean;
     categoria: Categoria; 
+    planta?: Planta; 
+    macetero?: Macetero;
+    accesorio?: Accesorio; 
+    insumo?: boolean;  
+  }  
+
+  export interface EditProductAdmin {
+    SKU: string;
+    nombre: string;
+    idCategoria: number;
+    precio: number;
+    descripcion: string;
+    stock: number;
+    unidadesVendidas: number;
+    puntuacion: number;
+    ancho: number;
+    alto: number;
+    largo: number;
+    peso: number;
+    imagenes: {id_producto: number;
+      ruta: string;
+    }[]
+    habilitado: boolean;
     planta?: Planta; 
     macetero?: Macetero;
     accesorio?: Accesorio; 

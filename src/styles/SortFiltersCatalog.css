@@ -2,6 +2,7 @@
 .custom-select-container {
   position: relative;
   width: 200px;
+  font-family: Quicksand, sans-serif;
 }
 
 /* Estilo para el select */

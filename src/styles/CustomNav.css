@@ -196,6 +196,27 @@ a#user-dropdown {
     top: -1rem;
     width: 70px !important;
   }
+
+  .nav-link.login-link, .nav-link.cart-link {
+    color: #1a4756 !important;
+    font-size: 16px !important;
+  }
+
+  .nav-dropdown .dropdown-toggle, .nav-link a {
+    color: #1a4756 !important;
+    font-size: 20px !important;
+    line-height: 8px;
+    height: 8px;
+    padding: 0;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: left!important;
+  }
+
+  .nav-link.cart-link {
+    margin: -0.1rem 0 0 !important;
+  }
 }
 
 .nav-link.active, 
@@ -221,4 +242,13 @@ a#user-dropdown {
 
 .nav-dropdown.no-caret .dropdown-toggle::after {
   display: none; 
+}
+
+.navbar-toggler,
+.navbar-toggler:focus,
+.navbar-toggler:active,
+.navbar-toggler-icon:focus {
+  border: none!important;
+  outline: none;
+  box-shadow: none !important;
 }

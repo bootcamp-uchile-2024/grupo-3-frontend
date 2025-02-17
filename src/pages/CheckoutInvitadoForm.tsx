@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import '../styles/CheckoutInvitadoForm.css';
-import { clearCart } from '../states/cartSlice';
+import { setCart } from '../states/cartSlice';
 import regionesComunas from '../utils/regionesComunas';
+import { CartItem } from '../interfaces/CartItem';
 
 interface CheckoutInvitadoDTO {
   email: string;
@@ -21,9 +22,113 @@ interface CheckoutInvitadoDTO {
   aceptaTerminos: boolean;
 }
 
+interface LocalCart {
+  productos: CartItem[];
+}
+
+const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localhost:8080';
+
+function isValidJWT(token: string | null): boolean {
+  if (!token) return false;
+  const parts = token.split('.');
+  return parts.length === 3;
+}
+
+function getUserIdFromJWT(token: string | null): number | null {
+  if (!isValidJWT(token)) return null;
+  try {
+    const payload = JSON.parse(atob(token!.split('.')[1]));
+    return payload.sub ?? null;
+  } catch (error) {
+    console.error('Error decodificando token:', error);
+    return null;
+  }
+}
+
+const getActiveCart = async (token: string, userId: number): Promise<number | null> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/json',
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Carrito activo (Invitado) encontrado:', data);
+      return data.id || null;
+    }
+
+    if (response.status === 404) {
+      console.warn('Carrito no encontrado (Invitado) para el usuario:', userId);
+      return null;
+    }
+
+    console.error('Error desconocido al obtener el carrito (Invitado):', response.status);
+    return null;
+  } catch (error) {
+    console.error('Error GET del carrito activo (Invitado):', error);
+    return null;
+  }
+};
+
+const replaceCartProducts = async (token: string, cartId: number): Promise<number | null> => {
+  try {
+    const localCart: LocalCart = JSON.parse(localStorage.getItem('__redux__cart__') || '{}');
+    console.log('Contenido del carrito local (Invitado):', localCart);
+
+    if (!localCart || !localCart.productos || localCart.productos.length === 0) {
+      console.warn('No hay productos en el carrito local (Invitado) para sincronizar.');
+      return cartId;
+    }
+
+    const productosCarro = localCart.productos.map((producto: CartItem) => ({
+      productoId: producto.id,
+      cantidadProducto: producto.cantidad,
+    }));
+
+    const cuerpo = { productosCarro };
+    console.log('Enviando al PUT /replaceProductos (Invitado):', JSON.stringify(cuerpo));
+
+    const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(cuerpo),
+    });
+
+    if (!response.ok) {
+      console.error('Error al reemplazar los productos del carrito (Invitado):', response.status);
+      return null;
+    }
+
+    console.log('Productos reemplazados exitosamente (Invitado).');
+    return cartId;
+  } catch (error) {
+    console.error('Error en PUT replaceProductos (Invitado):', error);
+    return null;
+  }
+};
+
+const syncCartWithBackendInvitado = async (token: string): Promise<number | null> => {
+  const userId = getUserIdFromJWT(token);
+  if (!userId) {
+    console.error('No se pudo extraer userId del token (Invitado).');
+    return null;
+  }
+
+  const cartId = await getActiveCart(token, userId);
+  if (!cartId) return null;
+
+  return await replaceCartProducts(token, cartId);
+};
+
 const CheckoutInvitadoForm: React.FC = () => {
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
 
   const [formData, setFormData] = useState<CheckoutInvitadoDTO>({
@@ -50,151 +155,80 @@ const CheckoutInvitadoForm: React.FC = () => {
 
     if (name === 'region') {
       setAvailableComunas(regionesComunas[value] || []);
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-        comuna: '',
-      }));
+      setFormData((prev) => ({ ...prev, region: value, comuna: '' }));
     } else if (type === 'checkbox') {
       const target = e.target as HTMLInputElement;
-      setFormData((prev) => ({
-        ...prev,
-        [name]: target.checked,
-      }));
+      setFormData((prev) => ({ ...prev, [name]: target.checked }));
     } else {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
-
-  const verifyCartActive = async (): Promise<number | null> => {
-    const token = localStorage.getItem('token');
-    const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]');
-    const userId = JSON.parse(atob(token!.split('.')[1])).sub;
-  
-    try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/carro-compras/user/${userId}`, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: 'application/json',
-        },
-      });
-  
-      if (!response.ok) {
-        console.error('Error verificando carrito activo:', await response.json());
-        return null;
-      }
-  
-      const data = await response.json();
-      console.log('Carrito activo encontrado:', data);
-  
-      if (!data.carroProductos || data.carroProductos.length === 0) {
-        console.log('El carrito está vacío, sincronizando productos...');
-        for (const item of cartItems) {
-          const addResponse = await fetch(
-            `${import.meta.env.VITE_API_URL}/carro-compras/addProducto/${data.id}`,
-            {
-              method: 'POST',
-              headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                productoId: item.id,
-                cantidadProducto: item.cantidad,
-              }),
-            }
-          );
-  
-          if (!addResponse.ok) {
-            const errorData = await addResponse.json();
-            console.error('Error al agregar producto:', errorData);
-            throw new Error(errorData.message || 'Error al agregar producto al carrito.');
-          }
-        }
-      }
-  
-      return data.id;
-    } catch (error) {
-      console.error('Error al verificar carrito activo:', error);
-      return null;
-    }
-  };
-  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
-    const token = localStorage.getItem('token');
-    if (!token) {
-      alert('No se encontró el token de autorización. Por favor, inicia sesión nuevamente.');
-      navigate('/login');
-      return;
-    }
-  
-    const userId = JSON.parse(atob(token.split('.')[1])).sub;
-  
-    const cartId = await verifyCartActive();
-    if (!cartId) {
-      alert('No se encontró un carrito activo. Por favor, intenta nuevamente.');
-      return;
-    }
-  
-    const pedidoPayload = {
-      fechaCreacion: new Date().toISOString().split('T')[0],
-      idCarro: cartId,
-      idMedioPago: 1,
-      idEstado: 1,
-      idTipoDespacho: formData.formaEnvio === 'envio' ? 1 : 2,
-      receptor: formData.quienRecibe,
-      fechaEntrega: new Date(new Date().setDate(new Date().getDate() + 3))
-        .toISOString()
-        .split('T')[0],
-      direccionEnvio: {
-        comuna: formData.comuna,
-        calle: formData.direccion,
-        numero: '03010',
-        departamento: '1215',
-        referencia: 'Junto al supermercado',
-      },
-    };
-  
+
     try {
-      console.log('Enviando datos al endpoint de finalizar compra:', pedidoPayload);
-  
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/pedidos/${userId}`, {
+      const existingToken = localStorage.getItem('token') || '';
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+
+      if (isValidJWT(existingToken)) {
+        headers.Authorization = `Bearer ${existingToken}`;
+      }
+
+      const invitadoResp = await fetch(`${API_BASE_URL}/usuarios/visitante`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(pedidoPayload),
+        headers,
+        body: JSON.stringify({
+          nombre: formData.nombre,
+          apellido: formData.apellido,
+          email: formData.email,
+          telefono: formData.telefono,
+          rut: formData.rut,
+        }),
       });
-  
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error al finalizar la compra:', errorData);
-        alert(`Error al finalizar la compra: ${errorData.message || 'Error desconocido'}`);
+
+      if (!invitadoResp.ok) {
+        const errData = await invitadoResp.json();
+        console.error('Error al crear/actualizar invitado:', errData);
+        alert(`Error: ${errData.message || 'Desconocido'}`);
         return;
       }
-  
-      const data = await response.json();
-      console.log('Pedido creado exitosamente:', data);
-  
-      dispatch(clearCart());
-  
-      navigate('/cart-page-pay', { state: { pedidoId: data.id, formData } });
+
+      const usuarioData = await invitadoResp.json();
+      console.log('Usuario invitado creado/actualizado:', usuarioData);
+
+      if (!usuarioData.access_token || !isValidJWT(usuarioData.access_token)) {
+        alert('El backend no devolvió un token válido de invitado.');
+        return;
+      }
+
+      localStorage.setItem('token', usuarioData.access_token);
+
+      const syncedCartId = await syncCartWithBackendInvitado(usuarioData.access_token);
+      if (!syncedCartId) {
+        alert('No se pudo sincronizar el carrito. Intenta de nuevo.');
+        return;
+      }
+
+      const localCartStr = localStorage.getItem('__redux__cart__');
+      if (localCartStr) {
+        const localCart: LocalCart = JSON.parse(localCartStr);
+        if (localCart && localCart.productos) {
+          dispatch(setCart(localCart.productos));
+        }
+      }
+
+      navigate('/cart-page-pay', {
+        state: {
+          formData,
+        },
+      });
+
     } catch (error) {
-      console.error('Error crítico al procesar el pedido:', error);
-      alert('Hubo un problema al procesar tu pedido. Por favor, inténtalo nuevamente.');
+      console.error('Error crítico en invitado:', error);
+      alert('Hubo un problema. Intenta de nuevo.');
     }
   };
-  
-  
-  
 
   return (
     <Container className="checkout-container">
@@ -357,6 +391,3 @@ const CheckoutInvitadoForm: React.FC = () => {
 };
 
 export default CheckoutInvitadoForm;
-
-
-

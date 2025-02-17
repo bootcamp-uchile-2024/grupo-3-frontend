@@ -20,6 +20,7 @@ const CustomNav: React.FC<TopBarProps> = ({ user, onLogout, cartItemCount }) => 
     paths.some((path) => location.pathname.startsWith(path));
 
   return (
+    
     <Navbar collapseOnSelect className="custom-navbar fixed-top" expand="lg">
       <Container className="nav-container">
         <Navbar.Brand as={Link} to="/" />

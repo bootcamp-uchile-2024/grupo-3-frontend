@@ -10,8 +10,6 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, roles }) =
   const user = JSON.parse(localStorage.getItem('user') || '{}');
   const token = localStorage.getItem('token');
 
-  console.log('Usuario actual:', user);
-
   if (!token || !user || !user.role) {
     console.warn('Token inválido o usuario no autenticado. Redirigiendo al login.');
     localStorage.removeItem('user');

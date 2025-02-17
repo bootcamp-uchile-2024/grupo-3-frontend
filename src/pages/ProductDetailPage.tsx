@@ -17,26 +17,30 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState<number>(1);
   const [isShipping, setIsShipping] = useState<boolean>(false);
   const [isPickup, setIsPickup] = useState<boolean>(false);
-  const [selectedImage, setSelectedImage] = useState<string>('');
+  const [selectedImage, setSelectedImage] = useState<string>(''); 
   const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
+  const API_BASE_URL = import.meta.env.VITE_API_URL;
 
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
-
+  // Función para construir la URL de las imágenes
   const getImageUrl = (ruta: string): string => {
-    if (import.meta.env.MODE === 'development') {
-      return ruta;
+    const baseUrl = import.meta.env.VITE_API_URL || '';
+    if (!ruta) return '/estaticos/default-image.jpg';
+
+    if (ruta.startsWith('http')) {
+      return ruta; // Si ya es una URL completa, retornarla tal cual
+    }
+
+    // Si es una ruta relativa, construimos la URL completa
+    if (baseUrl.endsWith('/') && ruta.startsWith('/')) {
+      return `${baseUrl}${ruta.substring(1)}`;
+    } else if (!baseUrl.endsWith('/') && !ruta.startsWith('/')) {
+      return `${baseUrl}/${ruta}`;
     } else {
-      const baseUrl = import.meta.env.VITE_API_URL || '';
-      if (baseUrl.endsWith('/') && ruta.startsWith('/')) {
-        return `${baseUrl}${ruta.substring(1)}`;
-      } else if (!baseUrl.endsWith('/') && !ruta.startsWith('/')) {
-        return `${baseUrl}/${ruta}`;
-      } else {
-        return `${baseUrl}${ruta}`;
-      }
+      return `${baseUrl}${ruta}`;
     }
   };
 
@@ -52,9 +56,10 @@ export default function ProductDetailPage() {
         const productJson = await response.json();
         setProduct(productJson);
 
+        // Obtenemos la imagen principal (si existe)
         if (productJson.imagenes && productJson.imagenes.length > 0) {
           const firstImage = productJson.imagenes[0].ruta;
-          const fullImageUrl = firstImage.startsWith('http') ? firstImage : getImageUrl(firstImage);
+          const fullImageUrl = getImageUrl(firstImage); // Aseguramos que la URL sea correcta
           setSelectedImage(fullImageUrl);
         } else {
           setSelectedImage('/estaticos/default-image.jpg');
@@ -100,7 +105,7 @@ export default function ProductDetailPage() {
         id: product.id,
         nombre: product.nombre,
         precio: product.precio,
-        imagen: product.imagenes && product.imagenes.length > 0 ? product.imagenes[0].ruta : '/estaticos/default-image.jpg',
+        imagen: product.imagenes && product.imagenes.length > 0 ? getImageUrl(product.imagenes[0].ruta) : '/estaticos/default-image.jpg',
         descripcion: product.descripcion,
         cantidad: quantity,
         unidadesVendidas: product.unidadesVendidas,
@@ -136,7 +141,7 @@ export default function ProductDetailPage() {
   };
 
   const handleSelectImage = (image: string) => {
-    const fullImageUrl = image.startsWith('http') ? image : getImageUrl(image);
+    const fullImageUrl = getImageUrl(image);
     setSelectedImage(fullImageUrl);
   };
 
@@ -151,7 +156,7 @@ export default function ProductDetailPage() {
                   <div className="image-thumbnails d-flex flex-wrap gap-3">
                     {product.imagenes && product.imagenes.length > 0 ? (
                       product.imagenes.map((img, index) => {
-                        const imageUrl = img.ruta.startsWith('http') ? img.ruta : getImageUrl(img.ruta);
+                        const imageUrl = getImageUrl(img.ruta);
                         const isSelected = selectedImage === imageUrl;
 
                         return (
@@ -180,13 +185,7 @@ export default function ProductDetailPage() {
                 <Col md={10}>
                   <Card.Img
                     variant="top"
-                    src={
-                      selectedImage && selectedImage !== '/estaticos/default-image.jpg'
-                        ? selectedImage
-                        : product.imagenes && product.imagenes.length > 0
-                        ? getImageUrl(product.imagenes[0]?.ruta)
-                        : '/estaticos/default-image.jpg'
-                    }
+                    src={selectedImage}
                     alt={product.nombre}
                     className="img-fluid main-image"
                   />

@@ -1,4 +1,4 @@
-import '../styles/CatalogStyles.css'
+import '../styles/CatalogStyles.css';
 import '../styles/Offcanvas.css';
 import React, { useCallback, useEffect, useState } from 'react';
 import { productsCatalog } from '../interfaces/ProductsCatalog';
@@ -7,7 +7,7 @@ import { addToCart } from '../states/cartSlice';
 import { Pagination, Card, Button, Row, Col, Container, Offcanvas } from 'react-bootstrap';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import SidebarFilters from '../components/SidebarFilters';
-import {SortFilters, SortFilter} from '../components/SortFiltersCatalog';
+import { SortFilters, SortFilter } from '../components/SortFiltersCatalog';
 import { useSelector } from 'react-redux';
 import { RootState } from '../states/store';
 import { CatalogFilters } from '../interfaces/CatalogFilters';
@@ -53,57 +53,62 @@ const CatalogPage: React.FC = () => {
     return text;
   };
 
-const fetchProducts = useCallback(async () => {
-  try {
-    setLoading(true);
-    const queryParams = new URLSearchParams();
+  const fetchProducts = useCallback(async () => {
+    try {
+      setLoading(true);
+      const queryParams = new URLSearchParams();
 
-    if (searchTerm) queryParams.append('search', searchTerm);
-    if (filters.minPrecio && filters.minPrecio !== 1000) queryParams.append('minPrecio', filters.minPrecio.toString());
-    if (filters.maxPrecio && filters.maxPrecio !== 10000) queryParams.append('maxPrecio', filters.maxPrecio.toString());
-    if (filters.puntuacion !== 0) queryParams.append('puntuacion', filters.puntuacion.toString());
-    if (filters.petFriendly !== undefined) queryParams.append('petFriendly', filters.petFriendly ? 'true' : 'false');
-    if (filters.planta?.idToleranciaTemperatura && filters.planta?.idToleranciaTemperatura !== 0) 
-      queryParams.append('idToleranciaTemperatura', filters.planta.idToleranciaTemperatura.toString());
-    if (filters.planta?.idIluminacion && filters.planta?.idIluminacion !== 0) 
-      queryParams.append('idIluminacion', filters.planta.idIluminacion.toString());
-    if (filters.planta?.idTipoRiego && filters.planta?.idTipoRiego !== 0) 
-      queryParams.append('idTipoRiego', filters.planta.idTipoRiego.toString());
-    if (filters.planta?.idTamano && filters.planta.idTamano !== 0) 
-      queryParams.append('sizePlant', filters.planta.idTamano.toString());
-    if (filters.ordenarPor) queryParams.append('ordenarPor', filters.ordenarPor);
-    if (filters.orden) queryParams.append('orden', filters.orden);
+      if (searchTerm) queryParams.append('search', searchTerm);
+      if (filters.minPrecio && filters.minPrecio !== 1000)
+        queryParams.append('minPrecio', filters.minPrecio.toString());
+      if (filters.maxPrecio && filters.maxPrecio !== 10000)
+        queryParams.append('maxPrecio', filters.maxPrecio.toString());
+      if (filters.puntuacion !== 0) queryParams.append('puntuacion', filters.puntuacion.toString());
+      if (filters.petFriendly !== undefined)
+        queryParams.append('petFriendly', filters.petFriendly ? 'true' : 'false');
+      if (filters.planta?.idToleranciaTemperatura && filters.planta?.idToleranciaTemperatura !== 0)
+        queryParams.append('idToleranciaTemperatura', filters.planta.idToleranciaTemperatura.toString());
+      if (filters.planta?.idIluminacion && filters.planta?.idIluminacion !== 0)
+        queryParams.append('idIluminacion', filters.planta.idIluminacion.toString());
+      if (filters.planta?.idTipoRiego && filters.planta?.idTipoRiego !== 0)
+        queryParams.append('idTipoRiego', filters.planta.idTipoRiego.toString());
+      if (filters.planta?.idTamano && filters.planta.idTamano !== 0)
+        queryParams.append('sizePlant', filters.planta.idTamano.toString());
+      if (filters.ordenarPor) queryParams.append('ordenarPor', filters.ordenarPor);
+      if (filters.orden) queryParams.append('orden', filters.orden);
 
-    queryParams.append('page', currentPage.toString());
-    queryParams.append('pageSize', pageSize.toString());
+      queryParams.append('page', currentPage.toString());
+      queryParams.append('pageSize', pageSize.toString());
 
-    const baseUrl = import.meta.env.VITE_API_URL;
-    const response = await fetch(`${baseUrl}/catalogo${searchTerm ? '/search' : ''}?${queryParams.toString()}`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
+      const baseUrl = import.meta.env.VITE_API_URL;
+      const response = await fetch(
+        `${baseUrl}/catalogo${searchTerm ? '/search' : ''}?${queryParams.toString()}`,
+        {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
-    if (!response.ok) {
-      throw new Error('Error al cargar los productos');
+      if (!response.ok) {
+        throw new Error('Error al cargar los productos');
+      }
+
+      const data = await response.json();
+      setProducts(data.data);
+      setTotalPages(Math.ceil(data.totalItems / pageSize));
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Ha ocurrido un error desconocido');
+    } finally {
+      setLoading(false);
     }
-
-    const data = await response.json();
-    setProducts(data.data);
-    setTotalPages(Math.ceil(data.totalItems / pageSize));
-  } catch (error) {
-    setError(error instanceof Error ? error.message : 'Ha ocurrido un error desconocido');
-  } finally {
-    setLoading(false);
-  }
-}, [filters, currentPage, pageSize, searchTerm]);
+  }, [filters, currentPage, pageSize, searchTerm]);
 
   useEffect(() => {
     fetchProducts();
   }, [filters, currentPage, pageSize, searchTerm, fetchProducts]);
-
 
   const handleAddToCart = (product: productsCatalog) => {
     const productId = product.id;
@@ -137,6 +142,7 @@ const fetchProducts = useCallback(async () => {
         largo: product.largo,
         peso: product.peso,
         stock: product.stock,
+        promocionesDestacadas: product.promocionesDestacadas,
       })
     );
   
@@ -149,27 +155,25 @@ const fetchProducts = useCallback(async () => {
   };
   
 
-
   const handlePageChange = (page: number) => {
     if (page !== currentPage && page > 0 && page <= totalPages) {
       setCurrentPage(page);
     }
   };
-  
 
   const renderPaginationItems = () => {
     const items: JSX.Element[] = [];
 
     items.push(
-      <Pagination.Prev key="prev" onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} />
+      <Pagination.Prev
+        key="prev"
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      />
     );
 
     items.push(
-      <Pagination.Item
-        key={1}
-        active={currentPage === 1}
-        onClick={() => handlePageChange(1)}
-      >
+      <Pagination.Item key={1} active={currentPage === 1} onClick={() => handlePageChange(1)}>
         1
       </Pagination.Item>
     );
@@ -180,11 +184,7 @@ const fetchProducts = useCallback(async () => {
 
     for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
       items.push(
-        <Pagination.Item
-          key={i}
-          active={i === currentPage}
-          onClick={() => handlePageChange(i)}
-        >
+        <Pagination.Item key={i} active={i === currentPage} onClick={() => handlePageChange(i)}>
           {i}
         </Pagination.Item>
       );
@@ -207,7 +207,11 @@ const fetchProducts = useCallback(async () => {
     }
 
     items.push(
-      <Pagination.Next key="next" onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} />
+      <Pagination.Next
+        key="next"
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      />
     );
 
     return items;
@@ -218,6 +222,16 @@ const fetchProducts = useCallback(async () => {
     setCurrentPage(1);
   };
 
+  const handleFilterChange = (newFilters: CatalogFilters) => {
+    setFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters, ...newFilters };
+      if (JSON.stringify(updatedFilters) === JSON.stringify(prevFilters)) {
+        return prevFilters;
+      }
+      return updatedFilters;
+    });
+  };
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -225,15 +239,6 @@ const fetchProducts = useCallback(async () => {
       </div>
     );
   }
-  const handleFilterChange = (newFilters: CatalogFilters) => {
-    setFilters((prevFilters) => {
-      const updatedFilters = { ...prevFilters, ...newFilters };
-      if (JSON.stringify(updatedFilters) === JSON.stringify(prevFilters)) {
-        return prevFilters; 
-      }
-      return updatedFilters;
-    });
-  };
 
   if (error) return <p>Error: {error}</p>;
 
@@ -280,7 +285,7 @@ const fetchProducts = useCallback(async () => {
       return { ...prevFilters, ordenarPor: sortFilter.ordenarPor, orden: sortFilter.orden };
     });
   };
-  
+
   const handleDecrementQuantity = (product: productsCatalog) => {
     const productId = product.id;
     const currentQuantity = quantities[productId] || 1;
@@ -320,17 +325,15 @@ const fetchProducts = useCallback(async () => {
     <>
       <div className="catalog-banner">
         <Container className="banner-content text-center">
-        <SearchBar />
+          <SearchBar />
         </Container>
       </div>
       <Container fluid>
-        <SortFilters onSortChange={handleSortChange}/>
+        <SortFilters onSortChange={handleSortChange} />
         <Row>
-
           <Col xs={12} sm={3} className="sidebar-filters">
             <SidebarFilters onFilterChange={handleFilterChange} />
           </Col>
-
           <Col xs={12} sm={9}>
             <Row lg={4} className="g-4">
               {Array.isArray(products) && products.length > 0 ? (
@@ -343,7 +346,7 @@ const fetchProducts = useCallback(async () => {
                         variant="top"
                         src={
                           product.imagenes && product.imagenes.length > 0
-                            ? `${import.meta.env.MODE === 'development' ? '' : import.meta.env.VITE_API_URL}${product.imagenes[0].ruta}`
+                            ? `${import.meta.env.VITE_API_URL}${product.imagenes[0].ruta}`
                             : '/estaticos/default-image.jpg'
                         }
                         alt={product.nombre}
@@ -352,29 +355,40 @@ const fetchProducts = useCallback(async () => {
 
                       </Link>
                       <Card.Body className="text-start">
-                        <div className='contenedordeTituloyDescripcion'>
-                          {/* Título del producto */}
+                        <div className="contenedordeTituloyDescripcion">
                           <Card.Title className="d-flex justify-content-between align-items-center" id="image-text">
                             <span>{truncateText(product.nombre, 12)}</span>
                           </Card.Title>
-
-                          {/* Descripción del producto */}
                           <Card.Text className="description-text">
                             <span>{truncateText(product.descripcion, 20)}</span>
                           </Card.Text>
                         </div>
                         <br />
-
-                        {/* Precio del producto */}
-                        <div className="price-text">
-                          {new Intl.NumberFormat('es-CL', {
-                            style: 'currency',
-                            currency: 'CLP',
-                            minimumFractionDigits: 0,
-                          }).format(product.precio)}
+               
+                        <div className="price-container">
+                          <div className="price-text">
+                            {new Intl.NumberFormat('es-CL', {
+                              style: 'currency',
+                              currency: 'CLP',
+                              minimumFractionDigits: 0,
+                            }).format(product.precio)}
+                          </div>
+                          {product.promocionesDestacadas &&
+                            product.promocionesDestacadas.length > 0 &&
+                            (() => {
+                              const promoTradicional = product.promocionesDestacadas.find(
+                                (promo) => promo.tipoPromocion === "TRADICIONAL"
+                              );
+                              return promoTradicional && promoTradicional.valor > 0 ? (
+                                <div className="discount-badge">
+                                  {promoTradicional.tipoDescuento === 'PORCENTAJE'
+                                    ? `${promoTradicional.valor}% off`
+                                    : `$${promoTradicional.valor} off`}
+                                </div>
+                              ) : null;
+                            })()}
                         </div>
 
-                        {/* Botón para agregar al carrito */}
                         <div className="cart-button-container">
                           <Button
                             variant="primary"
@@ -384,14 +398,12 @@ const fetchProducts = useCallback(async () => {
                           >
                             <span className="material-symbols-outlined">add_shopping_cart</span>
                           </Button>
-                          {/* Mensaje de error por stock*/}
                           {errorMessages[product.id] && (
                             <p className="error-message">
                               {errorMessages[product.id]}
                             </p>
                           )}
                         </div>
-
                       </Card.Body>
                     </Card>
                   </Col>
@@ -400,14 +412,11 @@ const fetchProducts = useCallback(async () => {
                 <p>No se encontraron productos.</p>
               )}
             </Row>
-
             <br />
             <br />
             <Row className="mb-4 d-flex">
               <Col className="d-flex justify-content-end mb-2">
-                <Pagination className="pagination-container">
-                  {renderPaginationItems()}
-                </Pagination>
+                <Pagination className="pagination-container">{renderPaginationItems()}</Pagination>
               </Col>
               <Col xs="auto" sm={5} md={5} className="d-flex justify-content-end">
                 <div className="d-inline show-products-selector">
@@ -440,28 +449,23 @@ const fetchProducts = useCallback(async () => {
             </Row>
           </Col>
         </Row>
-        {/* Offcanvas */}
-        <Offcanvas
-          show={showOffcanvas}
-          onHide={() => setShowOffcanvas(false)}
-          placement="end"
-        >
+        {/* Offcanvas del carrito */}
+        <Offcanvas show={showOffcanvas} onHide={() => setShowOffcanvas(false)} placement="end">
           <Offcanvas.Header closeButton>
             <Offcanvas.Title>Mi Carrito de compras</Offcanvas.Title>
           </Offcanvas.Header>
-          <Offcanvas.Body>
+          <Offcanvas.Body>ƒ
             {selectedProduct && (
               <div className="cart-item-card">
                 <img
                   src={
                     selectedProduct.imagenes && selectedProduct.imagenes.length > 0
-                      ? `${import.meta.env.MODE === 'development' ? '' : import.meta.env.VITE_API_URL}${selectedProduct.imagenes[0].ruta}`
+                      ? `${import.meta.env.VITE_API_URL}${selectedProduct.imagenes[0].ruta}`
                       : '/estaticos/default-image.jpg'
                   }
                   alt={selectedProduct.nombre}
                   className="cart-item-image"
                 />
-
                 <div className="cart-item-details">
                   <h5>{selectedProduct.nombre}</h5>
                   <div className="cart-item-price">
@@ -472,10 +476,7 @@ const fetchProducts = useCallback(async () => {
                     Normal ${(selectedProduct.precio * 1.35).toLocaleString('es-CL')}
                   </div>
                   <div className="cart-quantity-controls">
-                    <button
-                      className="btn-circle"
-                      onClick={() => handleDecrementQuantity(selectedProduct!)}
-                    >
+                    <button className="btn-circle" onClick={() => handleDecrementQuantity(selectedProduct!)}>
                       -
                     </button>
                     <span>{quantities[selectedProduct?.id || 0] || 1}</span>
@@ -483,35 +484,29 @@ const fetchProducts = useCallback(async () => {
                       className="btn-circle"
                       onClick={() => handleIncrementQuantity(selectedProduct!)}
                     >
-                      +
+                      
                     </button>
                   </div>
-
                 </div>
                 <button className="delete-button">
                   <span className="material-symbols-outlined">close</span>
                 </button>
               </div>
             )}
-
             <div className="cart-total">
               <div className="d-flex justify-content-between">
                 <span>Total a pagar:</span>
-                <span>${((selectedProduct?.precio || 0) * (quantities[selectedProduct?.id || 0] || 1)).toLocaleString('es-CL')}</span>
+                <span>
+                  ${((selectedProduct?.precio || 0) * (quantities[selectedProduct?.id || 0] || 1)).toLocaleString('es-CL')}
+                </span>
               </div>
             </div>
           </Offcanvas.Body>
           <div className="offcanvas-footer">
-            <button
-              className="btn-go-to-cart"
-              onClick={() => navigate('/cart')}
-            >
+            <button className="btn-go-to-cart" onClick={() => navigate('/cart')}>
               Ir al carrito de compras
             </button>
-            <button
-              className="btn-continue-shopping"
-              onClick={() => setShowOffcanvas(false)}
-            >
+            <button className="btn-continue-shopping" onClick={() => setShowOffcanvas(false)}>
               Sigue comprando
             </button>
           </div>

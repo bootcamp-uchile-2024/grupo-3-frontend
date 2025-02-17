@@ -2,7 +2,7 @@ import "../styles/UserGreeting.css"
 
 const UserGreeting = () => {
   return (
-    <div className="user-greeting">
+    <div className="user-greeting col-md-12">
       <img
         src="https://ui-avatars.com/api/?name=Admin&background=1A4756&color=fff&size=128"
         alt="Perfil Admin"

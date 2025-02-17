@@ -1,0 +1,66 @@
+/* Clase para el contenedor de la tabla */
+.product-table-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+}
+
+/* Estilos para la tabla */
+.product-table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin-top: 76px;
+}
+
+/* Estilos para los encabezados de la tabla */
+.product-table thead th {
+    font-family: Quicksand, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 13px;
+    color: #000;
+    text-align: center;
+    border-bottom: 1px solid #BBB;
+    background: #DCE2D3;
+}
+
+/* Estilos para las filas de la tabla */
+.product-table tbody tr {
+    cursor: pointer;
+}
+
+.product-table tbody tr.selected {
+    background-color: #D3F9D8;
+}
+
+
+/* Seleccionar celdas dentro de .product-table */
+.product-table tbody > tr > td {
+    background-color: transparent !important;
+    text-align: center; /* Centra el contenido dentro de las celdas */
+    vertical-align: middle; 
+}
+
+.selected-product {
+    background-color: #6F8F75;
+}
+
+/* Filas impares */
+.product-table tbody tr:nth-child(odd) {
+    background-color: #F5F5F5; /* Color de fondo para filas impares */
+}
+
+/* Filas pares */
+.product-table tbody tr:nth-child(even) {
+    background-color: #EEE; /* Color de fondo para filas pares */
+}
+
+.product-table tbody tr.selected-product:nth-child(odd) {
+    background-color: #6F8F75 !important; /* Mantén el color seleccionado en las filas impares */
+}
+
+.product-table tbody tr.selected-product:nth-child(even) {
+    background-color: #6F8F75 !important; /* Mantén el color seleccionado en las filas pares */
+}

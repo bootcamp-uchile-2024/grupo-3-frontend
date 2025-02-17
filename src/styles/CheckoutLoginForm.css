@@ -2,8 +2,7 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin: 10rem auto 4rem;
+  margin: 0;
   padding: 20px;
 }
 
@@ -11,14 +10,13 @@
   background-color: white;
   border: 1px solid #E5E7EB;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 10%);
-  padding: 24px;
+  padding: 24px 16px;
   width: 100%;
 }
 
 .checkout-title {
   color: #1A4756;
-  font-size: 30px;
+  font-size: 25px;
   font-weight: 500;
   margin-bottom: 24px;
   text-align: center;
@@ -38,46 +36,6 @@
   gap: 12px;
 }
 
-.action-button {
-  border: none !important;
-  border-radius: 6px !important;
-  font-size: 16px !important;
-  font-weight: 500 !important;
-  padding: 12px !important;
-  text-align: center;
-  transition: background-color 0.2s ease;
-  width: 100%;
-}
-
-.primary-button {
-  background-color: #1A4756 !important;
-  color: white !important;
-  margin: 0.5rem 0 0;
-}
-
-.primary-button:hover {
-  background-color: #153a47 !important;
-}
-
-.secondary-button {
-  background-color: #1A4756 !important;
-  color: white !important;
-}
-
-.secondary-button:hover {
-  background-color: #153a47 !important;
-}
-
-.tertiary-button {
-  background-color: white !important;
-  border: 1px solid #E5E7EB !important;
-  color: #1A4756 !important;
-}
-
-.tertiary-button:hover {
-  background-color: #f3f4f6 !important;
-}
-
 .back-button {
   background-color: transparent !important;
   border: 1px solid #E5E7EB !important;
@@ -92,7 +50,8 @@
 }
 
 .back-button:hover {
-  background-color: #f3f4f6 !important;
+  color: #1F2937 !important;
+  background-color: white !important;
 }
 
 .go-button {
@@ -104,4 +63,8 @@
   padding: 12px;
   transition: background-color 0.2s ease;
   width: 50%;
+}
+
+.vh-50 {
+  height: 50vh;
 }

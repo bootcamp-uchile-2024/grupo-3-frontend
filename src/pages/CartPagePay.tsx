@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart, clearCart, updateQuantity, addToCart } from '../states/cartSlice';
 import { RootState } from '../states/store';
-import { CartItem } from '../interfaces/CartItem';
+import { CartItem, PromocionDestacada } from '../interfaces/CartItem';
 import { Button, Card, Col, Container, ListGroup, Row, Form } from 'react-bootstrap';
 import '../styles/CartPage.css';
 
@@ -15,13 +15,12 @@ import transferenciaIcon from '../assets/transferencia-bancaria.png';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
-
 const CartPagePay: React.FC = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector((state: RootState) => state.cart.productos as CartItem[]);
   const navigate = useNavigate();
   const location = useLocation();
-  const { formData, pedidoId } = location.state || {};
+  const { formData } = location.state || {};
 
   const [cartId, setCartId] = useState<number | null>(null);
   const [coupon, setCoupon] = useState<string>('');
@@ -44,9 +43,7 @@ const CartPagePay: React.FC = () => {
       navigate('/login', { replace: true });
       return null;
     }
-  
     const userId = JSON.parse(atob(token.split('.')[1])).sub;
-  
     try {
       const response = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
         method: 'GET',
@@ -55,42 +52,33 @@ const CartPagePay: React.FC = () => {
           Accept: 'application/json',
         },
       });
-  
       if (response.ok) {
         const data = await response.json();
         console.log('Carrito activo encontrado con ID:', data.id);
         return data.id;
       }
-  
       if (response.status === 404) {
-        console.warn('No se encontró un carrito activo para este usuario.');
         return null;
       }
-  
-      throw new Error('Error desconocido al obtener el carrito activo.');
+      throw new Error('Error desconocido al obtener el carrito activo del usuario.');
     } catch (error) {
-      console.error('Error al buscar carrito activo:', error);
+      console.error('Error al buscar carrito activo del usuario:', error);
       return null;
     }
   }, [token, navigate]);
-  
 
   useEffect(() => {
     const initializeCart = async () => {
       try {
         const cartIdFromState = location.state?.cartId;
         const cartIdFromLocalStorage = parseInt(localStorage.getItem('cartId') || '0', 10);
-
         let activeCartId = cartIdFromState || cartIdFromLocalStorage;
-
         if (!activeCartId) {
           activeCartId = await fetchActiveCart();
         }
-
         if (activeCartId) {
           setCartId(activeCartId);
           localStorage.setItem('cartId', activeCartId.toString());
-
           const savedCartItems = JSON.parse(localStorage.getItem('__redux__cart__') || '{}');
           if (savedCartItems.productos?.length > 0) {
             dispatch(clearCart());
@@ -103,24 +91,23 @@ const CartPagePay: React.FC = () => {
         console.error('Error al inicializar el carrito:', error);
       }
     };
-
     if (isAuthenticated) {
       initializeCart();
     }
   }, [dispatch, location.state?.cartId, fetchActiveCart, isAuthenticated]);
 
   useEffect(() => {
-    if (!formData || !pedidoId) {
+    if (!formData) {
       alert('No se encontraron datos para continuar con el proceso de pago.');
       navigate('/cart', { replace: true });
     }
-  }, [formData, pedidoId, navigate]);
+  }, [formData, navigate]);
 
   if (!isAuthenticated) {
     return null;
   }
 
-  const groupedItems = cartItems.reduce((acc: CartItem[], item: CartItem) => {
+  const groupedItems: CartItem[] = cartItems.reduce((acc: CartItem[], item: CartItem) => {
     const existingItem = acc.find((i: CartItem) => i.id === item.id);
     if (existingItem) {
       existingItem.cantidad += item.cantidad;
@@ -130,9 +117,43 @@ const CartPagePay: React.FC = () => {
     return acc;
   }, []);
 
-  const total = groupedItems.reduce((acc: number, item: CartItem) => acc + item.precio * item.cantidad, 0);
-  const totalWithBaseDiscount = total * 0.8;
-  const totalWithCoupon = totalWithBaseDiscount * (1 - couponDiscount);
+  const getDiscountedPrice = (item: CartItem): number => {
+    let discountedPrice = item.precio;
+    if (item.promocionesDestacadas && item.promocionesDestacadas.length > 0) {
+      const promoTradicional = item.promocionesDestacadas.find(
+        (promo: PromocionDestacada) => promo.tipoPromocion === "TRADICIONAL" && promo.valor > 0
+      );
+      if (promoTradicional) {
+        if (promoTradicional.tipoDescuento === 'PORCENTAJE') {
+          discountedPrice = item.precio * (1 - promoTradicional.valor / 100);
+        } else {
+          discountedPrice = item.precio - promoTradicional.valor;
+        }
+      }
+    }
+    return discountedPrice;
+  };
+
+  const totalOriginal: number = groupedItems.reduce((acc: number, item: CartItem) => {
+    return acc + item.precio * item.cantidad;
+  }, 0);
+
+  const totalDiscounted: number = groupedItems.reduce((acc: number, item: CartItem) => {
+    return acc + getDiscountedPrice(item) * item.cantidad;
+  }, 0);
+
+  const discountValue: number = totalOriginal - totalDiscounted;
+  const totalWithCoupon: number = totalDiscounted * (1 - couponDiscount);
+
+  const handleApplyCoupon = () => {
+    if (coupon.trim() === 'bootcamp2024') {
+      setCouponDiscount(0.05);
+      alert('¡Cupón aplicado con éxito!');
+    } else {
+      setCouponDiscount(0);
+      alert('Cupón inválido.');
+    }
+  };
 
   const addProductToCart = async (cartId: number, productId: number, quantity: number) => {
     try {
@@ -144,12 +165,10 @@ const CartPagePay: React.FC = () => {
         },
         body: JSON.stringify({ productoId: productId, cantidadProducto: quantity }),
       });
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Error al agregar producto.');
       }
-
       console.log('Producto agregado al carrito.');
     } catch (error) {
       console.error('Error al agregar producto:', error);
@@ -162,14 +181,11 @@ const CartPagePay: React.FC = () => {
       alert('No se ha inicializado el carrito.');
       return;
     }
-
     const product = cartItems.find((item) => item.id === productId);
     if (product) {
       try {
         const newQuantity = product.cantidad + 1;
-
         await addProductToCart(cartId, productId, newQuantity);
-
         dispatch(updateQuantity({ id: productId, cantidad: 1 }));
       } catch (error) {
         alert('Error al intentar incrementar el producto. Por favor, inténtalo nuevamente.');
@@ -190,12 +206,10 @@ const CartPagePay: React.FC = () => {
     if (!window.confirm('¿Estás seguro de que deseas eliminar este producto del carrito?')) {
       return;
     }
-
     if (!cartId) {
       alert('El carrito no está inicializado correctamente.');
       return;
     }
-
     try {
       const response = await fetch(
         `${API_BASE_URL}/carro-compras/removeProducto/${cartId}/${productId}`,
@@ -208,31 +222,16 @@ const CartPagePay: React.FC = () => {
           },
         }
       );
-
       if (!response.ok) {
         const errorData = await response.json();
         alert(errorData.message || 'Hubo un problema al eliminar el producto.');
         return;
       }
-
       dispatch(removeFromCart(productId));
-      const updatedCartItems = cartItems.filter((item) => item.id !== productId);
-      localStorage.setItem('__redux__cart__', JSON.stringify({ productos: updatedCartItems }));
-
       alert('El producto ha sido eliminado del carrito.');
     } catch (error) {
       console.error('Error al eliminar producto:', error);
       alert('No se pudo eliminar el producto.');
-    }
-  };
-
-  const handleApplyCoupon = () => {
-    if (coupon.trim() === 'bootcamp2024') {
-      setCouponDiscount(0.05);
-      alert('¡Cupón aplicado con éxito!');
-    } else {
-      setCouponDiscount(0);
-      alert('Cupón inválido.');
     }
   };
 
@@ -241,34 +240,28 @@ const CartPagePay: React.FC = () => {
       alert('No se encontró el carrito activo. Por favor, inténtalo nuevamente.');
       return;
     }
-
     try {
       console.log('Preparando creación del pedido para carrito con ID:', cartId);
-
-      const token = localStorage.getItem('token');
-      if (!token) {
+      const storedToken = localStorage.getItem('token');
+      if (!storedToken) {
         throw new Error('No se encontró el token. Por favor, inicia sesión nuevamente.');
       }
-      const userId = JSON.parse(atob(token.split('.')[1])).sub;
+      const userId = JSON.parse(atob(storedToken.split('.')[1])).sub;
       const validateCartResponse = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${storedToken}`,
           Accept: 'application/json',
         },
       });
-
       if (!validateCartResponse.ok) {
         throw new Error('No se pudo verificar el estado del carrito.');
       }
-
       const validatedCart = await validateCartResponse.json();
       if (!validatedCart.carroProductos || validatedCart.carroProductos.length === 0) {
         throw new Error('El carro en el backend está vacío. Inténtalo nuevamente.');
       }
-
       console.log('Carrito en el backend validado:', validatedCart);
-
       const pedidoPayload = {
         fechaCreacion: new Date().toISOString().split('T')[0],
         idCarro: cartId,
@@ -287,30 +280,24 @@ const CartPagePay: React.FC = () => {
           referencia: formData?.referencia || '',
         },
       };
-
       console.log('Payload enviado al backend:', pedidoPayload);
-
       const pedidoResponse = await fetch(`${API_BASE_URL}/pedidos/${userId}`, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${storedToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(pedidoPayload),
       });
-
       if (!pedidoResponse.ok) {
         const errorData = await pedidoResponse.json();
         throw new Error(errorData.message || 'Error al confirmar el pedido.');
       }
-
       const pedido = await pedidoResponse.json();
       console.log('Pedido creado con ID:', pedido.id);
-
       localStorage.removeItem('__redux__cart__');
       localStorage.removeItem('cartId');
       dispatch(clearCart());
-
       navigate('/success-page', {
         state: { compraId: pedido.id },
       });
@@ -334,68 +321,77 @@ const CartPagePay: React.FC = () => {
           ) : (
             <>
               <ListGroup className="mb-4">
-                {groupedItems.map((item: CartItem) => (
-                  <ListGroup.Item key={item.id} className="cart-item">
-                    <Row className="align-items-center row col-md-12">
-                      <Col md={3}>
-                      <img
-                        src={
-                          item.imagen
-                            ? `${import.meta.env.MODE === 'development' ? '' : API_BASE_URL}${item.imagen}`
-                            : '/estaticos/default-image.jpg'
-                        }
-                        alt={item.nombre}
-                        className="product-image img-fluid"
-                      />
-                      </Col>
-                      <Col md={7}>
-                        <h5 className="product-title mb-2">{item.nombre}</h5>
-                        {/* Precio con descuento y badge */}
-                        <p className="price-text-cart mb-1">
-                          Ahora ${((item.precio * 0.8).toLocaleString('es-CL'))}
-                          <span className="cart-price-badge ms-2">-20%</span>
-                        </p>
-                        {/* Precio original tachado */}
-                        <p className="original-price text-muted">
-                          <del>Normal ${item.precio.toLocaleString('es-CL')}</del>
-                        </p>
-                        <div className="quantity-controls">
+                {groupedItems.map((item: CartItem) => {
+                  const discountedPrice = getDiscountedPrice(item);
+                  const promoTradicional = item.promocionesDestacadas?.find(
+                    (promo: PromocionDestacada) =>
+                      promo.tipoPromocion === "TRADICIONAL" && promo.valor > 0
+                  );
+                  return (
+                    <ListGroup.Item key={item.id} className="cart-item">
+                      <Row className="align-items-center row col-md-12">
+                        <Col md={3}>
+                          <img
+                            src={
+                              item.imagen
+                                ? `${import.meta.env.MODE === 'development' ? '' : API_BASE_URL}${item.imagen}`
+                                : '/estaticos/default-image.jpg'
+                            }
+                            alt={item.nombre}
+                            className="product-image img-fluid"
+                          />
+                        </Col>
+                        <Col md={7}>
+                          <h5 className="product-title mb-2">{item.nombre}</h5>
+                          <p className="price-text-cart mb-1">
+                            Ahora ${discountedPrice.toLocaleString('es-CL')}
+                            {promoTradicional && (
+                              <span className="cart-price-badge ms-2">
+                                {promoTradicional.tipoDescuento === 'PORCENTAJE'
+                                  ? `-${promoTradicional.valor}%`
+                                  : `-$${promoTradicional.valor}`}
+                              </span>
+                            )}
+                          </p>
+                          <p className="original-price text-muted">
+                            <del>Normal ${item.precio.toLocaleString('es-CL')}</del>
+                          </p>
+                          <div className="quantity-controls">
+                            <Button
+                              variant="outline-secondary"
+                              size="sm"
+                              onClick={() => handleDecrement(item.id)}
+                              disabled={item.cantidad === 1}
+                            >
+                              -
+                            </Button>
+                            <span className="mx-3">{item.cantidad}</span>
+                            <Button
+                              variant="outline-secondary"
+                              size="sm"
+                              onClick={() => handleIncrement(item.id)}
+                            >
+                              +
+                            </Button>
+                          </div>
+                        </Col>
+                        <Col md={1} className="">
                           <Button
-                            variant="outline-secondary"
-                            size="sm"
-                            onClick={() => handleDecrement(item.id)}
-                            disabled={item.cantidad === 1}
+                            variant="link"
+                            className="button-delete"
+                            onClick={() => handleRemoveProductFromCart(item.id)}
                           >
-                            -
+                            <span className="material-symbols-outlined">delete</span>
                           </Button>
-                          <span className="mx-3">{item.cantidad}</span>
-                          <Button
-                            variant="outline-secondary"
-                            size="sm"
-                            onClick={() => handleIncrement(item.id)}
-                          >
-                            +
-                          </Button>
-                        </div>
-                      </Col>
-                      <Col md={1} className="">
-                        <Button
-                          variant="link"
-                          className="button-delete"
-                          onClick={() => handleRemoveProductFromCart(item.id)}
-                        >
-                          <span className="material-symbols-outlined">delete</span>
-                        </Button>
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
-                ))}
+                        </Col>
+                      </Row>
+                    </ListGroup.Item>
+                  );
+                })}
               </ListGroup>
-
             </>
           )}
         </Col>
-
         <Col md={6} className='mt-5'>
           <Card className="summary-card">
             <Card.Body>
@@ -403,16 +399,16 @@ const CartPagePay: React.FC = () => {
               <ListGroup variant="flush" className="mb-3">
                 <ListGroup.Item className="d-flex justify-content-between">
                   <span>Costos de tus productos</span>
-                  <span>${total.toLocaleString('es-CL')}</span>
+                  <span>${totalOriginal.toLocaleString('es-CL')}</span>
                 </ListGroup.Item>
                 <ListGroup.Item className="d-flex justify-content-between">
                   <span>Descuentos</span>
-                  <span>-${(total * 0.2).toLocaleString('es-CL')}</span>
+                  <span>-${discountValue.toLocaleString('es-CL')}</span>
                 </ListGroup.Item>
                 {couponDiscount > 0 && (
                   <ListGroup.Item className="d-flex justify-content-between">
                     <span>Cupón (5%)</span>
-                    <span>-${(totalWithBaseDiscount * 0.05).toLocaleString('es-CL')}</span>
+                    <span>-${(totalDiscounted * couponDiscount).toLocaleString('es-CL')}</span>
                   </ListGroup.Item>
                 )}
                 <ListGroup.Item className="d-flex justify-content-between total-row">
@@ -424,70 +420,64 @@ const CartPagePay: React.FC = () => {
           </Card>
         </Col>
       </Row>
-      <Col md={6} className='mt-4'>
-        <Card className="payment-card">
-          <Card.Body>
-            {/* Sección de código de descuento */}
-            <div className="discount-section mb-4">
-              <h6 className="mb-3">Código de descuento</h6>
-              <Form.Control
-                type="text"
-                placeholder="Código de descuento"
-                value={coupon}
-                onChange={(e) => setCoupon(e.target.value)}
-                className="mb-2"
-              />
-              <Button 
-                variant="dark" 
-                className="w-100"
-                style={{ backgroundColor: '#1A4756' }}
-                onClick={handleApplyCoupon}
-              >
-                Aplicar
-              </Button>
-            </div>
-
-            {/* Sección de método de pago */}
-            <div className="payment-method-section">
-              <h6 className="mb-3">Elige cómo pagar</h6>
-              
-              {/* Tarjetas guardadas */}
-              <div className="saved-cards mb-3">
-                <p className="text-muted small mb-2">Tarjetas guardadas</p>
-                <Form.Select className="mb-3">
-                  <option>Falabella **9999</option>
-                  {/* Agrega más opciones según las tarjetas guardadas */}
-                </Form.Select>
+      <Row>
+        <Col md={6} className='mt-4'>
+          <Card className="payment-card">
+            <Card.Body>
+              <div className="discount-section mb-4">
+                <h6 className="mb-3">Código de descuento</h6>
+                <Form.Control
+                  type="text"
+                  placeholder="Código de descuento"
+                  value={coupon}
+                  onChange={(e) => setCoupon(e.target.value)}
+                  className="mb-2"
+                />
+                <Button 
+                  variant="dark" 
+                  className="w-100"
+                  style={{ backgroundColor: '#1A4756' }}
+                  onClick={handleApplyCoupon}
+                >
+                  Aplicar
+                </Button>
               </div>
-
-              {/* Billeteras digitales */}
-              <div className="digital-wallets mb-4">
-                <p className="text-muted small mb-2">Billeteras digitales</p>
-                <div className="payment-methods">
-                  <img src={webpayIcon} alt="Webpay" className="payment-icon" />
-                  <img src={visaIcon} alt="Visa" className="payment-icon" />
-                  <img src={mastercardIcon} alt="Mastercard" className="payment-icon" />
-                  <img src={paypalIcon} alt="PayPal" className="payment-icon" />
-                  <img src={transferenciaIcon} alt="Transferencia" className="payment-icon" />
+              <div className="payment-method-section">
+                <h6 className="mb-3">Elige cómo pagar</h6>
+                <div className="saved-cards mb-3">
+                  <p className="text-muted small mb-2">Tarjetas guardadas</p>
+                  <Form.Select className="mb-3">
+                    <option>Falabella **9999</option>
+                  </Form.Select>
+                </div>
+                <div className="digital-wallets mb-4">
+                  <p className="text-muted small mb-2">Billeteras digitales</p>
+                  <div className="payment-methods">
+                    <img src={webpayIcon} alt="Webpay" className="payment-icon" />
+                    <img src={visaIcon} alt="Visa" className="payment-icon" />
+                    <img src={mastercardIcon} alt="Mastercard" className="payment-icon" />
+                    <img src={paypalIcon} alt="PayPal" className="payment-icon" />
+                    <img src={transferenciaIcon} alt="Transferencia" className="payment-icon" />
+                  </div>
                 </div>
               </div>
-            </div>
-          </Card.Body>
-        </Card>
-      </Col>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
       <Row>
         <Col md={12} className="d-flex justify-content-between mt-4">
-            <Col md={4}>
+          <Col md={4}>
             <Button
-              style={{backgroundColor: 'white', color:'#1A4756', border: '3px solid #1A4756'}}
+              style={{ backgroundColor: 'white', color:'#1A4756', border: '3px solid #1A4756' }}
               className="bt go-button float-end"
               variant="secondary"
               onClick={handleGoBack}
             >
               Volver
             </Button>
-            </Col>
-            <Col md={5}>
+          </Col>
+          <Col md={5}>
             <Button 
               className='bt go-button float-end' 
               variant="primary" 
@@ -496,11 +486,14 @@ const CartPagePay: React.FC = () => {
             >
               Finalizar la compra
             </Button>
-            </Col>
+          </Col>
         </Col>
-      </Row> 
+      </Row>
     </Container>
   );
 };
 
 export default CartPagePay;
+
+
+

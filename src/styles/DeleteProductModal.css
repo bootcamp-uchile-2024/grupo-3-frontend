@@ -1,0 +1,8 @@
+.product-image-modal {
+    max-width: 215px;
+    max-height: 228px;
+    display: flex; 
+    margin-left: auto; 
+    margin-right: auto;
+    object-fit: cover;
+}

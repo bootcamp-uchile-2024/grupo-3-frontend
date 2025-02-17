@@ -1,6 +1,14 @@
 .cart-container {
   margin-bottom: 40px;
   margin-top: 160px;
+  width: 1440px;
+}
+
+.carro-container {
+  margin-bottom: 12rem;
+  margin-top: 2rem;
+  position: relative;
+  top: 10rem;
 }
 
 .cart-item {
@@ -237,7 +245,7 @@ button.btn-circle-cart:disabled {
   color: #fff;
   font-size: 14px;
   overflow: hidden;
-  padding: 2px;
+  padding: 4px 6px;
   position: relative;
   text-align: center;
 }
@@ -250,5 +258,9 @@ button.btn-circle-cart:disabled {
   justify-content: flex-start;
   text-decoration: none;
   width: 100%;
+}
+
+.button-delete:hover {
+  color:#007b94 !important;
 }
 

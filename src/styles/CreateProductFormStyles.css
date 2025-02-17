@@ -52,3 +52,65 @@ input#imagen.custom-file-input::file-selector-button{
   margin-top: 5rem;
   margin-bottom: 3rem;
 }
+ 
+
+ 
+ .small-preview {
+  border: 0.5px solid #1A4756;
+  border-radius: 5%;
+  height: auto;
+  margin-bottom: 10px;
+  width: 220px;
+ }
+ 
+ .icono-tamano-personalizado {
+  align-items: center;
+  border: 0.5px solid #1A4756;
+  border-radius: 5%;
+  color: #1A4756;
+  display: flex;
+  font-size: 90px;
+  height: 220px;
+  justify-content: center;
+  margin-block: 10%;
+  margin-bottom: 10px;
+  width: 220px;
+ }
+ 
+ .form-label {
+  color: #1A4756 !important;
+  font-weight: bolder !important;
+ }
+ 
+ .form-control {
+  border: none !important;
+  border-radius: 10px !important;
+ }
+ 
+ input#imagen.form-control {
+  border: 1px solid #1A4756 !important;
+  color: #1A4756;
+  max-width: 484px;
+  padding: 6px;
+  margin-top: 1.6rem;
+ }
+ 
+ input#imagen.custom-file-input::file-selector-button {
+  background-color: #D3DBD5;
+  color: #1A4756;
+  font-weight: 500;
+ }
+ 
+ .Create-product-container-button {
+  justify-self: end;
+  width: 207px;
+  margin-top: 5rem;
+  margin-bottom: 3rem;
+ }
+ 
+ /* Responsive */
+ @media (width <= 768px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+ }

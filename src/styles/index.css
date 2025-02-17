@@ -1,12 +1,29 @@
 @import url('./variables.css');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Quicksand:wght@400;500;700&display=swap');
 
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+}
 
-#root{
-  font-family: Quicksand, sans-serif;
-  margin: 0 auto;
+p, h1, h2, h3, h4, h5, h6, li, a, input, button, span, select, option, strong, form {
+  font-family: Quicksand;
+}
+
+* {
   padding: 0;
-  width: 1440px;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
 h4 {
@@ -64,16 +81,6 @@ form#search-form {
   font-size: 1rem;
   font-weight: bold;
   margin-left: 18px;
-}
-
-.user-avatar{
-  background-color: #ccc;
-  border-radius: 50%;
-  display: flex;
-  float: left;
-  height: 40px;
-  margin: 10px;
-  width: 44px;
 }
 
 button a {
@@ -227,6 +234,7 @@ button.btn-primary {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
   color: white;
+  font-family: Quicksand;
 }
 
 button.btn-primary:hover {
@@ -241,7 +249,6 @@ button.btn-primary:active {
 
 button.btn-primary:focus {
   border-color: var(--primary-focus);
-  box-shadow: 0 0 0 0.25rem rgb(0 123 148 / 25%); /* Adaptar al color del focus */
 }
 
 button.btn-primary:disabled, 
@@ -256,6 +263,7 @@ button.btn-secondary {
   background-color: var(--secondary-color);
   border-color: var(--secondary-color);
   color: white;
+  font-family: Quicksand;
 }
 
 button.btn-secondary:hover {
@@ -288,18 +296,17 @@ button.btn-outline-primary {
 }
 
 button.btn-outline-primary:hover {
-  background-color: white;
   border-color: var(--tertiary-color);
-  color: #1A4756;
+  color: #FFF!important;
 }
 
 button.btn-outline-primary:active {
   background-color: var(--tertiary-active-bg);
+  color: #FFF!important;
 }
 
 button.btn-outline-primary:focus {
   border-color: var(--primary-focus);
-  box-shadow: 0 0 0 0.25rem rgb(0 123 148 / 25%); /* Adaptar al color del focus */
 }
 
 button.btn-outline-primary:disabled, 
@@ -384,6 +391,31 @@ button.btn-orange.disabled {
   border-radius: 8px;
   box-shadow: 0 4px 4px 0 rgb(0 0 0 / 25%);
 }
+
+@media (321px <= width <= 576px) {
+  .container {
+    width: 100%;
+    max-width: 576px;
+  }
+ 
+  .home-banner {
+    width: 60%;
+    height: 248px;
+    display: flex;
+    background-size: cover;
+    margin: 120px auto 20px;
+  }
+
+  .home-banner-uno,
+  .home-banner-dos {
+    width: 60%;
+    height: 80px;
+    display: flex;
+    background-size: cover;
+    margin: 20px auto 0;
+  }
+
+ }
 
 /* Tabs */
 
@@ -502,13 +534,4 @@ ul.custom-tabs.mb-3.nav.nav-tabs {
   font-size: var(--font-text4-xxs-medium);
   font-weight: 500;
   line-height: var(--line-height-text4-xxs-medium);
-}
-
-/* Carro de compra */
-
-.carro-container {
-  margin-bottom: 12rem;
-  margin-top: 2rem;
-  position: relative;
-  top: 10rem;
 }

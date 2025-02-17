@@ -2,6 +2,17 @@ export interface Imagen {
   ruta: string;
 }
 
+export interface PromocionDestacada {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  valor: number;
+  tipoDescuento: string;
+  tipoPromocion: string;
+  fechaInicio: string;
+  fechaTermino: string;
+}
+
 export interface CartItem {
   id: number;
   nombre: string;
@@ -22,6 +33,8 @@ export interface CartItem {
   peso: number;
   stock?: number;
   imagenes?: Imagen[];
+  promocionesDestacadas?: PromocionDestacada[];
 }
+
 
   

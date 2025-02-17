@@ -8,7 +8,6 @@ const SuccessModalProduct: React.FC<{
   handleClose: () => void;
   productCreated: CreateProductData | null;
 }> = ({ show, handleClose, productCreated }) => {
-  console.log('Producto creado:', productCreated?.imagen);
 
   if (!productCreated) {
     return null;
@@ -28,7 +27,6 @@ const SuccessModalProduct: React.FC<{
             <a>{(productCreated.peso / 1000)} kg</a>
           </Card.Body>
         </Card>
-
         <Modal.Body className='mt-5'>
           <p>El producto ha sido creado con éxito.</p>
         </Modal.Body>

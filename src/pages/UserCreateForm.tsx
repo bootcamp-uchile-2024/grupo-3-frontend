@@ -161,7 +161,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
   };
 
   return (
-    <Container className="user-creation-container">
+    <Container className="user-creation-container col-md-12">
       <Form onSubmit={handleSubmit}>
 
         <Row>
@@ -344,6 +344,7 @@ const UserCreationForm: React.FC<UserCreationFormProps> = ({ onUserCreated, isAd
           <Button
             className="btn-outline-primary"
             onClick={() => navigate(-1)}
+            style={{ color: '#1A4756'}}
             type="button"
           >
             Volver

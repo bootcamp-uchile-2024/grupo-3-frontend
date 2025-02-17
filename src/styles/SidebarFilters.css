@@ -38,9 +38,10 @@ input[type="range"].form-range {
 .sidebarfilterbutton1 {
   background-color: white;
   color:  var(--primary-color);
-  font-size: large;
+  font-size: medium;
   text-decoration: underline;
   border: none;
   padding: 0 !important;
+  font-family: QuickSand, sans-serif;
 }
   

@@ -24,8 +24,8 @@ const SearchBar = () => {
   };
 
   return (
-    <div className="search-bar-container">
-      <div className="search-bar">
+    <div className="search-bar-container row">
+      <div className="search-bar col-xs-12 d-flex justify-content-center">
         <div className="input-wrapper">
           <span
             className="search-icon"

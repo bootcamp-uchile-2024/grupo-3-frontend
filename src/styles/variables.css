@@ -1,4 +1,12 @@
 :root, [data-bs-theme="light"]  {
+  /* Breakpoints */
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-xxl: 1400px;
+
   /* Tipografías */
   --font-family-primary: 'Quicksand', sans-serif;
   --font-family-secondary: 'Inter', sans-serif;
@@ -41,7 +49,7 @@
 --secondary-hover: #146c4a;
 --secondary-active: #083021;
 --secondary-focus: #146c4a;
---tertiary-color: #005b73;
+--tertiary-color: #005b73!important;
 --tertiary-hover-bg: #eef6f8;
 --tertiary-active-bg: #d4ebf2;
 --tertiary-disabled-bg: transparent;

@@ -1,4 +1,4 @@
-import { Row, Col, Tab, Tabs, Container, Button, Spinner, Form } from 'react-bootstrap';
+import { Row, Col, Tab, Tabs, Container, Button, Spinner, Form, Alert } from 'react-bootstrap';
 import AdminSideBar from '../components/AdminSideBar';
 import UserGreeting from '../components/UserGreeting';
 import CreateProduct from './CreateProductForm';
@@ -8,6 +8,7 @@ import '../styles/ProductManagementStyle.css';
 import { ProductAdmin } from '../interfaces/ProductAdmin';
 import CustomPagination from '../components/CustomPagination';
 import { Link } from 'react-router-dom';
+import DeleteProductModal from '../components/DeleteProductModal';
 
 const ProductManagement = () => {
     const [products, setProducts] = useState<ProductAdmin[]>([]);
@@ -20,6 +21,13 @@ const ProductManagement = () => {
     const [searchName, setSearchName] = useState<string>('');
     const [searchSKU, setSearchSKU] = useState<string>('');
     const [searchCategory, setSearchCategory] = useState<number | string>('');
+
+  // Estado para controlar el modal de confirmación de eliminación
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [deletingProduct, setDeletingProduct] = useState<ProductAdmin | null>(null);
+
+    // Mensaje de error para no encontrar producto
+    const [noProductFound, setNoProductFound] = useState<boolean>(false);
 
     // Paginador
     const [currentPage, setCurrentPage] = useState(1);
@@ -70,6 +78,21 @@ const ProductManagement = () => {
         fetchProducts();
     }, [fetchProducts]);
 
+    useEffect(() => {
+        const selectedProductId = localStorage.getItem('selectedProductId');
+        if (selectedProductId) {
+            const product = products.find((prod) => prod.id.toString() === selectedProductId);
+            if (product) {
+                setSelectedProduct(product);
+                const productIndex = products.findIndex((prod) => prod.id === product.id);
+                if (productIndex !== -1) {
+                    const page = Math.floor(productIndex / itemsPerPage) + 1;
+                    setCurrentPage(page);
+                }
+            }
+        }
+    }, [products]);
+
     // Manejar el cambio de valor en el buscador
     const handleSearchChange = (event: React.ChangeEvent<HTMLElement>, field: string) => {
         const value = (event.target as HTMLInputElement).value;
@@ -102,15 +125,22 @@ const ProductManagement = () => {
         });
 
         if (filteredProducts.length > 0) {
-            setSelectedProduct(filteredProducts[0]); // Seleccionamos el primer producto que coincida
+            setSelectedProduct(filteredProducts[0]);
+            setNoProductFound(false); 
         } else {
-            alert('Producto no encontrado');
             setSelectedProduct(null);
+            setNoProductFound(true); 
         }
     };
 
     // Cambiar la página cuando seleccionamos un producto
     const handleProductSelect = (product: ProductAdmin | null) => {
+        console.log('Selected Product:', product);
+        if (product) {
+            localStorage.setItem('selectedProductId', product.id.toString());
+        } else {
+            localStorage.removeItem('selectedProductId');
+        }
         setSelectedProduct(product);
         if (product) {
             const productIndex = products.findIndex((prod) => prod.id === product.id);
@@ -122,30 +152,39 @@ const ProductManagement = () => {
             setCurrentPage(1);
         }
     };
+
+     // Función para abrir el modal de eliminación
+  const openDeleteModal = (product: ProductAdmin) => {
+    setDeletingProduct(product); // Guardar el producto que se quiere eliminar
+    setShowDeleteModal(true); // Mostrar el modal
+  };
+
+  // Función para cerrar el modal de eliminación
+  const closeDeleteModal = () => {
+    setShowDeleteModal(false); // Cerrar el modal
+    setDeletingProduct(null); // Limpiar el producto seleccionado
+  };
+
     // Eliminar un producto
     const handleDeleteProduct = async (productId: number) => {
-        const confirmation = window.confirm(`¿Estás seguro de querer eliminar el producto ${productId}?`);
-        if (confirmation) {
             try {
                 const backendUrl = import.meta.env.VITE_API_URL;
                 const token = localStorage.getItem("token");
                 const response = await fetch(`${backendUrl}/productos/${productId}`, {
                     method: 'DELETE',
-                    headers: {"Authorization": `Bearer ${token}`,
-                },
-            });
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
                 if (!response.ok) {
                     throw new Error('Error al eliminar el producto');
                 }
-                alert(`Eliminaste exitosamente el producto: ${productId}`);
                 fetchProducts();
             } catch (error) {
                 console.error('Error al eliminar el producto:', error);
             }
-        } else {
-            console.log('Eliminación cancelada');
-        }
     };
+
     const resetSearchFilters = () => {
         setSearchId('');
         setSearchName('');
@@ -169,16 +208,15 @@ const ProductManagement = () => {
         }
     };
 
-
     return (
-        <Container fluid className="mt-4">
+        <Container fluid className="mt-5">
             <Row>
                 <Col md={12}>
                     <UserGreeting />
                 </Col>
             </Row>
             <Row>
-                <Col>
+                <Col md={2}>
                     <AdminSideBar />
                 </Col>
 
@@ -203,7 +241,7 @@ const ProductManagement = () => {
                                             {/* Buscador por Nombre */}
                                             <Col md={3}>
                                                 <Form.Label>Buscar por Nombre</Form.Label>
-                                                <Form className="d-flex">
+                                                <Form className="d-flex" onSubmit={(e) => e.preventDefault()}>
                                                     <Form.Control
                                                         type="text"
                                                         placeholder="Nombre"
@@ -216,7 +254,7 @@ const ProductManagement = () => {
                                             {/* Buscador por Categoría */}
                                             <Col md={3}>
                                                 <Form.Label>Buscar por Categoría</Form.Label>
-                                                <Form className="d-flex">
+                                                <Form className="d-flex" onSubmit={(e) => e.preventDefault()}>
                                                     <Form.Control
                                                         type="text"
                                                         placeholder="Categoría"
@@ -229,7 +267,7 @@ const ProductManagement = () => {
                                             {/* Buscador por SKU */}
                                             <Col md={3}>
                                                 <Form.Label>Buscar por SKU</Form.Label>
-                                                <Form className="d-flex">
+                                                <Form className="d-flex" onSubmit={(e) => e.preventDefault()}>
                                                     <Form.Control
                                                         type="text"
                                                         placeholder="SKU"
@@ -242,7 +280,7 @@ const ProductManagement = () => {
                                             {/* Buscador por ID */}
                                             <Col md={3}>
                                                 <Form.Label>Buscar por ID</Form.Label>
-                                                <Form className="d-flex">
+                                                <Form className="d-flex" onSubmit={(e) => e.preventDefault()}>
                                                     <Form.Control
                                                         type="number"
                                                         placeholder="ID"
@@ -252,13 +290,20 @@ const ProductManagement = () => {
                                                     />
                                                 </Form>
                                             </Col>
-                                            <Col md={2}>
+                                            <Col className='d-flex justify-content-end'>
                                                 <Button onClick={handleSearchSubmit} variant="primary" className="botonbuscador">
-                                                    <div> Buscar
+                                                    <div> Buscar Producto
                                                     </div>
                                                 </Button>
                                             </Col>
                                         </Row>
+
+                                        {/* Mostrar mensaje si no se encuentra el producto */}
+                                        {noProductFound && (
+                                            <Alert variant="danger">
+                                                No se encontraron productos con los filtros aplicados.
+                                            </Alert>
+                                        )}
 
                                         <ProductTable
                                             currentProducts={currentPageProducts}
@@ -266,19 +311,22 @@ const ProductManagement = () => {
                                             setSelectedProduct={handleProductSelect}
                                         />
 
+
                                         {selectedProduct && (
                                             <div className="d-flex mt-3 gap-2">
-                                                <Button variant="btn btn-outline-primary" onClick={resetSearchFilters}>
-                                                    Cancelar
-                                                </Button>
-                                                <Button variant="primary" onClick={() => handleDeleteProduct(selectedProduct?.id ?? 0)}>
-                                                    Eliminar
-                                                </Button>
-                                                <Link to={`/editar-producto/${selectedProduct.id}`}>
-                                                    <Button variant="outline-secondary" size="lg">
-                                                        Editar
+                                                 <Link to={`/editar-producto/${selectedProduct.id}`}>
+                                                    <Button variant="secondary">
+                                                        Editar Producto {selectedProduct.id}
                                                     </Button>
                                                 </Link>
+                                                <Button variant="outline-primary" onClick={resetSearchFilters}>
+                                                    Cancelar
+                                                </Button>
+                                                <Col className='d-flex justify-content-end'>
+                                                <Button variant="btn btn-outline-secondary" onClick={() =>  {console.log(selectedProduct); openDeleteModal(selectedProduct!)}}>
+                                                    Eliminar Producto {selectedProduct.id}
+                                                </Button>
+                                               </Col>
                                             </div>
                                         )}
 
@@ -297,6 +345,14 @@ const ProductManagement = () => {
                     </div>
                 </Col>
             </Row>
+
+              {/* Modal de confirmación de eliminación */}
+      <DeleteProductModal
+        show={showDeleteModal}
+        product={deletingProduct}
+        onClose={closeDeleteModal}
+        onDelete={handleDeleteProduct}
+      />
         </Container>
     );
 };

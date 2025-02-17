@@ -1,5 +1,5 @@
 .login-container {
-  margin: 190px auto 100px;
+  margin: 190px auto 0;
 }
 
 .login-card {
@@ -7,6 +7,7 @@
   border-radius: 8px;
   margin: 0;
   padding: 34px 24px 0;
+  width: 400px;
 }
 
 .login-title {
@@ -66,13 +67,23 @@ input.form-control {
   flex-direction: column;
   gap: 24px;
   justify-content: center;
-  width: 230px;
+  width: 100%;
 }
 
-.btn-registrar{
-  background-color: white!important;
-  border-color: #1A4756;
-  color: #1A4756!important;
-  font-size: 1rem;
-  padding: 10px 55px !important;
+
+.back-button {
+  background-color: transparent !important;
+  border: 1px solid #E5E7EB !important;
+  border-radius: 6px;
+  color: #1F2937 !important;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 12px;
+  transition: background-color 0.2s ease;
+  width: 100%;
+}
+
+.back-button:hover {
+  color: #1F2937 !important;
+  background-color: #f3f4f6 !important;
 }

@@ -52,7 +52,7 @@
   npm audit fix
   ```
 
-### 4. Instalar Bootstrap, Type checker y Redux toolkit
+### 4. Instalar Bootstrap, Type checker, Redux toolkit y Stylelint
 
 - Para incluir Bootstrap en el proyecto, ejecuta el siguiente comando en la terminal:
 
@@ -72,6 +72,28 @@
   ```bash
   npm install @reduxjs/toolkit
   ```
+- Para instalar Stylelint, ejecuta:
+
+  ```bash
+  npm install --save-dev stylelint stylelint-config-standard
+  ```
+- Configuración:
+
+Crear: stylelintrc.json en la raíz:
+
+{
+  "extends": "stylelint-config-standard"
+}
+
+- Agregar script a package.json:
+
+{
+  "scripts": {
+    "lint:css": "stylelint **/*.css"
+  }
+}
+
+
 ### 5. Traer los últimos cambios
 
 - Para asegurarte de que estás trabajando con la versión más reciente, sigue estos pasos:

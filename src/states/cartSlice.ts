@@ -26,7 +26,7 @@ const loadCartFromLocalStorage = (): CartState => {
     }
   }
 
-  return { idUsuario: 0, productos: [] }; 
+  return { idUsuario: 0, productos: [] };
 };
 
 const saveCartToLocalStorage = (state: CartState) => {
@@ -72,12 +72,16 @@ const cartSlice = createSlice({
       }
     },
     updateUserId(state, action: PayloadAction<number>) {
-      state.idUsuario = action.payload; 
-      saveCartToLocalStorage(state); 
+      state.idUsuario = action.payload;
+      saveCartToLocalStorage(state);
+    },
+    setCart(state, action: PayloadAction<CartItem[]>) {
+      state.productos = action.payload;
+      saveCartToLocalStorage(state);
     },
   },
 });
 
-export const { addToCart, removeFromCart, clearCart, updateQuantity, updateUserId } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCart, updateQuantity, updateUserId, setCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

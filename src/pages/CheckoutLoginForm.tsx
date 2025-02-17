@@ -32,24 +32,25 @@ const CheckoutLoginForm: React.FC = () => {
   };
 
   return (
-    <Container fluid>
+    <Container className="login-container vh-70">
       <Row className="justify-content-center">
-        <Col xs={12} md={5}>
-          <div className="checkout-container">
+        <Col xs={12} md={10} lg={10}>
+          <div className="checkout-container d-flex justify-content-center">
             <Card className="checkout-card">
-              <h2 className="checkout-title">
+              <h3 className="checkout-title">
                 ¿De qué forma gestionarás tu pedido?
-              </h2>
+              </h3>
               <div className="buttons-stack">
                 <Button
-                  className="action-button primary-button"
+                  className="btn-primary btn btn-primary"
                   onClick={handleLogin} 
                 >
                   Iniciar sesión
                 </Button>
 
                 <Button
-                  className="action-button secondary-button"
+                  className="btn-registrar btn-outline-primary"
+                  style={{ color: '#1A4756'}}
                   onClick={handleRegister}
                 >
                   Registrarme
@@ -67,7 +68,7 @@ const CheckoutLoginForm: React.FC = () => {
         </Col>
       </Row>
       <Row>
-        <Col md={4}>
+        <Col md={7} sm={12}>
           <Button
             className="back-button float-start"
             onClick={() => navigate(-1)}

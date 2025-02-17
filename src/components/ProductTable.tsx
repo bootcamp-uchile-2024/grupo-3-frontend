@@ -1,6 +1,7 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 import { ProductAdmin } from '../interfaces/ProductAdmin';
+import "../styles/ProductTableStyle.css";
 
 interface ProductTableProps {
   currentProducts: ProductAdmin[]; // Productos filtrados por página
@@ -34,34 +35,20 @@ const ProductTable: React.FC<ProductTableProps> = ({ currentProducts, selectedPr
   // Función para manejar la selección o deselección de un producto
   const handleRowClick = (product: ProductAdmin) => {
     if (selectedProduct?.id === product.id) {
-      // Si el producto ya está seleccionado, deseleccionarlo
       setSelectedProduct(null);
     } else {
-      // Si el producto no está seleccionado, seleccionarlo
       setSelectedProduct(product);
     }
   };
 
+
   return (
-    <div className="product-table-container" style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
-      <Table responsive hover style={{ borderCollapse: 'collapse', tableLayout: 'fixed', marginTop: '76px' }}>
+    <div className="product-table-container">
+      <Table responsive className="product-table">
         <thead>
           <tr>
             {columnHeaders.map((col, index) => (
-              <th
-                key={index}
-                style={{
-                  fontFamily: 'Quicksand',
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  lineHeight: '13px',
-                  color: '#000',
-                  textAlign: 'center',
-                  borderBottom: '1px solid #BBB',
-                  background: '#DCE2D3',
-                  width: col.width,
-                }}
-              >
+              <th key={index} style={{ width: col.width }}>
                 {col.header}
               </th>
             ))}
@@ -69,38 +56,21 @@ const ProductTable: React.FC<ProductTableProps> = ({ currentProducts, selectedPr
         </thead>
         <tbody>
           {rowData.map((data, index) => {
-            const product = currentProducts[index]; // Obtener el producto correspondiente
-            const isSelected = selectedProduct?.id === product.id; // Verificar si la fila está seleccionada
+            const product = currentProducts[index];
+            const isSelected = selectedProduct?.id === product.id;
+            const rowClass = isSelected ? 'selected-product' : index % 2 === 0 ? '' : 'even-row-notselected';
 
             return (
-              <tr
-                key={index}
-                onClick={() => handleRowClick(product)} // Manejar el clic en la fila
-                style={{
-                  backgroundColor: isSelected ? '#D3F9D8' : index % 2 === 0 ? '#FFFFFF' : '#F8F9FA', // Resaltar la fila seleccionada
-                  cursor: 'pointer',
-                }}
-              >
+              <tr key={index} onClick={() => handleRowClick(product)} className={rowClass}>
                 {data.map((value, idx) => (
-                  <td
-                    key={idx}
-                    style={{
-                      borderTop: '1px solid #BBB',
-                      textAlign: 'center',
-                      padding: '8px',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {value}
-                  </td>
+                  <td key={idx}>{value}</td>
                 ))}
               </tr>
             );
           })}
         </tbody>
       </Table>
+
     </div>
   );
 };

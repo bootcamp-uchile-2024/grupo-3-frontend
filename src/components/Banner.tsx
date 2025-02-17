@@ -7,17 +7,17 @@ const Banner: React.FC = () => {
 
      <>
       {/* Home Banner */}
-      <div className="home-banner">
+      <div className="home-banner d-flex justify-content-center align-items-center">
         <Container className="banner-content text-center">
         <SearchBar />
         </Container>
       </div>
 
       {/* Banner 1 */}
-      <div className="additional-banner home-banner-uno"></div>
+      <div className="additional-banner home-banner-uno d-flex justify-content-center align-items-center"></div>
 
       {/* Banner 2 */}
-      <div className="additional-banner home-banner-dos"></div>
+      <div className="additional-banner home-banner-dos d-flex justify-content-center align-items-center"></div>
     </>
   );
 };

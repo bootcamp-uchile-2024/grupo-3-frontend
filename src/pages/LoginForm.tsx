@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Form, Button, Card, Container, Row, Col } from 'react-bootstrap';
-import { updateUserId } from '../states/cartSlice'; 
+import { updateUserId } from '../states/cartSlice';
 import '../styles/LoginFormStyles.css';
 import { CartItem } from '../interfaces/CartItem';
 
@@ -18,7 +18,7 @@ const API_BASE_URL = import.meta.env.VITE_URL_ENDPOINT_BACKEND || 'http://localh
 
 const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
   const [formData, setFormData] = useState({
     usernameOrEmail: '',
@@ -44,25 +44,25 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
       console.log('Usuario administrador, no se sincroniza carrito.');
       return null;
     }
-  
+
     const userId = JSON.parse(atob(token.split('.')[1])).sub;
     console.log('ID de usuario extraído del token:', userId);
-  
+
     try {
       const cartId = await getActiveCart(token, userId);
-  
+
       if (!cartId) {
         console.error('No se encontró un carrito activo, aunque debería haberse creado automáticamente.');
         return null;
       }
-  
+
       return await replaceCartProducts(token, cartId);
     } catch (error) {
       console.error('Error al sincronizar el carrito:', error);
       return null;
     }
   };
-  
+
   const getActiveCart = async (token: string, userId: number): Promise<number | null> => {
     try {
       const response = await fetch(`${API_BASE_URL}/carro-compras/user/${userId}`, {
@@ -72,18 +72,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
           Accept: 'application/json',
         },
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         console.log('Carrito activo encontrado:', data);
         return data.id || null;
       }
-  
+
       if (response.status === 404) {
         console.warn('Carrito no encontrado para el usuario:', userId);
         return null;
       }
-  
+
       console.error('Error desconocido al obtener el carrito:', response.status);
       return null;
     } catch (error) {
@@ -91,25 +91,25 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
       return null;
     }
   };
-  
+
   const replaceCartProducts = async (token: string, cartId: number): Promise<number | null> => {
     try {
       const localCart: LocalCart = JSON.parse(localStorage.getItem('__redux__cart__') || '{}');
       console.log('Contenido del carrito local:', localCart);
-  
+
       if (!localCart || !localCart.productos || localCart.productos.length === 0) {
         console.warn('No hay productos en el carrito local para sincronizar.');
         return cartId;
       }
-  
+
       const productosCarro = localCart.productos.map((producto: CartItem) => ({
         productoId: producto.id,
         cantidadProducto: producto.cantidad,
       }));
-  
+
       const cuerpo = { productosCarro };
       console.log('Cuerpo enviado al PUT:', JSON.stringify(cuerpo));
-  
+
       const response = await fetch(`${API_BASE_URL}/carro-compras/replaceProductos/${cartId}`, {
         method: 'PUT',
         headers: {
@@ -118,12 +118,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
         },
         body: JSON.stringify(cuerpo),
       });
-  
+
       if (response.ok) {
         console.log('Productos del carrito reemplazados exitosamente.');
         return cartId;
       }
-  
+
       console.error('Error al reemplazar los productos del carrito:', response.status);
       return null;
     } catch (error) {
@@ -135,7 +135,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-  
+
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
@@ -147,33 +147,33 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
           password: formData.password,
         }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Credenciales incorrectas');
       }
-  
+
       const { access_token } = await response.json();
       localStorage.setItem('token', access_token);
-  
+
       const tokenPayload = JSON.parse(atob(access_token.split('.')[1]));
       const userId = tokenPayload.sub;
-      const userRole = tokenPayload.role || ''; 
+      const userRole = tokenPayload.role || '';
       const username = tokenPayload.username || '';
-  
+
       const userObj = {
         id: userId,
         role: userRole,
         username,
       };
       localStorage.setItem('user', JSON.stringify(userObj));
-  
+
       dispatch(updateUserId(userId));
-  
+
       const cartId = await syncCartWithBackend(access_token, userRole);
-  
+
       onLogin({ username, role: userRole });
-  
+
       if (userRole === 'Super Admin' || userRole === 'Admin') {
         console.log('Iniciando sesión como ADMIN');
         navigate('/user-management', { replace: true });
@@ -196,11 +196,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <Container className="login-container vh-70">
       <Row className="justify-content-center">
-        <Col md={4}>
+        <Col xs={12} md={12} lg={12}>
           <Card className="login-card">
             <h2 className="login-title">Iniciar sesión</h2>
             <Form className="login-form" onSubmit={handleSubmit}>
@@ -243,9 +243,14 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
                   >
                     {isSubmitting ? 'Ingresando...' : 'Ingresar'}
                   </Button>
-                  <Link to="/crear-usuario">
-                    <Button className="btn-registrar">Registrarme</Button>
-                  </Link>
+
+                  <Button className="btn-outline-primary">
+                    <Link to="/crear-usuario" 
+                    style={{ color: '#1A4756'}}>
+                      Registrarme
+                    </Link>
+                  </Button>
+
                   <Link to="/recuperar-contraseña" className="forgot-password">
                     ¿Olvidaste tu contraseña?
                   </Link>
@@ -253,6 +258,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin }) => {
               </Row>
             </Form>
           </Card>
+        </Col>
+      </Row>
+      <Row className='mt-5'>
+        <Col md={10} sm={12}>
+          <Button
+            className="back-button float-start"
+            onClick={() => navigate(-1)}
+          >
+            Volver
+          </Button>
         </Col>
       </Row>
     </Container>

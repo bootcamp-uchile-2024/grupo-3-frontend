@@ -8,7 +8,6 @@ import ContactPage from './pages/ContactPage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import LoginForm from './pages/LoginForm';
 import UserCreationForm from './pages/UserCreateForm';
-import CrearProducto from './pages/CreateProductForm';
 import { useState, useEffect } from 'react';
 import { PrivateRoute } from './protected/PrivateRoute';
 import CartPage from './pages/CartPage';
@@ -60,8 +59,8 @@ function App() {
           <Route path="contact" element={<ContactPage />} />
           <Route path="login" element={<LoginForm onLogin={handleLogin} />} />
           <Route path="crear-usuario" element={<UserCreationForm isAdmin={false} />} />
-          <Route path="crear-producto" element={<PrivateRoute roles={["admin-1"]}><CrearProducto /></PrivateRoute>} />
-          <Route path="editar-producto/:id" element={<PrivateRoute roles={["admin-1"]}><EditProductPage /></PrivateRoute>} />
+          <Route path="crear-producto" element={<PrivateRoute roles={['Super Admin']}><ProductManagement /></PrivateRoute>} />
+          <Route path="editar-producto/:id" element={<PrivateRoute roles={['Super Admin']}><EditProductPage /></PrivateRoute>} />
           <Route path="cart" element={<CartPage />} />
           <Route path="user-management" element={<PrivateRoute roles={['Super Admin']}><UserManagement /></PrivateRoute>} />
           <Route path="product-management" element={<PrivateRoute roles={['Super Admin']}><ProductManagement /></PrivateRoute>} />
